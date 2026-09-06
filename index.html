@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#152316">
+<link rel="manifest" href="manifest.json">
+<title>BIG BUG</title>
+<style>
+:root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101b12;color:white;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:none;user-select:none}
+body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hidden{display:none!important}
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:auto}
+.titleScreen{background:linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);color:var(--ink)}
+.logo{font-size:clamp(56px,16vw,110px);line-height:.78;font-weight:1000;letter-spacing:-5px;text-align:center;color:#f4a51c;text-shadow:0 5px 0 #612f18,0 9px 18px #16351b99;transform:rotate(-3deg)}
+.logo small{display:block;font-size:.26em;letter-spacing:2px;color:#f8f3df;text-shadow:0 2px #264d22;margin-top:18px}
+.bugHero{font-size:100px;filter:drop-shadow(0 12px 5px #254d2255);animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}
+.btn{border:0;border-radius:18px;padding:14px 22px;background:#f3a623;color:#2a2416;font-size:18px;font-weight:950;box-shadow:inset 0 -4px #b96917,0 5px 0 #1f3b20;min-width:220px;margin:7px;cursor:pointer}
+.btn.green{background:#77c84b;box-shadow:inset 0 -4px #438c2e,0 5px 0 #1f3b20}
+.btn.dark{background:#223827;color:white;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
+.btn.small{min-width:0;font-size:14px;padding:10px 14px}
+.tag{margin:10px 0 18px;font-weight:850;opacity:.8}
+.panel{width:min(720px,100%);max-height:92vh;overflow:auto;background:#15271aee;border:2px solid #d9efbf33;border-radius:24px;padding:20px;box-shadow:0 25px 80px #0008}
+.panel h2{margin:0 0 6px;font-size:28px}.panel p{opacity:.72}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:#203925;border:1px solid #ffffff18;border-radius:18px;padding:14px;text-align:left}
+.card.selected{outline:3px solid #f4b329}
+.card .art{font-size:44px}.card b{font-size:18px}.muted{opacity:.65;font-size:13px}
+.bar{height:10px;background:#0b130d;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#e84e45}
+#hud{position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;z-index:5;display:flex;gap:7px;justify-content:space-between;pointer-events:none}
+.pill{background:#102016dd;border:1px solid #ffffff22;border-radius:14px;padding:7px 10px;font-weight:900;font-size:13px;backdrop-filter:blur(6px)}
+#bossbar{position:fixed;top:58px;left:10%;right:10%;z-index:5;text-align:center;display:none}.bossName{font-weight:1000;font-size:13px}.bossBar{height:12px;border-radius:99px;background:#210d0d;border:1px solid #fff3}.bossBar i{display:block;height:100%;background:#e64d4d;border-radius:99px}
+#pauseBtn{position:fixed;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:0;border-radius:50%;width:48px;height:48px;background:#132419dd;color:white;font-size:20px}
+#touchHint{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:4;background:#102016aa;border-radius:99px;padding:7px 12px;font-size:12px;opacity:.65;pointer-events:none}
+.choice{min-height:128px}.choice .rarity{font-size:11px;text-transform:uppercase;opacity:.6;font-weight:900}
+.shopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#203925;border-radius:16px;padding:12px;margin:8px 0}.shopRow .left{display:flex;gap:12px;align-items:center}.coin{font-weight:1000;color:#ffd166}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#203925;border-radius:14px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:16px}.logo{font-size:68px}.bugHero{font-size:78px}}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="pill">❤️ <span id="hp">100</span>/<span id="maxhp">100</span></div>
+  <div class="pill">🌿 WAVE <span id="wave">1</span></div>
+  <div class="pill">🪙 <span id="coins">0</span></div>
+  <div class="pill">⚔️ <span id="dmg">10</span></div>
+</div>
+<div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
+<div id="touchHint" class="hidden">Drag your bug • Attacks are automatic</div>
+<button id="pauseBtn" class="hidden">Ⅱ</button>
+
+<section id="home" class="screen titleScreen">
+  <div class="bugHero">🐞</div>
+  <div class="logo">BIG<br>BUG<small>SMALL BUG. BIG DREAMS.</small></div>
+  <div class="tag">Survive. Upgrade. Get BIGGER.</div>
+  <button class="btn green" data-action="play">PLAY</button>
+  <div><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">⚙️ BASE</button></div>
+  <div class="muted">Best Wave: <b id="homeBest">0</b></div>
+</section>
+
+<section id="bugs" class="screen hidden">
+ <div class="panel"><h2>🐛 YOUR BUGS</h2><p>Each bug changes how your run plays.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
+</section>
+
+<section id="base" class="screen hidden">
+ <div class="panel"><h2>🌱 BASE CAMP</h2><p>Spend Scrap on permanent upgrades. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+</section>
+
+<section id="upgrade" class="screen hidden">
+ <div class="panel"><h2>🌟 LEVEL UP!</h2><p>Pick one. Stack effects and discover crazy combinations.</p><div id="choices" class="grid"></div></div>
+</section>
+
+<section id="pause" class="screen hidden">
+ <div class="panel" style="text-align:center"><h2>⏸ PAUSED</h2><p>Take a breather, little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="quit">QUIT RUN</button></div>
+</section>
+
+<section id="gameover" class="screen hidden">
+ <div class="panel">
+  <h2 id="overTitle">RUN COMPLETE!</h2>
+  <p id="overSub">You survived.</p>
+  <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Coins</div></div>
+  <p>🧩 You earned <b id="earnedScrap">0</b> Scrap</p>
+  <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">SPEND SCRAP</button><button class="btn dark" data-action="home">HOME</button>
+ </div>
+</section>
+
+<script>
+const C=document.getElementById('game'),X=C.getContext('2d');
+let W=0,H=0,D=1;
+function resize(){D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;C.width=W*D;C.height=H*D;X.setTransform(D,0,0,D,0,0)} addEventListener('resize',resize);resize();
+
+const $=id=>document.getElementById(id);
+const screens=['home','bugs','base','upgrade','pause','gameover'];
+function screen(id){screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));}
+const SAVEKEY='big_bug_save_v1';
+let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0};
+
+const BUGS={
+ ladybug:{name:'Ladybug',art:'🐞',desc:'Balanced starter. +10% crit chance.',cost:0,bonus:p=>p.crit+=.10},
+ beetle:{name:'Beetle',art:'🪲',desc:'Tanky. +35 max HP, slower attack.',cost:100,bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.rate*=1.12}},
+ mantis:{name:'Mantis',art:'🦗',desc:'Hits hard. +25% damage, -10% HP.',cost:180,bonus:p=>{p.damage*=1.25;p.maxHp*=.9;p.hp=p.maxHp}},
+ firefly:{name:'Firefly',art:'✨',desc:'Glow power. +1 projectile and +15% move speed.',cost:260,bonus:p=>{p.fireflies++;p.speed*=1.15}},
+ dragonfly:{name:'Dragonfly',art:'🦋',desc:'Swift. +35% attack speed and magnet range.',cost:400,bonus:p=>{p.rate*=.65;p.magnet+=70}},
+ spider:{name:'Spider',art:'🕷️',desc:'Venom. Attacks poison enemies for stacking damage.',cost:600,bonus:p=>p.poison+=1}
+};
+const UP=[
+ {id:'sharp',icon:'🗡️',name:'Sharp Mandibles',desc:'+25% damage',rarity:'common',apply:p=>p.damage*=1.25},
+ {id:'heart',icon:'❤️',name:'Leafy Heart',desc:'+30 max HP and heal',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
+ {id:'speed',icon:'⚡',name:'Quick Wings',desc:'+22% attack speed',rarity:'common',apply:p=>p.rate*=.78},
+ {id:'crit',icon:'💥',name:'Lucky Spots',desc:'+12% critical chance (3×)',rarity:'rare',apply:p=>p.crit+=.12},
+ {id:'fire',icon:'🔥',name:'Fireball',desc:'Every 4 attacks launches a fireball',rarity:'rare',apply:p=>p.fireballs++},
+ {id:'ice',icon:'❄️',name:'Frost Dust',desc:'Hits slow enemies for 2 sec',rarity:'rare',apply:p=>p.frost++},
+ {id:'magnet',icon:'🧲',name:'Pollen Magnet',desc:'+65 pickup range and auto-collects drops',rarity:'common',apply:p=>p.magnet+=65},
+ {id:'greed',icon:'🪙',name:'Sweet Sap',desc:'+60% coins from enemies',rarity:'rare',apply:p=>p.greed*=1.6},
+ {id:'thorns',icon:'🌵',name:'Spiky Shell',desc:'Reflect 30% contact damage',rarity:'rare',apply:p=>p.thorns+=.30},
+ {id:'meteor',icon:'☄️',name:'Falling Acorn',desc:'Every 10 sec, blast nearby enemies',rarity:'epic',apply:p=>p.meteor++},
+ {id:'clone',icon:'👯',name:'Tiny Twin',desc:'A tiny helper attacks nearby enemies',rarity:'epic',apply:p=>p.clones++},
+ {id:'gold',icon:'🍯',name:'Honey Rush',desc:'+15% move speed and coin drops',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
+];
+
+let game=null, last=0, raf=0, audio=null;
+function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save))}
+function initAudio(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume()}catch(e){}}
+function beep(f=440,d=.05,g=.025,type='sine'){if(!audio)return;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('touchHint').classList.toggle('hidden',!on)}
+
+function buildBugScreen(){
+ const grid=$('bugGrid');grid.innerHTML='';
+ Object.entries(BUGS).forEach(([id,b])=>{
+  const unlocked=save.unlocked.includes(id), selected=save.selected===id;
+  const el=document.createElement('div');el.className='card'+(selected?' selected':'');
+  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p><button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':'🧩 '+b.cost+' SCRAP'}</button>`;
+  el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else if(save.scrap>=b.cost){save.scrap-=b.cost;save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(900,.12,.04,'triangle')}};
+  grid.appendChild(el);
+ });
+}
+function buildShop(){
+ const s=save.upgrades;
+ const rows=[
+  ['❤️','Tough Leaves','+10 starting HP',100+s.hp*80,'hp'],
+  ['🗡️','Stronger Shell','+1 starting damage',100+s.dmg*100,'dmg'],
+  ['🎲','Extra Choice','+1 upgrade choice',250+s.choices*250,'choices'],
+  ['🧲','Sticky Pollen','+20 starting magnet',150+s.magnet*120,'magnet'],
+  ['🪙','Sweet Tooth','+10% starting coin bonus',200+s.coins*150,'coins']
+ ];
+ $('shop').innerHTML=`<div class="shopRow"><div><b>🧩 Scrap</b><div class="muted">You have ${save.scrap}</div></div></div>`+
+ rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}">🧩 ${r[3]}</button></div>`).join('');
+ $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
+}
+function buyShop(k){
+ const s=save.upgrades, costs={hp:100+s.hp*80,dmg:100+s.dmg*100,choices:250+s.choices*250,magnet:150+s.magnet*120,coins:200+s.coins*150};
+ if(save.scrap<costs[k])return;
+ save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
+}
+function basePlayer(){
+ const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:165,attackCount:0,lastAttack:0,lastMeteor:0,kills:0};
+ const s=save.upgrades;p.maxHp+=s.hp*10;p.hp=p.maxHp;p.damage+=s.dmg;p.magnet+=s.magnet*20;p.greed*=1+s.coins*.10;
+ BUGS[save.selected].bonus(p);return p;
+}
+function startRun(){
+ initAudio();hideAll();showGameUI(true);
+ game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0};
+ last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
+}
+function hideAll(){screens.forEach(s=>$(s).classList.add('hidden'))}
+function screenCanvas(){}
+
+function spawnEnemy(type='normal'){
+ const side=Math.floor(Math.random()*4),m=35;let x,y;
+ if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
+ const w=game.wave, boss=type==='boss';
+ const kinds=['aphid','spider','beetle','wasp'];const k=kinds[Math.floor(Math.random()*kinds.length)];
+ const hp=(26+w*7)*(boss?22:1), sp=(38+w*1.5)*(boss?.65:1);
+ game.enemies.push({x,y,r:boss?32:10+Math.random()*7,hp,max:hp,speed:sp,damage:(boss?18:5+w*.55),kind:k,hit:0,slow:0,boss});
+ if(boss){game.boss=game.enemies[game.enemies.length-1];$('bossName').textContent='👑 '+(w%10===0?'QUEEN LADYBUG':'BIG BEETLE');$('bossbar').style.display='block'}
+}
+function burst(x,y,n=8,life=.5){
+ for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4})}
+}
+function damageEnemy(e,d){
+ if(e.hp<=0)return;e.hp-=d;e.hit=.08;burst(e.x,e.y,3,.25);
+ if(e.hp<=0){e.dead=true;game.p.kills++;game.score++;let val=Math.max(1,Math.floor((2+game.wave*.3)*game.p.greed));game.drops.push({x:e.x,y:e.y,v:val,r:6});burst(e.x,e.y,e.boss?30:10,.7);beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth')}
+}
+function shootAt(target){
+ let p=game.p;let d=p.damage*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
+ if(p.fireballs&&p.attackCount%4===0)fireball();
+ if(p.fireflies)for(let i=0;i<p.fireflies;i++) damageEnemy(nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35),p.damage*.35);
+ if(p.frost)target.slow=2;
+ if(p.poison)target.poison=(target.poison||0)+p.poison;
+ beep(d>p.damage*2?880:520,.025,.012,'square');
+}
+function nearestEnemy(x=game.p.x,y=game.p.y){
+ let best=null,bd=1e9;for(const e of game.enemies)if(!e.dead){let d=Math.hypot(e.x-x,e.y-y);if(d<bd){bd=d;best=e}}return best;
+}
+function fireball(){
+ const t=nearestEnemy();if(!t)return;
+ game.fx.push({x:game.p.x,y:game.p.y,vx:(t.x-game.p.x),vy:(t.y-game.p.y),life:1.1,r:8,orb:true,damage:game.p.damage*2.3});
+}
+function meteor(){burst(game.p.x,game.p.y,45,1);for(const e of game.enemies)if(!e.dead&&Math.hypot(e.x-game.p.x,e.y-game.p.y)<190)damageEnemy(e,game.p.damage*7)}
+function update(dt,now){
+ const g=game,p=g.p;if(g.paused||g.over)return;
+ g.time+=dt;
+ const targetWave=1+Math.floor(g.time/18);
+ if(targetWave>g.wave){g.wave=targetWave;beep(960,.12,.04,'triangle');openUpgrade()}
+ const spawnEvery=Math.max(180,900-g.wave*30);g.spawn+=dt*1000;
+ if(g.spawn>spawnEvery){g.spawn=0;spawnEnemy();if(Math.random()<Math.min(.65,g.wave/18))spawnEnemy()}
+ if(g.wave%10===0&&!g.boss&&!g.enemies.some(e=>e.boss))spawnEnemy('boss');
+ if(now-p.lastAttack>p.rate){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
+ for(const e of g.enemies)if(!e.dead){
+   let dx=p.x-e.x,dy=p.y-e.y,d=Math.hypot(dx,dy)||1,slow=e.slow>0?.45:1;
+   e.x+=dx/d*e.speed*slow*dt;e.y+=dy/d*e.speed*slow*dt;e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,e.hit-dt);
+   if(e.poison){damageEnemy(e,e.poison*dt*.8)}
+   if(d<e.r+p.r){p.hp-=e.damage*dt;if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
+ }
+ for(const d of g.drops){let dx=p.x-d.x,dy=p.y-d.y,dist=Math.hypot(dx,dy)||1;if(dist<p.magnet){d.x+=dx/dist*280*dt;d.y+=dy/dist*280*dt}if(dist<p.r+p.r+3){game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;beep(650,.025,.01)}}
+ for(const f of g.fx){f.life-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;if(f.orb){for(const e of g.enemies)if(!e.dead&&Math.hypot(e.x-f.x,e.y-f.y)<e.r+12){damageEnemy(e,f.damage);f.life=0;break}}f.vx*=.98;f.vy*=.98}
+ g.enemies=g.enemies.filter(e=>!e.dead);g.drops=g.drops.filter(d=>!d.dead);g.fx=g.fx.filter(f=>f.life>0);
+ if(g.boss&&g.boss.dead){g.boss=null;$('bossbar').style.display='none';g.time+=2}
+ if(g.boss){$('bossFill').style.width=Math.max(0,100*g.boss.hp/g.boss.max)+'%'}
+ if(p.hp<=0)finish(false);
+ updateHud();
+}
+function openUpgrade(){
+ game.paused=true;
+ const choices=[];let pool=[...UP];
+ const count=3+save.upgrades.choices;
+ while(choices.length<count){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
+ $('choices').innerHTML=choices.map(u=>`<button class="card choice"><div class="art">${u.icon}</div><div class="rarity">${u.rarity}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+ [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();choices[i].apply(game.p);game.paused=false;screen('none');beep(800,.12,.04,'triangle')});
+ $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
+}
+function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
+function updateHud(){const p=game.p;$('hp').textContent=Math.max(0,Math.ceil(p.hp));$('maxhp').textContent=Math.ceil(p.maxHp);$('wave').textContent=game.wave;$('coins').textContent=game.coins||0;$('dmg').textContent=Math.round(p.damage)}
+function finish(won){
+ if(game.over)return;game.over=true;showGameUI(false);$('bossbar').style.display='none';
+ const coins=game.coins||0,earned=Math.max(1,Math.floor(coins/6)+Math.floor(game.wave/2));
+ save.scrap+=earned;save.best=Math.max(save.best,game.wave);save.runs++;persist();
+ $('overTitle').textContent=won?'RUN COMPLETE!':'YOU GOT SQUISHED!';
+ $('overSub').textContent=won?'You survived the garden.':'The garden wins this round. Come back bigger.';
+ $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedScrap').textContent=earned;
+ screen('gameover');
+}
+function quitRun(){if(game&&!game.over)finish(false)}
+function draw(){
+ X.clearRect(0,0,W,H);
+ // leafy garden background
+ X.fillStyle='#29452a';X.fillRect(0,0,W,H);
+ for(let i=0;i<30;i++){let x=(i*97+43)%W,y=(i*61+80)%H;X.fillStyle=i%2?'#3d6535':'#335a31';X.beginPath();X.ellipse(x,y,35,18,Math.sin(i)*1.4,0,6.28);X.fill()}
+ // dirt paths
+ X.globalAlpha=.25;X.fillStyle='#b8a36a';X.beginPath();X.ellipse(W/2,H/2,W*.45,H*.38,0,0,6.28);X.fill();X.globalAlpha=1;
+ if(!game)return;
+ for(const d of game.drops){X.fillStyle='#ffd166';X.beginPath();X.arc(d.x,d.y,d.r,0,6.28);X.fill();X.fillStyle='#9b6814';X.font='9px sans-serif';X.textAlign='center';X.fillText('★',d.x,d.y+3)}
+ for(const e of game.enemies){
+   const col=e.boss?'#b63838':e.kind==='aphid'?'#6fbd4c':e.kind==='spider'?'#7148a6':e.kind==='wasp'?'#e6ad32':'#4e6e58';
+   X.save();X.translate(e.x,e.y);if(e.hit>0)X.globalAlpha=.6;
+   X.fillStyle=col;X.beginPath();X.ellipse(0,0,e.r*1.15,e.r,0,0,6.28);X.fill();
+   X.fillStyle='#111';X.beginPath();X.arc(-e.r*.35,-e.r*.3,e.r*.22,0,6.28);X.arc(e.r*.35,-e.r*.3,e.r*.22,0,6.28);X.fill();
+   if(e.boss){X.strokeStyle='#f7cf62';X.lineWidth=3;X.stroke()}
+   X.restore();
+ }
+ for(const f of game.fx){X.globalAlpha=Math.max(0,f.life);X.fillStyle=f.orb?'#ff9f43':'#e7f7b5';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.globalAlpha=1}
+ const p=game.p;
+ // shadow
+ X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
+ X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,p.x,p.y);
+ X.strokeStyle='#eaffc8aa';X.lineWidth=2;X.beginPath();X.arc(p.x,p.y,p.r+8,0,6.28);X.stroke();
+}
+function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;update(dt,now);draw();raf=requestAnimationFrame(loop)}
+function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true)}}
+
+document.addEventListener('click',e=>{
+ const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
+ if(a==='play')startRun();
+ if(a==='home'){if(game&&!game.over)game.paused=true;showGameUI(false);screen('home');$('homeBest').textContent=save.best}
+ if(a==='bugs'){showGameUI(false);buildBugScreen();screen('bugs')}
+ if(a==='base'){showGameUI(false);buildShop();screen('base')}
+ if(a==='resume'){startOrResume()}
+ if(a==='quit'){quitRun()}
+});
+$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;showGameUI(false);screen('pause')};
+let drag=false;
+function pointerPos(e){return e.touches?e.touches[0]:e}
+function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e);game.p.x=Math.max(game.p.r,Math.min(W-game.p.r,t.clientX));game.p.y=Math.max(game.p.r+20,Math.min(H-game.p.r,t.clientY))}
+C.addEventListener('pointerdown',e=>{initAudio();drag=true;movePlayer(e)});
+addEventListener('pointermove',e=>{if(drag)movePlayer(e)});
+addEventListener('pointerup',()=>drag=false);
+C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
+C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
+C.addEventListener('touchend',()=>drag=false);
+
+buildBugScreen();buildShop();$('homeBest').textContent=save.best;
+</script>
+</body>
+</html>

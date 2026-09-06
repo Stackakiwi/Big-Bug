@@ -1,0 +1,17 @@
+{
+  "name": "BIG BUG",
+  "short_name": "BIG BUG",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101b12",
+  "theme_color": "#152316",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
