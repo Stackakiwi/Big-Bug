@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v7: Full Garden + Combat Polish -->
+<!-- Big Bug v8: Full Garden + Combat Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -120,8 +120,8 @@ const BUGS={
 const UP=[
  {id:'sharp',icon:'🗡️',name:'Sharp Mandibles',desc:'+25% damage',rarity:'common',apply:p=>p.damage*=1.25},
  {id:'heart',icon:'❤️',name:'Leafy Heart',desc:'+30 max HP and heal',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
- {id:'speed',icon:'⚡',name:'Quick Wings',desc:'+22% attack speed',rarity:'common',apply:p=>p.rate*=.78},
- {id:'crit',icon:'💥',name:'Lucky Spots',desc:'+12% critical chance (3×)',rarity:'rare',apply:p=>p.crit+=.12},
+ {id:'speed',icon:'⚡',name:'Quick Wings',desc:'+20% attack speed',rarity:'common',apply:p=>p.rate*=.80},
+ {id:'crit',icon:'💥',name:'Lucky Spots',desc:'+10% critical chance (3×)',rarity:'rare',apply:p=>p.crit+=.10},
  {id:'fire',icon:'🔥',name:'Fireball',desc:'Every 4 attacks launches a fireball',rarity:'rare',apply:p=>p.fireballs++},
  {id:'ice',icon:'❄️',name:'Frost Dust',desc:'Hits slow enemies for 2 sec',rarity:'rare',apply:p=>p.frost++},
  {id:'magnet',icon:'🧲',name:'Pollen Magnet',desc:'+65 pickup range and auto-collects drops',rarity:'common',apply:p=>p.magnet+=65},
@@ -414,7 +414,7 @@ function drawScrap(d){
  X.fillStyle='#eef1e9';X.beginPath();X.arc(d.r*1.28,0,2.4,0,6.28);X.fill();X.shadowColor='transparent';let tw=(Math.sin(performance.now()/180+d.phase)+1)/2;X.strokeStyle='rgba(255,242,184,'+(0.25+tw*.65)+')';X.lineWidth=1.5;X.beginPath();X.moveTo(-d.r*1.15,-d.r*.9);X.lineTo(-d.r*1.15,-d.r*.9-5);X.moveTo(-d.r*1.15-2.5,-d.r*.9-2.5);X.lineTo(-d.r*1.15+2.5,-d.r*.9-2.5);X.stroke();X.restore();
 }
 function drawEnemy(e){
- const r=e.r,t=performance.now()/1000+e.phase,step=Math.sin(t*11)*3.2,step2=Math.cos(t*11)*3.2;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)-Math.PI/2+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
+ const r=e.r,t=performance.now()/1000+e.phase,step=Math.sin(t*11)*3.2,step2=Math.cos(t*11)*3.2;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;if(e.state==='telegraph'){X.save();X.globalAlpha=.8;X.strokeStyle=e.boss?'#ffb23d':'#ff5a4f';X.lineWidth=3;X.beginPath();X.arc(0,0,r+8+Math.sin(performance.now()/80)*2,0,6.28);X.stroke();X.restore();}
  if(e.kind==='ant'){
   for(let side of [-1,1]){line(side*3,-2,side*13,-8+step,2);line(side*4,3,side*14,5-step,2);line(side*2,8,side*12,14+step2,2)}
