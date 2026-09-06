@@ -1,17 +1,13 @@
 {
-  "name": "BIG BUG",
-  "short_name": "BIG BUG",
-  "start_url": "./index.html",
+  "name": "Big Bug",
+  "short_name": "Big Bug",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#101b12",
-  "theme_color": "#152316",
-  "orientation": "portrait",
+  "background_color": "#29452a",
+  "theme_color": "#29452a",
+  "description": "Small bug. Big dreams. Survive, upgrade, and get bigger.",
   "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ]
 }

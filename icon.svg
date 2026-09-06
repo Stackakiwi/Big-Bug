@@ -1,1 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#77c84b"/><text x="256" y="315" text-anchor="middle" font-size="270">🐞</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#bfe39a"/><stop offset="1" stop-color="#4d813e"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-opacity=".3"/></filter></defs>
+<rect width="512" height="512" rx="112" fill="url(#g)"/>
+<g filter="url(#s)" stroke="#1a2118" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">
+<path d="M163 187c-34-32-47-65-32-91M349 187c34-32 47-65 32-91" fill="none"/>
+<ellipse cx="256" cy="292" rx="142" ry="154" fill="#ef5144"/>
+<path d="M256 140v304" fill="none"/>
+<path d="M165 191c28-58 154-58 182 0-13 50-169 50-182 0z" fill="#303831"/>
+<circle cx="198" cy="262" r="26" fill="#222"/><circle cx="314" cy="262" r="26" fill="#222"/><circle cx="183" cy="352" r="29" fill="#222"/><circle cx="329" cy="352" r="29" fill="#222"/><circle cx="256" cy="401" r="25" fill="#222"/>
+<circle cx="217" cy="184" r="10" fill="#f7f4dc" stroke-width="5"/><circle cx="295" cy="184" r="10" fill="#f7f4dc" stroke-width="5"/>
+</g></svg>

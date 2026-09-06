@@ -1,21 +1,12 @@
-BIG BUG — full mobile web game prototype
+BIG BUG v2
 
-FEATURES
-- Portrait-first iPhone/iPad gameplay
-- One-finger drag movement
-- Automatic combat
-- 10+ upgrade choices and stacking builds
-- 6 playable bugs with different stats
-- Permanent Scrap progression
-- Boss waves every 10 waves
-- Coins, kills, best wave and local save
-- Sound effects using iOS-compatible Web Audio
-- PWA manifest + service worker for Add to Home Screen when hosted over HTTPS
+What changed:
+- Keeps the original Big Bug visual style and green/orange identity.
+- Enemy bugs are now hand-drawn in-game with meaner faces, mandibles, legs, wings, and distinct silhouettes.
+- Added hostile ants, spiders, beetles, wasps, stink bugs, and a hornet boss.
+- Scrap now uses a refined metal gear/bolt visual in menus and as pickups during runs.
+- Updated PWA cache so GitHub Pages/iPhone installs receive the new version.
+- Existing local save key is preserved, so current progress should carry over on the same browser/device.
 
-IPHONE
-1. Host this folder on any HTTPS static host (GitHub Pages, Netlify, Vercel, etc.).
-2. Open the URL in Safari.
-3. Tap Share -> Add to Home Screen.
-4. Launch BIG BUG from the Home Screen for a standalone app-like experience.
-
-No external libraries are required.
+GitHub update:
+Upload index.html, manifest.json, icon.svg, sw.js, and README.txt to the root of the existing Big-Bug repository and replace the old files. GitHub Pages should redeploy automatically.

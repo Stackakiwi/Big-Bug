@@ -41,6 +41,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .choice{min-height:128px}.choice .rarity{font-size:11px;text-transform:uppercase;opacity:.6;font-weight:900}
 .shopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#203925;border-radius:16px;padding:12px;margin:8px 0}.shopRow .left{display:flex;gap:12px;align-items:center}.coin{font-weight:1000;color:#ffd166}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#203925;border-radius:14px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}
+
+.scrapIcon{display:inline-block;position:relative;width:19px;height:19px;vertical-align:-4px;margin-right:4px;border-radius:50%;background:linear-gradient(145deg,#d8a45b,#8a562b);border:2px solid #f1c87a;box-shadow:inset 0 0 0 2px #69401f,0 1px 2px #0007}
+.scrapIcon:before{content:"";position:absolute;left:5px;top:5px;width:5px;height:5px;border-radius:50%;background:#273028;box-shadow:0 0 0 2px #b77939}
+.scrapIcon:after{content:"";position:absolute;right:-4px;bottom:-2px;width:8px;height:4px;background:#aeb5a7;border:1px solid #52594e;border-radius:3px;transform:rotate(-28deg)}
+.scrapCount{font-weight:1000;color:#ffd48a}.enemyLegend{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.enemyLegend .mini{background:#1d3322;border:1px solid #ffffff16;border-radius:14px;padding:9px;font-size:12px}.enemyLegend b{display:block;color:#f6e9c7;font-size:13px}
 @media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:16px}.logo{font-size:68px}.bugHero{font-size:78px}}
 </style>
 </head>
@@ -71,7 +76,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 </section>
 
 <section id="base" class="screen hidden">
- <div class="panel"><h2>🌱 BASE CAMP</h2><p>Spend Scrap on permanent upgrades. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><h2>🌱 BASE CAMP</h2><p>Spend refined Scrap on permanent upgrades. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="upgrade" class="screen hidden">
@@ -87,7 +92,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <h2 id="overTitle">RUN COMPLETE!</h2>
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Coins</div></div>
-  <p>🧩 You earned <b id="earnedScrap">0</b> Scrap</p>
+  <p><span class="scrapIcon"></span>You earned <b id="earnedScrap">0</b> Scrap</p>
   <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">SPEND SCRAP</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
@@ -137,7 +142,7 @@ function buildBugScreen(){
  Object.entries(BUGS).forEach(([id,b])=>{
   const unlocked=save.unlocked.includes(id), selected=save.selected===id;
   const el=document.createElement('div');el.className='card'+(selected?' selected':'');
-  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p><button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':'🧩 '+b.cost+' SCRAP'}</button>`;
+  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p><button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':'<span class=\"scrapIcon\"></span>'+b.cost+' SCRAP'}</button>`;
   el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else if(save.scrap>=b.cost){save.scrap-=b.cost;save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(900,.12,.04,'triangle')}};
   grid.appendChild(el);
  });
@@ -151,8 +156,8 @@ function buildShop(){
   ['🧲','Sticky Pollen','+20 starting magnet',150+s.magnet*120,'magnet'],
   ['🪙','Sweet Tooth','+10% starting coin bonus',200+s.coins*150,'coins']
  ];
- $('shop').innerHTML=`<div class="shopRow"><div><b>🧩 Scrap</b><div class="muted">You have ${save.scrap}</div></div></div>`+
- rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}">🧩 ${r[3]}</button></div>`).join('');
+ $('shop').innerHTML=`<div class="shopRow"><div><b><span class="scrapIcon"></span>Scrap</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span></div></div></div>`+
+ rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="scrapIcon"></span>${r[3]}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
 function buyShop(k){
@@ -177,17 +182,17 @@ function spawnEnemy(type='normal'){
  const side=Math.floor(Math.random()*4),m=35;let x,y;
  if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
  const w=game.wave, boss=type==='boss';
- const kinds=['aphid','spider','beetle','wasp'];const k=kinds[Math.floor(Math.random()*kinds.length)];
+ const kinds=['ant','spider','beetle','wasp','stink'];const k=boss?'hornet':kinds[Math.floor(Math.random()*kinds.length)];
  const hp=(26+w*7)*(boss?22:1), sp=(38+w*1.5)*(boss?.65:1);
- game.enemies.push({x,y,r:boss?32:10+Math.random()*7,hp,max:hp,speed:sp,damage:(boss?18:5+w*.55),kind:k,hit:0,slow:0,boss});
- if(boss){game.boss=game.enemies[game.enemies.length-1];$('bossName').textContent='👑 '+(w%10===0?'QUEEN LADYBUG':'BIG BEETLE');$('bossbar').style.display='block'}
+ game.enemies.push({x,y,r:boss?36:11+Math.random()*7,hp,max:hp,speed:sp,damage:(boss?18:5+w*.55),kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28});
+ if(boss){game.boss=game.enemies[game.enemies.length-1];$('bossName').textContent='👑 THE HORNET';$('bossbar').style.display='block'}
 }
 function burst(x,y,n=8,life=.5){
  for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4})}
 }
 function damageEnemy(e,d){
  if(e.hp<=0)return;e.hp-=d;e.hit=.08;burst(e.x,e.y,3,.25);
- if(e.hp<=0){e.dead=true;game.p.kills++;game.score++;let val=Math.max(1,Math.floor((2+game.wave*.3)*game.p.greed));game.drops.push({x:e.x,y:e.y,v:val,r:6});burst(e.x,e.y,e.boss?30:10,.7);beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth')}
+ if(e.hp<=0){e.dead=true;game.p.kills++;game.score++;let val=Math.max(1,Math.floor((2+game.wave*.3)*game.p.greed));game.drops.push({x:e.x,y:e.y,v:val,r:7});burst(e.x,e.y,e.boss?30:10,.7);beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth')}
 }
 function shootAt(target){
  let p=game.p;let d=p.damage*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
@@ -250,6 +255,42 @@ function finish(won){
  screen('gameover');
 }
 function quitRun(){if(game&&!game.over)finish(false)}
+
+function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
+function eye(x,y,r=2.5){X.fillStyle='#210d09';X.beginPath();X.arc(x,y,r+1.5,0,6.28);X.fill();X.fillStyle='#ff493f';X.beginPath();X.arc(x,y,r,0,6.28);X.fill();X.fillStyle='#ffd0a8';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill()}
+function drawScrap(d){
+ X.save();X.translate(d.x,d.y);X.rotate((d.x+d.y)*.01);X.shadowColor='#0007';X.shadowBlur=5;X.shadowOffsetY=3;
+ X.fillStyle='#9e6a39';X.beginPath();for(let i=0;i<12;i++){let a=i*Math.PI/6,rr=i%2?d.r*.72:d.r;X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.fill();
+ X.shadowColor='transparent';X.fillStyle='#d5a45e';X.beginPath();X.arc(0,0,d.r*.58,0,6.28);X.fill();X.fillStyle='#394139';X.beginPath();X.arc(0,0,d.r*.25,0,6.28);X.fill();
+ X.fillStyle='#bac0b3';X.fillRect(d.r*.48,-2,d.r*.9,4);X.strokeStyle='#555d54';X.lineWidth=1;X.strokeRect(d.r*.48,-2,d.r*.9,4);X.restore();
+}
+function drawEnemy(e){
+ const r=e.r,t=performance.now()/1000+e.phase;X.save();X.translate(e.x,e.y);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)-Math.PI/2);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
+ X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
+ if(e.kind==='ant'){
+  for(let s of [-1,1]){line(s*3,-2,s*13,-8,2);line(s*4,3,s*14,5,2);line(s*2,8,s*12,14,2)}
+  X.fillStyle='#6d281f';X.beginPath();X.ellipse(0,8,r*.66,r*.72,0,0,6.28);X.fill();X.fillStyle='#9b3328';X.beginPath();X.arc(0,-3,r*.5,0,6.28);X.fill();X.fillStyle='#722018';X.beginPath();X.arc(0,-r*.85,r*.46,0,6.28);X.fill();line(-3,-r*1.15,-8,-r*1.7,1.5);line(3,-r*1.15,8,-r*1.7,1.5);eye(-r*.18,-r*.92,2);eye(r*.18,-r*.92,2);
+  X.fillStyle='#2a0c09';X.beginPath();X.moveTo(-3,-r*1.18);X.lineTo(0,-r*1.5);X.lineTo(3,-r*1.18);X.fill();
+ }else if(e.kind==='spider'){
+  for(let s of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7;line(s*5,yy,s*(r+8),yy+(i-1.5)*4,2.5,'#241c2c');line(s*(r+8),yy+(i-1.5)*4,s*(r+13),yy+(i-1.5)*8,2,'#241c2c')}
+  X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();
+ }else if(e.kind==='wasp'||e.kind==='hornet'){
+  const big=e.kind==='hornet';let rr=big?r*1.15:r;
+  X.globalAlpha=.45;X.fillStyle='#e8f2e9';X.beginPath();X.ellipse(-rr*.65,-2,rr*.65,rr*.28,-.6,0,6.28);X.ellipse(rr*.65,-2,rr*.65,rr*.28,.6,0,6.28);X.fill();X.globalAlpha=1;
+  for(let s of [-1,1]){line(s*5,1,s*(rr+8),8,2.3);line(s*4,9,s*(rr+6),17,2.3)}
+  X.fillStyle='#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
+  X.fillStyle='#5b371d';X.beginPath();X.arc(0,-rr*.7,rr*.58,0,6.28);X.fill();eye(-rr*.2,-rr*.78,big?3.5:2.4);eye(rr*.2,-rr*.78,big?3.5:2.4);line(-4,-rr*1.05,-10,-rr*1.55,1.7);line(4,-rr*1.05,10,-rr*1.55,1.7);
+  X.fillStyle='#24130d';X.beginPath();X.moveTo(-5,-rr*.95);X.lineTo(0,-rr*1.25);X.lineTo(5,-rr*.95);X.fill();X.beginPath();X.moveTo(-4,rr*1.0);X.lineTo(0,rr*1.45);X.lineTo(4,rr*1.0);X.fill();
+  if(big){X.strokeStyle='#f5c358';X.lineWidth=2;X.beginPath();X.arc(0,0,rr+5,0,6.28);X.stroke()}
+ }else if(e.kind==='stink'){
+  for(let s of [-1,1]){line(s*6,-4,s*(r+7),-10,2);line(s*7,3,s*(r+9),4,2);line(s*5,10,s*(r+7),17,2)}
+  X.fillStyle='#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
+ }else{
+  for(let s of [-1,1]){line(s*6,-5,s*(r+7),-10,2.3);line(s*7,2,s*(r+9),4,2.3);line(s*5,10,s*(r+7),17,2.3)}
+  X.fillStyle='#39473d';X.beginPath();X.ellipse(0,5,r*.82,r*1.02,0,0,6.28);X.fill();X.strokeStyle='#65786b';X.lineWidth=2;X.beginPath();X.moveTo(0,-r*.8);X.lineTo(0,r*.92);X.stroke();X.fillStyle='#4b5e50';X.beginPath();X.arc(0,-r*.65,r*.58,0,6.28);X.fill();eye(-r*.2,-r*.74,2.2);eye(r*.2,-r*.74,2.2);X.fillStyle='#1c211d';X.beginPath();X.moveTo(-4,-r*.98);X.lineTo(-9,-r*1.35);X.lineTo(-2,-r*1.14);X.moveTo(4,-r*.98);X.lineTo(9,-r*1.35);X.lineTo(2,-r*1.14);X.fill();
+ }
+ X.restore();
+}
 function draw(){
  X.clearRect(0,0,W,H);
  // leafy garden background
@@ -258,15 +299,8 @@ function draw(){
  // dirt paths
  X.globalAlpha=.25;X.fillStyle='#b8a36a';X.beginPath();X.ellipse(W/2,H/2,W*.45,H*.38,0,0,6.28);X.fill();X.globalAlpha=1;
  if(!game)return;
- for(const d of game.drops){X.fillStyle='#ffd166';X.beginPath();X.arc(d.x,d.y,d.r,0,6.28);X.fill();X.fillStyle='#9b6814';X.font='9px sans-serif';X.textAlign='center';X.fillText('★',d.x,d.y+3)}
- for(const e of game.enemies){
-   const col=e.boss?'#b63838':e.kind==='aphid'?'#6fbd4c':e.kind==='spider'?'#7148a6':e.kind==='wasp'?'#e6ad32':'#4e6e58';
-   X.save();X.translate(e.x,e.y);if(e.hit>0)X.globalAlpha=.6;
-   X.fillStyle=col;X.beginPath();X.ellipse(0,0,e.r*1.15,e.r,0,0,6.28);X.fill();
-   X.fillStyle='#111';X.beginPath();X.arc(-e.r*.35,-e.r*.3,e.r*.22,0,6.28);X.arc(e.r*.35,-e.r*.3,e.r*.22,0,6.28);X.fill();
-   if(e.boss){X.strokeStyle='#f7cf62';X.lineWidth=3;X.stroke()}
-   X.restore();
- }
+ for(const d of game.drops)drawScrap(d);
+ for(const e of game.enemies)drawEnemy(e);
  for(const f of game.fx){X.globalAlpha=Math.max(0,f.life);X.fillStyle=f.orb?'#ff9f43':'#e7f7b5';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.globalAlpha=1}
  const p=game.p;
  // shadow
@@ -298,6 +332,7 @@ C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{pa
 C.addEventListener('touchend',()=>drag=false);
 
 buildBugScreen();buildShop();$('homeBest').textContent=save.best;
+if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 </script>
 </body>
 </html>
