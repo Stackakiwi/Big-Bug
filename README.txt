@@ -1,11 +1,11 @@
-BIG BUG v5.1 — Lively Bug Update
+BIG BUG v6 — COMBAT FEEL
 
-Changes:
-- Tiny Helper now visibly appears, orbits you, and attacks enemies.
-- Player bug smoothly turns toward the enemy it attacks and has subtle idle motion.
-- Upgrade screen has a cleaner, more handcrafted card layout.
-- Unique sounds play when upgrade choices appear and when one is selected.
-- All run currency is Scrap: HUD, drops, rewards, upgrades, and end-of-run totals.
-- Keeps v5 wave quotas, enemy behaviors, boss fights, garden polish, and refined Scrap art.
+New in v6:
+- Floating damage numbers (crit/heavy hits pop in gold)
+- Enemy legs visibly scuttle/wiggle while moving
+- Tiny Helper stacks improve helper attack speed and damage
+- Later waves can spawn ant packs, wasp packs, and beetle+spider combos
+- Boss Scrap reward increased and existing boss phases/attacks retained
+- Player turning, lively idle motion, upgrade sounds, refined upgrade screen, and Scrap-only economy retained
 
 Upload all 5 files to the existing Big-Bug GitHub repository and commit to main.
