@@ -192,7 +192,7 @@ function burst(x,y,n=8,life=.5){
 }
 function damageEnemy(e,d){
  if(e.hp<=0)return;e.hp-=d;e.hit=.08;burst(e.x,e.y,3,.25);
- if(e.hp<=0){e.dead=true;game.p.kills++;game.score++;let val=Math.max(1,Math.floor((2+game.wave*.3)*game.p.greed));game.drops.push({x:e.x,y:e.y,v:val,r:7});burst(e.x,e.y,e.boss?30:10,.7);beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth')}
+ if(e.hp<=0){e.dead=true;game.p.kills++;game.score++;let val=Math.max(1,Math.floor((2+game.wave*.3)*game.p.greed));game.drops.push({x:e.x,y:e.y,v:val,r:8});burst(e.x,e.y,e.boss?30:10,.7);beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth')}
 }
 function shootAt(target){
  let p=game.p;let d=p.damage*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
@@ -259,10 +259,13 @@ function quitRun(){if(game&&!game.over)finish(false)}
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
 function eye(x,y,r=2.5){X.fillStyle='#210d09';X.beginPath();X.arc(x,y,r+1.5,0,6.28);X.fill();X.fillStyle='#ff493f';X.beginPath();X.arc(x,y,r,0,6.28);X.fill();X.fillStyle='#ffd0a8';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill()}
 function drawScrap(d){
- X.save();X.translate(d.x,d.y);X.rotate((d.x+d.y)*.01);X.shadowColor='#0007';X.shadowBlur=5;X.shadowOffsetY=3;
- X.fillStyle='#9e6a39';X.beginPath();for(let i=0;i<12;i++){let a=i*Math.PI/6,rr=i%2?d.r*.72:d.r;X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.fill();
- X.shadowColor='transparent';X.fillStyle='#d5a45e';X.beginPath();X.arc(0,0,d.r*.58,0,6.28);X.fill();X.fillStyle='#394139';X.beginPath();X.arc(0,0,d.r*.25,0,6.28);X.fill();
- X.fillStyle='#bac0b3';X.fillRect(d.r*.48,-2,d.r*.9,4);X.strokeStyle='#555d54';X.lineWidth=1;X.strokeRect(d.r*.48,-2,d.r*.9,4);X.restore();
+ X.save();X.translate(d.x,d.y);X.rotate(performance.now()/1300+d.x*.015);X.shadowColor='#0009';X.shadowBlur=8;X.shadowOffsetY=4;
+ // chunky bronze gear with a steel bolt through it
+ X.fillStyle='#7a4828';X.beginPath();for(let i=0;i<16;i++){let a=i*Math.PI/8,rr=i%2?d.r*.76:d.r*1.12;X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.fill();
+ X.fillStyle='#d79a4f';X.beginPath();X.arc(0,0,d.r*.72,0,6.28);X.fill();X.strokeStyle='#f2c77d';X.lineWidth=1.4;X.stroke();
+ X.shadowColor='transparent';X.fillStyle='#4d3528';X.beginPath();X.arc(0,0,d.r*.3,0,6.28);X.fill();
+ X.rotate(-.45);X.fillStyle='#c8cec5';X.fillRect(-d.r*.18,-2,d.r*1.55,4);X.strokeStyle='#59615a';X.lineWidth=1;X.strokeRect(-d.r*.18,-2,d.r*1.55,4);
+ X.fillStyle='#eef1e9';X.beginPath();X.arc(d.r*1.28,0,2.4,0,6.28);X.fill();X.restore();
 }
 function drawEnemy(e){
  const r=e.r,t=performance.now()/1000+e.phase;X.save();X.translate(e.x,e.y);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)-Math.PI/2);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
@@ -293,11 +296,17 @@ function drawEnemy(e){
 }
 function draw(){
  X.clearRect(0,0,W,H);
- // leafy garden background
- X.fillStyle='#29452a';X.fillRect(0,0,W,H);
- for(let i=0;i<30;i++){let x=(i*97+43)%W,y=(i*61+80)%H;X.fillStyle=i%2?'#3d6535':'#335a31';X.beginPath();X.ellipse(x,y,35,18,Math.sin(i)*1.4,0,6.28);X.fill()}
- // dirt paths
- X.globalAlpha=.25;X.fillStyle='#b8a36a';X.beginPath();X.ellipse(W/2,H/2,W*.45,H*.38,0,0,6.28);X.fill();X.globalAlpha=1;
+ // layered garden floor: same Big Bug palette, with more depth and hand-drawn detail
+ let bg=X.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#29492d');bg.addColorStop(.55,'#315431');bg.addColorStop(1,'#244329');X.fillStyle=bg;X.fillRect(0,0,W,H);
+ // broad play patch
+ X.fillStyle='#66734a';X.globalAlpha=.62;X.beginPath();X.ellipse(W/2,H*.51,W*.43,H*.39,-.02,0,6.28);X.fill();X.globalAlpha=1;
+ // soft leaf litter
+ for(let i=0;i<28;i++){let x=(i*101+31)%W,y=(i*67+72)%H,a=Math.sin(i*2.1)*1.5,sz=16+(i%4)*5;X.save();X.translate(x,y);X.rotate(a);X.fillStyle=i%3===0?'#496c39':i%3===1?'#587842':'#3d6438';X.globalAlpha=.68;X.beginPath();X.ellipse(0,0,sz,sz*.42,0,0,6.28);X.fill();X.strokeStyle='#78905b55';X.lineWidth=1;X.beginPath();X.moveTo(-sz*.7,0);X.lineTo(sz*.7,0);X.stroke();X.restore()}
+ X.globalAlpha=1;
+ // tiny stones / seeds make the arena feel intentional without clutter
+ for(let i=0;i<12;i++){let x=(i*137+76)%W,y=(i*173+130)%H;X.fillStyle=i%2?'#8c865f':'#6f7654';X.beginPath();X.ellipse(x,y,3+(i%3),2+(i%2),i*.4,0,6.28);X.fill()}
+ // faint vignette
+ let vg=X.createRadialGradient(W/2,H*.48,80,W/2,H*.48,Math.max(W,H)*.72);vg.addColorStop(.55,'#0000');vg.addColorStop(1,'#102a1870');X.fillStyle=vg;X.fillRect(0,0,W,H);
  if(!game)return;
  for(const d of game.drops)drawScrap(d);
  for(const e of game.enemies)drawEnemy(e);

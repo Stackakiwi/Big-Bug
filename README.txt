@@ -10,3 +10,5 @@ What changed:
 
 GitHub update:
 Upload index.html, manifest.json, icon.svg, sw.js, and README.txt to the root of the existing Big-Bug repository and replace the old files. GitHub Pages should redeploy automatically.
+
+Big Bug v3 — Garden Polish: richer battlefield, refined scrap pickups, improved visual depth, hostile bug art retained.
