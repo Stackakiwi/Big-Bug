@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v6: Combat Feel + Animated Legs -->
+<!-- Big Bug v7: Full Garden + Combat Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -231,10 +231,10 @@ function burst(x,y,n=8,life=.5,col=null){
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  if(e.kind==='beetle'&&!e.boss)d*=.58;
- const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8;
+ const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
- game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:-30,life:.72,maxLife:.72,r:0,damageText:shown,heavy,source});
+ game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;
  burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
@@ -242,7 +242,8 @@ function damageEnemy(e,d,source='player'){
    let val=Math.max(1,Math.floor((2+game.wave*.35)*game.p.greed));
    if(e.boss)val*=12;
    game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?12:9,age:0,phase:Math.random()*6.28});
-   burst(e.x,e.y,e.boss?34:10,.72,e.boss?'#ffc95a':null);
+   burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
+   game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
    beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth');
  }
 }
@@ -443,8 +444,11 @@ function draw(){
  X.clearRect(0,0,W,H);
  // layered garden floor: same Big Bug palette, with more depth and hand-drawn detail
  let bg=X.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#29492d');bg.addColorStop(.55,'#315431');bg.addColorStop(1,'#244329');X.fillStyle=bg;X.fillRect(0,0,W,H);
- // broad play patch
- X.fillStyle='#66734a';X.globalAlpha=.62;X.beginPath();X.ellipse(W/2,H*.51,W*.43,H*.39,-.02,0,6.28);X.fill();X.globalAlpha=1;
+ // full-screen garden floor: the whole visible field is playable
+ // subtle mossy ground patches across the whole screen
+ for(let i=0;i<18;i++){let x=(i*149+43)%W,y=(i*211+97)%H,rr=26+(i%5)*9;X.globalAlpha=.10;X.fillStyle=i%2?'#8aa95a':'#172f20';X.beginPath();X.ellipse(x,y,rr,rr*.55,i*.37,0,6.28);X.fill()}X.globalAlpha=1;
+ // larger edge foliage gives the garden a framed, hand-built feel without blocking movement
+ for(let i=0;i<10;i++){let left=i%2===0,x=left?4:W-4,y=H*(.12+(i*.083)% .78),sz=25+(i%3)*7;X.save();X.translate(x,y);X.rotate((left?-.35:.35)+Math.sin(i)*.18);X.fillStyle=i%3===0?'#315d32':'#426f38';X.globalAlpha=.78;X.beginPath();X.ellipse(left?sz*.35:-sz*.35,0,sz,sz*.38,0,0,6.28);X.fill();X.strokeStyle='#76905a66';X.lineWidth=1.3;X.beginPath();X.moveTo(left?-sz*.2:sz*.2,0);X.lineTo(left?sz*1.05:-sz*1.05,0);X.stroke();X.restore()}X.globalAlpha=1;
  drawGardenDetails();
  // soft leaf litter
  for(let i=0;i<28;i++){let x=(i*101+31)%W,y=(i*67+72)%H,a=Math.sin(i*2.1)*1.5,sz=16+(i%4)*5;X.save();X.translate(x,y);X.rotate(a);X.fillStyle=i%3===0?'#496c39':i%3===1?'#587842':'#3d6438';X.globalAlpha=.68;X.beginPath();X.ellipse(0,0,sz,sz*.42,0,0,6.28);X.fill();X.strokeStyle='#78905b55';X.lineWidth=1;X.beginPath();X.moveTo(-sz*.7,0);X.lineTo(sz*.7,0);X.stroke();X.restore()}
@@ -460,10 +464,12 @@ function draw(){
    if(f.damageText){
      const q=Math.max(0,Math.min(1,f.life/(f.maxLife||.72)));
      X.globalAlpha=Math.min(1,q*1.7);X.textAlign='center';X.textBaseline='middle';
-     X.font=(f.heavy?'900 18px':'850 14px')+' ui-rounded,system-ui,-apple-system,sans-serif';
-     X.lineWidth=3;X.strokeStyle='#182016';X.strokeText((f.heavy?'! ':'')+f.damageText,f.x,f.y);
-     X.fillStyle=f.heavy?'#ffd45e':(f.source==='helper'?'#bcecff':'#fff7df');X.fillText((f.heavy?'! ':'')+f.damageText,f.x,f.y);X.globalAlpha=1;continue
+     const pop=f.heavy?1.15+Math.sin((1-q)*Math.PI)*.18:1;X.save();X.translate(f.x,f.y);X.scale(pop,pop);
+     X.font=(f.heavy?'1000 20px':'850 14px')+' ui-rounded,system-ui,-apple-system,sans-serif';
+     X.lineWidth=f.heavy?4:3;X.strokeStyle='#182016';X.strokeText((f.heavy?'✦ ':'')+f.damageText,0,0);
+     X.fillStyle=f.heavy?'#ffd45e':(f.source==='helper'?'#bcecff':'#fff7df');X.fillText((f.heavy?'✦ ':'')+f.damageText,0,0);X.restore();X.globalAlpha=1;continue
    }
+   if(f.killPop){let q=Math.max(0,f.life/(f.maxLife||.28));X.globalAlpha=.55*q;X.strokeStyle='#ffe49a';X.lineWidth=3;X.beginPath();X.arc(f.x,f.y,f.r*(1-q*.55),0,6.28);X.stroke();X.globalAlpha=1;continue}
    if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/.42)),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease;X.globalAlpha=1-q*.35;X.fillStyle='#e2a24f';X.beginPath();X.arc(xx,yy,Math.max(2,f.r*(1-q*.55)),0,6.28);X.fill();X.strokeStyle='#ffe4a0';X.lineWidth=1;X.stroke();X.globalAlpha=1;continue}
    if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#98ba55';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0;i<5;i++){let a=i*1.25+performance.now()/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
    X.globalAlpha=Math.max(0,Math.min(1,f.life));
@@ -478,7 +484,6 @@ function draw(){
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
- X.strokeStyle='#eaffc8aa';X.lineWidth=2;X.beginPath();X.arc(p.x,p.y,p.r+8,0,6.28);X.stroke();
  // Tiny Helpers visibly orbit the player; each one attacks on its own timer
  for(let i=0;i<p.clones;i++){let a=game.time*1.8+i*6.283/p.clones,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38;X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2);X.font='20px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore();X.strokeStyle='#8fd6ff88';X.lineWidth=1.5;X.beginPath();X.arc(hx,hy,13,0,6.28);X.stroke()}
 }
@@ -497,7 +502,7 @@ document.addEventListener('click',e=>{
 $('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;showGameUI(false);screen('pause')};
 let drag=false;
 function pointerPos(e){return e.touches?e.touches[0]:e}
-function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e);game.p.x=Math.max(game.p.r,Math.min(W-game.p.r,t.clientX));game.p.y=Math.max(game.p.r+20,Math.min(H-game.p.r,t.clientY))}
+function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e);game.p.x=Math.max(game.p.r,Math.min(W-game.p.r,t.clientX));game.p.y=Math.max(game.p.r,Math.min(H-game.p.r,t.clientY))}
 C.addEventListener('pointerdown',e=>{initAudio();drag=true;movePlayer(e)});
 addEventListener('pointermove',e=>{if(drag)movePlayer(e)});
 addEventListener('pointerup',()=>drag=false);
