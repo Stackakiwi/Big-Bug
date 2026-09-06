@@ -39,7 +39,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #bossbar{position:fixed;top:58px;left:10%;right:10%;z-index:5;text-align:center;display:none}.bossName{font-weight:1000;font-size:13px}.bossBar{height:12px;border-radius:99px;background:#210d0d;border:1px solid #fff3}.bossBar i{display:block;height:100%;background:#e64d4d;border-radius:99px}
 #pauseBtn{position:fixed;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:0;border-radius:50%;width:48px;height:48px;background:#132419dd;color:white;font-size:20px}
 #touchHint{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:4;background:#102016aa;border-radius:99px;padding:7px 12px;font-size:12px;opacity:.65;pointer-events:none}.waveProg{font-size:10px;opacity:.68;margin-left:4px}.telegraph{position:fixed;top:92px;left:50%;transform:translateX(-50%);z-index:6;font-weight:950;background:#341b12dd;border:1px solid #ffc95a55;padding:6px 12px;border-radius:999px;letter-spacing:.5px}
-.choice{min-height:128px}.choice .rarity{font-size:11px;text-transform:uppercase;opacity:.6;font-weight:900}
+.choice{min-height:142px;text-align:left;background:#18301f;border:1px solid #ffffff18;border-radius:16px;padding:14px;box-shadow:none;position:relative;overflow:hidden}.choice:active{transform:scale(.98)}.choice .art{font-size:30px;margin-bottom:7px}.choice .rarity{font-size:10px;text-transform:uppercase;letter-spacing:1.1px;opacity:.58;font-weight:900;margin-bottom:4px}.choice b{display:block;font-size:17px}.choice p{margin:6px 0 0;line-height:1.3}.choice.common{border-left:4px solid #86a879}.choice.rare{border-left:4px solid #e3b64b}.choice.epic{border-left:4px solid #9a75c8}#upgrade .panel{max-width:520px;background:#13281a;border:1px solid #ffffff1c;box-shadow:0 18px 60px #07120b99}#upgrade .panel h2{margin-bottom:3px}#upgrade .grid{gap:9px}
 .shopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#203925;border-radius:16px;padding:12px;margin:8px 0}.shopRow .left{display:flex;gap:12px;align-items:center}.coin{font-weight:1000;color:#ffd166}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#203925;border-radius:14px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}
 
@@ -56,7 +56,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <div id="hud" class="hidden">
   <div class="pill">❤️ <span id="hp">100</span>/<span id="maxhp">100</span></div>
   <div class="pill">🌿 WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
-  <div class="pill">🪙 <span id="coins">0</span></div>
+  <div class="pill"><span class="scrapIcon"></span><span id="coins">0</span></div>
   <div class="pill">⚔️ <span id="dmg">10</span></div>
 </div>
 <div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
@@ -92,8 +92,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
  <div class="panel">
   <h2 id="overTitle">RUN COMPLETE!</h2>
   <p id="overSub">You survived.</p>
-  <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Coins</div></div>
-  <p><span class="scrapIcon"></span>You earned <b id="earnedScrap">0</b> Scrap</p>
+  <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Scrap</div></div>
+  <p><span class="scrapIcon"></span><b id="earnedScrap">0</b> Scrap secured at Base Camp</p>
   <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">SPEND SCRAP</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
@@ -125,17 +125,19 @@ const UP=[
  {id:'fire',icon:'🔥',name:'Fireball',desc:'Every 4 attacks launches a fireball',rarity:'rare',apply:p=>p.fireballs++},
  {id:'ice',icon:'❄️',name:'Frost Dust',desc:'Hits slow enemies for 2 sec',rarity:'rare',apply:p=>p.frost++},
  {id:'magnet',icon:'🧲',name:'Pollen Magnet',desc:'+65 pickup range and auto-collects drops',rarity:'common',apply:p=>p.magnet+=65},
- {id:'greed',icon:'🪙',name:'Sweet Sap',desc:'+60% coins from enemies',rarity:'rare',apply:p=>p.greed*=1.6},
+ {id:'greed',icon:'🔩',name:'Scrap Scrounger',desc:'+60% Scrap dropped by enemies',rarity:'rare',apply:p=>p.greed*=1.6},
  {id:'thorns',icon:'🌵',name:'Spiky Shell',desc:'Reflect 30% contact damage',rarity:'rare',apply:p=>p.thorns+=.30},
  {id:'meteor',icon:'☄️',name:'Falling Acorn',desc:'Every 10 sec, blast nearby enemies',rarity:'epic',apply:p=>p.meteor++},
- {id:'clone',icon:'👯',name:'Tiny Twin',desc:'A tiny helper attacks nearby enemies',rarity:'epic',apply:p=>p.clones++},
- {id:'gold',icon:'🍯',name:'Honey Rush',desc:'+15% move speed and coin drops',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
+ {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'A real little buddy circles you and attacks nearby enemies',rarity:'epic',apply:p=>p.clones++},
+ {id:'gold',icon:'⚙️',name:'Salvage Rush',desc:'+15% move speed and +15% Scrap drops',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
 ];
 
 let game=null, last=0, raf=0, audio=null;
 function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save))}
 function initAudio(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume()}catch(e){}}
 function beep(f=440,d=.05,g=.025,type='sine'){if(!audio)return;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
+function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('touchHint').classList.toggle('hidden',!on)}
 
 function buildBugScreen(){
@@ -155,7 +157,7 @@ function buildShop(){
   ['🗡️','Stronger Shell','+1 starting damage',100+s.dmg*100,'dmg'],
   ['🎲','Extra Choice','+1 upgrade choice',250+s.choices*250,'choices'],
   ['🧲','Sticky Pollen','+20 starting magnet',150+s.magnet*120,'magnet'],
-  ['🪙','Sweet Tooth','+10% starting coin bonus',200+s.coins*150,'coins']
+  ['🔩','Scrap Sense','+10% Scrap found during runs',200+s.coins*150,'coins']
  ];
  $('shop').innerHTML=`<div class="shopRow"><div><b><span class="scrapIcon"></span>Scrap</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span></div></div></div>`+
  rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="scrapIcon"></span>${r[3]}</button></div>`).join('');
@@ -167,7 +169,7 @@ function buyShop(k){
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
 function basePlayer(){
- const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:165,attackCount:0,lastAttack:0,lastMeteor:0,kills:0};
+ const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:165,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0};
  const s=save.upgrades;p.maxHp+=s.hp*10;p.hp=p.maxHp;p.damage+=s.dmg;p.magnet+=s.magnet*20;p.greed*=1+s.coins*.10;
  BUGS[save.selected].bonus(p);return p;
 }
@@ -242,7 +244,7 @@ function damageEnemy(e,d){
  }
 }
 function shootAt(target){
- let p=game.p;let d=p.damage*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
+ let p=game.p;p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let d=p.damage*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
  game.fx.push({x:p.x,y:p.y,vx:(target.x-p.x)*3.2,vy:(target.y-p.y)*3.2,life:.16,r:2.8,shot:true});
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
@@ -313,6 +315,8 @@ function update(dt,now){
    }
  }
  if(now-p.lastAttack>p.rate){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ // Tiny Helper(s): visible orbiting buddies with their own shots
+ if(p.clones&&now-p.helperShot>Math.max(360,p.rate*.9)){p.helperShot=now;for(let i=0;i<p.clones;i++){let a=g.time*1.8+i*6.283/p.clones,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,p.clones*.04)));g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.16,r:2.4,shot:true,helper:true})}}}
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
  for(const e of g.enemies)if(!e.dead){
    e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,e.hit-dt);
@@ -352,13 +356,13 @@ function openUpgrade(afterWave=false){
  const choices=[];let pool=[...UP];
  const count=3+save.upgrades.choices;
  while(choices.length<count){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- $('choices').innerHTML=choices.map(u=>`<button class="card choice"><div class="art">${u.icon}</div><div class="rarity">${u.rarity}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
    if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false}
-   beep(800,.12,.04,'triangle')
+   upgradePickSound(choices[i].rarity)
  });
- $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
+ $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
 }
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
 function updateHud(){
@@ -367,7 +371,7 @@ function updateHud(){
 }
 function finish(won){
  if(game.over)return;game.over=true;showGameUI(false);$('bossbar').style.display='none';
- const coins=game.coins||0,earned=Math.max(1,Math.floor(coins/6)+Math.floor(game.wave/2));
+ const coins=game.coins||0,earned=coins+Math.floor(game.wave/2);
  save.scrap+=earned;save.best=Math.max(save.best,game.wave);save.runs++;persist();
  $('overTitle').textContent=won?'RUN COMPLETE!':'YOU GOT SQUISHED!';
  $('overSub').textContent=won?'You pushed deep into the garden.':'The garden wins this round. Come back bigger.';
@@ -452,10 +456,14 @@ function draw(){
    X.globalAlpha=1
  }
  const p=game.p;
- // shadow
+ // lively player: eases toward the enemy being attacked and gently bobs at idle
+ let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
+ let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,p.x,p.y);
+ X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
  X.strokeStyle='#eaffc8aa';X.lineWidth=2;X.beginPath();X.arc(p.x,p.y,p.r+8,0,6.28);X.stroke();
+ // Tiny Helpers visibly orbit the player; each one attacks on its own timer
+ for(let i=0;i<p.clones;i++){let a=game.time*1.8+i*6.283/p.clones,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38;X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2);X.font='20px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore();X.strokeStyle='#8fd6ff88';X.lineWidth=1.5;X.beginPath();X.arc(hx,hy,13,0,6.28);X.stroke()}
 }
 function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;update(dt,now);draw();raf=requestAnimationFrame(loop)}
 function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true)}}
