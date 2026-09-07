@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v14: Evolution Update + TRUE Leaf Visuals + Performance -->
+<!-- Big Bug v14.1: True Leaf Currency Visuals -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -48,6 +48,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .scrapIcon:after{content:"";position:absolute;left:7px;bottom:-4px;width:7px;height:2px;background:#6e9d3c;border-radius:99px;transform:rotate(58deg);transform-origin:left center}
 .scrapCount{font-weight:1000;color:#ffd48a}.enemyLegend{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.enemyLegend .mini{background:#1d3322;border:1px solid #ffffff16;border-radius:14px;padding:9px;font-size:12px}.enemyLegend b{display:block;color:#f6e9c7;font-size:13px}
 @media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:16px}.logo{font-size:68px}.bugHero{font-size:78px}}
+
+.leafCurrencyIcon{display:inline-block;font-size:20px;line-height:1;vertical-align:-3px;margin-right:4px;filter:drop-shadow(0 1px 1px #0008) drop-shadow(0 0 3px #d9ff66aa)}
 </style>
 </head>
 <body>
@@ -56,7 +58,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <div id="hud" class="hidden">
   <div class="pill">❤️ <span id="hp">100</span>/<span id="maxhp">100</span></div>
   <div class="pill">🌿 WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
-  <div class="pill"><span class="scrapIcon"></span><span id="coins">0</span></div>
+  <div class="pill"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span><span id="coins">0</span></div>
   <div class="pill">⚔️ <span id="dmg">10</span></div>
 </div>
 <div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
@@ -95,7 +97,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <h2 id="overTitle">RUN COMPLETE!</h2>
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
-  <p><span class="scrapIcon"></span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
+  <p><span class="leafCurrencyIcon" aria-hidden="true">🍃</span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
   <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">SPEND LEAVES</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
@@ -176,8 +178,8 @@ function buildShop(){
   ['🧲','Sticky Pollen','+20 starting magnet',150+s.magnet*120,'magnet'],
   ['🔩','Leaves Sense','+10% Leaves found during runs',200+s.coins*150,'coins']
  ];
- $('shop').innerHTML=`<div class="shopRow"><div><b><span class="scrapIcon"></span>Leaves</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span></div></div></div>`+
- rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="scrapIcon"></span>${r[3]}</button></div>`).join('');
+ $('shop').innerHTML=`<div class="shopRow"><div><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span></div></div></div>`+
+ rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
 function buyShop(k){
@@ -480,30 +482,49 @@ function drawGardenDetails(){
 }
 function drawLeaves(d){
  X.save();
- let bob=Math.sin((d.age||0)*6+(d.phase||0))*2;
+ const t=performance.now()/1000;
+ const bob=Math.sin(t*5+(d.phase||d.x*.01))*2.2;
  X.translate(d.x,d.y+bob);
- X.rotate(-.65+Math.sin(performance.now()/450+(d.phase||0))*.18);
- const rr=d.r*1.15;
- // Bright collectible leaf: intentionally much lighter than scenery so it reads instantly.
- X.shadowColor='#d9ff63';X.shadowBlur=12;X.shadowOffsetY=0;
- X.fillStyle='#bdf34f';
+ X.rotate(-0.45+Math.sin(t*2.2+(d.phase||0))*.18);
+ const r=Math.max(9,(d.r||8)*1.28);
+
+ // A bright, collectible leaf intentionally distinct from scenery.
+ X.shadowColor='#dfff63';
+ X.shadowBlur=13;
+ X.fillStyle='#c9f84f';
+ X.strokeStyle='#fbffe1';
+ X.lineWidth=2;
+
  X.beginPath();
- X.moveTo(0,-rr);
- X.bezierCurveTo(rr*.95,-rr*.55,rr*.95,rr*.45,0,rr);
- X.bezierCurveTo(-rr*.95,rr*.45,-rr*.95,-rr*.55,0,-rr);
- X.closePath();X.fill();
- X.strokeStyle='#f8ffd4';X.lineWidth=1.6;X.stroke();
- X.shadowColor='transparent';
- X.strokeStyle='#356f2d';X.lineWidth=1.5;
- X.beginPath();X.moveTo(0,-rr*.78);X.lineTo(0,rr*.9);X.stroke();
- for(let side of [-1,1]){
-   X.beginPath();
-   X.moveTo(0,-rr*.35);X.lineTo(side*rr*.5,-rr*.05);
-   X.moveTo(0,rr*.05);X.lineTo(side*rr*.48,rr*.32);
-   X.stroke();
- }
- X.strokeStyle='#789d43';X.lineWidth=2;
- X.beginPath();X.moveTo(0,rr*.85);X.lineTo(rr*.28,rr*1.22);X.stroke();
+ X.moveTo(0,-r);
+ X.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);
+ X.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);
+ X.closePath();
+ X.fill();
+ X.stroke();
+
+ X.shadowBlur=0;
+ X.strokeStyle='#3d792d';
+ X.lineWidth=1.6;
+ X.beginPath();
+ X.moveTo(0,-r*.78);
+ X.lineTo(0,r*.82);
+ X.stroke();
+
+ X.beginPath();
+ X.moveTo(0,-r*.38); X.lineTo(r*.50,-r*.10);
+ X.moveTo(0,-r*.05); X.lineTo(-r*.52,r*.20);
+ X.moveTo(0,r*.25); X.lineTo(r*.45,r*.48);
+ X.stroke();
+
+ // short stem
+ X.strokeStyle='#73963c';
+ X.lineWidth=2.2;
+ X.beginPath();
+ X.moveTo(0,r*.78);
+ X.lineTo(r*.22,r*1.12);
+ X.stroke();
+
  X.restore();
 }
 function drawEnemy(e){
