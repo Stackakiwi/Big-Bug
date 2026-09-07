@@ -339,7 +339,14 @@ const UP=[
 
 let game=null, last=0, raf=0, audio=null;
 function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save))}
-function initAudio(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume()}catch(e){}}
+function initAudio(){
+ try{
+  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
+  const resumed=audio.state==='suspended'?audio.resume():Promise.resolve();
+  if(resumed&&resumed.then)resumed.then(()=>{if($('home')&&!$('home').classList.contains('hidden')&&!titleMusicTimer)titleMusicStart()}).catch(()=>{});
+  return resumed;
+ }catch(e){return Promise.resolve()}
+}
 function beep(f=440,d=.05,g=.025,type='sine'){if(!audio)return;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
@@ -1053,7 +1060,7 @@ C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{pa
 C.addEventListener('touchend',()=>drag=false);
 
 
-// v17.5.10 — enemies now chase fully off-screen; buddy behavior unchanged.
+// v17.5.11 — enemy spawn initialization fixed; title music unlock improved; buddy behavior unchanged.
 const titleGarden=$('titleGarden'),TG=titleGarden?.getContext('2d');
 let titleBugs=[],titleSpawnAt=0,titleLast=performance.now(),titleRAF=0,titleLeafSeed=[];
 const TITLE_KINDS=['ant','beetle','spider','wasp','stink'];
@@ -1113,7 +1120,7 @@ function drawTitleTexture(w,h){
  TG.globalAlpha=.16;for(let i=0;i<26;i++){let x=(i*149+43)%Math.max(1,w),y=(i*211+97)%Math.max(1,h);TG.fillStyle=i%2?'#406735':'#e5efbf';TG.beginPath();TG.arc(x,y,1+(i%3)*.55,0,6.28);TG.fill()}TG.globalAlpha=1;
  for(const q of titleLeafSeed){let x=q.x*w,y=q.y*h;if(x>w*.24&&x<w*.76&&y>h*.18&&y<h*.76)continue;TG.save();TG.translate(x,y);TG.rotate(q.a);TG.globalAlpha=.24;TG.fillStyle=q.c===0?'#355f31':q.c===1?'#6f9246':'#a7b96a';TG.beginPath();TG.ellipse(0,0,q.s*1.8,q.s*.68,0,0,6.28);TG.fill();TG.strokeStyle='#d9e6a94d';TG.lineWidth=1;TG.beginPath();TG.moveTo(-q.s*1.25,0);TG.lineTo(q.s*1.25,0);TG.stroke();TG.restore()}TG.globalAlpha=1;
 }
-let titleSceneStart=performance.now(),titleSceneEnemiesSpawned=false,titleSceneEnemyOffsets=[],titleScenePlayed=false;
+let titleSceneStart=0,titleSceneEnemiesSpawned=false,titleSceneEnemyOffsets=[],titleScenePlayed=false;
 function resetTitleScene(now,w){
  titleSceneStart=now;titleSceneEnemiesSpawned=false;titleBugs=[];
  // Keep the larger swarm spread across most of the screen instead of bunching together.
@@ -1142,10 +1149,10 @@ function titleGardenLoop(now){
    else if(t<4.72){const q=(t-3.30)/1.42,e=q*q*(3-2*q);buddyY=peekY+(h+95-peekY)*e}
    else buddyY=h+95;
 
-   // v17.5.9 — one-shot chase fix. Buddy timing/movement is intentionally unchanged.
-   // Spawn the swarm earlier and close to the top edge so it becomes visible quickly
-   // while the buddy is behind the logo, then let the enemies chase downward in a wide formation.
-   if(t>=.95&&!titleSceneEnemiesSpawned){
+   // v17.5.11 — spawn the swarm right as the buddy finishes hiding and starts his escape.
+   // Buddy timing/movement is intentionally unchanged. Enemies begin visibly at the top edge
+   // and then chase all the way off-screen in a wide formation.
+   if(t>=3.24&&!titleSceneEnemiesSpawned){
     titleSceneEnemiesSpawned=true;
     titleSceneEnemyOffsets.forEach((o,i)=>{
      spawnTitleBug(false,Math.max(28,Math.min(w-28,cx+o.off)),118+(i%3)*9);
@@ -1171,7 +1178,20 @@ function titleGardenLoop(now){
  }else{titleLast=now;titleBugs=[]}
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
-resizeTitleGarden();addEventListener('resize',resizeTitleGarden);titleRAF=requestAnimationFrame(titleGardenLoop);
+resizeTitleGarden();
+// IMPORTANT: initialize the first scene's spread offsets before the animation begins.
+// Previous builds started the timer without ever filling titleSceneEnemyOffsets, so the buddy ran correctly but no enemies were created.
+resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);
+addEventListener('resize',resizeTitleGarden);titleRAF=requestAnimationFrame(titleGardenLoop);
+
+// Browsers—especially iPhone/iPad Safari—require a real user gesture before audible WebAudio can run.
+// We still attempt immediately on page show, then reliably unlock/start the title music on the very first interaction.
+function tryStartTitleMusic(){
+ initAudio();
+ if(audio&&audio.state==='running'&&!$('home').classList.contains('hidden')&&!titleMusicTimer)titleMusicStart();
+}
+addEventListener('pageshow',tryStartTitleMusic,{once:true});
+['pointerdown','touchstart','click'].forEach(ev=>document.addEventListener(ev,tryStartTitleMusic,{passive:true,once:true}));
 
 buildBugScreen();buildShop();$('homeBest').textContent=save.best;
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
