@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.5.0: Permanent Upgrade Economy + Bug Roster Cleanup -->
+<!-- Big Bug v17.5.1: Power Ups Menu Cleanup -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -213,7 +213,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="tag">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move • Attacks are automatic</div>
   <button class="btn green" data-action="play">PLAY</button>
-  <div><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">⚙️ BASE</button></div>
+  <div><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted">Best Wave: <b id="homeBest">0</b></div>
 </section>
 
@@ -222,7 +222,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 </section>
 
 <section id="base" class="screen hidden">
- <div class="panel"><h2>🌱 BASE CAMP</h2><p>Spend saved Leaves on permanent upgrades. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><h2>✨ POWER UPS</h2><p>Spend saved Leaves on permanent power ups. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="story" class="hidden">
@@ -242,7 +242,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
   <p><span class="leafCurrencyIcon" aria-hidden="true">🍃</span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
-  <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">SPEND LEAVES</button><button class="btn dark" data-action="home">HOME</button>
+  <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">POWER UPS</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
 
@@ -261,6 +261,8 @@ save.unlocked=(save.unlocked||['ladybug']).map(x=>x==='dragonfly'?'butterfly':x)
 if(!save.unlocked.includes('ladybug'))save.unlocked.unshift('ladybug');
 if(!['ladybug','beetle','butterfly'].includes(save.selected))save.selected='ladybug';
 save.goldLeaves=save.goldLeaves||0;
+// v17.5.1 — Extra Choice / reroll-style permanent power up removed.
+if(save.upgrades)save.upgrades.choices=0;
 
 const BUGS={
  ladybug:{name:'Ladybug',art:'🐞',desc:'Balanced starter. +10% crit chance.',cost:0,bonus:p=>p.crit+=.10},
@@ -344,18 +346,17 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['❤️','Tough Leaves','+10 starting HP',2500+s.hp*2500,'hp',1+s.hp],
-   ['🗡️','Stronger Shell','+1 starting damage',3000+s.dmg*3000,'dmg',1+s.dmg],
-   ['🎲','Extra Choice','+1 upgrade choice',7500+s.choices*7500,'choices',2+s.choices],
-   ['🧲','Sticky Pollen','+20 starting magnet',3500+s.magnet*3500,'magnet',1+s.magnet],
-   ['🔩','Leaves Sense','+10% Leaves found during runs',5000+s.coins*5000,'coins',1+s.coins]
+   ['❤️','More Health','+10 starting HP',2500+s.hp*2500,'hp',1+s.hp],
+   ['🗡️','More Damage','+1 starting damage',3000+s.dmg*3000,'dmg',1+s.dmg],
+   ['🧲','Pickup Range','+20 starting pickup range',3500+s.magnet*3500,'magnet',1+s.magnet],
+   ['🍃','More Leaves','+10% Leaves found during runs',5000+s.coins*5000,'coins',1+s.coins]
  ];
  $('shop').innerHTML=`<div class="shopRow"><div><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span> · Permanent upgrades are intentionally expensive.</div></div></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}<br>Future Gold Leaf cost: ${r[5]} ✨</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
 function buyShop(k){
- const s=save.upgrades, costs={hp:2500+s.hp*2500,dmg:3000+s.dmg*3000,choices:7500+s.choices*7500,magnet:3500+s.magnet*3500,coins:5000+s.coins*5000};
+ const s=save.upgrades, costs={hp:2500+s.hp*2500,dmg:3000+s.dmg*3000,magnet:3500+s.magnet*3500,coins:5000+s.coins*5000};
  if(save.scrap<costs[k])return;
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
@@ -723,7 +724,7 @@ function openUpgrade(afterWave=false){
  $('upgradeTitle').textContent=afterWave?(g.wave%5===0?'👑 BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!'):'LEVEL UP!';
  $('upgradeSub').textContent=afterWave?(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.'):'Pick one. Stack effects and discover crazy combinations.';
  const choices=[];const helper=UP.find(u=>u.id==='clone'),pool=UP.filter(u=>u.id!=='clone');
- const count=3+save.upgrades.choices;
+ const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  // Tiny Helper is a true lucky pull: only a 5% chance to appear on an upgrade screen.
  if(helper&&Math.random()<.05&&choices.length){choices[Math.floor(Math.random()*choices.length)]=helper}
