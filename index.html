@@ -288,6 +288,8 @@ const SAVEKEY='big_bug_save_v1';
 let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0};
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
+// v17.5.13 — late-wave performance pass + 25% larger player attack visual.
+// Gameplay values, enemy counts, damage, speed, and arena visuals are unchanged.
 // v17.5.2 — Beetle and Butterfly are post-game rewards. Existing clears still count.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
 save.unlocked=save.mainGameBeaten?['ladybug','beetle','butterfly']:['ladybug'];
@@ -543,7 +545,7 @@ function damageEnemy(e,d,source='player'){
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
- if(game.fx.filter(f=>f.damageText).length<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
+ if(countFxFlag('damageText',24)<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
  burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
@@ -558,7 +560,7 @@ function damageEnemy(e,d,source='player'){
 }
 function shootAt(target){
  let p=game.p;p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let boost=boostActive()?2:1,d=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
- game.fx.push({x:p.x,y:p.y,vx:(target.x-p.x)*3.2,vy:(target.y-p.y)*3.2,life:.16,r:2.8,shot:true});
+ game.fx.push({x:p.x,y:p.y,vx:(target.x-p.x)*3.2,vy:(target.y-p.y)*3.2,life:.16,r:3.5,shot:true});
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
  if(p.frost)target.slow=2;
@@ -566,7 +568,17 @@ function shootAt(target){
  beep(d>p.damage*2?880:520,.025,.012,'square');
 }
 function nearestEnemy(x=game.p.x,y=game.p.y){
- let best=null,bd=1e9;for(const e of game.enemies)if(!e.dead){let d=Math.hypot(e.x-x,e.y-y);if(d<bd){bd=d;best=e}}return best;
+ // Compare squared distance: identical target choice, but avoids a square-root for every enemy scan.
+ let best=null,bd=Infinity;for(const e of game.enemies)if(!e.dead){const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}}return best;
+}
+function countActiveEnemies(nonBossOnly=false){
+ let n=0;for(const e of game.enemies)if(!e.dead&&(!nonBossOnly||!e.boss))n++;return n;
+}
+function countFxFlag(flag,limit=Infinity){
+ let n=0;for(const f of game.fx)if(f[flag]&&++n>=limit)break;return n;
+}
+function compactInPlace(arr,keep){
+ let w=0;for(let r=0;r<arr.length;r++){const v=arr[r];if(keep(v))arr[w++]=v}arr.length=w;return arr;
 }
 function fireball(){
  const t=nearestEnemy();if(!t)return;
@@ -581,7 +593,7 @@ function showPlayerDamage(amount){
  if(!game||!game.p||amount<=0)return;
  const p=game.p,shown=Math.max(1,Math.round(amount));
  // Red floating number above the player, matching the enemy damage-number feel.
- if(game.fx.filter(f=>f.playerDamageText).length<8)game.fx.push({x:p.x+(Math.random()-.5)*8,y:p.y-p.r-12,vx:(Math.random()-.5)*9,vy:-31,life:.78,maxLife:.78,r:0,playerDamageText:shown});
+ if(countFxFlag('playerDamageText',8)<8)game.fx.push({x:p.x+(Math.random()-.5)*8,y:p.y-p.r-12,vx:(Math.random()-.5)*9,vy:-31,life:.78,maxLife:.78,r:0,playerDamageText:shown});
  // A deliberately quiet, soft hurt sound so it reads without fighting the music.
  beep(165,.045,.008,'triangle');
 }
@@ -620,7 +632,7 @@ function enemyMove(e,dt){
  if(!e.boss&&e.evo>0&&e.shotCd<=0){e.shotCd=Math.max(1.45,3.7-e.evo*.35)+Math.random()*1.2;let dd=Math.hypot(dx,dy)||1,spd=120+e.evo*18;if(e.kind==='ant'||e.kind==='spider')game.fx.push({x:e.x,y:e.y,vx:dx/dd*spd,vy:dy/dd*spd,life:2.8,r:4,sting:true,venom:true,damage:4+e.evo*2});else if(e.kind==='wasp'||e.kind==='stink')game.fx.push({x:e.x,y:e.y,vx:dx/dd*(spd+35),vy:dy/dd*(spd+35),life:2.5,r:4,sting:true,damage:5+e.evo*2})}
  // ants swarm faster when near other ants
  let mult=1;
- if(e.kind==='ant'){let near=0;for(const o of game.enemies)if(o!==e&&!o.dead&&o.kind==='ant'&&Math.hypot(o.x-e.x,o.y-e.y)<85)near++;mult=1+Math.min(.35,near*.07)}
+ if(e.kind==='ant'){let near=0;for(const o of game.enemies)if(o!==e&&!o.dead&&o.kind==='ant'){const ax=o.x-e.x,ay=o.y-e.y;if(ax*ax+ay*ay<7225)near++}mult=1+Math.min(.35,near*.07)}
  if(e.kind==='wasp'||e.boss){
    if(e.state==='chase'&&e.cool<=0){
       e.state='telegraph';e.stateT=e.boss?.42:.55;e.cool=e.boss?1.55:2.4;
@@ -678,7 +690,7 @@ function enemyMove(e,dt){
  }
  if(e.boss){
    e.addCd-=dt;
-   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(game.enemies.filter(q=>!q.dead&&!q.boss).length<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal',e.kind==='gardenHeart'?'stink':'wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
+   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal',e.kind==='gardenHeart'?'stink':'wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
    if(e.hp<e.max*.65&&Math.random()<dt*.35)stingBurst(e,e.hp<e.max*.3?10:7,e.hp<e.max*.3?180:145);
  }
  if(e.state==='telegraph')return;
@@ -707,7 +719,7 @@ function separateEnemies(){
 function update(dt,now){
  const g=game,p=g.p;if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);
  // Flush accumulated contact damage into one readable popup roughly six times per second.
- if((p.pendingDamage||0)>0&&performance.now()-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=performance.now()}
+ if((p.pendingDamage||0)>0&&now-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=now}
  g.time+=dt;
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.hypot(mdx,mdy);
@@ -715,7 +727,7 @@ function update(dt,now){
  // quota-based waves: spawn a set number, then clear the field
  if(g.waveActive&&g.wave%5!==0){
    g.spawn+=dt*1000;
-   const active=g.enemies.filter(e=>!e.dead).length,cap=Math.min(activeEnemyCap(g.wave),Math.min(8+Math.floor(g.wave/12),activeEnemyCap(g.wave)));
+   const active=countActiveEnemies(),cap=Math.min(activeEnemyCap(g.wave),Math.min(8+Math.floor(g.wave/12),activeEnemyCap(g.wave)));
    const spawnEvery=Math.max(330,720-g.wave*12);
    if(g.spawnLeft>0&&active<cap&&g.spawn>spawnEvery){
       g.spawn=0;
@@ -736,9 +748,9 @@ function update(dt,now){
    if(!h.leaving&&g.wave>=h.bornWave+5){h.leaving=true;h.x=p.x;h.y=p.y;h.vx=(Math.random()<.5?-1:1)*(75+Math.random()*35);h.vy=-45-Math.random()*35}
    if(h.leaving){h.x+=h.vx*dt;h.y+=h.vy*dt}
  }
- p.helpers=p.helpers.filter(h=>!h.leaving||h.x>-50&&h.x<W+50&&h.y>-60&&h.y<H+60);
- p.clones=p.helpers.filter(h=>!h.leaving).length;
- const activeHelpers=p.helpers.filter(h=>!h.leaving);
+ compactInPlace(p.helpers,h=>!h.leaving||h.x>-50&&h.x<W+50&&h.y>-60&&h.y<H+60);
+ const activeHelpers=[];for(const h of p.helpers)if(!h.leaving)activeHelpers.push(h);
+ p.clones=activeHelpers.length;
  if(activeHelpers.length&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,activeHelpers.length*.06)))){
    p.helperShot=now;
    activeHelpers.forEach((h,i)=>{let a=g.time*1.8+i*6.283/activeHelpers.length,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelpers.length*.04)),'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.16,r:2.4,shot:true,helper:true})}})
@@ -773,9 +785,9 @@ function update(dt,now){
    if(f.orb){for(const e of g.enemies)if(!e.dead&&Math.hypot(e.x-f.x,e.y-f.y)<e.r+12){damageEnemy(e,f.damage);f.life=0;break}}
    f.vx*=.985;f.vy*=.985;
  }
- g.enemies=g.enemies.filter(e=>!e.dead);g.drops=g.drops.filter(d=>!d.dead);g.fx=g.fx.filter(f=>f.life>0);if(g.fx.length>150)g.fx.splice(0,g.fx.length-150);
+ compactInPlace(g.enemies,e=>!e.dead);compactInPlace(g.drops,d=>!d.dead);compactInPlace(g.fx,f=>f.life>0);if(g.fx.length>150)g.fx.splice(0,g.fx.length-150);
  if(g.bosses&&g.bosses.length){
-   g.bosses=g.bosses.filter(b=>!b.dead);
+   compactInPlace(g.bosses,b=>!b.dead);
    g.boss=g.bosses[0]||null;
    if(!g.bosses.length){$('bossbar').style.display='none';bossMusicStop()}
    else{const hp=g.bosses.reduce((a,b)=>a+Math.max(0,b.hp),0),mx=g.bosses.reduce((a,b)=>a+b.max,0);$('bossFill').style.width=Math.max(0,100*hp/mx)+'%'}
@@ -1055,12 +1067,12 @@ function draw(){
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
 
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
- const hs=p.helpers||[],activeHs=hs.filter(h=>!h.leaving);
- hs.forEach((h,idx)=>{let hx,hy;if(h.leaving){hx=h.x;hy=h.y}else{let i=activeHs.indexOf(h),a=game.time*1.8+i*6.283/Math.max(1,activeHs.length);hx=p.x+Math.cos(a)*38;hy=p.y+Math.sin(a)*38}
+ const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving)activeHCount++;
+ let activeHIndex=0;for(const h of hs){let hx,hy;if(h.leaving){hx=h.x;hy=h.y}else{let a=game.time*1.8+activeHIndex++*6.283/Math.max(1,activeHCount);hx=p.x+Math.cos(a)*38;hy=p.y+Math.sin(a)*38}
    X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);
    if(h.leaving)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);else{let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2)}
    X.font='20px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore()
- })
+ }
 }
 function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;update(dt,now);draw();raf=requestAnimationFrame(loop)}
 function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true)}}
