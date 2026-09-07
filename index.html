@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.4.3: Clean Wave HUD -->
+<!-- Big Bug v17.4.4: Early Boss Balance -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -473,6 +473,9 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.05],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
+    // v17.4.4 — early boss HP tuning after upgrade power reduction
+    const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
+    if(earlyBossHp[k])baseHp*=earlyBossHp[k];
  }
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:boss?'entrance':'chase',cool:Math.random()*1.5+.8,stateT:boss?1.15:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo,
