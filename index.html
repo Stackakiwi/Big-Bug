@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.3.1: Clean Animated Ladybug Legs -->
+<!-- Big Bug v17.3.2: Boss Polish - Original Ladybug -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -925,21 +925,7 @@ function draw(){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);
- const legMoving=Math.hypot((p.moveX??p.x)-p.x,(p.moveY??p.y)-p.y)>3;
- const legWig=legMoving?Math.sin(game.time*(p.boost>0?22:14))*4:Math.sin(game.time*2.4)*.7;
- for(let side of [-1,1])for(let i=0;i<3;i++){let yy=-p.r*.48+i*p.r*.48,phase=(i%2?1:-1)*legWig;X.strokeStyle='#241c18';X.lineWidth=2.4;X.lineCap='round';X.beginPath();X.moveTo(side*p.r*.42,yy);X.lineTo(side*p.r*.76,yy+phase);X.lineTo(side*p.r*1.02,yy-phase*.35);X.stroke()}
- X.restore();
- X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);
- if(save.selected==='ladybug'){
-   // Cover the emoji's original fixed side legs so only our animated legs show.
-   X.save();X.fillStyle='#d93a32';
-   X.beginPath();X.ellipse(-p.r*.70,2,p.r*.28,p.r*.72,0,0,6.28);X.fill();
-   X.beginPath();X.ellipse(p.r*.70,2,p.r*.28,p.r*.72,0,0,6.28);X.fill();
-   // Restore the dark center/body edge so the mask stays ladybug-shaped.
-   X.fillStyle='#241c18';X.beginPath();X.ellipse(0,p.r*.48,p.r*.34,p.r*.34,0,0,6.28);X.fill();
- }
- X.restore();
+ X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
 
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
  const hs=p.helpers||[],activeHs=hs.filter(h=>!h.leaving);
