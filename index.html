@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v11: Compact Boss UI + Enemy Separation + Rare Tiny Helper -->
+<!-- Big Bug v12: Boost Burst + Movement Tune + Cleaner HUD -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -38,7 +38,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .pill{background:#102016dd;border:1px solid #ffffff22;border-radius:14px;padding:7px 10px;font-weight:900;font-size:13px;backdrop-filter:blur(6px)}
 #bossbar{position:fixed;top:max(78px,calc(env(safe-area-inset-top) + 68px));left:50%;right:auto;transform:translateX(-50%);width:min(290px,62vw);z-index:6;text-align:center;display:none;pointer-events:none}.bossName{font-weight:1000;font-size:12px;letter-spacing:.6px;text-shadow:0 2px 4px #000b;margin-bottom:3px}.bossBar{height:10px;border-radius:99px;background:#210d0ddd;border:1px solid #fff4;box-shadow:0 3px 10px #0007;overflow:hidden}.bossBar i{display:block;height:100%;background:#e64d4d;border-radius:99px;transition:width .08s linear}
 #pauseBtn{position:fixed;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:0;border-radius:50%;width:48px;height:48px;background:#132419dd;color:white;font-size:20px}
-#touchHint{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:4;background:#102016aa;border-radius:99px;padding:7px 12px;font-size:12px;opacity:.65;pointer-events:none}.waveProg{font-size:10px;opacity:.68;margin-left:4px}.telegraph{position:fixed;top:92px;left:50%;transform:translateX(-50%);z-index:6;font-weight:950;background:#341b12dd;border:1px solid #ffc95a55;padding:6px 12px;border-radius:999px;letter-spacing:.5px}
+#boostBtn{position:fixed;left:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:1px solid #ffffff2a;border-radius:18px;min-width:92px;height:58px;padding:5px 10px;background:#17301eee;color:white;font:900 13px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:inset 0 -4px #0b1b10,0 5px 14px #0006;backdrop-filter:blur(6px)}#boostBtn small{display:block;font-size:10px;color:#ffd48a;margin-top:1px}#boostBtn:disabled{opacity:.48}#boostBtn.active{background:#9b6b16ee;box-shadow:inset 0 -4px #684308,0 0 18px #ffd45e88;animation:boostPulse .35s ease-in-out infinite alternate}@keyframes boostPulse{to{transform:scale(1.04)}}.waveProg{font-size:10px;opacity:.68;margin-left:4px}.telegraph{position:fixed;top:92px;left:50%;transform:translateX(-50%);z-index:6;font-weight:950;background:#341b12dd;border:1px solid #ffc95a55;padding:6px 12px;border-radius:999px;letter-spacing:.5px}
 .choice{min-height:142px;text-align:left;background:#18301f;border:1px solid #ffffff18;border-radius:16px;padding:14px;box-shadow:none;position:relative;overflow:hidden}.choice:active{transform:scale(.98)}.choice .art{font-size:30px;margin-bottom:7px}.choice .rarity{font-size:10px;text-transform:uppercase;letter-spacing:1.1px;opacity:.58;font-weight:900;margin-bottom:4px}.choice b{display:block;font-size:17px}.choice p{margin:6px 0 0;line-height:1.3}.choice.common{border-left:4px solid #86a879}.choice.rare{border-left:4px solid #e3b64b}.choice.epic{border-left:4px solid #9a75c8}#upgrade .panel{max-width:520px;background:#13281a;border:1px solid #ffffff1c;box-shadow:0 18px 60px #07120b99}#upgrade .panel h2{margin-bottom:3px}#upgrade .grid{gap:9px}
 .shopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#203925;border-radius:16px;padding:12px;margin:8px 0}.shopRow .left{display:flex;gap:12px;align-items:center}.coin{font-weight:1000;color:#ffd166}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#203925;border-radius:14px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}
@@ -60,13 +60,15 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="pill">⚔️ <span id="dmg">10</span></div>
 </div>
 <div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
-<div id="touchHint" class="hidden">Tap or drag to move • Attacks are automatic</div><div id="telegraph" class="telegraph hidden">WAVE 1</div>
+<div id="telegraph" class="telegraph hidden">WAVE 1</div>
+<button id="boostBtn" class="hidden">⚡ BOOST<small>100 SCRAP</small></button>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
 
 <section id="home" class="screen titleScreen">
   <div class="bugHero">🐞</div>
   <div class="logo">BIG<br>BUG<small>SMALL BUG. BIG DREAMS.</small></div>
   <div class="tag">Survive. Upgrade. Get BIGGER.</div>
+  <div class="muted" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move • Attacks are automatic</div>
   <button class="btn green" data-action="play">PLAY</button>
   <div><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">⚙️ BASE</button></div>
   <div class="muted">Best Wave: <b id="homeBest">0</b></div>
@@ -144,7 +146,7 @@ function bossMusicStart(){
  const tick=()=>{if(!game||game.over||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
  bossMusicTimer=setTimeout(tick,380);
 }
-function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('touchHint').classList.toggle('hidden',!on)}
+function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on)}
 
 function buildBugScreen(){
  const grid=$('bugGrid');grid.innerHTML='';
@@ -175,14 +177,14 @@ function buyShop(k){
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
 function basePlayer(){
- const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:260,moveX:W/2,moveY:H/2,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0};
+ const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0};
  const s=save.upgrades;p.maxHp+=s.hp*10;p.hp=p.maxHp;p.damage+=s.dmg;p.magnet+=s.magnet*20;p.greed*=1+s.coins*.10;
  BUGS[save.selected].bonus(p);return p;
 }
 function startRun(){
  initAudio();hideAll();showGameUI(true);
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,
-       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0};
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
  beginWave(1);
  last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
@@ -198,6 +200,18 @@ const AREAS=[
 function areaIndex(w=game?.wave||1){return Math.floor((Math.max(1,w)-1)/5)%AREAS.length}
 function areaFor(w=game?.wave||1){return AREAS[areaIndex(w)]}
 
+function arenaNumber(w=game?.wave||1){return Math.floor((Math.max(1,w)-1)/5)+1}
+function boostCost(){return 100+(arenaNumber()-1)*200}
+function boostActive(){return !!(game&&game.boostUntil&&game.time<game.boostUntil)}
+function useBoost(){
+ if(!game||game.paused||game.over)return;initAudio();
+ const cost=boostCost();
+ if(boostActive()){beep(310,.07,.018,'triangle');return}
+ if((game.coins||0)<cost){beep(145,.12,.025,'sawtooth');return}
+ game.coins-=cost;game.boostUntil=game.time+5;
+ beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);
+ flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();
+}
 function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
@@ -264,7 +278,7 @@ function damageEnemy(e,d,source='player'){
  }
 }
 function shootAt(target){
- let p=game.p;p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let d=p.damage*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
+ let p=game.p;p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let boost=boostActive()?2:1,d=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
  game.fx.push({x:p.x,y:p.y,vx:(target.x-p.x)*3.2,vy:(target.y-p.y)*3.2,life:.16,r:2.8,shot:true});
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
@@ -365,7 +379,7 @@ function update(dt,now){
       if(g.spawnLeft>0&&g.wave>=4&&Math.random()<.18){spawnEnemy();g.spawnLeft--}
    }
  }
- if(now-p.lastAttack>p.rate){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ const attackDelay=boostActive()?Math.max(85,p.rate*.18):p.rate;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Tiny Helper(s): visible orbiting buddies with their own shots
  if(p.clones&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,p.clones*.06)))){p.helperShot=now;for(let i=0;i<p.clones;i++){let a=g.time*1.8+i*6.283/p.clones,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,p.clones*.04)),'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.16,r:2.4,shot:true,helper:true})}}}
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
@@ -420,8 +434,9 @@ function openUpgrade(afterWave=false){
 }
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
 function updateHud(){
- const p=game.p,g=game;$('hp').textContent=Math.max(0,Math.ceil(p.hp));$('maxhp').textContent=Math.ceil(p.maxHp);$('wave').textContent=g.wave;$('coins').textContent=g.coins||0;$('dmg').textContent=Math.round(p.damage);
+ const p=game.p,g=game,active=boostActive();$('hp').textContent=Math.max(0,Math.ceil(p.hp));$('maxhp').textContent=Math.ceil(p.maxHp);$('wave').textContent=g.wave;$('coins').textContent=g.coins||0;$('dmg').textContent=Math.round(p.damage*(active?2:1));
  const prog=$('waveProgress');if(g.wave%5===0)prog.textContent=g.boss?' BOSS':' CLEAR';else prog.textContent=' '+Math.min(g.waveQuota,g.waveKills)+'/'+g.waveQuota;
+ const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0;b.classList.toggle('active',active);b.disabled=!active&&(g.coins||0)<boostCost();b.innerHTML=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} SCRAP</small>`}
 }
 function finish(won){
  if(game.over)return;game.over=true;bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
@@ -547,6 +562,7 @@ document.addEventListener('click',e=>{
  if(a==='resume'){startOrResume()}
  if(a==='quit'){quitRun()}
 });
+$('boostBtn').onclick=useBoost;
 $('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;showGameUI(false);screen('pause')};
 let drag=false;
 function pointerPos(e){return e.touches?e.touches[0]:e}
