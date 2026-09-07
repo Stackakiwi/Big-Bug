@@ -1066,7 +1066,7 @@ function titleLine(x1,y1,x2,y2,w=2,c='#25301d'){TG.strokeStyle=c;TG.lineWidth=w;
 function titleEye(x,y,r=1.7){TG.fillStyle='#180b08';TG.beginPath();TG.arc(x,y,r+1,0,6.28);TG.fill();TG.fillStyle='#ee4338';TG.beginPath();TG.arc(x,y,r,0,6.28);TG.fill()}
 function drawTitleBug(b,now){
  const r=b.r,t=now/1000+b.phase,step=Math.sin(t*13)*3,step2=Math.cos(t*12)*3;
- TG.save();TG.translate(b.x,b.y);TG.rotate(b.wobble+Math.sin(t*2.8)*.035);TG.shadowColor='#11241266';TG.shadowBlur=5;TG.shadowOffsetY=4;
+ TG.save();TG.translate(b.x,b.y);TG.rotate(Math.PI+b.wobble+Math.sin(t*2.8)*.035);TG.shadowColor='#11241266';TG.shadowBlur=5;TG.shadowOffsetY=4;
  if(b.kind==='ant'){
   for(const s of [-1,1]){titleLine(s*3,-2,s*12,-8+step,2);titleLine(s*4,3,s*13,5-step,2);titleLine(s*2,8,s*11,14+step2,2)}
   TG.fillStyle='#6d281f';TG.beginPath();TG.ellipse(0,8,r*.66,r*.72,0,0,6.28);TG.fill();TG.fillStyle='#9b3328';TG.beginPath();TG.arc(0,-3,r*.5,0,6.28);TG.fill();TG.fillStyle='#722018';TG.beginPath();TG.arc(0,-r*.85,r*.46,0,6.28);TG.fill();titleLine(-3,-r*1.15,-8,-r*1.65,1.4);titleLine(3,-r*1.15,8,-r*1.65,1.4);titleEye(-r*.18,-r*.92);titleEye(r*.18,-r*.92);
@@ -1083,26 +1083,62 @@ function drawTitleBug(b,now){
  }
  TG.restore();
 }
-function spawnTitleBug(initial=false){
+function spawnTitleBug(initial=false, xOverride=null, speedOverride=null){
  if(!titleGarden)return;const w=titleGarden.getBoundingClientRect().width,h=titleGarden.getBoundingClientRect().height;
  const kind=TITLE_KINDS[Math.floor(Math.random()*TITLE_KINDS.length)],r=kind==='spider'?13:12+Math.random()*3;
- titleBugs.push({kind,r,x:24+Math.random()*Math.max(20,w-48),y:initial?(-30-Math.random()*h*.65):-38,speed:36+Math.random()*28,drift:(Math.random()-.5)*13,phase:Math.random()*6.28,wobble:(Math.random()-.5)*.18});
+ titleBugs.push({kind,r,x:xOverride??(24+Math.random()*Math.max(20,w-48)),y:initial?(-30-Math.random()*h*.25):-38,speed:speedOverride??(48+Math.random()*24),drift:(Math.random()-.5)*10,phase:Math.random()*6.28,wobble:(Math.random()-.5)*.12});
+}
+function drawTitleBuddy(x,y,now,lookBack=false){
+ const r=17,t=now/1000,step=Math.sin(t*15)*3.2;
+ TG.save();TG.translate(x,y);TG.rotate(lookBack?Math.sin(t*5)*.16:0);TG.shadowColor='#10241077';TG.shadowBlur=6;TG.shadowOffsetY=4;
+ // legs
+ for(const side of [-1,1]){
+  titleLine(side*7,-7,side*(r+8),-13+step,2.2,'#24130f');
+  titleLine(side*8,1,side*(r+10),2-step,2.2,'#24130f');
+  titleLine(side*7,9,side*(r+7),16+step,2.2,'#24130f');
+ }
+ // red wing shell, facing downward
+ TG.fillStyle='#ef4338';TG.beginPath();TG.ellipse(0,2,r*.95,r*1.08,0,0,6.28);TG.fill();
+ TG.strokeStyle='#8f211e';TG.lineWidth=2;TG.stroke();
+ titleLine(0,-12,0,17,2,'#451713');
+ TG.fillStyle='#1b1715';for(const [sx,sy,sr] of [[-7,-5,3.4],[7,-5,3.4],[-8,6,3],[8,6,3],[-5,14,2.7],[5,14,2.7]]){TG.beginPath();TG.arc(sx,sy,sr,0,6.28);TG.fill()}
+ // head at the front (bottom) while fleeing downscreen
+ TG.fillStyle='#272321';TG.beginPath();TG.ellipse(0,19,r*.68,r*.48,0,0,6.28);TG.fill();
+ titleLine(-5,21,-11,29+(lookBack?-6:0),1.5,'#24130f');titleLine(5,21,11,29+(lookBack?-6:0),1.5,'#24130f');
+ // glance behind: eyes shift toward the top of the screen
+ const ey=lookBack?16:20;TG.fillStyle='#fff';TG.beginPath();TG.arc(-5,ey,2.8,0,6.28);TG.arc(5,ey,2.8,0,6.28);TG.fill();TG.fillStyle='#111';TG.beginPath();TG.arc(-5,ey-(lookBack?1.4:0),1.25,0,6.28);TG.arc(5,ey-(lookBack?1.4:0),1.25,0,6.28);TG.fill();
+ TG.restore();
 }
 function drawTitleTexture(w,h){
- // tiny ground flecks
  TG.globalAlpha=.16;for(let i=0;i<26;i++){let x=(i*149+43)%Math.max(1,w),y=(i*211+97)%Math.max(1,h);TG.fillStyle=i%2?'#406735':'#e5efbf';TG.beginPath();TG.arc(x,y,1+(i%3)*.55,0,6.28);TG.fill()}TG.globalAlpha=1;
- // scattered leaves, kept away from the center so the logo stays readable
  for(const q of titleLeafSeed){let x=q.x*w,y=q.y*h;if(x>w*.24&&x<w*.76&&y>h*.18&&y<h*.76)continue;TG.save();TG.translate(x,y);TG.rotate(q.a);TG.globalAlpha=.24;TG.fillStyle=q.c===0?'#355f31':q.c===1?'#6f9246':'#a7b96a';TG.beginPath();TG.ellipse(0,0,q.s*1.8,q.s*.68,0,0,6.28);TG.fill();TG.strokeStyle='#d9e6a94d';TG.lineWidth=1;TG.beginPath();TG.moveTo(-q.s*1.25,0);TG.lineTo(q.s*1.25,0);TG.stroke();TG.restore()}TG.globalAlpha=1;
+}
+let titleSceneStart=performance.now(),titleSceneEnemiesSpawned=false,titleSceneEnemyOffsets=[];
+function resetTitleScene(now,w){
+ titleSceneStart=now;titleSceneEnemiesSpawned=false;titleBugs=[];
+ titleSceneEnemyOffsets=[-55,-24,18,48].map((off,i)=>({off,delay:i*.16}));
 }
 function titleGardenLoop(now){
  if(!titleGarden||!TG)return;const homeVisible=!$('home').classList.contains('hidden');
  if(homeVisible){
   const w=titleGarden.getBoundingClientRect().width,h=titleGarden.getBoundingClientRect().height,dt=Math.min(.04,(now-titleLast)/1000||.016);titleLast=now;TG.clearRect(0,0,w,h);drawTitleTexture(w,h);
-  if(!titleBugs.length){spawnTitleBug(true);spawnTitleBug(true);spawnTitleBug(true)}
-  if(now>titleSpawnAt&&titleBugs.length<5){spawnTitleBug(false);titleSpawnAt=now+1700+Math.random()*1500}
-  for(const b of titleBugs){b.y+=b.speed*dt;b.x+=b.drift*dt+Math.sin(now/850+b.phase)*4*dt;b.x=Math.max(16,Math.min(w-16,b.x));drawTitleBug(b,now)}
-  titleBugs=titleBugs.filter(b=>b.y<h+55);
- }else{titleLast=now}
+  if(!titleSceneStart)resetTitleScene(now,w);
+  let t=(now-titleSceneStart)/1000;
+  if(t>8.4){resetTitleScene(now,w);t=0}
+  const cx=w*.5,stopY=h*.43;
+  let buddyY,lookBack=false;
+  if(t<2.15){const q=t/2.15,e=1-Math.pow(1-q,3);buddyY=-42+(stopY+42)*e}
+  else if(t<3.55){buddyY=stopY;lookBack=t>2.35}
+  else if(t<5.55){const q=(t-3.55)/2,b= q<.25?q*q*4:Math.min(1,.25+(q-.25)*1.35);buddyY=stopY+(h+95-stopY)*b}
+  else buddyY=h+95;
+  if(t>=2.85&&!titleSceneEnemiesSpawned){
+   titleSceneEnemiesSpawned=true;
+   titleSceneEnemyOffsets.forEach((o,i)=>{spawnTitleBug(false,Math.max(28,Math.min(w-28,cx+o.off)),78+i*7);titleBugs[titleBugs.length-1].y=-55-i*26});
+  }
+  for(const b of titleBugs){b.y+=b.speed*dt;b.x+=b.drift*dt+Math.sin(now/800+b.phase)*3.5*dt;b.x=Math.max(16,Math.min(w-16,b.x));drawTitleBug(b,now)}
+  titleBugs=titleBugs.filter(b=>b.y<h+60);
+  if(buddyY<h+80)drawTitleBuddy(cx,buddyY,now,lookBack);
+ }else{titleLast=now;titleSceneStart=0;titleBugs=[];titleSceneEnemiesSpawned=false}
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();addEventListener('resize',resizeTitleGarden);titleRAF=requestAnimationFrame(titleGardenLoop);
