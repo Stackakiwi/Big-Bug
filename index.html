@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.4.1: Area Cleanup + Mole Cricket HP Tune -->
+<!-- Big Bug v17.4.2: Power Curve + 3-Enemy Countdown -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -292,14 +292,14 @@ let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;$('story').classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 $('storyContinue').onclick=()=>{initAudio();$('story').classList.add('hidden');beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
 const UP=[
- {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+25% damage',rarity:'common',apply:p=>p.damage*=1.25},
- {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+30 max HP + heal 30 HP',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
- {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+20% attack speed',rarity:'common',apply:p=>p.rate*=.80},
- {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+10% critical chance + 3× damage',rarity:'rare',apply:p=>p.crit+=.10},
+ {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
+ {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{p.maxHp+=20;p.hp=Math.min(p.maxHp,p.hp+20)}},
+ {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>p.rate=Math.max(360,p.rate*.90)},
+ {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+5% critical chance + 3× damage',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
  {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65},
- {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+60% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.6},
+ {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
  {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
- {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+15% move speed + 15% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
+ {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
 ];
 
 let game=null, last=0, raf=0, audio=null;
@@ -734,7 +734,7 @@ function openUpgrade(afterWave=false){
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
 function updateHud(){
  const p=game.p,g=game,active=boostActive();$('hp').textContent=Math.max(0,Math.ceil(p.hp));$('maxhp').textContent=Math.ceil(p.maxHp);$('wave').textContent=g.wave;$('coins').textContent=g.coins||0;$('dmg').textContent=Math.round(p.damage*(active?2:1));
- const prog=$('waveProgress');if(g.wave%5===0)prog.textContent=g.boss?' BOSS':' CLEAR';else prog.textContent=' '+Math.min(g.waveQuota,g.waveKills)+'/'+g.waveQuota;
+ const prog=$('waveProgress');if(g.wave%5===0)prog.textContent=g.boss?' BOSS':' CLEAR';else{const remaining=Math.max(0,g.waveQuota-g.waveKills);prog.textContent=remaining>0&&remaining<=3?' '+remaining+' LEFT':'';}
  const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0;b.classList.toggle('active',active);b.disabled=!active&&(g.coins||0)<boostCost();b.innerHTML=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`}
 }
 function finish(won){
