@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v16.3: Dark Garden Upgrade Screen + Rarity Glow -->
+<!-- Big Bug v16.4: Whimsical Indie Garden UI -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -136,6 +136,61 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #upgrade .choice p{color:#59654f}
 #upgrade .choice .upgradeMark{display:block;text-align:center;font-size:17px;line-height:1;margin:7px auto -1px;color:#3e5838;font-style:normal}
 
+
+/* v16.4 — whimsical indie garden lettering */
+#upgrade h2,
+#upgrade .choice b{
+  font-family:"Chalkboard SE","Marker Felt","Noteworthy","Bradley Hand","Comic Sans MS",cursive;
+  font-weight:700;
+}
+#upgrade h2{
+  font-size:32px;
+  letter-spacing:.2px;
+  transform:rotate(-.35deg);
+}
+#upgrade #upgradeSub,
+#upgrade .choice p{
+  font-family:"Noteworthy","Bradley Hand","Chalkboard SE","Marker Felt",cursive;
+  font-style:italic;
+}
+#upgrade #upgradeSub{font-size:18px}
+#upgrade .choice{
+  min-height:132px;
+  padding:18px 92px 18px 18px;
+  justify-content:center;
+}
+#upgrade .choice b{
+  font-size:25px;
+  line-height:1.08;
+  letter-spacing:0;
+  margin-bottom:10px;
+}
+#upgrade .choice p{
+  font-size:17px;
+  line-height:1.3;
+  max-width:100%;
+}
+#upgrade .choice .upgradeMark{
+  position:absolute;
+  right:24px;
+  top:50%;
+  transform:translateY(-50%) rotate(-5deg);
+  width:48px;
+  height:48px;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;
+  font-size:30px;
+  font-weight:700;
+  color:#29492d;
+  opacity:.92;
+  text-shadow:0 1px 0 #fff8d7;
+}
+#upgrade .choice:nth-child(2) .upgradeMark{transform:translateY(-50%) rotate(4deg)}
+#upgrade .choice:nth-child(3) .upgradeMark{transform:translateY(-50%) rotate(-3deg)}
+
 </style>
 </head>
 <body>
@@ -231,7 +286,7 @@ const UP=[
  {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+10% critical chance + 3× damage',rarity:'rare',apply:p=>p.crit+=.10},
  {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65},
  {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+60% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.6},
- {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Tiny Helper attacks with you for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
+ {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
  {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+15% move speed + 15% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
 ];
 
@@ -606,7 +661,7 @@ function openUpgrade(afterWave=false){
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  // Tiny Helper is a true lucky pull: only a 5% chance to appear on an upgrade screen.
  if(helper&&Math.random()<.05&&choices.length){choices[Math.floor(Math.random()*choices.length)]=helper}
- const marks={sharp:'✦',heart:'♣',speed:'≋',crit:'✣',magnet:'∩',greed:'❧',clone:'•ᴗ•',gold:'➜'};
+ const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',gold:'➜'};
  $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'•'}</span><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
