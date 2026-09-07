@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v15: Boss Update + 8 Areas + Temporary Helpers -->
+<!-- Big Bug v16: Garden Story + Buggy UI Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -50,6 +50,18 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 @media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:16px}.logo{font-size:68px}.bugHero{font-size:78px}}
 
 .leafCurrencyIcon{display:inline-block;font-size:20px;line-height:1;vertical-align:-3px;margin-right:4px;filter:drop-shadow(0 1px 1px #0008) drop-shadow(0 0 3px #d9ff66aa)}
+
+#upgrade{background:linear-gradient(#172b1dcc,#0d1c14ee);backdrop-filter:blur(2px)}
+#upgrade .panel{position:relative;overflow:hidden;max-width:520px;background:linear-gradient(155deg,#efe2b5,#d7c78d);color:#26331f;border:2px solid #769a55;border-radius:20px;box-shadow:0 7px 0 #21351f,0 16px 35px #0008,inset 0 0 0 3px #fff4c955}
+#upgrade .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #76925766;border-radius:13px;pointer-events:none}
+#upgrade h2{font-family:Georgia,'Times New Roman',serif;color:#2b4225;letter-spacing:.4px;text-shadow:none}
+#upgrade #upgradeSub{font-family:Georgia,'Times New Roman',serif;color:#586c42;font-style:italic}
+#upgrade .choice{background:#f7edc9;color:#26331f;border:1px solid #8ba06b;border-radius:14px;box-shadow:0 3px 0 #718052;padding:14px}
+#upgrade .choice b{font-family:Georgia,'Times New Roman',serif;color:#2a3b22}
+#upgrade .choice p{color:#4b5940}#upgrade .choice .rarity{color:#64714f;opacity:1;text-transform:none;font-style:italic;letter-spacing:.3px}
+#story{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:22px;background:#0c1c13d8;backdrop-filter:blur(2px)}
+#story.hidden{display:none}.storyLeaf{position:relative;width:min(390px,94vw);padding:24px 22px 20px;border-radius:22px 22px 28px 18px;background:linear-gradient(155deg,#f2e6b9,#d8ca91);color:#26331f;border:2px solid #789656;box-shadow:0 9px 0 #21371f,0 16px 35px #0009,inset 0 0 0 4px #fff4ca55}
+.storyLeaf:before{content:"";position:absolute;inset:9px;border:1px dashed #728b5266;border-radius:15px;pointer-events:none}.storyKicker{font:700 12px Georgia,serif;letter-spacing:1.4px;text-transform:uppercase;color:#647b43}.storyTitle{font:700 25px Georgia,serif;margin:6px 0 11px;color:#263a20}.storyText{font:17px/1.45 Georgia,'Times New Roman',serif;min-height:72px}.storyTwig{height:1px;background:#81935c88;margin:15px 0 13px;position:relative}.storyTwig:after{content:"🍃";position:absolute;right:8px;top:-12px;font-size:18px}#storyContinue{width:100%;min-height:48px;border:0;border-radius:13px;background:#476b36;color:#fff5d4;font:700 17px Georgia,serif;box-shadow:0 4px 0 #294627}
 </style>
 </head>
 <body>
@@ -84,8 +96,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
  <div class="panel"><h2>🌱 BASE CAMP</h2><p>Spend saved Leaves on permanent upgrades. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
+<section id="story" class="hidden">
+ <div class="storyLeaf"><div class="storyKicker">🍃 Garden Update</div><div class="storyTitle" id="storyTitle">Whispers in the Leaves</div><div class="storyText" id="storyText"></div><div class="storyTwig"></div><button id="storyContinue">Follow the trail →</button></div>
+</section>
 <section id="upgrade" class="screen hidden">
- <div class="panel"><h2 id="upgradeTitle">🌟 WAVE CLEAR!</h2><p id="upgradeSub">Choose one upgrade before the next wave.</p><div id="choices" class="grid"></div></div>
+ <div class="panel"><h2 id="upgradeTitle">🌿 A GIFT FROM THE GARDEN</h2><p id="upgradeSub">Pick one little advantage before you scurry onward.</p><div id="choices" class="grid"></div></div>
 </section>
 
 <section id="pause" class="screen hidden">
@@ -116,20 +131,34 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 const BUGS={
  ladybug:{name:'Ladybug',art:'🐞',desc:'Balanced starter. +10% crit chance.',cost:0,bonus:p=>p.crit+=.10},
  beetle:{name:'Beetle',art:'🪲',desc:'Tanky. +35 max HP, slower attack.',cost:100,bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.rate*=1.12}},
- mantis:{name:'Mantis',art:'🦗',desc:'Hits hard. +25% damage, -10% HP.',cost:180,bonus:p=>{p.damage*=1.25;p.maxHp*=.9;p.hp=p.maxHp}},
+ mantis:{name:'Mantis',art:'🦗',desc:'Hits hard. Mandibles bite 25% harder, -10% HP.',cost:180,bonus:p=>{p.damage*=1.25;p.maxHp*=.9;p.hp=p.maxHp}},
  firefly:{name:'Firefly',art:'✨',desc:'Glow power. +1 projectile and +15% move speed.',cost:260,bonus:p=>{p.fireflies++;p.speed*=1.15}},
  dragonfly:{name:'Dragonfly',art:'🦋',desc:'Swift. +35% attack speed and magnet range.',cost:400,bonus:p=>{p.rate*=.65;p.magnet+=70}},
  spider:{name:'Spider',art:'🕷️',desc:'Venom. Attacks poison enemies for stacking damage.',cost:600,bonus:p=>p.poison+=1}
 };
+
+const GARDEN_STORY={
+5:{title:'A Buzz Out of Place',text:'The Hornet drops from the hedge, dazed rather than defeated. Tiny purple flecks cling to its wings. Something in the garden has made it furious.'},
+10:{title:'The Hornet Returns',text:'This time the Hornet fights harder—but the same strange dust coats its stinger. Beyond the thicket, bent grass points toward the moonlit meadow.'},
+15:{title:'Silk and Shadows',text:'The Venom Queen retreats into her web. “Not my venom,” she rasps. Purple stains creep along the oldest roots beneath the garden.'},
+20:{title:'A Warning in the Web',text:'The Queen finally lowers her fangs. The trouble is flowing from beyond the creek. She was guarding her nest from it… and from you.'},
+25:{title:'The Iron Gatekeeper',text:'The Iron Scarab will not budge—not even an inch. Scratched into his shell is an old garden mark: a warning to keep the path ahead sealed.'},
+30:{title:'What He Was Guarding',text:'The Scarab steps aside at last. He was never guarding treasure. He was holding back whatever is waking beneath the far garden.'},
+35:{title:'The Marsh Stirs',text:'Fireflies scatter as the next guardian falls. For the first time, the strange purple glow answers from somewhere below the soil.'},
+40:{title:'Beyond the Roses',text:'The roses grow quiet. A narrow trail opens beyond the garden wall. Whatever started this is still out there—and now it knows the little ladybug is coming.'}
+};
+let pendingBossUpgrade=false;
+function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;$('story').classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
+$('storyContinue').onclick=()=>{initAudio();$('story').classList.add('hidden');beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
 const UP=[
- {id:'sharp',icon:'🗡️',name:'Sharp Mandibles',desc:'+25% damage',rarity:'common',apply:p=>p.damage*=1.25},
- {id:'heart',icon:'❤️',name:'Leafy Heart',desc:'+30 max HP and heal',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
- {id:'speed',icon:'⚡',name:'Quick Wings',desc:'+20% attack speed',rarity:'common',apply:p=>p.rate*=.80},
- {id:'crit',icon:'💥',name:'Lucky Spots',desc:'+10% critical chance (3×)',rarity:'rare',apply:p=>p.crit+=.10},
- {id:'magnet',icon:'🧲',name:'Pollen Magnet',desc:'+65 pickup range and auto-collects drops',rarity:'common',apply:p=>p.magnet+=65},
- {id:'greed',icon:'🔩',name:'Leaf Scrounger',desc:'+60% Leaves dropped by enemies',rarity:'rare',apply:p=>p.greed*=1.6},
+ {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'Mandibles bite 25% harder',rarity:'common',apply:p=>p.damage*=1.25},
+ {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+30 max HP • patch yourself up',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
+ {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'Attack 20% quicker',rarity:'common',apply:p=>p.rate*=.80},
+ {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+10% chance for a mighty 3× hit',rarity:'rare',apply:p=>p.crit+=.10},
+ {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'Leaves drift to you from +65 farther away',rarity:'common',apply:p=>p.magnet+=65},
+ {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'Enemies shake loose 60% more Leaves',rarity:'rare',apply:p=>p.greed*=1.6},
  {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'A little buddy helps for 5 waves, then wanders off',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
- {id:'gold',icon:'⚙️',name:'Salvage Rush',desc:'+15% move speed and +15% Leaf drops',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
+ {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'Move 15% faster • find 15% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
 ];
 
 let game=null, last=0, raf=0, audio=null;
@@ -262,7 +291,7 @@ function completeWave(){
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
  }
  flashBanner(bossClear?'❤️ FULLY HEALED! BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.55:1.1);
- setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},420);
+ setTimeout(()=>{if(game===g&&!g.over){if(bossClear)showGardenUpdate(g.wave);else openUpgrade(true)}},420);
 }
 function spawnEnemy(type='normal', forcedKind=null){
  const side=Math.floor(Math.random()*4),m=42;let x,y;
