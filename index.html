@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v16.2: Whimsical Garden Type + Simple Upgrade Copy -->
+<!-- Big Bug v16.3: Dark Garden Upgrade Screen + Rarity Glow -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -120,6 +120,21 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   font-size:17px;
   font-style:italic;
 }
+
+
+/* v16.3 — dark garden upgrade screen + rarity glow */
+#upgrade{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
+#upgrade .panel{background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445}
+#upgrade .panel:before{border-color:#56705055}
+#upgrade h2{color:#f0e6b9;text-shadow:0 2px #000}
+#upgrade #upgradeSub{color:#b8c7a4}
+#upgrade .choice{position:relative;background:linear-gradient(145deg,#f4e7bd,#e4d39f);border:2px solid #718064;color:#19301c}
+#upgrade .choice.common{border-color:#52d96a;box-shadow:0 3px 0 #214d2b,0 0 7px #54ff70,0 0 18px #39dd59a5,inset 0 0 12px #65ff7830}
+#upgrade .choice.rare{border-color:#f0c34c;box-shadow:0 3px 0 #70591f,0 0 7px #ffd34d,0 0 19px #efb719b0,inset 0 0 12px #ffd84c30}
+#upgrade .choice.epic{border-color:#b96ff2;box-shadow:0 3px 0 #583176,0 0 8px #cf77ff,0 0 21px #a33aefba,inset 0 0 13px #c15fff35}
+#upgrade .choice b{color:#17311d}
+#upgrade .choice p{color:#59654f}
+#upgrade .choice .upgradeMark{display:block;text-align:center;font-size:17px;line-height:1;margin:7px auto -1px;color:#3e5838;font-style:normal}
 
 </style>
 </head>
@@ -584,14 +599,15 @@ function update(dt,now){
 }
 function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
- $('upgradeTitle').textContent=afterWave?(g.wave%5===0?'👑 BOSS CLEARED!':'🌟 WAVE '+g.wave+' CLEAR!'):'🌟 LEVEL UP!';
+ $('upgradeTitle').textContent=afterWave?(g.wave%5===0?'👑 BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!'):'LEVEL UP!';
  $('upgradeSub').textContent=afterWave?(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.'):'Pick one. Stack effects and discover crazy combinations.';
  const choices=[];const helper=UP.find(u=>u.id==='clone'),pool=UP.filter(u=>u.id!=='clone');
  const count=3+save.upgrades.choices;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  // Tiny Helper is a true lucky pull: only a 5% chance to appear on an upgrade screen.
  if(helper&&Math.random()<.05&&choices.length){choices[Math.floor(Math.random()*choices.length)]=helper}
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+ const marks={sharp:'✦',heart:'♣',speed:'≋',crit:'✣',magnet:'∩',greed:'❧',clone:'•ᴗ•',gold:'➜'};
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'•'}</span><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
    if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false}
