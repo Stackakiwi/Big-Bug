@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.5.8: Opening Chase Polish -->
+<!-- Big Bug v17.5.9: Opening Chase Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1053,7 +1053,7 @@ C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{pa
 C.addEventListener('touchend',()=>drag=false);
 
 
-// v17.5.6 — opening chase polish: smaller buddy, logo hide, wider enemy swarm.
+// v17.5.10 — enemies now chase fully off-screen; buddy behavior unchanged.
 const titleGarden=$('titleGarden'),TG=titleGarden?.getContext('2d');
 let titleBugs=[],titleSpawnAt=0,titleLast=performance.now(),titleRAF=0,titleLeafSeed=[];
 const TITLE_KINDS=['ant','beetle','spider','wasp','stink'];
@@ -1113,23 +1113,22 @@ function drawTitleTexture(w,h){
  TG.globalAlpha=.16;for(let i=0;i<26;i++){let x=(i*149+43)%Math.max(1,w),y=(i*211+97)%Math.max(1,h);TG.fillStyle=i%2?'#406735':'#e5efbf';TG.beginPath();TG.arc(x,y,1+(i%3)*.55,0,6.28);TG.fill()}TG.globalAlpha=1;
  for(const q of titleLeafSeed){let x=q.x*w,y=q.y*h;if(x>w*.24&&x<w*.76&&y>h*.18&&y<h*.76)continue;TG.save();TG.translate(x,y);TG.rotate(q.a);TG.globalAlpha=.24;TG.fillStyle=q.c===0?'#355f31':q.c===1?'#6f9246':'#a7b96a';TG.beginPath();TG.ellipse(0,0,q.s*1.8,q.s*.68,0,0,6.28);TG.fill();TG.strokeStyle='#d9e6a94d';TG.lineWidth=1;TG.beginPath();TG.moveTo(-q.s*1.25,0);TG.lineTo(q.s*1.25,0);TG.stroke();TG.restore()}TG.globalAlpha=1;
 }
-let titleSceneStart=performance.now(),titleSceneEnemiesSpawned=false,titleSceneEnemyOffsets=[],titleNextSceneAt=0;
+let titleSceneStart=performance.now(),titleSceneEnemiesSpawned=false,titleSceneEnemyOffsets=[],titleScenePlayed=false;
 function resetTitleScene(now,w){
- titleSceneStart=now;titleNextSceneAt=0;titleSceneEnemiesSpawned=false;titleBugs=[];
+ titleSceneStart=now;titleSceneEnemiesSpawned=false;titleBugs=[];
  // Keep the larger swarm spread across most of the screen instead of bunching together.
- const spread=[-.38,-.27,-.16,-.05,.08,.20,.31,.39];
+ const spread=[-.40,-.29,-.18,-.07,.07,.18,.29,.40];
  titleSceneEnemyOffsets=spread.map((f,i)=>({off:f*w,delay:(i%4)*.08}));
 }
-function finishTitleScene(now){
- titleSceneStart=0;titleBugs=[];titleSceneEnemiesSpawned=false;
- // Once the chase finishes, leave the title screen calm for a full 20 seconds.
- titleNextSceneAt=now+20000;
+function finishTitleScene(){
+ // One opening chase only. No timed replay loop.
+ titleSceneStart=0;titleBugs=[];titleSceneEnemiesSpawned=false;titleScenePlayed=true;
 }
 function titleGardenLoop(now){
  if(!titleGarden||!TG)return;const homeVisible=!$('home').classList.contains('hidden');
  if(homeVisible){
   const w=titleGarden.getBoundingClientRect().width,h=titleGarden.getBoundingClientRect().height,dt=Math.min(.04,(now-titleLast)/1000||.016);titleLast=now;TG.clearRect(0,0,w,h);drawTitleTexture(w,h);
-  if(!titleSceneStart&&(!titleNextSceneAt||now>=titleNextSceneAt))resetTitleScene(now,w);
+  if(!titleSceneStart&&!titleScenePlayed)resetTitleScene(now,w);
   if(titleSceneStart){
    let t=(now-titleSceneStart)/1000;
    const cx=w*.5,logoHideY=h*.345,peekY=h*.43;
@@ -1143,20 +1142,22 @@ function titleGardenLoop(now){
    else if(t<4.72){const q=(t-3.30)/1.42,e=q*q*(3-2*q);buddyY=peekY+(h+95-peekY)*e}
    else buddyY=h+95;
 
-   // v17.5.8 — enemy-only chase fix. Buddy timing/movement is intentionally unchanged.
-   // Spawn the swarm earlier and already partly on-screen so it is unmistakably visible
+   // v17.5.9 — one-shot chase fix. Buddy timing/movement is intentionally unchanged.
+   // Spawn the swarm earlier and close to the top edge so it becomes visible quickly
    // while the buddy is behind the logo, then let the enemies chase downward in a wide formation.
-   if(t>=1.20&&!titleSceneEnemiesSpawned){
+   if(t>=.95&&!titleSceneEnemiesSpawned){
     titleSceneEnemiesSpawned=true;
     titleSceneEnemyOffsets.forEach((o,i)=>{
-     spawnTitleBug(false,Math.max(28,Math.min(w-28,cx+o.off)),132+(i%3)*10);
+     spawnTitleBug(false,Math.max(28,Math.min(w-28,cx+o.off)),118+(i%3)*9);
      const bug=titleBugs[titleBugs.length-1];
-     bug.y=18-(i%4)*24;
+     bug.y=-4+(i%4)*18;
      bug.chasePull=(cx-bug.x)*.036;
     });
    }
    for(const b of titleBugs){
-    b.y+=b.speed*dt;
+    // Once the buddy bolts, the whole swarm keeps chasing at full speed until every enemy is physically off-screen.
+    const chaseSpeed=t>=3.30?b.speed*2.45:b.speed;
+    b.y+=chaseSpeed*dt;
     b.x+=(b.drift+(b.chasePull||0))*dt+Math.sin(now/800+b.phase)*3.5*dt;
     b.x=Math.max(16,Math.min(w-16,b.x));drawTitleBug(b,now)
    }
@@ -1164,9 +1165,10 @@ function titleGardenLoop(now){
    // Always draw the buddy during the sequence. Because the canvas is behind the menu UI,
    // moving through the logo area makes him genuinely pass behind it instead of disappearing.
    if(buddyY<h+80)drawTitleBuddy(cx,buddyY,now,lookBack);
-   if(t>=6.15)finishTitleScene(now);
+   // Never end/clear the intro while an enemy is still visible.
+   if(t>=6.15&&titleBugs.length===0)finishTitleScene();
   }
- }else{titleLast=now;titleSceneStart=0;titleNextSceneAt=0;titleBugs=[];titleSceneEnemiesSpawned=false}
+ }else{titleLast=now;titleBugs=[]}
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();addEventListener('resize',resizeTitleGarden);titleRAF=requestAnimationFrame(titleGardenLoop);
