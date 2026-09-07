@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.4.2: Power Curve + 3-Enemy Countdown -->
+<!-- Big Bug v17.4.3: Clean Wave HUD -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -734,7 +734,7 @@ function openUpgrade(afterWave=false){
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
 function updateHud(){
  const p=game.p,g=game,active=boostActive();$('hp').textContent=Math.max(0,Math.ceil(p.hp));$('maxhp').textContent=Math.ceil(p.maxHp);$('wave').textContent=g.wave;$('coins').textContent=g.coins||0;$('dmg').textContent=Math.round(p.damage*(active?2:1));
- const prog=$('waveProgress');if(g.wave%5===0)prog.textContent=g.boss?' BOSS':' CLEAR';else{const remaining=Math.max(0,g.waveQuota-g.waveKills);prog.textContent=remaining>0&&remaining<=3?' '+remaining+' LEFT':'';}
+ const prog=$('waveProgress');prog.textContent=g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'';
  const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0;b.classList.toggle('active',active);b.disabled=!active&&(g.coins||0)<boostCost();b.innerHTML=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`}
 }
 function finish(won){
