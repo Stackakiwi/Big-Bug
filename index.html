@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v16.4: Whimsical Indie Garden UI -->
+<!-- Big Bug v17: Road to Wave 100 -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -267,14 +267,26 @@ const BUGS={
 };
 
 const GARDEN_STORY={
-5:{title:'A Buzz Out of Place',text:'The Hornet drops from the hedge, dazed rather than defeated. Tiny purple flecks cling to its wings. Something in the garden has made it furious.'},
-10:{title:'The Hornet Returns',text:'This time the Hornet fights harder—but the same strange dust coats its stinger. Beyond the thicket, bent grass points toward the moonlit meadow.'},
-15:{title:'Silk and Shadows',text:'The Venom Queen retreats into her web. “Not my venom,” she rasps. Purple stains creep along the oldest roots beneath the garden.'},
-20:{title:'A Warning in the Web',text:'The Queen finally lowers her fangs. The trouble is flowing from beyond the creek. She was guarding her nest from it… and from you.'},
-25:{title:'The Iron Gatekeeper',text:'The Iron Scarab will not budge—not even an inch. Scratched into his shell is an old garden mark: a warning to keep the path ahead sealed.'},
-30:{title:'What He Was Guarding',text:'The Scarab steps aside at last. He was never guarding treasure. He was holding back whatever is waking beneath the far garden.'},
-35:{title:'The Marsh Stirs',text:'Fireflies scatter as the next guardian falls. For the first time, the strange purple glow answers from somewhere below the soil.'},
-40:{title:'Beyond the Roses',text:'The roses grow quiet. A narrow trail opens beyond the garden wall. Whatever started this is still out there—and now it knows the little ladybug is coming.'}
+5:{title:'A Buzz Out of Place',text:'Purple flecks cling to the Hornet’s wings. Something in the garden has made it furious.'},
+10:{title:'Antlers in the Thicket',text:'The Stag King falls. The same strange dust is packed into the cracks of his shell.'},
+15:{title:'Silk and Shadows',text:'The Venom Queen retreats. “Not my venom,” she rasps. Purple stains creep along the oldest roots.'},
+20:{title:'Something Below',text:'The Mole Cricket was digging away from something—not toward you. The soil beneath the hollow is warm.'},
+25:{title:'The Iron Gatekeeper',text:'An old warning mark is scratched into the Iron Scarab’s shell. The path ahead was meant to stay sealed.'},
+30:{title:'Across the Creek',text:'The Sky Lancer falls from the air. Beyond the water, the purple trail is getting brighter.'},
+35:{title:'The Tyrant’s Warning',text:'The Praying Tyrant lowers its scythes. Even the fiercest hunters are afraid of what is waking below.'},
+40:{title:'Beyond the Roses',text:'A narrow trail opens beyond the garden wall. Whatever started this now knows the ladybug is coming.'},
+45:{title:'Tall Grass, Deep Tracks',text:'Huge roots have pushed through the wild grass overnight. They point toward the oldest part of the garden.'},
+50:{title:'Rotwood',text:'The dead wood is alive with purple threads. They are not roots. They look almost like veins.'},
+55:{title:'Bramble Warning',text:'The berries are untouched, but the thorns twist toward every passing bug. The garden itself is changing.'},
+60:{title:'Stone and Silence',text:'For a moment the garden goes completely quiet. Then something enormous shifts beneath the stones.'},
+65:{title:'The Long Rain',text:'Purple spores wash into every puddle. They keep moving even after the rain stops.'},
+70:{title:'Across the Pond',text:'The pond guardian was keeping bugs away from the far bank. Now you can see why.'},
+75:{title:'Empty Webs',text:'The old webs are abandoned. Even the spiders have fled toward safer ground.'},
+80:{title:'The Old Roots',text:'The roots pulse faintly beneath your feet. Whatever is below is no longer sleeping.'},
+85:{title:'Sporewood',text:'Spores burst from the fallen guardian. The purple glow is everywhere now. The source is close.'},
+90:{title:'Old Enemies',text:'Two old guardians attack together, driven back into a fury by the spores. Something is using them.'},
+95:{title:'The Last Stand',text:'The final controlled guardians fall. Ahead, every root in the garden leads to the same place.'},
+100:{title:'The Garden Is Quiet',text:'The strange glow fades beneath the roots. For the first time in a long while, nothing is chasing you. The garden belongs to the bugs again.'}
 };
 let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;$('story').classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
@@ -368,16 +380,37 @@ const AREAS=[
  {name:'Sunflower Field',icon:'🌻',top:'#53672d',mid:'#64783a',bot:'#3d552a',patch1:'#d5b84b',patch2:'#31451f',leaf1:'#789642',leaf2:'#91a94b',leaf3:'#5e8038',edge1:'#587c35',edge2:'#769444',vignette:'#24331970'},
  {name:'Mossy Creek',icon:'💧',top:'#214b45',mid:'#2c5b4f',bot:'#183d3a',patch1:'#5d9a7d',patch2:'#16332e',leaf1:'#3f7460',leaf2:'#568b6c',leaf3:'#315e54',edge1:'#346c58',edge2:'#467d65',vignette:'#0b282780'},
  {name:'Firefly Marsh',icon:'✨',top:'#253b35',mid:'#30483c',bot:'#172d2b',patch1:'#78934f',patch2:'#132724',leaf1:'#496a4a',leaf2:'#617d50',leaf3:'#395d45',edge1:'#3e6748',edge2:'#557753',vignette:'#081d1b99'},
- {name:'Rose Garden',icon:'🌹',top:'#493238',mid:'#553a3f',bot:'#30272f',patch1:'#a55f70',patch2:'#2d2028',leaf1:'#6d4652',leaf2:'#80515d',leaf3:'#593b49',edge1:'#65414e',edge2:'#794c58',vignette:'#1d101888'}
+ {name:'Rose Garden',icon:'🌹',top:'#493238',mid:'#553a3f',bot:'#30272f',patch1:'#a55f70',patch2:'#2d2028',leaf1:'#6d4652',leaf2:'#80515d',leaf3:'#593b49',edge1:'#65414e',edge2:'#794c58',vignette:'#1d101888'},
+ {name:'Tallgrass Wilds',icon:'🌾',top:'#46582b',mid:'#586936',bot:'#304326',patch1:'#a7a95a',patch2:'#26351e',leaf1:'#718342',leaf2:'#8b9748',leaf3:'#596f36',edge1:'#637b38',edge2:'#819044',vignette:'#1c2b157d'},
+ {name:'Rotwood Grove',icon:'🪵',top:'#3d3829',mid:'#4b432e',bot:'#292b22',patch1:'#7d7048',patch2:'#25231c',leaf1:'#655b39',leaf2:'#786944',leaf3:'#4d4d32',edge1:'#514a31',edge2:'#675b39',vignette:'#17160f91'},
+ {name:'Berry Bramble',icon:'🫐',top:'#39354d',mid:'#46405a',bot:'#29293d',patch1:'#77638f',patch2:'#252236',leaf1:'#5e536e',leaf2:'#725f7e',leaf3:'#4d4962',edge1:'#594d69',edge2:'#6c5c79',vignette:'#16142591'},
+ {name:'Stone Garden',icon:'🪨',top:'#465047',mid:'#555d50',bot:'#343d38',patch1:'#8c927d',patch2:'#2e3631',leaf1:'#68735f',leaf2:'#78806c',leaf3:'#566256',edge1:'#59665a',edge2:'#70786a',vignette:'#20272187'},
+ {name:'Rain-soaked Hollow',icon:'🌧️',top:'#253b42',mid:'#304a4e',bot:'#1b3038',patch1:'#66898b',patch2:'#17292f',leaf1:'#3e6260',leaf2:'#527572',leaf3:'#345454',edge1:'#3a5d5b',edge2:'#4e706b',vignette:'#0c1c2599'},
+ {name:'Lily Pond',icon:'🪷',top:'#25514c',mid:'#31635b',bot:'#1c403f',patch1:'#71a58d',patch2:'#173532',leaf1:'#467967',leaf2:'#5c8f75',leaf3:'#396b60',edge1:'#3c705f',edge2:'#52856d',vignette:'#0b29288f'},
+ {name:'Abandoned Weblands',icon:'🕸️',top:'#3b3444',mid:'#443b4b',bot:'#282a36',patch1:'#786f82',patch2:'#24232f',leaf1:'#5b5263',leaf2:'#696070',leaf3:'#494653',edge1:'#504858',edge2:'#615769',vignette:'#15131f99'},
+ {name:'Old Root Forest',icon:'🌲',top:'#273c2d',mid:'#334a35',bot:'#1d3025',patch1:'#6f8052',patch2:'#18291f',leaf1:'#465e3d',leaf2:'#587047',leaf3:'#384f37',edge1:'#3b593b',edge2:'#4d6843',vignette:'#0d20158f'},
+ {name:'Sporewood',icon:'🍄',top:'#423449',mid:'#4d3c51',bot:'#2d2938',patch1:'#8a648e',patch2:'#282133',leaf1:'#68506c',leaf2:'#795a78',leaf3:'#55455e',edge1:'#5a4660',edge2:'#704f70',vignette:'#1c102699'},
+ {name:'Withered Garden',icon:'🥀',top:'#4c3d32',mid:'#584536',bot:'#322e29',patch1:'#947057',patch2:'#2b241f',leaf1:'#755344',leaf2:'#865e48',leaf3:'#60473d',edge1:'#67493e',edge2:'#795447',vignette:'#21161199'},
+ {name:'The Bloom',icon:'☣️',top:'#3c2f43',mid:'#49344a',bot:'#27252f',patch1:'#8f567f',patch2:'#241d2a',leaf1:'#68405d',leaf2:'#7b4a69',leaf3:'#54394f',edge1:'#5b3b52',edge2:'#71445f',vignette:'#180d209e'},
+ {name:'Heart of the Garden',icon:'🌑',top:'#202a25',mid:'#29332b',bot:'#171e1b',patch1:'#625363',patch2:'#151a18',leaf1:'#3e493e',leaf2:'#514554',leaf3:'#343b35',edge1:'#39483b',edge2:'#4a5142',vignette:'#070b099f'}
 ];
-function areaIndex(w=game?.wave||1){return Math.floor((Math.max(1,w)-1)/5)%AREAS.length}
+function areaIndex(w=game?.wave||1){return Math.min(AREAS.length-1,Math.floor((Math.max(1,w)-1)/5))}
 function areaFor(w=game?.wave||1){return AREAS[areaIndex(w)]}
 
 function arenaNumber(w=game?.wave||1){return Math.floor((Math.max(1,w)-1)/5)+1}
-function boostCost(){return 100+(arenaNumber()-1)*200}
-function bossTier(w=game?.wave||5){return Math.floor((Math.max(5,w)-5)/10)}
-function bossKindFor(w=game?.wave||5){return ['hornet','queenSpider','scarab','mantisBoss'][bossTier(w)%4]}
-function bossSecondFight(w=game?.wave||5){return w%10===0}
+const BOOST_COSTS=[100,300,500,700,900,1200,1600,2200,3000,4500,6500,9000,12500,17000,23000,30000,40000,52000,65000,80000];
+function boostCost(w=game?.wave||1){return BOOST_COSTS[Math.min(BOOST_COSTS.length-1,arenaNumber(w)-1)]}
+function activeEnemyCap(w=game?.wave||1){return w<30?22:w<50?24:w<70?26:w<90?28:30}
+const BOSS_ROSTER={
+ 5:['hornet'],10:['stagBeetle'],15:['queenSpider'],20:['moleCricket'],25:['scarab'],
+ 30:['dragonflyBoss'],35:['mantisBoss'],40:['centipede'],45:['earwig'],50:['cicada'],
+ 55:['bombardier'],60:['mothBoss'],65:['waterStrider'],70:['weevil'],75:['tarantula'],
+ 80:['rootBorer'],85:['sporeBeetle'],90:['hornet','mantisBoss'],95:['queenSpider','scarab'],100:['gardenHeart']
+};
+const BOSS_NAMES={hornet:'HORNET',stagBeetle:'STAG KING',queenSpider:'VENOM QUEEN',moleCricket:'MOLE CRICKET',scarab:'IRON SCARAB',dragonflyBoss:'SKY LANCER',mantisBoss:'PRAYING TYRANT',centipede:'RED CENTIPEDE',earwig:'PINCHER',cicada:'THUNDER CICADA',bombardier:'BOMBARDIER',mothBoss:'DUSK MOTH',waterStrider:'POND SKATER',weevil:'THORN WEEVIL',tarantula:'OLD WEBBER',rootBorer:'ROOT BORER',sporeBeetle:'SPOREBACK',gardenHeart:'THE GARDEN HEART'};
+function bossKindsFor(w=game?.wave||5){return BOSS_ROSTER[w]||['sporeBeetle']}
+function bossKindFor(w=game?.wave||5){return bossKindsFor(w)[0]}
+function bossSecondFight(w=game?.wave||5){return false}
 function evolutionTier(w=game?.wave||1){return Math.floor(Math.max(0,w-1)/10)}
 function boostActive(){return !!(game&&game.boostUntil&&game.time<game.boostUntil)}
 function useBoost(){
@@ -394,15 +427,15 @@ function flashBanner(text,sec=1.25){
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
 function beginWave(w){
- const g=game;g.wave=w;g.waveKills=0;g.boss=null;g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;
+ const g=game;g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;
  const bossWave=w%5===0;
- g.waveQuota=bossWave?1:Math.min(22,5+w*2);
+ g.waveQuota=bossWave?bossKindsFor(w).length:Math.min(activeEnemyCap(w),5+w*2);
  g.spawnLeft=g.waveQuota;
  $('bossbar').style.display='none';
  const enteringArea=w>1&&(w-1)%5===0;
  if(enteringArea){const a=areaFor(w);flashBanner(a.icon+' NEW AREA: '+a.name.toUpperCase(),1.8)}
  else flashBanner(bossWave?'⚠️ BOSS WAVE '+w:'WAVE '+w, bossWave?1.6:1.0);
- if(bossWave){spawnEnemy('boss');g.spawnLeft=0}
+ if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0}
  updateHud();
 }
 function completeWave(){
@@ -422,12 +455,12 @@ function completeWave(){
  flashBanner(bossClear?'❤️ FULLY HEALED! BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.55:1.1);
  setTimeout(()=>{if(game===g&&!g.over){if(bossClear)showGardenUpdate(g.wave);else openUpgrade(true)}},420);
 }
-function spawnEnemy(type='normal', forcedKind=null){
+function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  const side=Math.floor(Math.random()*4),m=42;let x,y;
  if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
  const w=game.wave, boss=type==='boss';
  let kinds=w<2?['ant','beetle']:w<3?['ant','beetle','spider']:w<4?['ant','beetle','spider','wasp']:['ant','beetle','spider','wasp','stink'];
- let k=boss?bossKindFor(w):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
+ let k=boss?(forcedKind||bossKindFor(w)):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
  let evo=evolutionTier(w),baseHp=(24+w*6)*Math.pow(1.32,evo),sp=(38+w*1.15)*(1+evo*.05),r=11+Math.random()*5,damage=(4.5+w*.5)*Math.pow(1.18,evo);
  if(k==='ant'){baseHp*=.72;sp*=1.35;r*=.82;damage*=.72}
  if(k==='beetle'){baseHp*=2.35;sp*=.62;r*=1.18;damage*=1.25}
@@ -435,17 +468,18 @@ function spawnEnemy(type='normal', forcedKind=null){
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
  if(boss){
-   const improved=bossSecondFight(w),power=Math.max(1,game.p.damage/10),ratePower=Math.max(1,720/game.p.rate);
-   // Bosses scale with the run enough to survive strong builds, without nerfing the player.
-   baseHp=(70+w*14)*24*(improved?1.65:1)*Math.min(2.35,.82+power*.16+ratePower*.12);
-   sp=52*(improved?1.10:1);r=k==='queenSpider'?42:k==='scarab'?45:k==='mantisBoss'?41:39;damage=(18+w*.5)*(improved?1.28:1)
+   const power=Math.max(1,game.p.damage/10),ratePower=Math.max(1,720/game.p.rate),duo=bossKindsFor(w).length>1;
+   baseHp=(80+w*15)*24*Math.min(2.55,.84+power*.16+ratePower*.12)*(duo?.62:1);
+   sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
+   const mods={stagBeetle:[1.28,.78],moleCricket:[1.08,1.05],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
+   if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
  }
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:boss?'entrance':'chase',cool:Math.random()*1.5+.8,stateT:boss?1.15:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo,
           invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0};
- if(boss){e.x=W/2;e.y=-e.r-18;e.enterX=W/2;e.enterY=Math.max(125,H*.20)}
+ if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
  game.enemies.push(e);
- if(boss){game.boss=e;const names={hornet:'HORNET',queenSpider:'VENOM QUEEN',scarab:'IRON SCARAB',mantisBoss:'PRAYING TYRANT'};$('bossName').textContent='👑 '+names[k]+(bossSecondFight(w)?' +':'');$('bossbar').style.display='block';bossMusicStart()}
+ if(boss){game.bosses=game.bosses||[];game.bosses.push(e);game.boss=e;$('bossName').textContent='👑 '+bossKindsFor(w).map(q=>BOSS_NAMES[q]).join(' + ');$('bossbar').style.display='block';bossMusicStart()}
  return e;
 }
 function burst(x,y,n=8,life=.5,col=null){
@@ -464,7 +498,7 @@ function damageEnemy(e,d,source='player'){
  if(e.hp<=0){
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
    let val=Math.max(1,Math.floor((2+game.wave*.35)*game.p.greed));
-   if(e.boss){val*=12;bossMusicStop();}
+   if(e.boss){val*=12;}
    game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?12:9,age:0,phase:Math.random()*6.28});
    burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
    game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
@@ -491,6 +525,11 @@ function fireball(){
 function meteor(){burst(game.p.x,game.p.y,45,1,'#f2cc7b');for(const e of game.enemies)if(!e.dead&&Math.hypot(e.x-game.p.x,e.y-game.p.y)<190)damageEnemy(e,game.p.damage*7)}
 function toxicCloud(x,y,r=46,life=2.5,damage=6){
  game.fx.push({x,y,vx:0,vy:0,life,maxLife:life,r,toxic:true,damage,tick:0});
+}
+function hurtPlayer(amount){
+ if(!game||!game.p||amount<=0)return;
+ const p=game.p;p.hp-=amount;p.hurtFlash=.18;
+ if(amount>=Math.max(4,p.maxHp*.035))game.shake=Math.max(game.shake||0,2.4);
 }
 function webPatch(x,y,r=52,life=3.6){
  game.fx.push({x,y,vx:0,vy:0,life,maxLife:life,r,web:true});
@@ -549,10 +588,17 @@ function enemyMove(e,dt){
      flashBanner('🕸️ WEB!',.45);
    }
  }
- if(e.boss&&e.kind==='mantisBoss'&&e.shotCd<=0){e.shotCd=bossSecondFight(game.wave)?1.1:1.65;for(let a of [-.16,0,.16]){let ang=Math.atan2(dy,dx)+a,spd=bossSecondFight(game.wave)?220:185;game.fx.push({x:e.x,y:e.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:2.5,r:5,sting:true,damage:8+game.wave*.18})}}
+ if(e.boss&&e.kind==='mantisBoss'&&e.shotCd<=0){e.shotCd=1.05;flashBanner('✂️ SCYTHE SLASH!',.32);for(let a of [-.28,0,.28]){let ang=Math.atan2(dy,dx)+a,spd=245;game.fx.push({x:e.x,y:e.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:2.0,r:6,sting:true,damage:9+game.wave*.2})}}
+ if(e.boss&&['stagBeetle','moleCricket','dragonflyBoss','centipede','earwig','cicada','bombardier','mothBoss','waterStrider','weevil','tarantula','rootBorer','sporeBeetle','gardenHeart'].includes(e.kind)&&e.shotCd<=0){
+   const idx=['stagBeetle','moleCricket','dragonflyBoss','centipede','earwig','cicada','bombardier','mothBoss','waterStrider','weevil','tarantula','rootBorer','sporeBeetle','gardenHeart'].indexOf(e.kind);
+   e.shotCd=Math.max(.72,1.9-idx*.045);
+   const count=e.kind==='gardenHeart'?12:(3+(idx%5)),spd=e.kind==='dragonflyBoss'||e.kind==='waterStrider'?245:155+idx*7;
+   for(let i=0;i<count;i++){let a=(e.kind==='gardenHeart'?i*6.283/count:Math.atan2(dy,dx)+(i-(count-1)/2)*.16);game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.7,r:e.kind==='gardenHeart'?6:4.5,sting:true,venom:e.kind==='sporeBeetle'||e.kind==='gardenHeart'||e.kind==='mothBoss',damage:7+game.wave*.19})}
+   if(e.kind==='rootBorer'||e.kind==='gardenHeart')webPatch(Math.max(40,Math.min(W-40,p.x)),Math.max(95,Math.min(H-40,p.y)),e.kind==='gardenHeart'?76:54,e.kind==='gardenHeart'?4.2:2.8);
+ }
  if(e.boss){
    e.addCd-=dt;
-   if(e.addCd<=0){e.addCd=Math.max(2.8,5.2-game.wave*.04);spawnEnemy('normal','wasp');if(e.hp<e.max*.55)spawnEnemy('normal','ant')}
+   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(game.enemies.filter(q=>!q.dead&&!q.boss).length<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal',e.kind==='gardenHeart'?'stink':'wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
    if(e.hp<e.max*.65&&Math.random()<dt*.35)stingBurst(e,e.hp<e.max*.3?10:7,e.hp<e.max*.3?180:145);
  }
  if(e.state==='telegraph')return;
@@ -579,7 +625,7 @@ function separateEnemies(){
  }
 }
 function update(dt,now){
- const g=game,p=g.p;if(g.paused||g.over)return;
+ const g=game,p=g.p;if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);
  g.time+=dt;
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.hypot(mdx,mdy);
@@ -587,7 +633,7 @@ function update(dt,now){
  // quota-based waves: spawn a set number, then clear the field
  if(g.waveActive&&g.wave%5!==0){
    g.spawn+=dt*1000;
-   const active=g.enemies.filter(e=>!e.dead).length,cap=Math.min(8,4+Math.floor(g.wave/4));
+   const active=g.enemies.filter(e=>!e.dead).length,cap=Math.min(activeEnemyCap(g.wave),Math.min(8+Math.floor(g.wave/12),activeEnemyCap(g.wave)));
    const spawnEvery=Math.max(330,720-g.wave*12);
    if(g.spawnLeft>0&&active<cap&&g.spawn>spawnEvery){
       g.spawn=0;
@@ -622,7 +668,7 @@ function update(dt,now){
    enemyMove(e,dt);
    if(e.boss&&e.kind==='scarab'){e.knockX=0;e.knockY=0}else{e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=Math.pow(.05,dt);e.knockY*=Math.pow(.05,dt);}
    let d=Math.hypot(p.x-e.x,p.y-e.y)||1;
-   if(d<e.r+p.r){p.hp-=e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1);if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
+   if(d<e.r+p.r){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
  }
  separateEnemies();
  for(const d of g.drops){
@@ -633,7 +679,7 @@ function update(dt,now){
  for(const f of g.fx){
    f.life-=dt;
    if(f.toxic){
-      f.tick-=dt;if(f.tick<=0){f.tick=.22;if(Math.hypot(p.x-f.x,p.y-f.y)<f.r+p.r){p.hp-=f.damage*.22}}
+      f.tick-=dt;if(f.tick<=0){f.tick=.22;if(Math.hypot(p.x-f.x,p.y-f.y)<f.r+p.r){hurtPlayer(f.damage*.22)}}
       continue;
    }
    if(f.web){
@@ -641,13 +687,17 @@ function update(dt,now){
       continue;
    }
    f.x+=f.vx*dt;f.y+=f.vy*dt;
-   if(f.sting&&Math.hypot(p.x-f.x,p.y-f.y)<p.r+f.r){p.hp-=f.damage;f.life=0;burst(f.x,f.y,3,.2,f.venom?'#b56cff':'#ff665b')}
+   if(f.sting&&Math.hypot(p.x-f.x,p.y-f.y)<p.r+f.r){hurtPlayer(f.damage);f.life=0;burst(f.x,f.y,3,.2,f.venom?'#b56cff':'#ff665b')}
    if(f.orb){for(const e of g.enemies)if(!e.dead&&Math.hypot(e.x-f.x,e.y-f.y)<e.r+12){damageEnemy(e,f.damage);f.life=0;break}}
    f.vx*=.985;f.vy*=.985;
  }
  g.enemies=g.enemies.filter(e=>!e.dead);g.drops=g.drops.filter(d=>!d.dead);g.fx=g.fx.filter(f=>f.life>0);if(g.fx.length>150)g.fx.splice(0,g.fx.length-150);
- if(g.boss&&g.boss.dead){g.boss=null;$('bossbar').style.display='none'}
- if(g.boss){$('bossFill').style.width=Math.max(0,100*g.boss.hp/g.boss.max)+'%'}
+ if(g.bosses&&g.bosses.length){
+   g.bosses=g.bosses.filter(b=>!b.dead);
+   g.boss=g.bosses[0]||null;
+   if(!g.bosses.length){$('bossbar').style.display='none';bossMusicStop()}
+   else{const hp=g.bosses.reduce((a,b)=>a+Math.max(0,b.hp),0),mx=g.bosses.reduce((a,b)=>a+b.max,0);$('bossFill').style.width=Math.max(0,100*hp/mx)+'%'}
+ }
  if(g.waveActive&&g.spawnLeft<=0&&g.enemies.length===0)completeWave();
  if(p.hp<=0)finish(false);
  updateHud();
@@ -759,17 +809,24 @@ function drawEnemy(e){
  }else if(e.kind==='spider'||e.kind==='queenSpider'){
   for(let side of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);line(side*5,yy,side*(r+8),yy+(i-1.5)*4+w,2.5,'#241c2c');line(side*(r+8),yy+(i-1.5)*4+w,side*(r+13),yy+(i-1.5)*8-w*.5,2,'#241c2c')}
   X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();X.fillStyle='#d9d0c2';X.beginPath();X.moveTo(-4,-3);X.lineTo(-1,2);X.lineTo(0,-4);X.moveTo(4,-3);X.lineTo(1,2);X.lineTo(0,-4);X.fill();
- }else if(e.kind==='wasp'||e.kind==='hornet'||e.kind==='mantisBoss'){
-  const big=e.kind==='hornet'||e.kind==='mantisBoss';let rr=big?r*1.15:r;
+ }else if(e.kind==='gardenHeart'){
+  X.fillStyle='#382b24';for(let a=0;a<8;a++){let an=a*.785+t*.08;line(0,10,Math.cos(an)*r*1.45,10+Math.sin(an)*r*.95,7,'#57402d')}
+  X.fillStyle='#76518a';for(let a=0;a<8;a++){let an=a*.785;X.beginPath();X.ellipse(Math.cos(an)*r*.72,Math.sin(an)*r*.58-4,r*.62,r*.28,an,0,6.28);X.fill()}
+  X.fillStyle='#a6c65c';X.beginPath();X.arc(0,-4,r*.55,0,6.28);X.fill();X.fillStyle='#51345f';X.beginPath();X.arc(0,-4,r*.28,0,6.28);X.fill();eye(-r*.12,-8,3.2);eye(r*.12,-8,3.2);
+ }else if(e.kind==='mantisBoss'){
+  for(let side of [-1,1]){line(side*5,-3,side*r*.72,-r*.55+step,5,'#6f9d3d');line(side*r*.72,-r*.55+step,side*r*1.18,-r*1.02-step,6,'#9fc552');line(side*5,8,side*r*.72,r*.72-step2,3,'#547d35')}
+  X.fillStyle='#6f9d3d';X.beginPath();X.ellipse(0,10,r*.42,r*1.05,0,0,6.28);X.fill();X.fillStyle='#8db94c';X.beginPath();X.moveTo(0,-r*1.05);X.lineTo(r*.58,-r*.38);X.lineTo(0,-r*.18);X.lineTo(-r*.58,-r*.38);X.closePath();X.fill();eye(-r*.2,-r*.55,3.4);eye(r*.2,-r*.55,3.4);line(-5,-r*.78,-12,-r*1.3,2,'#4f7130');line(5,-r*.78,12,-r*1.3,2,'#4f7130');
+ }else if(e.kind==='wasp'||e.kind==='hornet'||['dragonflyBoss','mothBoss','cicada'].includes(e.kind)){
+  const big=e.kind!=='wasp';let rr=big?r*1.15:r;
   X.globalAlpha=.45;X.fillStyle='#e8f2e9';X.beginPath();X.ellipse(-rr*.65,-2,rr*.65,rr*.28,-.6,0,6.28);X.ellipse(rr*.65,-2,rr*.65,rr*.28,.6,0,6.28);X.fill();X.globalAlpha=1;
   for(let side of [-1,1]){line(side*5,1,side*(rr+8),8+step,2.3);line(side*4,9,side*(rr+6),17-step,2.3)}
-  X.fillStyle='#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
+  X.fillStyle=e.kind==='dragonflyBoss'?'#4aa7a1':e.kind==='mothBoss'?'#9a78a8':e.kind==='cicada'?'#7f9b58':'#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
   X.fillStyle='#5b371d';X.beginPath();X.arc(0,-rr*.7,rr*.58,0,6.28);X.fill();eye(-rr*.2,-rr*.78,big?3.5:2.4);eye(rr*.2,-rr*.78,big?3.5:2.4);line(-4,-rr*1.05,-10,-rr*1.55,1.7);line(4,-rr*1.05,10,-rr*1.55,1.7);
   X.fillStyle='#24130d';X.beginPath();X.moveTo(-5,-rr*.95);X.lineTo(0,-rr*1.25);X.lineTo(5,-rr*.95);X.fill();X.beginPath();X.moveTo(-4,rr*1.0);X.lineTo(0,rr*1.45);X.lineTo(4,rr*1.0);X.fill();
   if(big){X.strokeStyle='#f5c358';X.lineWidth=2;X.beginPath();X.arc(0,0,rr+5,0,6.28);X.stroke()}
- }else if(e.kind==='stink'||e.kind==='scarab'){
+ }else if(e.kind==='stink'||['scarab','stagBeetle','moleCricket','centipede','earwig','bombardier','waterStrider','weevil','tarantula','rootBorer','sporeBeetle'].includes(e.kind)){
   for(let side of [-1,1]){line(side*6,-4,side*(r+7),-10+step,2);line(side*7,3,side*(r+9),4-step,2);line(side*5,10,side*(r+7),17+step2,2)}
-  X.fillStyle='#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
+  X.fillStyle=e.kind==='scarab'?'#71898d':e.kind==='stagBeetle'?'#70452d':e.kind==='moleCricket'?'#8a7049':e.kind==='centipede'?'#a64e3f':e.kind==='earwig'?'#795139':e.kind==='bombardier'?'#344b3a':e.kind==='waterStrider'?'#557c78':e.kind==='weevil'?'#6d7541':e.kind==='tarantula'?'#4c3548':e.kind==='rootBorer'?'#6b4935':e.kind==='sporeBeetle'?'#76518a':'#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
  }else{
   for(let side of [-1,1]){line(side*6,-5,side*(r+7),-10+step,2.3);line(side*7,2,side*(r+9),4-step,2.3);line(side*5,10,side*(r+7),17+step2,2.3)}
   X.fillStyle='#39473d';X.beginPath();X.ellipse(0,5,r*.82,r*1.02,0,0,6.28);X.fill();X.strokeStyle='#65786b';X.lineWidth=2;X.beginPath();X.moveTo(0,-r*.8);X.lineTo(0,r*.92);X.stroke();X.fillStyle='#4b5e50';X.beginPath();X.arc(0,-r*.65,r*.58,0,6.28);X.fill();eye(-r*.2,-r*.74,2.2);eye(r*.2,-r*.74,2.2);X.fillStyle='#1c211d';X.beginPath();X.moveTo(-4,-r*.98);X.lineTo(-9,-r*1.35);X.lineTo(-2,-r*1.14);X.moveTo(4,-r*.98);X.lineTo(9,-r*1.35);X.lineTo(2,-r*1.14);X.fill();
@@ -795,6 +852,10 @@ function draw(){
  if(ai===5){for(let i=0;i<7;i++){let x=(i*121+35)%W,y=(i*181+110)%H;X.globalAlpha=.25;X.fillStyle='#79c6b5';X.beginPath();X.ellipse(x,y,24+(i%3)*8,7+(i%2)*3,i*.5,0,6.28);X.fill();X.globalAlpha=1;for(let j=0;j<3;j++){X.fillStyle='#8dbb5b';X.beginPath();X.ellipse(x-12+j*12,y-2,8,4,j*.7,0,6.28);X.fill()}}}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(performance.now()/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===7){for(let i=0;i<10;i++){let x=(i*107+61)%W,y=(i*169+82)%H;X.strokeStyle='#42643c';X.lineWidth=2;X.beginPath();X.moveTo(x,y+11);X.lineTo(x,y);X.stroke();X.fillStyle=i%2?'#e9879c':'#cf5e78';for(let a=0;a<6;a++){X.beginPath();X.arc(x+Math.cos(a*1.047)*4,y+Math.sin(a*1.047)*4,3,0,6.28);X.fill()}X.fillStyle='#e6c65c';X.beginPath();X.arc(x,y,2,0,6.28);X.fill()}}
+ 
+ // v17 late-game area accents: lightweight so Wave 100 stays smooth.
+ if(ai>=8){for(let i=0;i<Math.min(14,6+Math.floor(ai/2));i++){let x=(i*117+ai*29)%W,y=(i*163+ai*41)%H;X.globalAlpha=.22;if(ai>=16){X.fillStyle=ai>=18?'#a45b91':'#9a78a8';X.beginPath();X.arc(x,y,3+(i%3),0,6.28);X.fill()}else if(ai===13){X.fillStyle='#76a98a';X.beginPath();X.ellipse(x,y,15,6,i,0,6.28);X.fill()}else{X.strokeStyle=area.edge2;X.lineWidth=2;X.beginPath();X.moveTo(x,y+12);X.quadraticCurveTo(x+8,y,x,y-12);X.stroke()}}X.globalAlpha=1}
+
  // soft leaf litter
  for(let i=0;i<28;i++){let x=(i*101+31)%W,y=(i*67+72)%H,a=Math.sin(i*2.1)*1.5,sz=16+(i%4)*5;X.save();X.translate(x,y);X.rotate(a);X.fillStyle=i%3===0?area.leaf1:i%3===1?area.leaf2:area.leaf3;X.globalAlpha=.68;X.beginPath();X.ellipse(0,0,sz,sz*.42,0,0,6.28);X.fill();X.strokeStyle='#78905b55';X.lineWidth=1;X.beginPath();X.moveTo(-sz*.7,0);X.lineTo(sz*.7,0);X.stroke();X.restore()}
  X.globalAlpha=1;
@@ -836,7 +897,8 @@ function draw(){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
+ X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
+ if((p.hurtFlash||0)>0){X.save();X.globalAlpha=Math.min(.45,p.hurtFlash*2.5);X.strokeStyle='#ff665b';X.lineWidth=3;X.beginPath();X.arc(p.x,p.y,p.r+7,0,6.28);X.stroke();X.restore()}
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
  const hs=p.helpers||[],activeHs=hs.filter(h=>!h.leaving);
  hs.forEach((h,idx)=>{let hx,hy;if(h.leaving){hx=h.x;hy=h.y}else{let i=activeHs.indexOf(h),a=game.time*1.8+i*6.283/Math.max(1,activeHs.length);hx=p.x+Math.cos(a)*38;hy=p.y+Math.sin(a)*38}
