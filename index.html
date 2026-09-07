@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.5.1: Power Ups Menu Cleanup -->
+<!-- Big Bug v17.5.6: Opening Chase Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1053,7 +1053,7 @@ C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{pa
 C.addEventListener('touchend',()=>drag=false);
 
 
-// v17.5.4 — opening-screen garden life: lightweight enemy crawl + leaf texture.
+// v17.5.6 — opening chase polish: smaller buddy, logo hide, wider enemy swarm.
 const titleGarden=$('titleGarden'),TG=titleGarden?.getContext('2d');
 let titleBugs=[],titleSpawnAt=0,titleLast=performance.now(),titleRAF=0,titleLeafSeed=[];
 const TITLE_KINDS=['ant','beetle','spider','wasp','stink'];
@@ -1090,7 +1090,7 @@ function spawnTitleBug(initial=false, xOverride=null, speedOverride=null){
 }
 function drawTitleBuddy(x,y,now,lookBack=false){
  const r=17,t=now/1000,step=Math.sin(t*15)*3.2;
- TG.save();TG.translate(x,y);TG.rotate(lookBack?Math.sin(t*5)*.16:0);TG.shadowColor='#10241077';TG.shadowBlur=6;TG.shadowOffsetY=4;
+ TG.save();TG.translate(x,y);TG.scale(.8,.8);TG.rotate(lookBack?Math.sin(t*5)*.16:0);TG.shadowColor='#10241077';TG.shadowBlur=6;TG.shadowOffsetY=4;
  // legs
  for(const side of [-1,1]){
   titleLine(side*7,-7,side*(r+8),-13+step,2.2,'#24130f');
@@ -1116,7 +1116,9 @@ function drawTitleTexture(w,h){
 let titleSceneStart=performance.now(),titleSceneEnemiesSpawned=false,titleSceneEnemyOffsets=[];
 function resetTitleScene(now,w){
  titleSceneStart=now;titleSceneEnemiesSpawned=false;titleBugs=[];
- titleSceneEnemyOffsets=[-55,-24,18,48].map((off,i)=>({off,delay:i*.16}));
+ // A slightly larger swarm, spread across most of the screen so the chase feels lively instead of clumped.
+ const spread=[-.36,-.24,-.12,0,.13,.25,.36];
+ titleSceneEnemyOffsets=spread.map((f,i)=>({off:f*w,delay:i*.12}));
 }
 function titleGardenLoop(now){
  if(!titleGarden||!TG)return;const homeVisible=!$('home').classList.contains('hidden');
@@ -1124,20 +1126,34 @@ function titleGardenLoop(now){
   const w=titleGarden.getBoundingClientRect().width,h=titleGarden.getBoundingClientRect().height,dt=Math.min(.04,(now-titleLast)/1000||.016);titleLast=now;TG.clearRect(0,0,w,h);drawTitleTexture(w,h);
   if(!titleSceneStart)resetTitleScene(now,w);
   let t=(now-titleSceneStart)/1000;
-  if(t>8.4){resetTitleScene(now,w);t=0}
-  const cx=w*.5,stopY=h*.43;
-  let buddyY,lookBack=false;
-  if(t<2.15){const q=t/2.15,e=1-Math.pow(1-q,3);buddyY=-42+(stopY+42)*e}
-  else if(t<3.55){buddyY=stopY;lookBack=t>2.35}
-  else if(t<5.55){const q=(t-3.55)/2,b= q<.25?q*q*4:Math.min(1,.25+(q-.25)*1.35);buddyY=stopY+(h+95-stopY)*b}
+  if(t>9.0){resetTitleScene(now,w);t=0}
+  const cx=w*.5,logoHideY=h*.34,peekY=h*.43;
+  let buddyY,lookBack=false,buddyHidden=false;
+  // 1) buddy arrives, 2) disappears behind the BIG BUG logo for ~1 sec,
+  // 3) peeks back out and checks behind him, 4) bolts when the swarm arrives.
+  if(t<1.85){const q=t/1.85,e=1-Math.pow(1-q,3);buddyY=-42+(logoHideY+42)*e}
+  else if(t<2.85){buddyY=logoHideY;buddyHidden=true}
+  else if(t<3.35){const q=(t-2.85)/.5,e=q*q*(3-2*q);buddyY=logoHideY+(peekY-logoHideY)*e;lookBack=true}
+  else if(t<4.15){buddyY=peekY;lookBack=true}
+  else if(t<5.85){const q=(t-4.15)/1.7,b=q<.2?q*q*5:Math.min(1,.20+(q-.20)*1.52);buddyY=peekY+(h+95-peekY)*b}
   else buddyY=h+95;
-  if(t>=2.85&&!titleSceneEnemiesSpawned){
+  if(t>=3.45&&!titleSceneEnemiesSpawned){
    titleSceneEnemiesSpawned=true;
-   titleSceneEnemyOffsets.forEach((o,i)=>{spawnTitleBug(false,Math.max(28,Math.min(w-28,cx+o.off)),78+i*7);titleBugs[titleBugs.length-1].y=-55-i*26});
+   titleSceneEnemyOffsets.forEach((o,i)=>{
+    spawnTitleBug(false,Math.max(24,Math.min(w-24,cx+o.off)),76+(i%3)*7);
+    const bug=titleBugs[titleBugs.length-1];
+    bug.y=-48-i*21;
+    // Nudge each enemy gently toward the buddy's lane while keeping the wide formation.
+    bug.chasePull=(cx-bug.x)*.055;
+   });
   }
-  for(const b of titleBugs){b.y+=b.speed*dt;b.x+=b.drift*dt+Math.sin(now/800+b.phase)*3.5*dt;b.x=Math.max(16,Math.min(w-16,b.x));drawTitleBug(b,now)}
+  for(const b of titleBugs){
+   b.y+=b.speed*dt;
+   b.x+=(b.drift+(b.chasePull||0))*dt+Math.sin(now/800+b.phase)*3.5*dt;
+   b.x=Math.max(16,Math.min(w-16,b.x));drawTitleBug(b,now)
+  }
   titleBugs=titleBugs.filter(b=>b.y<h+60);
-  if(buddyY<h+80)drawTitleBuddy(cx,buddyY,now,lookBack);
+  if(!buddyHidden&&buddyY<h+80)drawTitleBuddy(cx,buddyY,now,lookBack);
  }else{titleLast=now;titleSceneStart=0;titleBugs=[];titleSceneEnemiesSpawned=false}
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
