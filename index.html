@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v9: Areas + Wording Polish -->
+<!-- Big Bug v10: Hornet Music + Simpler Upgrades + Movement Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -60,7 +60,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="pill">⚔️ <span id="dmg">10</span></div>
 </div>
 <div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
-<div id="touchHint" class="hidden">Drag your bug • Attacks are automatic</div><div id="telegraph" class="telegraph hidden">WAVE 1</div>
+<div id="touchHint" class="hidden">Tap or drag to move • Attacks are automatic</div><div id="telegraph" class="telegraph hidden">WAVE 1</div>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
 
 <section id="home" class="screen titleScreen">
@@ -122,13 +122,9 @@ const UP=[
  {id:'heart',icon:'❤️',name:'Leafy Heart',desc:'+30 max HP and heal',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
  {id:'speed',icon:'⚡',name:'Quick Wings',desc:'+20% attack speed',rarity:'common',apply:p=>p.rate*=.80},
  {id:'crit',icon:'💥',name:'Lucky Spots',desc:'+10% critical chance (3×)',rarity:'rare',apply:p=>p.crit+=.10},
- {id:'fire',icon:'🔥',name:'Fireball',desc:'Every 4 attacks launches a fireball',rarity:'rare',apply:p=>p.fireballs++},
- {id:'ice',icon:'❄️',name:'Frost Dust',desc:'Hits slow enemies for 2 seconds',rarity:'rare',apply:p=>p.frost++},
  {id:'magnet',icon:'🧲',name:'Pollen Magnet',desc:'+65 pickup range and auto-collects drops',rarity:'common',apply:p=>p.magnet+=65},
  {id:'greed',icon:'🔩',name:'Scrap Scrounger',desc:'+60% Scrap dropped by enemies',rarity:'rare',apply:p=>p.greed*=1.6},
- {id:'thorns',icon:'🌵',name:'Spiky Shell',desc:'Reflect 30% contact damage',rarity:'rare',apply:p=>p.thorns+=.30},
- {id:'meteor',icon:'☄️',name:'Falling Acorn',desc:'Every 10 seconds, blast nearby enemies',rarity:'epic',apply:p=>p.meteor++},
- {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Adds a little buddy. Stack it to make helpers stronger, faster, and more numerous',rarity:'epic',apply:p=>p.clones++},
+ {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Adds a little buddy that attacks nearby enemies',rarity:'epic',apply:p=>p.clones++},
  {id:'gold',icon:'⚙️',name:'Salvage Rush',desc:'+15% move speed and +15% Scrap drops',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
 ];
 
@@ -138,6 +134,16 @@ function initAudio(){try{audio=audio||new(window.AudioContext||window.webkitAudi
 function beep(f=440,d=.05,g=.025,type='sine'){if(!audio)return;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
+let bossMusicTimer=null,bossMusicStep=0;
+function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}bossMusicStep=0}
+function bossMusicStart(){
+ bossMusicStop();if(!audio)return;
+ // short hornet entrance sting, then a tense looping synthetic boss rhythm
+ beep(115,.20,.038,'sawtooth');setTimeout(()=>beep(172,.18,.030,'square'),110);setTimeout(()=>beep(230,.22,.024,'sawtooth'),210);
+ const notes=[146,174,196,174,130,174,220,196,146,196,233,174,130,164,196,220];
+ const tick=()=>{if(!game||game.over||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
+ bossMusicTimer=setTimeout(tick,380);
+}
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('touchHint').classList.toggle('hidden',!on)}
 
 function buildBugScreen(){
@@ -169,7 +175,7 @@ function buyShop(k){
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
 function basePlayer(){
- const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:165,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0};
+ const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:260,moveX:W/2,moveY:H/2,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0};
  const s=save.upgrades;p.maxHp+=s.hp*10;p.hp=p.maxHp;p.damage+=s.dmg;p.magnet+=s.magnet*20;p.greed*=1+s.coins*.10;
  BUGS[save.selected].bonus(p);return p;
 }
@@ -232,7 +238,7 @@ function spawnEnemy(type='normal', forcedKind=null){
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:'chase',cool:Math.random()*1.5+.8,stateT:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5};
  game.enemies.push(e);
- if(boss){game.boss=e;$('bossName').textContent='👑 THE HORNET';$('bossbar').style.display='block'}
+ if(boss){game.boss=e;$('bossName').textContent='👑 THE HORNET';$('bossbar').style.display='block';bossMusicStart()}
  return e;
 }
 function burst(x,y,n=8,life=.5,col=null){
@@ -250,7 +256,7 @@ function damageEnemy(e,d,source='player'){
  if(e.hp<=0){
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
    let val=Math.max(1,Math.floor((2+game.wave*.35)*game.p.greed));
-   if(e.boss)val*=12;
+   if(e.boss){val*=12;bossMusicStop();}
    game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?12:9,age:0,phase:Math.random()*6.28});
    burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
    game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
@@ -318,6 +324,9 @@ function enemyMove(e,dt){
 function update(dt,now){
  const g=game,p=g.p;if(g.paused||g.over)return;
  g.time+=dt;
+ // speed-limited movement: taps set a destination instead of instantly teleporting the bug
+ let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.hypot(mdx,mdy);
+ if(md>1){let step=Math.min(md,p.speed*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
  // quota-based waves: spawn a set number, then clear the field
  if(g.waveActive&&g.wave%5!==0){
    g.spawn+=dt*1000;
@@ -391,7 +400,7 @@ function updateHud(){
  const prog=$('waveProgress');if(g.wave%5===0)prog.textContent=g.boss?' BOSS':' CLEAR';else prog.textContent=' '+Math.min(g.waveQuota,g.waveKills)+'/'+g.waveQuota;
 }
 function finish(won){
- if(game.over)return;game.over=true;showGameUI(false);$('bossbar').style.display='none';
+ if(game.over)return;game.over=true;bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0,earned=coins+Math.floor(game.wave/2);
  save.scrap+=earned;save.best=Math.max(save.best,game.wave);save.runs++;persist();
  $('overTitle').textContent=won?'RUN COMPLETE!':'YOU GOT SQUISHED!';
@@ -500,7 +509,7 @@ function draw(){
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
  // Tiny Helpers visibly orbit the player; each one attacks on its own timer
- for(let i=0;i<p.clones;i++){let a=game.time*1.8+i*6.283/p.clones,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38;X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2);X.font='20px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore();X.strokeStyle='#8fd6ff88';X.lineWidth=1.5;X.beginPath();X.arc(hx,hy,13,0,6.28);X.stroke()}
+ for(let i=0;i<p.clones;i++){let a=game.time*1.8+i*6.283/p.clones,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38;X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2);X.font='20px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore()}
 }
 function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;update(dt,now);draw();raf=requestAnimationFrame(loop)}
 function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true)}}
@@ -517,7 +526,7 @@ document.addEventListener('click',e=>{
 $('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;showGameUI(false);screen('pause')};
 let drag=false;
 function pointerPos(e){return e.touches?e.touches[0]:e}
-function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e);game.p.x=Math.max(game.p.r,Math.min(W-game.p.r,t.clientX));game.p.y=Math.max(game.p.r,Math.min(H-game.p.r,t.clientY))}
+function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
 C.addEventListener('pointerdown',e=>{initAudio();drag=true;movePlayer(e)});
 addEventListener('pointermove',e=>{if(drag)movePlayer(e)});
 addEventListener('pointerup',()=>drag=false);
