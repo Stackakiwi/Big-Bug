@@ -289,6 +289,8 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
+// v17.6.1 — suspend the title animation RAF completely while the home screen is hidden.
+// No gameplay or visual changes; this only removes invisible background work.
 // v17.5.13 — late-wave performance pass + 25% larger player attack visual.
 // Gameplay values, enemy counts, damage, speed, and arena visuals are unchanged.
 // v17.5.2 — Beetle and Butterfly are post-game rewards. Existing clears still count.
@@ -408,7 +410,7 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(){
- initAudio();titleMusicStop();hideAll();showGameUI(true);
+ initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
  beginWave(1);
@@ -1118,9 +1120,9 @@ function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;s
 document.addEventListener('click',e=>{
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
- if(a==='home'){if(game&&!game.over)game.paused=true;bossMusicStop();showGameUI(false);screen('home');$('homeBest').textContent=save.best;titleMusicStart()}
- if(a==='bugs'){showGameUI(false);buildBugScreen();screen('bugs')}
- if(a==='base'){showGameUI(false);buildShop();screen('base')}
+ if(a==='home'){if(game&&!game.over)game.paused=true;bossMusicStop();showGameUI(false);screen('home');startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart()}
+ if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
+ if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
  if(a==='resume'){startOrResume()}
  if(a==='quit'){quitRun()}
 });
@@ -1253,14 +1255,22 @@ function titleGardenLoop(now){
    // Never end/clear the intro while an enemy is still visible.
    if(t>=6.15&&titleBugs.length===0)finishTitleScene();
   }
- }else{titleLast=now;titleBugs=[]}
+ }else{titleLast=now;titleBugs=[];titleRAF=0;return}
+ titleRAF=requestAnimationFrame(titleGardenLoop);
+}
+function stopTitleGardenLoop(){
+ if(titleRAF){cancelAnimationFrame(titleRAF);titleRAF=0}
+}
+function startTitleGardenLoop(){
+ if(!titleGarden||!TG||titleRAF)return;
+ titleLast=performance.now();
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();
 // IMPORTANT: initialize the first scene's spread offsets before the animation begins.
 // Previous builds started the timer without ever filling titleSceneEnemyOffsets, so the buddy ran correctly but no enemies were created.
 resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);
-addEventListener('resize',resizeTitleGarden);titleRAF=requestAnimationFrame(titleGardenLoop);
+addEventListener('resize',resizeTitleGarden);startTitleGardenLoop();
 
 // Browsers—especially iPhone/iPad Safari—require a real user gesture before audible WebAudio can run.
 // We still attempt immediately on page show, then reliably unlock/start the title music on the very first interaction.
