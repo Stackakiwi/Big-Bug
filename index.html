@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17: Road to Wave 100 -->
+<!-- Big Bug v17.2: Slow-Burn Garden Story -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -267,26 +267,26 @@ const BUGS={
 };
 
 const GARDEN_STORY={
-5:{title:'A Buzz Out of Place',text:'Purple flecks cling to the Hornet’s wings. Something in the garden has made it furious.'},
-10:{title:'Antlers in the Thicket',text:'The Stag King falls. The same strange dust is packed into the cracks of his shell.'},
-15:{title:'Silk and Shadows',text:'The Venom Queen retreats. “Not my venom,” she rasps. Purple stains creep along the oldest roots.'},
-20:{title:'Something Below',text:'The Mole Cricket was digging away from something—not toward you. The soil beneath the hollow is warm.'},
-25:{title:'The Iron Gatekeeper',text:'An old warning mark is scratched into the Iron Scarab’s shell. The path ahead was meant to stay sealed.'},
-30:{title:'Across the Creek',text:'The Sky Lancer falls from the air. Beyond the water, the purple trail is getting brighter.'},
-35:{title:'The Tyrant’s Warning',text:'The Praying Tyrant lowers its scythes. Even the fiercest hunters are afraid of what is waking below.'},
-40:{title:'Beyond the Roses',text:'A narrow trail opens beyond the garden wall. Whatever started this now knows the ladybug is coming.'},
-45:{title:'Tall Grass, Deep Tracks',text:'Huge roots have pushed through the wild grass overnight. They point toward the oldest part of the garden.'},
-50:{title:'Rotwood',text:'The dead wood is alive with purple threads. They are not roots. They look almost like veins.'},
-55:{title:'Bramble Warning',text:'The berries are untouched, but the thorns twist toward every passing bug. The garden itself is changing.'},
-60:{title:'Stone and Silence',text:'For a moment the garden goes completely quiet. Then something enormous shifts beneath the stones.'},
-65:{title:'The Long Rain',text:'Purple spores wash into every puddle. They keep moving even after the rain stops.'},
-70:{title:'Across the Pond',text:'The pond guardian was keeping bugs away from the far bank. Now you can see why.'},
-75:{title:'Empty Webs',text:'The old webs are abandoned. Even the spiders have fled toward safer ground.'},
-80:{title:'The Old Roots',text:'The roots pulse faintly beneath your feet. Whatever is below is no longer sleeping.'},
-85:{title:'Sporewood',text:'Spores burst from the fallen guardian. The purple glow is everywhere now. The source is close.'},
-90:{title:'Old Enemies',text:'Two old guardians attack together, driven back into a fury by the spores. Something is using them.'},
-95:{title:'The Last Stand',text:'The final controlled guardians fall. Ahead, every root in the garden leads to the same place.'},
-100:{title:'The Garden Is Quiet',text:'The strange glow fades beneath the roots. For the first time in a long while, nothing is chasing you. The garden belongs to the bugs again.'}
+5:{title:'First Big Fight',text:'The Hornet finally buzzes off. The garden feels a little quieter now.'},
+10:{title:'Through the Thicket',text:'The Stag King disappears beneath the leaves. A narrow path opens ahead.'},
+15:{title:'Sticky Situation',text:'The Venom Queen retreats into her web. Best not to follow her.'},
+20:{title:'A Way Through',text:'The Mole Cricket leaves behind a maze of tunnels. One of them leads onward.'},
+25:{title:'Something Strange',text:'A faint purple dust clings to the Iron Scarab’s shell. You have not seen that before.'},
+30:{title:'A Purple Trail',text:'More of the strange dust lies beyond the creek. It seems to form a trail.'},
+35:{title:'The Tyrant’s Ground',text:'The Praying Tyrant was guarding a patch of twisted roots. They do not look healthy.'},
+40:{title:'Beyond the Roses',text:'The trail continues past the garden wall. Whatever left it came from somewhere deeper.'},
+45:{title:'Tracks in the Grass',text:'The purple trail is easier to follow now. Some of the grass nearby has begun to curl away from it.'},
+50:{title:'Threads in the Wood',text:'Thin purple strands run through the rotten wood. They look almost like tiny roots.'},
+55:{title:'The Bramble Moves',text:'The thorns shift even when there is no wind. Something is spreading through the garden.'},
+60:{title:'Under the Stones',text:'Something large moves far beneath the stone garden. For a moment, the purple strands pulse with it.'},
+65:{title:'Spores in the Rain',text:'The rain should wash the purple dust away. Instead, tiny spores rise from the puddles.'},
+70:{title:'The Far Bank',text:'The Pond Skater was keeping other bugs away from this side of the water. Maybe it had a reason.'},
+75:{title:'Empty Webs',text:'The old webs are abandoned. Even the spiders have left this part of the garden behind.'},
+80:{title:'The Old Roots',text:'The oldest roots in the garden are covered in the same purple growth. Something beneath them is awake.'},
+85:{title:'Sporeback',text:'The beetle was not attacking on its own. Fungal growth covers its shell and moves even after it falls.'},
+90:{title:'Not Themselves',text:'The Hornet and Praying Tyrant return together. Purple growth twists across them both. Something is controlling the garden’s creatures.'},
+95:{title:'The Last Guardians',text:'The final corrupted guardians fall. Every infected root leads toward one place beneath the garden.'},
+100:{title:'The Garden Is Quiet',text:'The Garden Heart is gone. The purple glow fades from the roots, the spores settle, and the bugs slowly return. The garden belongs to the bugs again.'}
 };
 let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;$('story').classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
@@ -898,7 +898,7 @@ function draw(){
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
- if((p.hurtFlash||0)>0){X.save();X.globalAlpha=Math.min(.45,p.hurtFlash*2.5);X.strokeStyle='#ff665b';X.lineWidth=3;X.beginPath();X.arc(p.x,p.y,p.r+7,0,6.28);X.stroke();X.restore()}
+
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
  const hs=p.helpers||[],activeHs=hs.filter(h=>!h.leaving);
  hs.forEach((h,idx)=>{let hx,hy;if(h.leaving){hx=h.x;hy=h.y}else{let i=activeHs.indexOf(h),a=game.time*1.8+i*6.283/Math.max(1,activeHs.length);hx=p.x+Math.cos(a)*38;hy=p.y+Math.sin(a)*38}
