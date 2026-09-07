@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.4.4: Early Boss Balance -->
+<!-- Big Bug v17.5.0: Permanent Upgrade Economy + Bug Roster Cleanup -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -256,14 +256,16 @@ const screens=['home','bugs','base','upgrade','pause','gameover'];
 function screen(id){screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));}
 const SAVEKEY='big_bug_save_v1';
 let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0};
+if(save.selected==='dragonfly')save.selected='butterfly';
+save.unlocked=(save.unlocked||['ladybug']).map(x=>x==='dragonfly'?'butterfly':x).filter(x=>['ladybug','beetle','butterfly'].includes(x));
+if(!save.unlocked.includes('ladybug'))save.unlocked.unshift('ladybug');
+if(!['ladybug','beetle','butterfly'].includes(save.selected))save.selected='ladybug';
+save.goldLeaves=save.goldLeaves||0;
 
 const BUGS={
  ladybug:{name:'Ladybug',art:'🐞',desc:'Balanced starter. +10% crit chance.',cost:0,bonus:p=>p.crit+=.10},
  beetle:{name:'Beetle',art:'🪲',desc:'Tanky. +35 max HP, slower attack.',cost:100,bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.rate*=1.12}},
- mantis:{name:'Mantis',art:'🦗',desc:'Hits hard. +25% damage, -10% HP.',cost:180,bonus:p=>{p.damage*=1.25;p.maxHp*=.9;p.hp=p.maxHp}},
- firefly:{name:'Firefly',art:'✨',desc:'Glow power. +1 projectile and +15% move speed.',cost:260,bonus:p=>{p.fireflies++;p.speed*=1.15}},
- dragonfly:{name:'Dragonfly',art:'🦋',desc:'Swift. +35% attack speed and magnet range.',cost:400,bonus:p=>{p.rate*=.65;p.magnet+=70}},
- spider:{name:'Spider',art:'🕷️',desc:'Venom. Attacks poison enemies for stacking damage.',cost:600,bonus:p=>p.poison+=1}
+ butterfly:{name:'Butterfly',art:'🦋',desc:'Swift. +35% attack speed and magnet range.',cost:400,bonus:p=>{p.rate*=.65;p.magnet+=70}}
 };
 
 const GARDEN_STORY={
@@ -342,25 +344,25 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-  ['❤️','Tough Leaves','+10 starting HP',100+s.hp*80,'hp'],
-  ['🗡️','Stronger Shell','+1 starting damage',100+s.dmg*100,'dmg'],
-  ['🎲','Extra Choice','+1 upgrade choice',250+s.choices*250,'choices'],
-  ['🧲','Sticky Pollen','+20 starting magnet',150+s.magnet*120,'magnet'],
-  ['🔩','Leaves Sense','+10% Leaves found during runs',200+s.coins*150,'coins']
+   ['❤️','Tough Leaves','+10 starting HP',2500+s.hp*2500,'hp',1+s.hp],
+   ['🗡️','Stronger Shell','+1 starting damage',3000+s.dmg*3000,'dmg',1+s.dmg],
+   ['🎲','Extra Choice','+1 upgrade choice',7500+s.choices*7500,'choices',2+s.choices],
+   ['🧲','Sticky Pollen','+20 starting magnet',3500+s.magnet*3500,'magnet',1+s.magnet],
+   ['🔩','Leaves Sense','+10% Leaves found during runs',5000+s.coins*5000,'coins',1+s.coins]
  ];
- $('shop').innerHTML=`<div class="shopRow"><div><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span></div></div></div>`+
- rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}</button></div>`).join('');
+ $('shop').innerHTML=`<div class="shopRow"><div><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span> · Permanent upgrades are intentionally expensive.</div></div></div>`+
+  rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}<br>Future Gold Leaf cost: ${r[5]} ✨</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
 function buyShop(k){
- const s=save.upgrades, costs={hp:100+s.hp*80,dmg:100+s.dmg*100,choices:250+s.choices*250,magnet:150+s.magnet*120,coins:200+s.coins*150};
+ const s=save.upgrades, costs={hp:2500+s.hp*2500,dmg:3000+s.dmg*3000,choices:7500+s.choices*7500,magnet:3500+s.magnet*3500,coins:5000+s.coins*5000};
  if(save.scrap<costs[k])return;
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[]};
  const s=save.upgrades;p.maxHp+=s.hp*10;p.hp=p.maxHp;p.damage+=s.dmg;p.magnet+=s.magnet*20;p.greed*=1+s.coins*.10;
- BUGS[save.selected].bonus(p);return p;
+ (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(){
  initAudio();titleMusicStop();hideAll();showGameUI(true);
