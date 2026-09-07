@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.2: Slow-Burn Garden Story -->
+<!-- Big Bug v17.3: Boss Personality + Ladybug Legs -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -589,12 +589,23 @@ function enemyMove(e,dt){
    }
  }
  if(e.boss&&e.kind==='mantisBoss'&&e.shotCd<=0){e.shotCd=1.05;flashBanner('✂️ SCYTHE SLASH!',.32);for(let a of [-.28,0,.28]){let ang=Math.atan2(dy,dx)+a,spd=245;game.fx.push({x:e.x,y:e.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:2.0,r:6,sting:true,damage:9+game.wave*.2})}}
- if(e.boss&&['stagBeetle','moleCricket','dragonflyBoss','centipede','earwig','cicada','bombardier','mothBoss','waterStrider','weevil','tarantula','rootBorer','sporeBeetle','gardenHeart'].includes(e.kind)&&e.shotCd<=0){
-   const idx=['stagBeetle','moleCricket','dragonflyBoss','centipede','earwig','cicada','bombardier','mothBoss','waterStrider','weevil','tarantula','rootBorer','sporeBeetle','gardenHeart'].indexOf(e.kind);
-   e.shotCd=Math.max(.72,1.9-idx*.045);
-   const count=e.kind==='gardenHeart'?12:(3+(idx%5)),spd=e.kind==='dragonflyBoss'||e.kind==='waterStrider'?245:155+idx*7;
-   for(let i=0;i<count;i++){let a=(e.kind==='gardenHeart'?i*6.283/count:Math.atan2(dy,dx)+(i-(count-1)/2)*.16);game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.7,r:e.kind==='gardenHeart'?6:4.5,sting:true,venom:e.kind==='sporeBeetle'||e.kind==='gardenHeart'||e.kind==='mothBoss',damage:7+game.wave*.19})}
-   if(e.kind==='rootBorer'||e.kind==='gardenHeart')webPatch(Math.max(40,Math.min(W-40,p.x)),Math.max(95,Math.min(H-40,p.y)),e.kind==='gardenHeart'?76:54,e.kind==='gardenHeart'?4.2:2.8);
+ if(e.boss&&e.shotCd<=0){
+   const aim=Math.atan2(dy,dx);
+   const shoot=(a,spd,damage=7+game.wave*.19,venom=false,r=4.5)=>game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.7,r,sting:true,venom,damage});
+   if(e.kind==='stagBeetle'){e.shotCd=2.5;e.state='dash';e.stateT=.72;e.vx=Math.cos(aim)*285;e.vy=Math.sin(aim)*285;flashBanner('ANTLER CHARGE!',.28)}
+   else if(e.kind==='moleCricket'){e.shotCd=2.7;e.state='pounce';e.stateT=.5;e.x=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*120));e.y=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*120));burst(e.x,e.y,8,.45,'#8b6a45');flashBanner('BURROW!',.25)}
+   else if(e.kind==='dragonflyBoss'){e.shotCd=1.65;e.state='dash';e.stateT=.55;e.vx=Math.cos(aim)*360;e.vy=Math.sin(aim)*360;for(let a of [-.1,.1])shoot(aim+a,280,8+game.wave*.16)}
+   else if(e.kind==='centipede'){e.shotCd=2.05;for(let i=0;i<7;i++)shoot(aim+(i-3)*.12,190,8+game.wave*.18);e.state='dash';e.stateT=.42;e.vx=Math.cos(aim)*205;e.vy=Math.sin(aim)*205}
+   else if(e.kind==='earwig'){e.shotCd=1.75;if(d<150){hurtPlayer(7+game.wave*.16);flashBanner('PINCH!',.18)}else for(let a of [-.22,.22])shoot(aim+a,220)}
+   else if(e.kind==='cicada'){e.shotCd=2.35;for(let i=0;i<12;i++)shoot(i*6.283/12,155,7+game.wave*.16,false,5.5);flashBanner('BUZZ WAVE!',.25)}
+   else if(e.kind==='bombardier'){e.shotCd=1.55;let back=aim+Math.PI;for(let i=-2;i<=2;i++)shoot(back+i*.16,165,8+game.wave*.18,true,5)}
+   else if(e.kind==='mothBoss'){e.shotCd=2.15;for(let i=0;i<6;i++)shoot(i*6.283/6+t*.3,92,7+game.wave*.15,true,7)}
+   else if(e.kind==='waterStrider'){e.shotCd=1.45;e.state='dash';e.stateT=.48;e.vx=Math.cos(aim)*330;e.vy=Math.sin(aim)*330;webPatch(p.x,p.y,42,1.8)}
+   else if(e.kind==='weevil'){e.shotCd=2.15;e.state='dash';e.stateT=.62;e.vx=Math.cos(aim)*270;e.vy=Math.sin(aim)*270;for(let a of [-.16,0,.16])shoot(aim+a,205)}
+   else if(e.kind==='tarantula'){e.shotCd=2;webPatch(p.x,p.y,68,4);for(let a of [-.2,0,.2])shoot(aim+a,180,9+game.wave*.17,true)}
+   else if(e.kind==='rootBorer'){e.shotCd=2.45;for(let i=0;i<3;i++)webPatch(Math.max(40,Math.min(W-40,p.x+(i-1)*70)),Math.max(110,Math.min(H-45,p.y+(Math.random()-.5)*80)),48,2.7)}
+   else if(e.kind==='sporeBeetle'){e.shotCd=1.75;for(let i=0;i<8;i++)shoot(i*6.283/8+t*.18,125,8+game.wave*.17,true,6);webPatch(e.x,e.y,58,3.2)}
+   else if(e.kind==='gardenHeart'){e.shotCd=1.25;for(let i=0;i<12;i++)shoot(i*6.283/12+t*.12,165,9+game.wave*.18,true,6);if(Math.random()<.65)webPatch(p.x,p.y,76,4.2)}
  }
  if(e.boss){
    e.addCd-=dt;
@@ -831,6 +842,23 @@ function drawEnemy(e){
   for(let side of [-1,1]){line(side*6,-5,side*(r+7),-10+step,2.3);line(side*7,2,side*(r+9),4-step,2.3);line(side*5,10,side*(r+7),17+step2,2.3)}
   X.fillStyle='#39473d';X.beginPath();X.ellipse(0,5,r*.82,r*1.02,0,0,6.28);X.fill();X.strokeStyle='#65786b';X.lineWidth=2;X.beginPath();X.moveTo(0,-r*.8);X.lineTo(0,r*.92);X.stroke();X.fillStyle='#4b5e50';X.beginPath();X.arc(0,-r*.65,r*.58,0,6.28);X.fill();eye(-r*.2,-r*.74,2.2);eye(r*.2,-r*.74,2.2);X.fillStyle='#1c211d';X.beginPath();X.moveTo(-4,-r*.98);X.lineTo(-9,-r*1.35);X.lineTo(-2,-r*1.14);X.moveTo(4,-r*.98);X.lineTo(9,-r*1.35);X.lineTo(2,-r*1.14);X.fill();
  }
+
+ if(e.boss){
+   const rr=r;
+   if(e.kind==='stagBeetle'){line(-rr*.28,-rr*.55,-rr*.72,-rr*1.22,5,'#4a2d20');line(rr*.28,-rr*.55,rr*.72,-rr*1.22,5,'#4a2d20')}
+   if(e.kind==='moleCricket'){for(let q of [-1,1])line(q*rr*.35,0,q*rr*1.18,-rr*.55,8,'#a48658')}
+   if(e.kind==='dragonflyBoss'){X.globalAlpha=.48;X.fillStyle='#b9e5dd';for(let q of [-1,1]){X.beginPath();X.ellipse(q*rr*.78,0,rr*.78,rr*.23,q*.35,0,6.28);X.fill()}X.globalAlpha=1}
+   if(e.kind==='centipede'){for(let i=1;i<=4;i++){X.fillStyle=i%2?'#b55a48':'#8f4138';X.beginPath();X.arc(0,rr*.35+i*rr*.3,rr*.4,0,6.28);X.fill()}}
+   if(e.kind==='earwig'){for(let q of [-1,1]){X.strokeStyle='#4b3025';X.lineWidth=6;X.beginPath();X.arc(q*rr*.3,rr*.78,rr*.38,0,Math.PI);X.stroke()}}
+   if(e.kind==='cicada'){X.globalAlpha=.38;X.fillStyle='#e3e8ca';for(let q of [-1,1]){X.beginPath();X.ellipse(q*rr*.78,0,rr*.7,rr*.3,q*.2,0,6.28);X.fill()}X.globalAlpha=1}
+   if(e.kind==='bombardier'){X.fillStyle='#d87839';X.beginPath();X.arc(0,rr*.72,rr*.32,0,6.28);X.fill()}
+   if(e.kind==='mothBoss'){X.globalAlpha=.58;X.fillStyle='#c7a7ce';for(let q of [-1,1]){X.beginPath();X.ellipse(q*rr*.75,0,rr*.72,rr*.52,q*.18,0,6.28);X.fill()}X.globalAlpha=1}
+   if(e.kind==='waterStrider'){for(let q of [-1,1])for(let yy of [-.35,.1,.55])line(q*rr*.18,rr*yy,q*rr*1.35,rr*(yy-.22),2,'#426b68')}
+   if(e.kind==='weevil'){line(0,-rr*.45,0,-rr*1.35,8,'#535b31')}
+   if(e.kind==='tarantula'){for(let q of [-1,1])for(let i=0;i<4;i++)line(q*rr*.3,-rr*.55+i*rr*.35,q*rr*1.2,-rr*.7+i*rr*.48,5,'#39283a')}
+   if(e.kind==='rootBorer'){X.strokeStyle='#8d6849';X.lineWidth=5;X.beginPath();X.arc(0,0,rr*1.18,.2,Math.PI-.2);X.stroke()}
+   if(e.kind==='sporeBeetle'){X.fillStyle='#b77cc1';for(let i=0;i<5;i++){let a=i*1.25+t*.08;X.beginPath();X.arc(Math.cos(a)*rr*.65,Math.sin(a)*rr*.65,5+i%2*2,0,6.28);X.fill()}}
+ }
  X.restore();
 }
 function draw(){
@@ -897,6 +925,11 @@ function draw(){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
+ X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);
+ const legMoving=Math.hypot((p.moveX??p.x)-p.x,(p.moveY??p.y)-p.y)>3;
+ const legWig=legMoving?Math.sin(game.time*(p.boost>0?22:14))*4:Math.sin(game.time*2.4)*.7;
+ for(let side of [-1,1])for(let i=0;i<3;i++){let yy=-p.r*.48+i*p.r*.48,phase=(i%2?1:-1)*legWig;X.strokeStyle='#241c18';X.lineWidth=2.4;X.lineCap='round';X.beginPath();X.moveTo(side*p.r*.42,yy);X.lineTo(side*p.r*.76,yy+phase);X.lineTo(side*p.r*1.02,yy-phase*.35);X.stroke()}
+ X.restore();
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
 
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
