@@ -206,6 +206,20 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #base .shopRow .btn{min-width:118px;margin:0 0 0 8px;border-radius:18px;padding:13px 12px;font-size:17px}
 #base>.panel>.btn[data-action="home"]{display:block;width:100%;margin:16px 0 2px;min-height:58px}
 @media(max-width:430px){#base{padding:12px}#base .panel{padding:18px 12px 14px}#base .panel h2{font-size:29px}#base .shopRow{padding:12px 10px;min-height:96px}#base .shopIcon{font-size:33px;width:40px}#base .shopRow b{font-size:18px}#base .shopRow .muted{font-size:14px}#base .shopRow .btn{min-width:105px;font-size:16px;padding:12px 9px}}
+
+
+/* v17.5.4 — living title garden */
+#home{position:fixed;isolation:isolate;overflow:hidden}
+#titleGarden{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#home>*:not(#titleGarden){position:relative;z-index:1}
+.titleScreen{
+  background:
+    radial-gradient(ellipse at 14% 17%,#e3f1c455 0 7%,transparent 25%),
+    radial-gradient(ellipse at 84% 31%,#416d3650 0 8%,transparent 28%),
+    radial-gradient(ellipse at 28% 83%,#254a2d55 0 10%,transparent 31%),
+    linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);
+}
+
 </style>
 </head>
 <body>
@@ -223,6 +237,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <button id="pauseBtn" class="hidden">Ⅱ</button>
 
 <section id="home" class="screen titleScreen">
+  <canvas id="titleGarden" aria-hidden="true"></canvas>
   <div class="bugHero">🐞</div>
   <div class="logo">BIG<br>BUG<small>SMALL BUG. BIG DREAMS.</small></div>
   <div class="tag">Survive. Upgrade. Get BIGGER.</div>
@@ -1036,6 +1051,61 @@ addEventListener('pointerup',()=>drag=false);
 C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
 C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
 C.addEventListener('touchend',()=>drag=false);
+
+
+// v17.5.4 — opening-screen garden life: lightweight enemy crawl + leaf texture.
+const titleGarden=$('titleGarden'),TG=titleGarden?.getContext('2d');
+let titleBugs=[],titleSpawnAt=0,titleLast=performance.now(),titleRAF=0,titleLeafSeed=[];
+const TITLE_KINDS=['ant','beetle','spider','wasp','stink'];
+function resizeTitleGarden(){
+ if(!titleGarden||!TG)return;const r=titleGarden.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);
+ titleGarden.width=Math.max(1,Math.floor(r.width*d));titleGarden.height=Math.max(1,Math.floor(r.height*d));TG.setTransform(d,0,0,d,0,0);
+ if(!titleLeafSeed.length){for(let i=0;i<30;i++)titleLeafSeed.push({x:(i*83+19)%997/997,y:(i*137+41)%991/991,s:5+(i%5)*2,a:(i*.71)%6.28,c:i%3})}
+}
+function titleLine(x1,y1,x2,y2,w=2,c='#25301d'){TG.strokeStyle=c;TG.lineWidth=w;TG.lineCap='round';TG.beginPath();TG.moveTo(x1,y1);TG.lineTo(x2,y2);TG.stroke()}
+function titleEye(x,y,r=1.7){TG.fillStyle='#180b08';TG.beginPath();TG.arc(x,y,r+1,0,6.28);TG.fill();TG.fillStyle='#ee4338';TG.beginPath();TG.arc(x,y,r,0,6.28);TG.fill()}
+function drawTitleBug(b,now){
+ const r=b.r,t=now/1000+b.phase,step=Math.sin(t*13)*3,step2=Math.cos(t*12)*3;
+ TG.save();TG.translate(b.x,b.y);TG.rotate(b.wobble+Math.sin(t*2.8)*.035);TG.shadowColor='#11241266';TG.shadowBlur=5;TG.shadowOffsetY=4;
+ if(b.kind==='ant'){
+  for(const s of [-1,1]){titleLine(s*3,-2,s*12,-8+step,2);titleLine(s*4,3,s*13,5-step,2);titleLine(s*2,8,s*11,14+step2,2)}
+  TG.fillStyle='#6d281f';TG.beginPath();TG.ellipse(0,8,r*.66,r*.72,0,0,6.28);TG.fill();TG.fillStyle='#9b3328';TG.beginPath();TG.arc(0,-3,r*.5,0,6.28);TG.fill();TG.fillStyle='#722018';TG.beginPath();TG.arc(0,-r*.85,r*.46,0,6.28);TG.fill();titleLine(-3,-r*1.15,-8,-r*1.65,1.4);titleLine(3,-r*1.15,8,-r*1.65,1.4);titleEye(-r*.18,-r*.92);titleEye(r*.18,-r*.92);
+ }else if(b.kind==='spider'){
+  for(const s of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);titleLine(s*5,yy,s*(r+8),yy+(i-1.5)*4+w,2.3,'#241c2c');titleLine(s*(r+8),yy+(i-1.5)*4+w,s*(r+13),yy+(i-1.5)*8-w*.5,1.8,'#241c2c')}
+  TG.fillStyle='#30253a';TG.beginPath();TG.ellipse(0,7,r*.78,r*.92,0,0,6.28);TG.fill();TG.fillStyle='#49334f';TG.beginPath();TG.arc(0,-6,r*.62,0,6.28);TG.fill();titleEye(-r*.2,-9,2);titleEye(r*.2,-9,2);
+ }else if(b.kind==='wasp'){
+  TG.globalAlpha=.42;TG.fillStyle='#eff7ef';TG.beginPath();TG.ellipse(-r*.65,-2,r*.65,r*.28,-.6,0,6.28);TG.ellipse(r*.65,-2,r*.65,r*.28,.6,0,6.28);TG.fill();TG.globalAlpha=1;
+  for(const s of [-1,1]){titleLine(s*5,1,s*(r+8),8+step,2.1);titleLine(s*4,9,s*(r+6),17-step,2.1)}
+  TG.fillStyle='#e0a622';TG.beginPath();TG.ellipse(0,7,r*.7,r,0,0,6.28);TG.fill();TG.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)TG.fillRect(-r*.62,yy,r*1.24,4);TG.fillStyle='#5b371d';TG.beginPath();TG.arc(0,-r*.7,r*.58,0,6.28);TG.fill();titleEye(-r*.2,-r*.78,2);titleEye(r*.2,-r*.78,2);
+ }else{
+  for(const s of [-1,1]){titleLine(s*6,-4,s*(r+7),-10+step,2);titleLine(s*7,3,s*(r+9),4-step,2);titleLine(s*5,10,s*(r+7),17+step2,2)}
+  TG.fillStyle=b.kind==='beetle'?'#596e39':'#728f3f';TG.beginPath();TG.moveTo(0,-r);TG.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);TG.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);TG.quadraticCurveTo(-r*.95,-r*.45,0,-r);TG.fill();TG.strokeStyle='#42572b';TG.lineWidth=2;TG.stroke();titleLine(0,-r*.7,0,r*.6,1.4,'#a6b96b');titleEye(-r*.22,-r*.55);titleEye(r*.22,-r*.55);
+ }
+ TG.restore();
+}
+function spawnTitleBug(initial=false){
+ if(!titleGarden)return;const w=titleGarden.getBoundingClientRect().width,h=titleGarden.getBoundingClientRect().height;
+ const kind=TITLE_KINDS[Math.floor(Math.random()*TITLE_KINDS.length)],r=kind==='spider'?13:12+Math.random()*3;
+ titleBugs.push({kind,r,x:24+Math.random()*Math.max(20,w-48),y:initial?(-30-Math.random()*h*.65):-38,speed:36+Math.random()*28,drift:(Math.random()-.5)*13,phase:Math.random()*6.28,wobble:(Math.random()-.5)*.18});
+}
+function drawTitleTexture(w,h){
+ // tiny ground flecks
+ TG.globalAlpha=.16;for(let i=0;i<26;i++){let x=(i*149+43)%Math.max(1,w),y=(i*211+97)%Math.max(1,h);TG.fillStyle=i%2?'#406735':'#e5efbf';TG.beginPath();TG.arc(x,y,1+(i%3)*.55,0,6.28);TG.fill()}TG.globalAlpha=1;
+ // scattered leaves, kept away from the center so the logo stays readable
+ for(const q of titleLeafSeed){let x=q.x*w,y=q.y*h;if(x>w*.24&&x<w*.76&&y>h*.18&&y<h*.76)continue;TG.save();TG.translate(x,y);TG.rotate(q.a);TG.globalAlpha=.24;TG.fillStyle=q.c===0?'#355f31':q.c===1?'#6f9246':'#a7b96a';TG.beginPath();TG.ellipse(0,0,q.s*1.8,q.s*.68,0,0,6.28);TG.fill();TG.strokeStyle='#d9e6a94d';TG.lineWidth=1;TG.beginPath();TG.moveTo(-q.s*1.25,0);TG.lineTo(q.s*1.25,0);TG.stroke();TG.restore()}TG.globalAlpha=1;
+}
+function titleGardenLoop(now){
+ if(!titleGarden||!TG)return;const homeVisible=!$('home').classList.contains('hidden');
+ if(homeVisible){
+  const w=titleGarden.getBoundingClientRect().width,h=titleGarden.getBoundingClientRect().height,dt=Math.min(.04,(now-titleLast)/1000||.016);titleLast=now;TG.clearRect(0,0,w,h);drawTitleTexture(w,h);
+  if(!titleBugs.length){spawnTitleBug(true);spawnTitleBug(true);spawnTitleBug(true)}
+  if(now>titleSpawnAt&&titleBugs.length<5){spawnTitleBug(false);titleSpawnAt=now+1700+Math.random()*1500}
+  for(const b of titleBugs){b.y+=b.speed*dt;b.x+=b.drift*dt+Math.sin(now/850+b.phase)*4*dt;b.x=Math.max(16,Math.min(w-16,b.x));drawTitleBug(b,now)}
+  titleBugs=titleBugs.filter(b=>b.y<h+55);
+ }else{titleLast=now}
+ titleRAF=requestAnimationFrame(titleGardenLoop);
+}
+resizeTitleGarden();addEventListener('resize',resizeTitleGarden);titleRAF=requestAnimationFrame(titleGardenLoop);
 
 buildBugScreen();buildShop();$('homeBest').textContent=save.best;
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
