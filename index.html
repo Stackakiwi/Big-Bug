@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v12: Boost Burst + Movement Tune + Cleaner HUD -->
+<!-- Big Bug v13: Cozy Title Music + Meaner Enemies + Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -87,7 +87,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 </section>
 
 <section id="pause" class="screen hidden">
- <div class="panel" style="text-align:center"><h2>⏸ PAUSED</h2><p>Take a breather, little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="quit">QUIT RUN</button></div>
+ <div class="panel" style="text-align:center"><h2>⏸ PAUSED</h2><p>Take a breather little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="quit">QUIT RUN</button></div>
 </section>
 
 <section id="gameover" class="screen hidden">
@@ -136,6 +136,15 @@ function initAudio(){try{audio=audio||new(window.AudioContext||window.webkitAudi
 function beep(f=440,d=.05,g=.025,type='sine'){if(!audio)return;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
+let titleMusicTimer=null,titleMusicStep=0;
+function titleMusicStop(){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}titleMusicStep=0}
+function titleMusicStart(){
+ titleMusicStop();if(!audio)return;
+ // Soft, playful garden-loop for the title screen. Kept intentionally quiet.
+ const notes=[523,659,784,659,587,698,784,698,523,659,880,784,587,659,698,659];
+ const tick=()=>{if(!$('home')||$('home').classList.contains('hidden')){titleMusicStop();return}const n=notes[titleMusicStep%notes.length];beep(n,.28,.0065,'sine');if(titleMusicStep%4===0)beep(n/2,.34,.0035,'triangle');titleMusicStep++;titleMusicTimer=setTimeout(tick,420)};
+ tick();
+}
 let bossMusicTimer=null,bossMusicStep=0;
 function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}bossMusicStep=0}
 function bossMusicStart(){
@@ -182,7 +191,7 @@ function basePlayer(){
  BUGS[save.selected].bonus(p);return p;
 }
 function startRun(){
- initAudio();hideAll();showGameUI(true);
+ initAudio();titleMusicStop();hideAll();showGameUI(true);
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
  beginWave(1);
@@ -450,7 +459,7 @@ function finish(won){
 function quitRun(){if(game&&!game.over)finish(false)}
 
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
-function eye(x,y,r=2.5){X.fillStyle='#210d09';X.beginPath();X.arc(x,y,r+1.5,0,6.28);X.fill();X.fillStyle='#ff493f';X.beginPath();X.arc(x,y,r,0,6.28);X.fill();X.fillStyle='#ffd0a8';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill()}
+function eye(x,y,r=2.5){X.fillStyle='#160806';X.beginPath();X.arc(x,y,r+1.7,0,6.28);X.fill();X.fillStyle='#ff3b32';X.beginPath();X.arc(x,y,r,0,6.28);X.fill();X.fillStyle='#ffd0a8';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill();/* tiny angry brow */X.strokeStyle='#160806';X.lineWidth=Math.max(1.4,r*.65);X.lineCap='round';X.beginPath();if(x<0){X.moveTo(x-r*1.35,y-r*1.45);X.lineTo(x+r*.55,y-r*.8)}else{X.moveTo(x+r*1.35,y-r*1.45);X.lineTo(x-r*.55,y-r*.8)}X.stroke()}
 function drawGardenDetails(){
  // fixed decorative details: richer garden, deliberately kept away from UI-heavy edges
  const rocks=[[.16,.29,8,5],[.82,.24,6,4],[.73,.66,9,5],[.25,.76,7,4],[.61,.18,5,3],[.45,.86,8,4]];
@@ -472,7 +481,7 @@ function drawScrap(d){
  X.fillStyle='#eef1e9';X.beginPath();X.arc(d.r*1.28,0,2.4,0,6.28);X.fill();X.shadowColor='transparent';let tw=(Math.sin(performance.now()/180+d.phase)+1)/2;X.strokeStyle='rgba(255,242,184,'+(0.25+tw*.65)+')';X.lineWidth=1.5;X.beginPath();X.moveTo(-d.r*1.15,-d.r*.9);X.lineTo(-d.r*1.15,-d.r*.9-5);X.moveTo(-d.r*1.15-2.5,-d.r*.9-2.5);X.lineTo(-d.r*1.15+2.5,-d.r*.9-2.5);X.stroke();X.restore();
 }
 function drawEnemy(e){
- const r=e.r,t=performance.now()/1000+e.phase,step=Math.sin(t*11)*3.2,step2=Math.cos(t*11)*3.2;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
+ const r=e.r,t=performance.now()/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;if(e.state==='telegraph'){X.save();X.globalAlpha=.8;X.strokeStyle=e.boss?'#ffb23d':'#ff5a4f';X.lineWidth=3;X.beginPath();X.arc(0,0,r+8+Math.sin(performance.now()/80)*2,0,6.28);X.stroke();X.restore();}
  if(e.kind==='ant'){
   for(let side of [-1,1]){line(side*3,-2,side*13,-8+step,2);line(side*4,3,side*14,5-step,2);line(side*2,8,side*12,14+step2,2)}
@@ -480,7 +489,7 @@ function drawEnemy(e){
   X.fillStyle='#2a0c09';X.beginPath();X.moveTo(-3,-r*1.18);X.lineTo(0,-r*1.5);X.lineTo(3,-r*1.18);X.fill();
  }else if(e.kind==='spider'){
   for(let side of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);line(side*5,yy,side*(r+8),yy+(i-1.5)*4+w,2.5,'#241c2c');line(side*(r+8),yy+(i-1.5)*4+w,side*(r+13),yy+(i-1.5)*8-w*.5,2,'#241c2c')}
-  X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();
+  X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();X.fillStyle='#d9d0c2';X.beginPath();X.moveTo(-4,-3);X.lineTo(-1,2);X.lineTo(0,-4);X.moveTo(4,-3);X.lineTo(1,2);X.lineTo(0,-4);X.fill();
  }else if(e.kind==='wasp'||e.kind==='hornet'){
   const big=e.kind==='hornet';let rr=big?r*1.15:r;
   X.globalAlpha=.45;X.fillStyle='#e8f2e9';X.beginPath();X.ellipse(-rr*.65,-2,rr*.65,rr*.28,-.6,0,6.28);X.ellipse(rr*.65,-2,rr*.65,rr*.28,.6,0,6.28);X.fill();X.globalAlpha=1;
@@ -491,7 +500,7 @@ function drawEnemy(e){
   if(big){X.strokeStyle='#f5c358';X.lineWidth=2;X.beginPath();X.arc(0,0,rr+5,0,6.28);X.stroke()}
  }else if(e.kind==='stink'){
   for(let side of [-1,1]){line(side*6,-4,side*(r+7),-10+step,2);line(side*7,3,side*(r+9),4-step,2);line(side*5,10,side*(r+7),17+step2,2)}
-  X.fillStyle='#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
+  X.fillStyle='#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
  }else{
   for(let side of [-1,1]){line(side*6,-5,side*(r+7),-10+step,2.3);line(side*7,2,side*(r+9),4-step,2.3);line(side*5,10,side*(r+7),17+step2,2.3)}
   X.fillStyle='#39473d';X.beginPath();X.ellipse(0,5,r*.82,r*1.02,0,0,6.28);X.fill();X.strokeStyle='#65786b';X.lineWidth=2;X.beginPath();X.moveTo(0,-r*.8);X.lineTo(0,r*.92);X.stroke();X.fillStyle='#4b5e50';X.beginPath();X.arc(0,-r*.65,r*.58,0,6.28);X.fill();eye(-r*.2,-r*.74,2.2);eye(r*.2,-r*.74,2.2);X.fillStyle='#1c211d';X.beginPath();X.moveTo(-4,-r*.98);X.lineTo(-9,-r*1.35);X.lineTo(-2,-r*1.14);X.moveTo(4,-r*.98);X.lineTo(9,-r*1.35);X.lineTo(2,-r*1.14);X.fill();
@@ -556,12 +565,13 @@ function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;s
 document.addEventListener('click',e=>{
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
- if(a==='home'){if(game&&!game.over)game.paused=true;showGameUI(false);screen('home');$('homeBest').textContent=save.best}
+ if(a==='home'){if(game&&!game.over)game.paused=true;bossMusicStop();showGameUI(false);screen('home');$('homeBest').textContent=save.best;titleMusicStart()}
  if(a==='bugs'){showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){showGameUI(false);buildShop();screen('base')}
  if(a==='resume'){startOrResume()}
  if(a==='quit'){quitRun()}
 });
+document.addEventListener('pointerdown',()=>{if(!$('home').classList.contains('hidden')){initAudio();if(!titleMusicTimer)titleMusicStart()}},{passive:true});
 $('boostBtn').onclick=useBoost;
 $('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;showGameUI(false);screen('pause')};
 let drag=false;
