@@ -577,10 +577,28 @@ function meteor(){burst(game.p.x,game.p.y,45,1,'#f2cc7b');for(const e of game.en
 function toxicCloud(x,y,r=46,life=2.5,damage=6){
  game.fx.push({x,y,vx:0,vy:0,life,maxLife:life,r,toxic:true,damage,tick:0});
 }
+function showPlayerDamage(amount){
+ if(!game||!game.p||amount<=0)return;
+ const p=game.p,shown=Math.max(1,Math.round(amount));
+ // Red floating number above the player, matching the enemy damage-number feel.
+ if(game.fx.filter(f=>f.playerDamageText).length<8)game.fx.push({x:p.x+(Math.random()-.5)*8,y:p.y-p.r-12,vx:(Math.random()-.5)*9,vy:-31,life:.78,maxLife:.78,r:0,playerDamageText:shown});
+ // A deliberately quiet, soft hurt sound so it reads without fighting the music.
+ beep(165,.045,.008,'triangle');
+}
 function hurtPlayer(amount){
  if(!game||!game.p||amount<=0)return;
  const p=game.p;p.hp-=amount;p.hurtFlash=.18;
  if(amount>=Math.max(4,p.maxHp*.035))game.shake=Math.max(game.shake||0,2.4);
+ // Direct hits show immediately. Continuous contact/poison damage is accumulated briefly
+ // so the player sees useful whole-number damage instead of a flood of tiny decimals.
+ const now=performance.now();
+ if(amount>=1.5){
+   if((p.pendingDamage||0)>0){showPlayerDamage(p.pendingDamage);p.pendingDamage=0}
+   showPlayerDamage(amount);p.lastDamagePopup=now;
+ }else{
+   p.pendingDamage=(p.pendingDamage||0)+amount;
+   if(!p.lastDamagePopup)p.lastDamagePopup=now;
+ }
 }
 function webPatch(x,y,r=52,life=3.6){
  game.fx.push({x,y,vx:0,vy:0,life,maxLife:life,r,web:true});
@@ -688,6 +706,8 @@ function separateEnemies(){
 }
 function update(dt,now){
  const g=game,p=g.p;if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);
+ // Flush accumulated contact damage into one readable popup roughly six times per second.
+ if((p.pendingDamage||0)>0&&performance.now()-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=performance.now()}
  g.time+=dt;
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.hypot(mdx,mdy);
@@ -1002,6 +1022,14 @@ function draw(){
      for(let ring=1;ring<=3;ring++){X.beginPath();for(let i=0;i<=8;i++){let a=i*6.283/8,rr=f.r*ring/3;if(i===0)X.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.stroke()}
      for(let i=0;i<8;i++){let a=i*6.283/8;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}X.restore();X.globalAlpha=1;continue
    }
+   if(f.playerDamageText){
+     const q=Math.max(0,Math.min(1,f.life/(f.maxLife||.78)));
+     X.globalAlpha=Math.min(1,q*1.8);X.textAlign='center';X.textBaseline='middle';X.save();X.translate(f.x,f.y);
+     const pop=1+Math.sin((1-q)*Math.PI)*.10;X.scale(pop,pop);
+     X.font='950 16px ui-rounded,system-ui,-apple-system,sans-serif';
+     X.lineWidth=3;X.strokeStyle='#38110f';X.strokeText('-'+f.playerDamageText,0,0);
+     X.fillStyle='#ff554d';X.fillText('-'+f.playerDamageText,0,0);X.restore();X.globalAlpha=1;continue
+   }
    if(f.damageText){
      const q=Math.max(0,Math.min(1,f.life/(f.maxLife||.72)));
      X.globalAlpha=Math.min(1,q*1.7);X.textAlign='center';X.textBaseline='middle';
@@ -1060,7 +1088,7 @@ C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{pa
 C.addEventListener('touchend',()=>drag=false);
 
 
-// v17.5.11 — enemy spawn initialization fixed; title music unlock improved; buddy behavior unchanged.
+// v17.5.12 — enemy spawn initialization fixed; title music unlock improved; buddy behavior unchanged.
 const titleGarden=$('titleGarden'),TG=titleGarden?.getContext('2d');
 let titleBugs=[],titleSpawnAt=0,titleLast=performance.now(),titleRAF=0,titleLeafSeed=[];
 const TITLE_KINDS=['ant','beetle','spider','wasp','stink'];
@@ -1149,7 +1177,7 @@ function titleGardenLoop(now){
    else if(t<4.72){const q=(t-3.30)/1.42,e=q*q*(3-2*q);buddyY=peekY+(h+95-peekY)*e}
    else buddyY=h+95;
 
-   // v17.5.11 — spawn the swarm right as the buddy finishes hiding and starts his escape.
+   // v17.5.12 — spawn the swarm right as the buddy finishes hiding and starts his escape.
    // Buddy timing/movement is intentionally unchanged. Enemies begin visibly at the top edge
    // and then chase all the way off-screen in a wide formation.
    if(t>=3.24&&!titleSceneEnemiesSpawned){
