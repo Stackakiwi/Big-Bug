@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v16.1: Cleaner Garden Upgrade Cards -->
+<!-- Big Bug v16.2: Whimsical Garden Type + Simple Upgrade Copy -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -98,6 +98,29 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   color:#5b6650
 }
 
+
+/* v16.2 — whimsical garden lettering */
+#upgrade h2,
+#upgrade .choice b,
+#upgrade #upgradeSub{
+  font-family:"Marker Felt","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+}
+#upgrade h2{
+  font-size:31px;
+  font-weight:700;
+  letter-spacing:.3px;
+}
+#upgrade .choice b{
+  font-size:24px;
+  font-weight:700;
+  letter-spacing:.15px;
+}
+#upgrade .choice p{
+  font-family:"Marker Felt","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+  font-size:17px;
+  font-style:italic;
+}
+
 </style>
 </head>
 <body>
@@ -136,7 +159,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
  <div class="storyLeaf"><div class="storyKicker">🍃 Garden Update</div><div class="storyTitle" id="storyTitle">Whispers in the Leaves</div><div class="storyText" id="storyText"></div><div class="storyTwig"></div><button id="storyContinue">Follow the trail →</button></div>
 </section>
 <section id="upgrade" class="screen hidden">
- <div class="panel"><h2 id="upgradeTitle">🌿 A GIFT FROM THE GARDEN</h2><p id="upgradeSub">Pick one little advantage before you scurry onward.</p><div id="choices" class="grid"></div></div>
+ <div class="panel"><h2 id="upgradeTitle">A GIFT FROM THE GARDEN</h2><p id="upgradeSub">Pick one little advantage before you scurry onward.</p><div id="choices" class="grid"></div></div>
 </section>
 
 <section id="pause" class="screen hidden">
@@ -167,7 +190,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 const BUGS={
  ladybug:{name:'Ladybug',art:'🐞',desc:'Balanced starter. +10% crit chance.',cost:0,bonus:p=>p.crit+=.10},
  beetle:{name:'Beetle',art:'🪲',desc:'Tanky. +35 max HP, slower attack.',cost:100,bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.rate*=1.12}},
- mantis:{name:'Mantis',art:'🦗',desc:'Hits hard. Mandibles bite 25% harder, -10% HP.',cost:180,bonus:p=>{p.damage*=1.25;p.maxHp*=.9;p.hp=p.maxHp}},
+ mantis:{name:'Mantis',art:'🦗',desc:'Hits hard. +25% damage, -10% HP.',cost:180,bonus:p=>{p.damage*=1.25;p.maxHp*=.9;p.hp=p.maxHp}},
  firefly:{name:'Firefly',art:'✨',desc:'Glow power. +1 projectile and +15% move speed.',cost:260,bonus:p=>{p.fireflies++;p.speed*=1.15}},
  dragonfly:{name:'Dragonfly',art:'🦋',desc:'Swift. +35% attack speed and magnet range.',cost:400,bonus:p=>{p.rate*=.65;p.magnet+=70}},
  spider:{name:'Spider',art:'🕷️',desc:'Venom. Attacks poison enemies for stacking damage.',cost:600,bonus:p=>p.poison+=1}
@@ -187,14 +210,14 @@ let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;$('story').classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 $('storyContinue').onclick=()=>{initAudio();$('story').classList.add('hidden');beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
 const UP=[
- {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'Mandibles bite 25% harder',rarity:'common',apply:p=>p.damage*=1.25},
- {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+30 max HP • patch yourself up',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
- {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'Attack 20% quicker',rarity:'common',apply:p=>p.rate*=.80},
- {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+10% chance for a mighty 3× hit',rarity:'rare',apply:p=>p.crit+=.10},
- {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'Leaves drift to you from +65 farther away',rarity:'common',apply:p=>p.magnet+=65},
- {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'Enemies shake loose 60% more Leaves',rarity:'rare',apply:p=>p.greed*=1.6},
- {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'A little buddy helps for 5 waves, then wanders off',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
- {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'Move 15% faster • find 15% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
+ {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+25% damage',rarity:'common',apply:p=>p.damage*=1.25},
+ {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+30 max HP + heal 30 HP',rarity:'common',apply:p=>{p.maxHp+=30;p.hp=Math.min(p.maxHp,p.hp+30)}},
+ {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+20% attack speed',rarity:'common',apply:p=>p.rate*=.80},
+ {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+10% critical chance + 3× damage',rarity:'rare',apply:p=>p.crit+=.10},
+ {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65},
+ {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+60% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.6},
+ {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Tiny Helper attacks with you for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
+ {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+15% move speed + 15% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
 ];
 
 let game=null, last=0, raf=0, audio=null;
