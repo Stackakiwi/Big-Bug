@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v13: Cozy Title Music + Meaner Enemies + Polish -->
+<!-- Big Bug v14: Evolution Update + Leaves + Performance -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -61,7 +61,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 </div>
 <div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
 <div id="telegraph" class="telegraph hidden">WAVE 1</div>
-<button id="boostBtn" class="hidden">⚡ BOOST<small>100 SCRAP</small></button>
+<button id="boostBtn" class="hidden">⚡ BOOST<small>100 LEAVES</small></button>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
 
 <section id="home" class="screen titleScreen">
@@ -79,7 +79,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 </section>
 
 <section id="base" class="screen hidden">
- <div class="panel"><h2>🌱 BASE CAMP</h2><p>Spend refined Scrap on permanent upgrades. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><h2>🌱 BASE CAMP</h2><p>Spend saved Leaves on permanent upgrades. They stay between runs.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="upgrade" class="screen hidden">
@@ -94,9 +94,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
  <div class="panel">
   <h2 id="overTitle">RUN COMPLETE!</h2>
   <p id="overSub">You survived.</p>
-  <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Scrap</div></div>
-  <p><span class="scrapIcon"></span><b id="earnedScrap">0</b> Scrap secured at Base Camp</p>
-  <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">SPEND SCRAP</button><button class="btn dark" data-action="home">HOME</button>
+  <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
+  <p><span class="scrapIcon"></span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
+  <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">SPEND LEAVES</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
 
@@ -125,9 +125,9 @@ const UP=[
  {id:'speed',icon:'⚡',name:'Quick Wings',desc:'+20% attack speed',rarity:'common',apply:p=>p.rate*=.80},
  {id:'crit',icon:'💥',name:'Lucky Spots',desc:'+10% critical chance (3×)',rarity:'rare',apply:p=>p.crit+=.10},
  {id:'magnet',icon:'🧲',name:'Pollen Magnet',desc:'+65 pickup range and auto-collects drops',rarity:'common',apply:p=>p.magnet+=65},
- {id:'greed',icon:'🔩',name:'Scrap Scrounger',desc:'+60% Scrap dropped by enemies',rarity:'rare',apply:p=>p.greed*=1.6},
+ {id:'greed',icon:'🔩',name:'Leaf Scrounger',desc:'+60% Leaves dropped by enemies',rarity:'rare',apply:p=>p.greed*=1.6},
  {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Adds a little buddy that attacks nearby enemies',rarity:'epic',apply:p=>p.clones++},
- {id:'gold',icon:'⚙️',name:'Salvage Rush',desc:'+15% move speed and +15% Scrap drops',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
+ {id:'gold',icon:'⚙️',name:'Salvage Rush',desc:'+15% move speed and +15% Leaf drops',rarity:'rare',apply:p=>{p.speed*=1.15;p.greed*=1.15}}
 ];
 
 let game=null, last=0, raf=0, audio=null;
@@ -162,7 +162,7 @@ function buildBugScreen(){
  Object.entries(BUGS).forEach(([id,b])=>{
   const unlocked=save.unlocked.includes(id), selected=save.selected===id;
   const el=document.createElement('div');el.className='card'+(selected?' selected':'');
-  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p><button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':'<span class=\"scrapIcon\"></span>'+b.cost+' SCRAP'}</button>`;
+  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p><button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':'<span class=\"scrapIcon\"></span>'+b.cost+' LEAVES'}</button>`;
   el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else if(save.scrap>=b.cost){save.scrap-=b.cost;save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(900,.12,.04,'triangle')}};
   grid.appendChild(el);
  });
@@ -174,9 +174,9 @@ function buildShop(){
   ['🗡️','Stronger Shell','+1 starting damage',100+s.dmg*100,'dmg'],
   ['🎲','Extra Choice','+1 upgrade choice',250+s.choices*250,'choices'],
   ['🧲','Sticky Pollen','+20 starting magnet',150+s.magnet*120,'magnet'],
-  ['🔩','Scrap Sense','+10% Scrap found during runs',200+s.coins*150,'coins']
+  ['🔩','Leaves Sense','+10% Leaves found during runs',200+s.coins*150,'coins']
  ];
- $('shop').innerHTML=`<div class="shopRow"><div><b><span class="scrapIcon"></span>Scrap</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span></div></div></div>`+
+ $('shop').innerHTML=`<div class="shopRow"><div><b><span class="scrapIcon"></span>Leaves</b><div class="muted">You have <span class="scrapCount">${save.scrap}</span></div></div></div>`+
  rows.map(r=>`<div class="shopRow"><div class="left"><span style="font-size:30px">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]} · Lv ${s[r[4]]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="scrapIcon"></span>${r[3]}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
@@ -211,6 +211,10 @@ function areaFor(w=game?.wave||1){return AREAS[areaIndex(w)]}
 
 function arenaNumber(w=game?.wave||1){return Math.floor((Math.max(1,w)-1)/5)+1}
 function boostCost(){return 100+(arenaNumber()-1)*200}
+function bossTier(w=game?.wave||5){return Math.floor((Math.max(5,w)-5)/10)}
+function bossKindFor(w=game?.wave||5){return ['hornet','queenSpider','scarab','mantisBoss'][bossTier(w)%4]}
+function bossSecondFight(w=game?.wave||5){return w%10===0}
+function evolutionTier(w=game?.wave||1){return Math.floor(Math.max(0,w-1)/10)}
 function boostActive(){return !!(game&&game.boostUntil&&game.time<game.boostUntil)}
 function useBoost(){
  if(!game||game.paused||game.over)return;initAudio();
@@ -228,7 +232,7 @@ function flashBanner(text,sec=1.25){
 function beginWave(w){
  const g=game;g.wave=w;g.waveKills=0;g.boss=null;g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;
  const bossWave=w%5===0;
- g.waveQuota=bossWave?1:Math.min(34,5+w*3);
+ g.waveQuota=bossWave?1:Math.min(22,5+w*2);
  g.spawnLeft=g.waveQuota;
  $('bossbar').style.display='none';
  const enteringArea=w>1&&(w-1)%5===0;
@@ -250,22 +254,22 @@ function spawnEnemy(type='normal', forcedKind=null){
  if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
  const w=game.wave, boss=type==='boss';
  let kinds=w<2?['ant','beetle']:w<3?['ant','beetle','spider']:w<4?['ant','beetle','spider','wasp']:['ant','beetle','spider','wasp','stink'];
- let k=boss?'hornet':(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
- let baseHp=24+w*6, sp=38+w*1.4, r=11+Math.random()*5, damage=4.5+w*.5;
+ let k=boss?bossKindFor(w):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
+ let evo=evolutionTier(w),baseHp=(24+w*6)*Math.pow(1.32,evo),sp=(38+w*1.15)*(1+evo*.05),r=11+Math.random()*5,damage=(4.5+w*.5)*Math.pow(1.18,evo);
  if(k==='ant'){baseHp*=.72;sp*=1.35;r*=.82;damage*=.72}
  if(k==='beetle'){baseHp*=2.35;sp*=.62;r*=1.18;damage*=1.25}
  if(k==='spider'){baseHp*=1.05;sp*=.92;r*=1.05}
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
- if(boss){baseHp=(55+w*11)*22;sp=54;r=39;damage=17+w*.45}
+ if(boss){const improved=bossSecondFight(w);baseHp=(55+w*11)*22*(improved?1.45:1);sp=54*(improved?1.10:1);r=k==='queenSpider'?42:k==='scarab'?43:k==='mantisBoss'?41:39;damage=(17+w*.45)*(improved?1.22:1)}
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
-          state:'chase',cool:Math.random()*1.5+.8,stateT:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5};
+          state:'chase',cool:Math.random()*1.5+.8,stateT:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo};
  game.enemies.push(e);
- if(boss){game.boss=e;$('bossName').textContent='👑 HORNET';$('bossbar').style.display='block';bossMusicStart()}
+ if(boss){game.boss=e;const names={hornet:'HORNET',queenSpider:'VENOM QUEEN',scarab:'IRON SCARAB',mantisBoss:'PRAYING TYRANT'};$('bossName').textContent='👑 '+names[k]+(bossSecondFight(w)?' +':'');$('bossbar').style.display='block';bossMusicStart()}
  return e;
 }
 function burst(x,y,n=8,life=.5,col=null){
- for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4,col})}
+ n=Math.min(n,Math.max(0,110-game.fx.length));for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4,col})}
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
@@ -273,7 +277,7 @@ function damageEnemy(e,d,source='player'){
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
- game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
+ if(game.fx.filter(f=>f.damageText).length<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;
  burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
@@ -313,6 +317,8 @@ function stingBurst(e,count=8,speed=145){
 function enemyMove(e,dt){
  const p=game.p;let dx=p.x-e.x,dy=p.y-e.y,d=Math.hypot(dx,dy)||1,slow=e.slow>0?.45:1;
  e.cool-=dt;e.stateT-=dt;
+ e.shotCd=(e.shotCd||2)-dt;
+ if(!e.boss&&e.evo>0&&e.shotCd<=0){e.shotCd=Math.max(1.45,3.7-e.evo*.35)+Math.random()*1.2;let dd=Math.hypot(dx,dy)||1,spd=120+e.evo*18;if(e.kind==='ant'||e.kind==='spider')game.fx.push({x:e.x,y:e.y,vx:dx/dd*spd,vy:dy/dd*spd,life:2.8,r:4,sting:true,venom:true,damage:4+e.evo*2});else if(e.kind==='wasp'||e.kind==='stink')game.fx.push({x:e.x,y:e.y,vx:dx/dd*(spd+35),vy:dy/dd*(spd+35),life:2.5,r:4,sting:true,damage:5+e.evo*2})}
  // ants swarm faster when near other ants
  let mult=1;
  if(e.kind==='ant'){let near=0;for(const o of game.enemies)if(o!==e&&!o.dead&&o.kind==='ant'&&Math.hypot(o.x-e.x,o.y-e.y)<85)near++;mult=1+Math.min(.35,near*.07)}
@@ -333,9 +339,11 @@ function enemyMove(e,dt){
    else if(e.state==='telegraph'&&e.stateT<=0){let dd=Math.hypot(dx,dy)||1;e.vx=dx/dd*270;e.vy=dy/dd*270;e.state='pounce';e.stateT=.34;burst(e.x,e.y,4,.2,'#b495c7')}
    else if(e.state==='pounce'){e.x+=e.vx*dt;e.y+=e.vy*dt;if(e.stateT<=0)e.state='chase';return}
  }
- if(e.kind==='stink'){
-   e.cloudCd-=dt;if(e.cloudCd<=0){e.cloudCd=3.1;toxicCloud(e.x,e.y,44,2.4,5.5+game.wave*.18);burst(e.x,e.y,5,.35,'#a7c85e')}
+ if(e.kind==='stink'||e.kind==='queenSpider'){
+   e.cloudCd-=dt;if(e.cloudCd<=0){e.cloudCd=3.1;toxicCloud(e.x,e.y,44,2.4,5.5+game.wave*.18);burst(e.x,e.y,5,.35,'#b56cff')}
  }
+ if(e.boss&&e.kind==='queenSpider'&&e.cloudCd<=0){e.cloudCd=bossSecondFight(game.wave)?1.8:2.5;toxicCloud(e.x,e.y,bossSecondFight(game.wave)?62:52,2.2,7+game.wave*.16);stingBurst(e,bossSecondFight(game.wave)?9:6,bossSecondFight(game.wave)?175:145)}
+ if(e.boss&&e.kind==='mantisBoss'&&e.shotCd<=0){e.shotCd=bossSecondFight(game.wave)?1.1:1.65;for(let a of [-.16,0,.16]){let ang=Math.atan2(dy,dx)+a,spd=bossSecondFight(game.wave)?220:185;game.fx.push({x:e.x,y:e.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:2.5,r:5,sting:true,damage:8+game.wave*.18})}}
  if(e.boss){
    e.addCd-=dt;
    if(e.addCd<=0){e.addCd=Math.max(2.8,5.2-game.wave*.04);spawnEnemy('normal','wasp');if(e.hp<e.max*.55)spawnEnemy('normal','ant')}
@@ -345,13 +353,12 @@ function enemyMove(e,dt){
  e.x+=dx/d*e.speed*slow*mult*dt;e.y+=dy/d*e.speed*slow*mult*dt;
 }
 function separateEnemies(){
- const es=game.enemies;
+ if((game.sepTick=(game.sepTick||0)+1)%2)return;const es=game.enemies;
  for(let i=0;i<es.length;i++){
    const a=es[i];if(a.dead)continue;
    for(let j=i+1;j<es.length;j++){
      const b=es[j];if(b.dead)continue;
-     let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
-     const min=a.r+b.r+3;
+     let dx=b.x-a.x,dy=b.y-a.y;const min=a.r+b.r+3;if(Math.abs(dx)>min||Math.abs(dy)>min)continue;let d=Math.hypot(dx,dy);
      if(d>=min)continue;
      if(d<.001){dx=.01;dy=0;d=.01}
      const overlap=min-d,nx=dx/d,ny=dy/d;
@@ -374,8 +381,8 @@ function update(dt,now){
  // quota-based waves: spawn a set number, then clear the field
  if(g.waveActive&&g.wave%5!==0){
    g.spawn+=dt*1000;
-   const active=g.enemies.filter(e=>!e.dead).length,cap=Math.min(11,4+Math.floor(g.wave/2));
-   const spawnEvery=Math.max(260,720-g.wave*18);
+   const active=g.enemies.filter(e=>!e.dead).length,cap=Math.min(8,4+Math.floor(g.wave/4));
+   const spawnEvery=Math.max(330,720-g.wave*12);
    if(g.spawnLeft>0&&active<cap&&g.spawn>spawnEvery){
       g.spawn=0;
       // later waves occasionally arrive as recognizable mini-formations instead of pure random soup
@@ -417,7 +424,7 @@ function update(dt,now){
    if(f.orb){for(const e of g.enemies)if(!e.dead&&Math.hypot(e.x-f.x,e.y-f.y)<e.r+12){damageEnemy(e,f.damage);f.life=0;break}}
    f.vx*=.985;f.vy*=.985;
  }
- g.enemies=g.enemies.filter(e=>!e.dead);g.drops=g.drops.filter(d=>!d.dead);g.fx=g.fx.filter(f=>f.life>0);
+ g.enemies=g.enemies.filter(e=>!e.dead);g.drops=g.drops.filter(d=>!d.dead);g.fx=g.fx.filter(f=>f.life>0);if(g.fx.length>150)g.fx.splice(0,g.fx.length-150);
  if(g.boss&&g.boss.dead){g.boss=null;$('bossbar').style.display='none'}
  if(g.boss){$('bossFill').style.width=Math.max(0,100*g.boss.hp/g.boss.max)+'%'}
  if(g.waveActive&&g.spawnLeft<=0&&g.enemies.length===0)completeWave();
@@ -445,7 +452,7 @@ function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style
 function updateHud(){
  const p=game.p,g=game,active=boostActive();$('hp').textContent=Math.max(0,Math.ceil(p.hp));$('maxhp').textContent=Math.ceil(p.maxHp);$('wave').textContent=g.wave;$('coins').textContent=g.coins||0;$('dmg').textContent=Math.round(p.damage*(active?2:1));
  const prog=$('waveProgress');if(g.wave%5===0)prog.textContent=g.boss?' BOSS':' CLEAR';else prog.textContent=' '+Math.min(g.waveQuota,g.waveKills)+'/'+g.waveQuota;
- const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0;b.classList.toggle('active',active);b.disabled=!active&&(g.coins||0)<boostCost();b.innerHTML=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} SCRAP</small>`}
+ const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0;b.classList.toggle('active',active);b.disabled=!active&&(g.coins||0)<boostCost();b.innerHTML=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`}
 }
 function finish(won){
  if(game.over)return;game.over=true;bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
@@ -453,7 +460,7 @@ function finish(won){
  save.scrap+=earned;save.best=Math.max(save.best,game.wave);save.runs++;persist();
  $('overTitle').textContent=won?'RUN COMPLETE!':'YOU GOT SQUISHED!';
  $('overSub').textContent=won?'You pushed deep into the garden.':'The garden wins this round. Come back bigger.';
- $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedScrap').textContent=earned;
+ $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;
  screen('gameover');
 }
 function quitRun(){if(game&&!game.over)finish(false)}
@@ -471,7 +478,7 @@ function drawGardenDetails(){
  const flowers=[[.11,.64,'#f4d66f'],[.86,.69,'#e9a4a4'],[.53,.27,'#f1e6bb'],[.34,.82,'#d9b3e7']];
  for(const [px,py,col] of flowers){let x=W*px,y=H*py;X.strokeStyle='#456b35';X.lineWidth=1.5;X.beginPath();X.moveTo(x,y+8);X.lineTo(x,y);X.stroke();for(let a=0;a<6;a++){X.fillStyle=col;X.beginPath();X.arc(x+Math.cos(a*1.047)*3.5,y+Math.sin(a*1.047)*3.5,2.5,0,6.28);X.fill()}X.fillStyle='#c98f2d';X.beginPath();X.arc(x,y,2,0,6.28);X.fill()}
 }
-function drawScrap(d){
+function drawLeaves(d){
  X.save();let bob=Math.sin((d.age||0)*6+(d.phase||0))*2;X.translate(d.x,d.y+bob);X.rotate(performance.now()/1100+d.x*.015);X.shadowColor='#0009';X.shadowBlur=8;X.shadowOffsetY=4;
  // chunky bronze gear with a steel bolt through it
  X.fillStyle='#7a4828';X.beginPath();for(let i=0;i<16;i++){let a=i*Math.PI/8,rr=i%2?d.r*.76:d.r*1.12;X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.fill();
@@ -487,18 +494,18 @@ function drawEnemy(e){
   for(let side of [-1,1]){line(side*3,-2,side*13,-8+step,2);line(side*4,3,side*14,5-step,2);line(side*2,8,side*12,14+step2,2)}
   X.fillStyle='#6d281f';X.beginPath();X.ellipse(0,8,r*.66,r*.72,0,0,6.28);X.fill();X.fillStyle='#9b3328';X.beginPath();X.arc(0,-3,r*.5,0,6.28);X.fill();X.fillStyle='#722018';X.beginPath();X.arc(0,-r*.85,r*.46,0,6.28);X.fill();line(-3,-r*1.15,-8,-r*1.7,1.5);line(3,-r*1.15,8,-r*1.7,1.5);eye(-r*.18,-r*.92,2);eye(r*.18,-r*.92,2);
   X.fillStyle='#2a0c09';X.beginPath();X.moveTo(-3,-r*1.18);X.lineTo(0,-r*1.5);X.lineTo(3,-r*1.18);X.fill();
- }else if(e.kind==='spider'){
+ }else if(e.kind==='spider'||e.kind==='queenSpider'){
   for(let side of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);line(side*5,yy,side*(r+8),yy+(i-1.5)*4+w,2.5,'#241c2c');line(side*(r+8),yy+(i-1.5)*4+w,side*(r+13),yy+(i-1.5)*8-w*.5,2,'#241c2c')}
   X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();X.fillStyle='#d9d0c2';X.beginPath();X.moveTo(-4,-3);X.lineTo(-1,2);X.lineTo(0,-4);X.moveTo(4,-3);X.lineTo(1,2);X.lineTo(0,-4);X.fill();
- }else if(e.kind==='wasp'||e.kind==='hornet'){
-  const big=e.kind==='hornet';let rr=big?r*1.15:r;
+ }else if(e.kind==='wasp'||e.kind==='hornet'||e.kind==='mantisBoss'){
+  const big=e.kind==='hornet'||e.kind==='mantisBoss';let rr=big?r*1.15:r;
   X.globalAlpha=.45;X.fillStyle='#e8f2e9';X.beginPath();X.ellipse(-rr*.65,-2,rr*.65,rr*.28,-.6,0,6.28);X.ellipse(rr*.65,-2,rr*.65,rr*.28,.6,0,6.28);X.fill();X.globalAlpha=1;
   for(let side of [-1,1]){line(side*5,1,side*(rr+8),8+step,2.3);line(side*4,9,side*(rr+6),17-step,2.3)}
   X.fillStyle='#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
   X.fillStyle='#5b371d';X.beginPath();X.arc(0,-rr*.7,rr*.58,0,6.28);X.fill();eye(-rr*.2,-rr*.78,big?3.5:2.4);eye(rr*.2,-rr*.78,big?3.5:2.4);line(-4,-rr*1.05,-10,-rr*1.55,1.7);line(4,-rr*1.05,10,-rr*1.55,1.7);
   X.fillStyle='#24130d';X.beginPath();X.moveTo(-5,-rr*.95);X.lineTo(0,-rr*1.25);X.lineTo(5,-rr*.95);X.fill();X.beginPath();X.moveTo(-4,rr*1.0);X.lineTo(0,rr*1.45);X.lineTo(4,rr*1.0);X.fill();
   if(big){X.strokeStyle='#f5c358';X.lineWidth=2;X.beginPath();X.arc(0,0,rr+5,0,6.28);X.stroke()}
- }else if(e.kind==='stink'){
+ }else if(e.kind==='stink'||e.kind==='scarab'){
   for(let side of [-1,1]){line(side*6,-4,side*(r+7),-10+step,2);line(side*7,3,side*(r+9),4-step,2);line(side*5,10,side*(r+7),17+step2,2)}
   X.fillStyle='#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
  }else{
@@ -530,7 +537,7 @@ function draw(){
  // faint vignette
  let vg=X.createRadialGradient(W/2,H*.48,80,W/2,H*.48,Math.max(W,H)*.72);vg.addColorStop(.55,'#0000');vg.addColorStop(1,area.vignette);X.fillStyle=vg;X.fillRect(0,0,W,H);
  if(!game)return;
- for(const d of game.drops)drawScrap(d);
+ for(const d of game.drops)drawLeaves(d);
  for(const e of game.enemies)drawEnemy(e);
  for(const f of game.fx){
    if(f.damageText){
@@ -542,10 +549,10 @@ function draw(){
      X.fillStyle=f.heavy?'#ffd45e':(f.source==='helper'?'#bcecff':'#fff7df');X.fillText((f.heavy?'✦ ':'')+f.damageText,0,0);X.restore();X.globalAlpha=1;continue
    }
    if(f.killPop){let q=Math.max(0,f.life/(f.maxLife||.28));X.globalAlpha=.55*q;X.strokeStyle='#ffe49a';X.lineWidth=3;X.beginPath();X.arc(f.x,f.y,f.r*(1-q*.55),0,6.28);X.stroke();X.globalAlpha=1;continue}
-   if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/.42)),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease;X.globalAlpha=1-q*.35;X.fillStyle='#e2a24f';X.beginPath();X.arc(xx,yy,Math.max(2,f.r*(1-q*.55)),0,6.28);X.fill();X.strokeStyle='#ffe4a0';X.lineWidth=1;X.stroke();X.globalAlpha=1;continue}
-   if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#98ba55';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0;i<5;i++){let a=i*1.25+performance.now()/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
+   if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/.42)),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease;X.globalAlpha=1-q*.35;X.fillStyle='#b9f04d';X.beginPath();X.ellipse(xx,yy,Math.max(2,f.r*(1-q*.55)),Math.max(1.5,f.r*.55*(1-q*.45)),-.5,0,6.28);X.fill();X.strokeStyle='#f5ffd0';X.lineWidth=1;X.stroke();X.globalAlpha=1;continue}
+   if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0;i<5;i++){let a=i*1.25+performance.now()/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
    X.globalAlpha=Math.max(0,Math.min(1,f.life));
-   if(f.sting){X.fillStyle='#ff5f55';X.shadowColor='#ff3b30';X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent'}
+   if(f.sting){X.fillStyle=f.venom?'#b56cff':'#ff5f55';X.shadowColor=f.venom?'#8d35cf':'#ff3b30';X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent'}
    else if(f.shot){X.fillStyle='#dfff7a';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
