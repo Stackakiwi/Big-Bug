@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v14: Evolution Update + Leaves + Performance -->
+<!-- Big Bug v14: Evolution Update + TRUE Leaf Visuals + Performance -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -43,9 +43,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .shopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#203925;border-radius:16px;padding:12px;margin:8px 0}.shopRow .left{display:flex;gap:12px;align-items:center}.coin{font-weight:1000;color:#ffd166}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#203925;border-radius:14px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}
 
-.scrapIcon{display:inline-block;position:relative;width:19px;height:19px;vertical-align:-4px;margin-right:4px;border-radius:50%;background:linear-gradient(145deg,#d8a45b,#8a562b);border:2px solid #f1c87a;box-shadow:inset 0 0 0 2px #69401f,0 1px 2px #0007}
-.scrapIcon:before{content:"";position:absolute;left:5px;top:5px;width:5px;height:5px;border-radius:50%;background:#273028;box-shadow:0 0 0 2px #b77939}
-.scrapIcon:after{content:"";position:absolute;right:-4px;bottom:-2px;width:8px;height:4px;background:#aeb5a7;border:1px solid #52594e;border-radius:3px;transform:rotate(-28deg)}
+.scrapIcon{display:inline-block;position:relative;width:18px;height:18px;vertical-align:-4px;margin-right:4px;transform:rotate(-38deg);border-radius:85% 15% 80% 20% / 80% 18% 82% 20%;background:linear-gradient(135deg,#eaff68 0%,#b9f04d 48%,#68b934 100%);border:1.5px solid #f7ffd0;box-shadow:0 0 0 1px #315a25,0 1px 3px #0008,0 0 7px #cfff5d66}
+.scrapIcon:before{content:"";position:absolute;left:8px;top:1px;width:1.5px;height:15px;background:#3f7c2f;border-radius:99px;transform:rotate(5deg)}
+.scrapIcon:after{content:"";position:absolute;left:7px;bottom:-4px;width:7px;height:2px;background:#6e9d3c;border-radius:99px;transform:rotate(58deg);transform-origin:left center}
 .scrapCount{font-weight:1000;color:#ffd48a}.enemyLegend{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.enemyLegend .mini{background:#1d3322;border:1px solid #ffffff16;border-radius:14px;padding:9px;font-size:12px}.enemyLegend b{display:block;color:#f6e9c7;font-size:13px}
 @media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:16px}.logo{font-size:68px}.bugHero{font-size:78px}}
 </style>
@@ -479,13 +479,32 @@ function drawGardenDetails(){
  for(const [px,py,col] of flowers){let x=W*px,y=H*py;X.strokeStyle='#456b35';X.lineWidth=1.5;X.beginPath();X.moveTo(x,y+8);X.lineTo(x,y);X.stroke();for(let a=0;a<6;a++){X.fillStyle=col;X.beginPath();X.arc(x+Math.cos(a*1.047)*3.5,y+Math.sin(a*1.047)*3.5,2.5,0,6.28);X.fill()}X.fillStyle='#c98f2d';X.beginPath();X.arc(x,y,2,0,6.28);X.fill()}
 }
 function drawLeaves(d){
- X.save();let bob=Math.sin((d.age||0)*6+(d.phase||0))*2;X.translate(d.x,d.y+bob);X.rotate(performance.now()/1100+d.x*.015);X.shadowColor='#0009';X.shadowBlur=8;X.shadowOffsetY=4;
- // chunky bronze gear with a steel bolt through it
- X.fillStyle='#7a4828';X.beginPath();for(let i=0;i<16;i++){let a=i*Math.PI/8,rr=i%2?d.r*.76:d.r*1.12;X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.fill();
- X.fillStyle='#d79a4f';X.beginPath();X.arc(0,0,d.r*.72,0,6.28);X.fill();X.strokeStyle='#f2c77d';X.lineWidth=1.4;X.stroke();
- X.shadowColor='transparent';X.fillStyle='#4d3528';X.beginPath();X.arc(0,0,d.r*.3,0,6.28);X.fill();
- X.rotate(-.45);X.fillStyle='#c8cec5';X.fillRect(-d.r*.18,-2,d.r*1.55,4);X.strokeStyle='#59615a';X.lineWidth=1;X.strokeRect(-d.r*.18,-2,d.r*1.55,4);
- X.fillStyle='#eef1e9';X.beginPath();X.arc(d.r*1.28,0,2.4,0,6.28);X.fill();X.shadowColor='transparent';let tw=(Math.sin(performance.now()/180+d.phase)+1)/2;X.strokeStyle='rgba(255,242,184,'+(0.25+tw*.65)+')';X.lineWidth=1.5;X.beginPath();X.moveTo(-d.r*1.15,-d.r*.9);X.lineTo(-d.r*1.15,-d.r*.9-5);X.moveTo(-d.r*1.15-2.5,-d.r*.9-2.5);X.lineTo(-d.r*1.15+2.5,-d.r*.9-2.5);X.stroke();X.restore();
+ X.save();
+ let bob=Math.sin((d.age||0)*6+(d.phase||0))*2;
+ X.translate(d.x,d.y+bob);
+ X.rotate(-.65+Math.sin(performance.now()/450+(d.phase||0))*.18);
+ const rr=d.r*1.15;
+ // Bright collectible leaf: intentionally much lighter than scenery so it reads instantly.
+ X.shadowColor='#d9ff63';X.shadowBlur=12;X.shadowOffsetY=0;
+ X.fillStyle='#bdf34f';
+ X.beginPath();
+ X.moveTo(0,-rr);
+ X.bezierCurveTo(rr*.95,-rr*.55,rr*.95,rr*.45,0,rr);
+ X.bezierCurveTo(-rr*.95,rr*.45,-rr*.95,-rr*.55,0,-rr);
+ X.closePath();X.fill();
+ X.strokeStyle='#f8ffd4';X.lineWidth=1.6;X.stroke();
+ X.shadowColor='transparent';
+ X.strokeStyle='#356f2d';X.lineWidth=1.5;
+ X.beginPath();X.moveTo(0,-rr*.78);X.lineTo(0,rr*.9);X.stroke();
+ for(let side of [-1,1]){
+   X.beginPath();
+   X.moveTo(0,-rr*.35);X.lineTo(side*rr*.5,-rr*.05);
+   X.moveTo(0,rr*.05);X.lineTo(side*rr*.48,rr*.32);
+   X.stroke();
+ }
+ X.strokeStyle='#789d43';X.lineWidth=2;
+ X.beginPath();X.moveTo(0,rr*.85);X.lineTo(rr*.28,rr*1.22);X.stroke();
+ X.restore();
 }
 function drawEnemy(e){
  const r=e.r,t=performance.now()/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
