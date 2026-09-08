@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.6: Mole Cricket Dodge Readability + Smoothness -->
+<!-- Big Bug v17.8.7: iOS Background Resume Recovery -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -303,8 +303,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.6</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.6</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.7</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.7</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -368,6 +368,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+// v17.8.7 — iOS resume recovery: safely restarts the game RAF after backgrounding and prevents active waves from becoming stranded after returning.
 // v17.8.6 — Mole Cricket readability: longer burrow warning, wider emergence spacing, and a fading earth-crack marker.
 // v17.8.5 — smoothness pass: allocation-free Triple Shot targeting, cheaper radius checks, cached boss-bar writes, and a more reliably visible Home version label. Gameplay and visuals otherwise unchanged.
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
@@ -1266,6 +1267,20 @@ function draw(){
  }
 }
 function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;update(dt,now);draw();raf=requestAnimationFrame(loop)}
+
+// v17.8.7 — iOS/Safari can stop requestAnimationFrame while the page is backgrounded.
+// On return, restart exactly one game loop and reset the frame clock so suspended time
+// is never simulated as gameplay. Normal wave/boss state is otherwise left untouched.
+function resumeGameAfterBackground(){
+ if(document.hidden||!game||game.over)return;
+ last=performance.now();
+ if(raf)cancelAnimationFrame(raf);
+ raf=requestAnimationFrame(loop);
+ if(audio&&audio.state==='suspended')audio.resume().catch(()=>{});
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)resumeGameAfterBackground()});
+addEventListener('pageshow',resumeGameAfterBackground);
+
 function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true)}}
 
 document.addEventListener('click',e=>{
