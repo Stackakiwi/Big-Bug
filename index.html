@@ -208,6 +208,25 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 @media(max-width:430px){#base{padding:12px}#base .panel{padding:18px 12px 14px}#base .panel h2{font-size:29px}#base .shopRow{padding:12px 10px;min-height:96px}#base .shopIcon{font-size:33px;width:40px}#base .shopRow b{font-size:18px}#base .shopRow .muted{font-size:14px}#base .shopRow .btn{min-width:105px;font-size:16px;padding:12px 9px}}
 
 
+/* v17.7.1 — whimsical menu lettering only */
+#bugs .panel h2,
+#base .panel h2{
+  font-family:"Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand","Comic Sans MS",cursive;
+  font-weight:700;
+  letter-spacing:.15px;
+}
+#bugs .panel>p,
+#base .panel>p,
+#bugs .bugCard b,
+#bugs .bugCard p,
+#base .shopRow b,
+#base .shopRow .muted,
+#base .shopCurrency{
+  font-family:"Chalkboard SE","Marker Felt","Noteworthy","Bradley Hand","Comic Sans MS",cursive;
+}
+#bugs .panel h2{transform:rotate(-.35deg)}
+#base .panel h2{transform:rotate(.3deg)}
+
 /* v17.5.4 — living title garden */
 #home{position:fixed;isolation:isolate;overflow:hidden}
 #titleGarden{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
@@ -248,11 +267,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 </section>
 
 <section id="bugs" class="screen hidden">
- <div class="panel"><h2>🐛 YOUR BUGS</h2><p>Each bug changes how your run plays.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><h2>🐛 THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="base" class="screen hidden">
- <div class="panel"><h2>✨ POWER UPS</h2><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><h2>✨ GARDEN MAGIC</h2><p class="muted">Teach the garden’s gifts a few new tricks.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="story" class="hidden">
@@ -289,13 +308,16 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
+// v17.7.0 — permanent Power Ups now strengthen in-run upgrades instead of granting starting stats.
 // v17.6.1 — suspend the title animation RAF completely while the home screen is hidden.
 // No gameplay or visual changes; this only removes invisible background work.
 // v17.5.13 — late-wave performance pass + 25% larger player attack visual.
 // Gameplay values, enemy counts, damage, speed, and arena visuals are unchanged.
 // v17.5.2 — Beetle and Butterfly are post-game rewards. Existing clears still count.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
-save.unlocked=save.mainGameBeaten?['ladybug','beetle','butterfly']:['ladybug'];
+save.unlocked=['ladybug'];
+if(save.best>=50)save.unlocked.push('beetle');
+if(save.mainGameBeaten)save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades)save.upgrades.choices=0;
@@ -332,12 +354,12 @@ let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;$('story').classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 $('storyContinue').onclick=()=>{initAudio();$('story').classList.add('hidden');beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
 const UP=[
- {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
- {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{p.maxHp+=20;p.hp=Math.min(p.maxHp,p.hp+20)}},
- {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>p.rate=Math.max(360,p.rate*.90)},
+ {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1+.10*(1+save.upgrades.dmg*.10)},
+ {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{const n=20*(1+save.upgrades.hp*.10);p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
+ {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{const n=.10*(1+save.upgrades.magnet*.10);p.rate=Math.max(360,p.rate*(1-n))}},
  {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+5% critical chance + 3× damage',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
- {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65},
- {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
+ {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65*(1+save.upgrades.coins*.10)},
+ {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1+.20*(1+save.upgrades.coins*.10)},
  {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
  {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
 ];
@@ -381,8 +403,9 @@ function buildBugScreen(){
  Object.entries(BUGS).forEach(([id,b])=>{
   const unlocked=save.unlocked.includes(id), selected=save.selected===id, starter=id==='ladybug';
   const el=document.createElement('div');el.className='card'+(selected?' selected':'');
-  const lockNote=!unlocked&&!starter?'<div class="muted" style="margin-top:8px">Free after beating Wave 100.<br>✨ Gold Leaves can unlock early in a future update.</div>':'';
-  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':'🔒 BEAT WAVE 100'}</button>`;
+  const unlockWave=id==='beetle'?50:100;
+  const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>✨ Gold Leaves can unlock early in a future update.</div>`:'';
+  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':`🔒 BEAT WAVE ${unlockWave}`}</button>`;
   el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else{beep(155,.10,.022,'triangle')}};
   grid.appendChild(el);
  });
@@ -390,10 +413,10 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['❤️','More Health','+10 starting HP',2500+s.hp*2500,'hp',1+s.hp],
-   ['🗡️','More Damage','+1 starting damage',3000+s.dmg*3000,'dmg',1+s.dmg],
-   ['🧲','Pickup Range','+20 starting pickup range',3500+s.magnet*3500,'magnet',1+s.magnet],
-   ['🍃','More Leaves','+10% Leaves found during runs',5000+s.coins*5000,'coins',1+s.coins]
+   ['❤️','Heartier Clovers','Health upgrades are '+(10+s.hp*10)+'% stronger',2500+s.hp*2500,'hp'],
+   ['🗡️','Sharper Sharpening','Damage upgrades are '+(10+s.dmg*10)+'% stronger',3000+s.dmg*3000,'dmg'],
+   ['⚡','Quicker Reflexes','Attack-speed upgrades are '+(10+s.magnet*10)+'% stronger',3500+s.magnet*3500,'magnet'],
+   ['✨','Garden Wisdom','Pickup & Leaf upgrades are '+(10+s.coins*10)+'% stronger',5000+s.coins*5000,'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency"><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}</button></div>`).join('');
@@ -406,7 +429,7 @@ function buyShop(k){
 }
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[]};
- const s=save.upgrades;p.maxHp+=s.hp*10;p.hp=p.maxHp;p.damage+=s.dmg;p.magnet+=s.magnet*20;p.greed*=1+s.coins*.10;
+ p.hp=p.maxHp;
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(){
