@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.5: Smoothness Pass -->
+<!-- Big Bug v17.8.6: Mole Cricket Dodge Readability + Smoothness -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -303,8 +303,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.5</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.5</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.6</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.6</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -368,6 +368,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+// v17.8.6 — Mole Cricket readability: longer burrow warning, wider emergence spacing, and a fading earth-crack marker.
 // v17.8.5 — smoothness pass: allocation-free Triple Shot targeting, cheaper radius checks, cached boss-bar writes, and a more reliably visible Home version label. Gameplay and visuals otherwise unchanged.
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
 // v17.8.4 — performance-only pass: cached static arena rendering + change-only HUD writes. Gameplay and visuals unchanged.
@@ -657,6 +658,7 @@ function burst(x,y,n=8,life=.5,col=null){
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
+ if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
  if(e.kind==='beetle'&&!e.boss)d*=.58;
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
@@ -683,7 +685,7 @@ function shootAt(target){
  if(p.tripleShot){
    // v17.8.5 — same two nearest extra targets, without allocating/sorting a temporary array every attack.
    let first=null,second=null,d1=Infinity,d2=Infinity;
-   for(const e of game.enemies)if(!e.dead&&e!==target){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<d1){second=first;d2=d1;first=e;d1=ds}else if(ds<d2){second=e;d2=ds}}
+   for(const e of game.enemies)if(!e.dead&&e!==target&&e.state!=='burrowWait'){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<d1){second=first;d2=d1;first=e;d1=ds}else if(ds<d2){second=e;d2=ds}}
    if(first){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(first,dd);game.fx.push({x:p.x,y:p.y,vx:(first.x-p.x)*3.2,vy:(first.y-p.y)*3.2,life:.16,r:3.5,shot:true})}
    if(second){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd);game.fx.push({x:p.x,y:p.y,vx:(second.x-p.x)*3.2,vy:(second.y-p.y)*3.2,life:.16,r:3.5,shot:true})}
  }
@@ -695,7 +697,7 @@ function shootAt(target){
 }
 function nearestEnemy(x=game.p.x,y=game.p.y){
  // Compare squared distance: identical target choice, but avoids a square-root for every enemy scan.
- let best=null,bd=Infinity;for(const e of game.enemies)if(!e.dead){const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}}return best;
+ let best=null,bd=Infinity;for(const e of game.enemies)if(!e.dead&&e.state!=='burrowWait'){const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}}return best;
 }
 function countActiveEnemies(nonBossOnly=false){
  let n=0;for(const e of game.enemies)if(!e.dead&&(!nonBossOnly||!e.boss))n++;return n;
@@ -761,6 +763,11 @@ function enemyMove(e,dt){
  }
  e.cool-=dt;e.stateT-=dt;
  e.shotCd=(e.shotCd||2)-dt;
+ // Mole Cricket stays underground during its warning, then emerges exactly at the visible crack.
+ if(e.boss&&e.kind==='moleCricket'&&e.state==='burrowWait'){
+   if(e.stateT<=0){e.x=e.burrowX;e.y=e.burrowY;e.state='pounce';e.stateT=.45;burst(e.x,e.y,8,.45,'#8b6a45')}
+   else return;
+ }
  if(!e.boss&&e.evo>0&&e.shotCd<=0){e.shotCd=Math.max(1.45,3.7-e.evo*.35)+Math.random()*1.2;let dd=Math.hypot(dx,dy)||1,spd=120+e.evo*18;if(e.kind==='ant'||e.kind==='spider')game.fx.push({x:e.x,y:e.y,vx:dx/dd*spd,vy:dy/dd*spd,life:2.8,r:4,sting:true,venom:true,damage:4+e.evo*2});else if(e.kind==='wasp'||e.kind==='stink')game.fx.push({x:e.x,y:e.y,vx:dx/dd*(spd+35),vy:dy/dd*(spd+35),life:2.5,r:4,sting:true,damage:5+e.evo*2})}
  // ants swarm faster when near other ants
  let mult=1;
@@ -806,7 +813,7 @@ function enemyMove(e,dt){
    const aim=Math.atan2(dy,dx);
    const shoot=(a,spd,damage=7+game.wave*.19,venom=false,r=4.5)=>game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.7,r,sting:true,venom,damage});
    if(e.kind==='stagBeetle'){e.shotCd=2.5;e.state='dash';e.stateT=.72;e.vx=Math.cos(aim)*285;e.vy=Math.sin(aim)*285;flashBanner('ANTLER CHARGE!',.28)}
-   else if(e.kind==='moleCricket'){e.shotCd=2.7;e.state='pounce';e.stateT=.5;e.x=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*120));e.y=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*120));burst(e.x,e.y,8,.45,'#8b6a45');flashBanner('BURROW!',.25)}
+   else if(e.kind==='moleCricket'){e.shotCd=3.2;let a=Math.random()*6.283,dist=135+Math.random()*45;e.burrowX=Math.max(45,Math.min(W-45,p.x+Math.cos(a)*dist));e.burrowY=Math.max(120,Math.min(H-55,p.y+Math.sin(a)*dist));e.state='burrowWait';e.stateT=.68;game.fx.push({x:e.burrowX,y:e.burrowY,vx:0,vy:0,life:.98,maxLife:.98,r:29,earthCrack:true,seed:Math.random()*6.283});flashBanner('BURROW!',.55)}
    else if(e.kind==='dragonflyBoss'){e.shotCd=2.15;e.state='dash';e.stateT=.82;let side=(Math.random()<.5?-1:1);e.x=side<0?-25:W+25;e.y=Math.max(115,Math.min(H-70,p.y+(Math.random()-.5)*120));e.vx=side<0?520:-520;e.vy=(p.y-e.y)*.35;flashBanner('💨 SKY SWEEP!',.32);for(let a of [-.08,.08])shoot(Math.atan2(e.vy,e.vx)+a,300,8+game.wave*.16)}
    else if(e.kind==='centipede'){e.shotCd=2.75;e.state='dash';e.stateT=1.0;e.vx=Math.cos(aim)*255;e.vy=Math.sin(aim)*255;bossRing(e,8,120,8+game.wave*.16,t*.5);flashBanner('🌀 COIL RUSH!',.32)}
    else if(e.kind==='earwig'){e.shotCd=2.25;if(d<175){e.state='dash';e.stateT=.38;e.vx=Math.cos(aim)*250;e.vy=Math.sin(aim)*250;bossHazard(p.x,p.y,48,.7,'clamp',10+game.wave*.16);flashBanner('✂️ PINCER CLAMP!',.32)}else{for(let a of [-.42,.42])shoot(aim+a,235);}}
@@ -892,6 +899,7 @@ function update(dt,now){
    e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,e.hit-dt);
    if(e.poison)damageEnemy(e,e.poison*dt*.8);
    enemyMove(e,dt);
+   if(e.kind==='moleCricket'&&e.state==='burrowWait')continue;
    if(e.boss&&e.kind==='scarab'){e.knockX=0;e.knockY=0}else{e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=Math.pow(.05,dt);e.knockY*=Math.pow(.05,dt);}
    let d=Math.hypot(p.x-e.x,p.y-e.y)||1;
    if(d<e.r+p.r){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
@@ -913,6 +921,12 @@ function update(dt,now){
    if(f.toxic){
       f.tick-=dt;if(f.tick<=0){f.tick=.22;if(Math.hypot(p.x-f.x,p.y-f.y)<f.r+p.r){hurtPlayer(f.damage*.22)}}
       continue;
+   }
+   if(f.earthCrack){
+     const q=Math.max(0,Math.min(1,f.life/(f.maxLife||.98))),r=f.r||29,seed=f.seed||0;
+     X.save();X.translate(f.x,f.y);X.globalAlpha=.08+.42*q;X.strokeStyle='#5d432d';X.lineWidth=1.7;X.lineCap='round';
+     for(let i=0;i<3;i++){let a=seed+i*2.094,len=r*(.66+(i%2)*.18),mx=Math.cos(a)*len*.45,my=Math.sin(a)*len*.45;X.beginPath();X.moveTo(0,0);X.lineTo(mx+Math.sin(a*2)*4,my+Math.cos(a*2)*4);X.lineTo(Math.cos(a)*len,Math.sin(a)*len);X.stroke()}
+     X.globalAlpha*=.55;X.beginPath();X.arc(0,0,r*.24,seed,seed+4.7);X.stroke();X.restore();X.globalAlpha=1;continue
    }
    if(f.bossHazard){
      const q=Math.max(0,f.life/(f.maxLife||1)),pulse=.85+.15*Math.sin(game.time*9);X.save();X.translate(f.x,f.y);X.globalAlpha=.28+.42*q;
@@ -1092,6 +1106,7 @@ function drawLeaves(d){
  X.restore();
 }
 function drawEnemy(e){
+ if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  const r=e.r,t=performance.now()/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
  if(e.boss&&(e.invuln||0)>0){X.save();X.globalAlpha=.55+.25*Math.sin(performance.now()/80);X.strokeStyle='#fff1a8';X.lineWidth=3;X.beginPath();X.arc(0,0,r+10,0,6.28);X.stroke();X.restore()}
