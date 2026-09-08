@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.23: Sky Lancer Flight Pass -->
+<!-- Big Bug v17.8.24: Sky Lancer Flight Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -309,8 +309,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.23</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.23</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.24</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.24</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -375,7 +375,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.23 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
+// v17.8.24 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
 // v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
 // v17.8.13 — Mole Cricket polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
@@ -715,7 +715,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v17.8.23 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
+   // v17.8.24 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
@@ -1468,7 +1468,43 @@ function drawEnemy(e){
   // Short aquatic beak and antennae.
   X.fillStyle='#29433f';X.beginPath();X.moveTo(-4,-rr*.91);X.lineTo(0,-rr*1.20);X.lineTo(4,-rr*.91);X.fill();
   line(-rr*.14,-rr*.94,-rr*.38,-rr*1.24,1.4,'#355b58');line(rr*.14,-rr*.94,rr*.38,-rr*1.24,1.4,'#355b58');
- }else if(e.kind==='stink'||['scarab','stagBeetle','moleCricket','weevil','tarantula','rootBorer','sporeBeetle'].includes(e.kind)){
+ }else if(e.kind==='weevil'){
+  // THORN WEEVIL: compact armored weevil with a long curved snout and thorny leaf-like shell.
+  const rr=r*1.06;
+  // Six compact legs stay close to the body so the snout and thorned shell define the silhouette.
+  for(let side of [-1,1]){
+    for(let j=0;j<3;j++){
+      const yy=-rr*.28+j*rr*.42, kick=(j%2?step2:step)*.22;
+      line(side*rr*.32,yy,side*rr*(.88+j*.08),yy+rr*.12+kick,2.4,'#4b572d');
+      line(side*rr*(.88+j*.08),yy+rr*.12+kick,side*rr*(1.05+j*.06),yy+rr*.30-kick,1.8,'#3d4826');
+    }
+  }
+  // Broad, seed-like armored back.
+  X.fillStyle='#6d7541';X.beginPath();X.ellipse(0,rr*.18,rr*.72,rr*.92,0,0,6.28);X.fill();
+  X.strokeStyle='#414a28';X.lineWidth=2;X.stroke();
+  line(0,-rr*.46,0,rr*.92,1.5,'#9dad5c');
+  // Leaf-vein markings make the shell read as thorny garden camouflage.
+  for(let side of [-1,1]){
+    line(0,-rr*.12,side*rr*.52,rr*.08,1.2,'#87964f');
+    line(0,rr*.20,side*rr*.50,rr*.42,1.2,'#87964f');
+    line(0,rr*.48,side*rr*.40,rr*.70,1.1,'#87964f');
+  }
+  // Small raised thorns around the shell edge.
+  X.fillStyle='#4f5b30';
+  for(let side of [-1,1])for(let j=0;j<3;j++){
+    const yy=-rr*.18+j*rr*.38, bx=side*rr*.62;
+    X.beginPath();X.moveTo(bx,yy-4);X.lineTo(side*rr*.93,yy);X.lineTo(bx,yy+5);X.closePath();X.fill();
+  }
+  // Distinct weevil head and long down-curved rostrum.
+  X.fillStyle='#7f884b';X.beginPath();X.ellipse(0,-rr*.66,rr*.48,rr*.38,0,0,6.28);X.fill();
+  eye(-rr*.20,-rr*.70,2.8);eye(rr*.20,-rr*.70,2.8);
+  X.strokeStyle='#535b31';X.lineWidth=8;X.lineCap='round';X.beginPath();
+  X.moveTo(0,-rr*.82);X.quadraticCurveTo(rr*.05,-rr*1.18,rr*.18,-rr*1.48);X.stroke();
+  X.lineCap='butt';
+  // Tiny feelers near the tip of the snout.
+  line(rr*.10,-rr*1.25,-rr*.20,-rr*1.47,1.3,'#535b31');
+  line(rr*.12,-rr*1.29,rr*.39,-rr*1.47,1.3,'#535b31');
+ }else if(e.kind==='stink'||['scarab','stagBeetle','moleCricket','tarantula','rootBorer','sporeBeetle'].includes(e.kind)){
   for(let side of [-1,1]){line(side*6,-4,side*(r+7),-10+step,2);line(side*7,3,side*(r+9),4-step,2);line(side*5,10,side*(r+7),17+step2,2)}
   X.fillStyle=e.kind==='scarab'?'#71898d':e.kind==='stagBeetle'?'#70452d':e.kind==='moleCricket'?'#8a7049':e.kind==='centipede'?'#a64e3f':e.kind==='earwig'?'#795139':e.kind==='bombardier'?'#344b3a':e.kind==='waterStrider'?'#557c78':e.kind==='weevil'?'#6d7541':e.kind==='tarantula'?'#4c3548':e.kind==='rootBorer'?'#6b4935':e.kind==='sporeBeetle'?'#76518a':'#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
  }else{
@@ -1486,7 +1522,7 @@ function drawEnemy(e){
    
    
    
-   if(e.kind==='weevil'){line(0,-rr*.45,0,-rr*1.35,8,'#535b31')}
+   
    if(e.kind==='tarantula'){for(let q of [-1,1])for(let i=0;i<4;i++)line(q*rr*.3,-rr*.55+i*rr*.35,q*rr*1.2,-rr*.7+i*rr*.48,5,'#39283a')}
    if(e.kind==='rootBorer'){X.strokeStyle='#8d6849';X.lineWidth=5;X.beginPath();X.arc(0,0,rr*1.18,.2,Math.PI-.2);X.stroke()}
    if(e.kind==='sporeBeetle'){X.fillStyle='#b77cc1';for(let i=0;i<5;i++){let a=i*1.25+t*.08;X.beginPath();X.arc(Math.cos(a)*rr*.65,Math.sin(a)*rr*.65,5+i%2*2,0,6.28);X.fill()}}
@@ -1494,7 +1530,7 @@ function drawEnemy(e){
    
    
    
-   if(e.kind==='weevil'){X.fillStyle='#a5b85a';X.beginPath();X.arc(0,-rr*.9,rr*.32,0,6.28);X.fill()}
+   
    if(e.kind==='rootBorer'){for(let q of [-1,1])line(q*rr*.35,rr*.4,q*rr*1.25,rr*.95,6,'#8d6849')}
  }
  X.restore();
