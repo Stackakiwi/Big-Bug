@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.6.0: Unique Boss Overhaul -->
+<!-- Big Bug v17.8.5: Smoothness Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -262,7 +262,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #home .homeBestFancy:before{content:"";position:absolute;inset:-7px -16px;border-radius:999px;background:#e4f2c488;border:1px solid #294b2870;box-shadow:0 3px 0 #24442255;z-index:-1}
 /* Keep the old version node as a silent layout spacer so the title never shifts. */
 #home .versionStamp{visibility:hidden!important}
-#home .versionCorner{position:absolute!important;left:8px!important;bottom:max(6px,env(safe-area-inset-bottom))!important;z-index:40!important;margin:0!important;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap;transform:none!important}
+#home .versionCorner{position:absolute!important;left:9px!important;bottom:max(10px,calc(env(safe-area-inset-bottom) + 5px))!important;z-index:999!important;margin:0!important;color:#111;font:700 11px/1.1 system-ui,-apple-system,sans-serif;opacity:.84;pointer-events:none;white-space:nowrap;transform:none!important}
 
 
 .titleScreen{
@@ -303,8 +303,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.3</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.3</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.5</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.5</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -368,7 +368,9 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+// v17.8.5 — smoothness pass: allocation-free Triple Shot targeting, cheaper radius checks, cached boss-bar writes, and a more reliably visible Home version label. Gameplay and visuals otherwise unchanged.
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
+// v17.8.4 — performance-only pass: cached static arena rendering + change-only HUD writes. Gameplay and visuals unchanged.
 // v17.8.3 — simplified Home copy, lifted controls, upgraded Best Wave badge, and safe 20-second title replay.
 // v17.7.6 — Settings menu, audio/damage-number toggles, and in-game reset confirmation.
 // v17.7.9 — Settings button now lives inside Home as an absolutely positioned overlay, so it can never appear on other screens.
@@ -679,10 +681,11 @@ function shootAt(target){
  let p=game.p;p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let boost=boostActive()?2:1,d=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
  game.fx.push({x:p.x,y:p.y,vx:(target.x-p.x)*3.2,vy:(target.y-p.y)*3.2,life:.16,r:3.5,shot:true});
  if(p.tripleShot){
-   const extras=[];
-   for(const e of game.enemies)if(!e.dead&&e!==target){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;extras.push([ds,e])}
-   extras.sort((a,b)=>a[0]-b[0]);
-   for(let i=0;i<Math.min(2,extras.length);i++){let e=extras[i][1],dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(e,dd);game.fx.push({x:p.x,y:p.y,vx:(e.x-p.x)*3.2,vy:(e.y-p.y)*3.2,life:.16,r:3.5,shot:true})}
+   // v17.8.5 — same two nearest extra targets, without allocating/sorting a temporary array every attack.
+   let first=null,second=null,d1=Infinity,d2=Infinity;
+   for(const e of game.enemies)if(!e.dead&&e!==target){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<d1){second=first;d2=d1;first=e;d1=ds}else if(ds<d2){second=e;d2=ds}}
+   if(first){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(first,dd);game.fx.push({x:p.x,y:p.y,vx:(first.x-p.x)*3.2,vy:(first.y-p.y)*3.2,life:.16,r:3.5,shot:true})}
+   if(second){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd);game.fx.push({x:p.x,y:p.y,vx:(second.x-p.x)*3.2,vy:(second.y-p.y)*3.2,life:.16,r:3.5,shot:true})}
  }
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
@@ -708,7 +711,7 @@ function fireball(){
  let dx=t.x-game.p.x,dy=t.y-game.p.y,dd=Math.hypot(dx,dy)||1;
  game.fx.push({x:game.p.x,y:game.p.y,vx:dx/dd*330,vy:dy/dd*330,life:1.15,r:8,orb:true,damage:game.p.damage*2.3});
 }
-function meteor(){burst(game.p.x,game.p.y,45,1,'#f2cc7b');for(const e of game.enemies)if(!e.dead&&Math.hypot(e.x-game.p.x,e.y-game.p.y)<190)damageEnemy(e,game.p.damage*7)}
+function meteor(){burst(game.p.x,game.p.y,45,1,'#f2cc7b');for(const e of game.enemies)if(!e.dead){const dx=e.x-game.p.x,dy=e.y-game.p.y;if(dx*dx+dy*dy<36100)damageEnemy(e,game.p.damage*7)}}
 function toxicCloud(x,y,r=46,life=2.5,damage=6){
  game.fx.push({x,y,vx:0,vy:0,life,maxLife:life,r,toxic:true,damage,tick:0});
 }
@@ -926,7 +929,7 @@ function update(dt,now){
    }
    f.x+=f.vx*dt;f.y+=f.vy*dt;
    if(f.sting&&Math.hypot(p.x-f.x,p.y-f.y)<p.r+f.r){hurtPlayer(f.damage);f.life=0;burst(f.x,f.y,3,.2,f.venom?'#b56cff':'#ff665b')}
-   if(f.orb){for(const e of g.enemies)if(!e.dead&&Math.hypot(e.x-f.x,e.y-f.y)<e.r+12){damageEnemy(e,f.damage);f.life=0;break}}
+   if(f.orb){for(const e of g.enemies)if(!e.dead){const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){damageEnemy(e,f.damage);f.life=0;break}}}
    f.vx*=.985;f.vy*=.985;
  }
  compactInPlace(g.enemies,e=>!e.dead);compactInPlace(g.drops,d=>!d.dead);compactInPlace(g.fx,f=>f.life>0);if(g.fx.length>150)g.fx.splice(0,g.fx.length-150);
@@ -934,7 +937,7 @@ function update(dt,now){
    compactInPlace(g.bosses,b=>!b.dead);
    g.boss=g.bosses[0]||null;
    if(!g.bosses.length){$('bossbar').style.display='none';bossMusicStop()}
-   else{const hp=g.bosses.reduce((a,b)=>a+Math.max(0,b.hp),0),mx=g.bosses.reduce((a,b)=>a+b.max,0);$('bossFill').style.width=Math.max(0,100*hp/mx)+'%'}
+   else{let hp=0,mx=0;for(const b of g.bosses){hp+=Math.max(0,b.hp);mx+=b.max}setBossFill(Math.max(0,100*hp/mx)+'%')}
  }
  if(g.waveActive&&g.spawnLeft<=0&&g.enemies.length===0)completeWave();
  if(p.hp<=0)finish(false);
@@ -960,10 +963,14 @@ function openUpgrade(afterWave=false){
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
 }
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
+const HUD_CACHE={};
+function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_CACHE[id]=value;$(id).textContent=value}}
+function setBossFill(value){if(HUD_CACHE.bossFill!==value){HUD_CACHE.bossFill=value;$('bossFill').style.width=value}}
 function updateHud(){
- const p=game.p,g=game,active=boostActive();$('hp').textContent=Math.max(0,Math.ceil(p.hp));$('maxhp').textContent=Math.ceil(p.maxHp);$('wave').textContent=g.wave;$('coins').textContent=g.coins||0;$('dmg').textContent=Math.round(p.damage*(active?2:1));
- const prog=$('waveProgress');prog.textContent=g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'';
- const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0;b.classList.toggle('active',active);b.disabled=!active&&(g.coins||0)<boostCost();b.innerHTML=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`}
+ const p=game.p,g=game,active=boostActive();
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);setHudText('coins',g.coins||0);setHudText('dmg',Math.round(p.damage*(active?2:1)));
+ setHudText('waveProgress',g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'');
+ const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0,disabled=!active&&(g.coins||0)<boostCost(),html=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`;if(HUD_CACHE.boostActive!==active){HUD_CACHE.boostActive=active;b.classList.toggle('active',active)}if(HUD_CACHE.boostDisabled!==disabled){HUD_CACHE.boostDisabled=disabled;b.disabled=disabled}if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
 }
 function finish(won){
  if(game.over)return;game.over=true;bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
@@ -1144,10 +1151,14 @@ function drawEnemy(e){
  }
  X.restore();
 }
+const ARENA_CACHE=document.createElement('canvas'),ARENA_CACHE_X=ARENA_CACHE.getContext('2d');
+let arenaCacheKey='';
 function draw(){
+ const area=areaFor(),ai=areaIndex(),cacheable=ai!==2&&ai!==6,cacheKey=ai+':'+C.width+'x'+C.height;
  X.clearRect(0,0,W,H);
+ if(cacheable&&arenaCacheKey===cacheKey){X.drawImage(ARENA_CACHE,0,0,W,H)}else{
  // layered garden floor: same Big Bug palette, with more depth and hand-drawn detail
- const area=areaFor();let bg=X.createLinearGradient(0,0,0,H);bg.addColorStop(0,area.top);bg.addColorStop(.55,area.mid);bg.addColorStop(1,area.bot);X.fillStyle=bg;X.fillRect(0,0,W,H);
+ let bg=X.createLinearGradient(0,0,0,H);bg.addColorStop(0,area.top);bg.addColorStop(.55,area.mid);bg.addColorStop(1,area.bot);X.fillStyle=bg;X.fillRect(0,0,W,H);
  // full-screen garden floor: the whole visible field is playable
  // subtle mossy ground patches across the whole screen
  for(let i=0;i<18;i++){let x=(i*149+43)%W,y=(i*211+97)%H,rr=26+(i%5)*9;X.globalAlpha=.10;X.fillStyle=i%2?area.patch1:area.patch2;X.beginPath();X.ellipse(x,y,rr,rr*.55,i*.37,0,6.28);X.fill()}X.globalAlpha=1;
@@ -1155,7 +1166,6 @@ function draw(){
  for(let i=0;i<10;i++){let left=i%2===0,x=left?4:W-4,y=H*(.12+(i*.083)% .78),sz=25+(i%3)*7;X.save();X.translate(x,y);X.rotate((left?-.35:.35)+Math.sin(i)*.18);X.fillStyle=i%3===0?area.edge1:area.edge2;X.globalAlpha=.78;X.beginPath();X.ellipse(left?sz*.35:-sz*.35,0,sz,sz*.38,0,0,6.28);X.fill();X.strokeStyle='#76905a66';X.lineWidth=1.3;X.beginPath();X.moveTo(left?-sz*.2:sz*.2,0);X.lineTo(left?sz*1.05:-sz*1.05,0);X.stroke();X.restore()}X.globalAlpha=1;
  drawGardenDetails();
  // area-specific scenery makes each post-boss map feel genuinely different
- const ai=areaIndex();
  drawAreaIdentity(ai,area);
  if(ai===1){for(let i=0;i<16;i++){let x=(i*83+19)%W,y=(i*127+61)%H;X.save();X.translate(x,y);X.rotate(i*.73);X.fillStyle=i%2?'#d18a38':'#a95d2c';X.globalAlpha=.72;X.beginPath();X.ellipse(0,0,7,3,0,0,6.28);X.fill();X.restore()}X.globalAlpha=1}
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(performance.now()/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
@@ -1177,6 +1187,8 @@ function draw(){
  for(let i=0;i<12;i++){let x=(i*137+76)%W,y=(i*173+130)%H;X.fillStyle=i%2?'#8c865f':'#6f7654';X.beginPath();X.ellipse(x,y,3+(i%3),2+(i%2),i*.4,0,6.28);X.fill()}
  // faint vignette
  let vg=X.createRadialGradient(W/2,H*.48,80,W/2,H*.48,Math.max(W,H)*.72);vg.addColorStop(.55,'#0000');vg.addColorStop(1,area.vignette);X.fillStyle=vg;X.fillRect(0,0,W,H);
+ if(cacheable){if(ARENA_CACHE.width!==C.width||ARENA_CACHE.height!==C.height){ARENA_CACHE.width=C.width;ARENA_CACHE.height=C.height}ARENA_CACHE_X.setTransform(1,0,0,1,0,0);ARENA_CACHE_X.clearRect(0,0,ARENA_CACHE.width,ARENA_CACHE.height);ARENA_CACHE_X.drawImage(C,0,0);arenaCacheKey=cacheKey}
+ }
  if(!game)return;
  for(const d of game.drops)drawLeaves(d);
  for(const e of game.enemies)drawEnemy(e);
