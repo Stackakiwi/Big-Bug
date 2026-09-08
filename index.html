@@ -410,7 +410,8 @@ const UP=[
  {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1+.10*(1+save.upgrades.dmg*.10)},
  {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{const n=20*(1+save.upgrades.hp*.10);p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
  {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{const n=.10*(1+save.upgrades.magnet*.10);p.rate=Math.max(360,p.rate*(1-n))}},
- {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+5% critical chance + 3× damage',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
+ {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
+ {id:'triple',icon:'🎯',name:'Triple Shot',desc:'Fire 3 attacks at once for the rest of this run',rarity:'epic',apply:p=>p.tripleShot=true},
  {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65*(1+save.upgrades.coins*.10)},
  {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1+.20*(1+save.upgrades.coins*.10)},
  {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
@@ -500,7 +501,7 @@ function buyShop(k){
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
 function basePlayer(){
- const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[]};
+ const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[]};
  p.hp=p.maxHp;
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
@@ -649,8 +650,10 @@ function damageEnemy(e,d,source='player'){
  if(e.hp<=0){
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
    let val=Math.max(1,Math.floor((2+game.wave*.35)*game.p.greed));
-   if(e.boss){val*=12;}
-   game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?12:9,age:0,phase:Math.random()*6.28});
+   let luckyLeaf=false;
+   if(e.boss){val*=20;}
+   else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
+   game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
    burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
    game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
    beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth');
@@ -659,6 +662,12 @@ function damageEnemy(e,d,source='player'){
 function shootAt(target){
  let p=game.p;p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let boost=boostActive()?2:1,d=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
  game.fx.push({x:p.x,y:p.y,vx:(target.x-p.x)*3.2,vy:(target.y-p.y)*3.2,life:.16,r:3.5,shot:true});
+ if(p.tripleShot){
+   const extras=[];
+   for(const e of game.enemies)if(!e.dead&&e!==target){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;extras.push([ds,e])}
+   extras.sort((a,b)=>a[0]-b[0]);
+   for(let i=0;i<Math.min(2,extras.length);i++){let e=extras[i][1],dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(e,dd);game.fx.push({x:p.x,y:p.y,vx:(e.x-p.x)*3.2,vy:(e.y-p.y)*3.2,life:.16,r:3.5,shot:true})}
+ }
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
  if(p.frost)target.slow=2;
@@ -919,12 +928,13 @@ function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
  $('upgradeTitle').textContent=afterWave?(g.wave%5===0?'👑 BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!'):'LEVEL UP!';
  $('upgradeSub').textContent=afterWave?(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.'):'Pick one. Stack effects and discover crazy combinations.';
- const choices=[];const helper=UP.find(u=>u.id==='clone'),pool=UP.filter(u=>u.id!=='clone');
+ const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // Tiny Helper is a true lucky pull: only a 5% chance to appear on an upgrade screen.
- if(helper&&Math.random()<.05&&choices.length){choices[Math.floor(Math.random()*choices.length)]=helper}
- const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',gold:'➜'};
+ // Tiny Helper and Triple Shot are true lucky pulls: each has the same 5% chance to appear.
+ const lucky=[];if(helper&&Math.random()<.05)lucky.push(helper);if(triple&&Math.random()<.05)lucky.push(triple);
+ if(lucky.length&&choices.length){choices[Math.floor(Math.random()*choices.length)]=lucky[Math.floor(Math.random()*lucky.length)]}
+ const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',triple:'≋',gold:'➜'};
  $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
