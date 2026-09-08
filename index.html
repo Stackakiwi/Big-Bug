@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.27: Sky Lancer Flight Pass -->
+<!-- Big Bug v17.8.28: Sky Lancer Flight Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -309,8 +309,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.27</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.27</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.28</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.28</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -344,6 +344,15 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
  <div class="panel"><h2 id="upgradeTitle">A GIFT FROM THE GARDEN</h2><p id="upgradeSub">Pick one little advantage before you scurry onward.</p><div id="choices" class="grid"></div></div>
 </section>
 
+<section id="finalPrep" class="screen hidden">
+ <div class="panel"><h2>☣️ FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p>
+ <div class="grid">
+  <button class="choice rare" id="prepLeaves"><div class="art">🍃</div><b>100,000 LEAVES</b><p class="muted">Take 100,000 Leaves into the final fight.</p></button>
+  <button class="choice epic" id="prepUpgrades"><div class="art">🎴</div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p></button>
+  <button class="choice epic" id="prepBuddy"><div class="art">✨🐞</div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p></button>
+ </div></div>
+</section>
+
 <section id="pause" class="screen hidden">
  <div class="panel" style="text-align:center"><h2>⏸ PAUSED</h2><p>Take a breather little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="quit">QUIT RUN</button></div>
 </section>
@@ -375,7 +384,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.27 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
+// v17.8.28 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
 // v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
 // v17.8.13 — Mole Cricket polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
@@ -641,7 +650,7 @@ const BOSS_ROSTER={
  55:['bombardier'],60:['mothBoss'],65:['waterStrider'],70:['weevil'],75:['tarantula'],
  80:['rootBorer'],85:['sporeBeetle'],90:['hornet','mantisBoss'],95:['queenSpider','scarab'],100:['gardenHeart']
 };
-const BOSS_NAMES={hornet:'HORNET',stagBeetle:'STAG KING',queenSpider:'VENOM QUEEN',moleCricket:'MOLE CRICKET',scarab:'IRON SCARAB',dragonflyBoss:'SKY LANCER',mantisBoss:'PRAYING TYRANT',centipede:'RED CENTIPEDE',earwig:'PINCHER',cicada:'THUNDER CICADA',bombardier:'BOMBARDIER',mothBoss:'DUSK MOTH',waterStrider:'POND SKATER',weevil:'THORN WEEVIL',tarantula:'OLD WEBBER',rootBorer:'ROOT BORER',sporeBeetle:'SPOREBACK',gardenHeart:'THE GARDEN HEART'};
+const BOSS_NAMES={hornet:'HORNET',stagBeetle:'STAG KING',queenSpider:'VENOM QUEEN',moleCricket:'MOLE CRICKET',scarab:'IRON SCARAB',dragonflyBoss:'SKY LANCER',mantisBoss:'PRAYING TYRANT',centipede:'RED CENTIPEDE',earwig:'PINCHER',cicada:'THUNDER CICADA',bombardier:'BOMBARDIER',mothBoss:'DUSK MOTH',waterStrider:'POND SKATER',weevil:'THORN WEEVIL',tarantula:'OLD WEBBER',rootBorer:'ROOT BORER',sporeBeetle:'SPOREBACK',gardenHeart:'THE SPORE BEHEMOTH'};
 function bossKindsFor(w=game?.wave||5){return BOSS_ROSTER[w]||['sporeBeetle']}
 function bossKindFor(w=game?.wave||5){return bossKindsFor(w)[0]}
 function bossSecondFight(w=game?.wave||5){return false}
@@ -661,7 +670,9 @@ function flashBanner(text,sec=1.25){
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
 function beginWave(w){
- const g=game;g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;
+ const g=game;
+ if(w===100&&!g.finalPrepDone){showFinalPrep();return}
+ g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;
  const bossWave=w%5===0;
  g.waveQuota=bossWave?bossKindsFor(w).length:Math.min(activeEnemyCap(w),5+w*2);
  g.spawnLeft=g.waveQuota;
@@ -715,7 +726,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v17.8.27 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
+   // v17.8.28 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
@@ -981,9 +992,9 @@ function enemyMove(e,dt){
    }
    else if(e.kind==='gardenHeart'){e.shotCd=1.55;bossRing(e,12,165,10+game.wave*.18,t*.12,'spore');if(Math.random()<.7){bossHazard(p.x,p.y,78,2.2,'root',12+game.wave*.18);bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16)}flashBanner('☣️ HEART PULSE!',.28)}
  }
- if(e.boss){
+ if(e.boss&&e.kind!=='gardenHeart'){
    e.addCd-=dt;
-   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal',e.kind==='gardenHeart'?'stink':'wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
+   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal','wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
    if(e.hp<e.max*.65&&Math.random()<dt*.35)stingBurst(e,e.hp<e.max*.3?10:7,e.hp<e.max*.3?180:145);
  }
  if(e.state==='telegraph')return;
@@ -1047,6 +1058,10 @@ function update(dt,now){
  if(activeHelpers.length&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,activeHelpers.length*.06)))){
    p.helperShot=now;
    activeHelpers.forEach((h,i)=>{let a=g.time*1.8+i*6.283/activeHelpers.length,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelpers.length*.04)),'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.16,r:2.4,shot:true,helper:true})}})
+ }
+ if(p.superBuddy&&g.wave===100&&now-(p.superBuddyShot||0)>Math.max(150,p.rate/1.5)){
+   p.superBuddyShot=now;let a=g.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48,t=nearestEnemy(hx,hy);
+   if(t){damageEnemy(t,p.damage*1.5,'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.18,r:3.4,shot:true,helper:true})}
  }
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
  for(const e of g.enemies)if(!e.dead){
@@ -1164,6 +1179,27 @@ function openUpgrade(afterWave=false){
  });
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
 }
+function showFinalPrep(){
+ const g=game;g.paused=true;g.wave=99;g.intermission=true;g.waveActive=false;
+ $('finalPrep').classList.remove('hidden');$('finalPrep').style.display='flex';flashBanner('☣️ SOMETHING HUGE IS WAITING...',1.2);upgradePopSound();
+}
+function finishFinalPrep(){
+ $('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';game.finalPrepDone=true;game.paused=false;beginWave(100);
+}
+function finalUpgradePick(remaining){
+ const pool=UP.filter(u=>u.id!=='clone'),choices=[];
+ while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
+ $('upgradeTitle').textContent='☣️ FINAL PREPARATION — '+(4-remaining)+' / 3';
+ $('upgradeSub').textContent='Choose one upgrade. '+remaining+' choice'+(remaining===1?'':'s')+' remaining.';
+ const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',triple:'≋',gold:'➜'};
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
+ [...$('choices').children].forEach((el,i)=>el.onclick=()=>{choices[i].apply(game.p);upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
+ $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
+}
+$('prepLeaves').onclick=()=>{initAudio();game.coins=(game.coins||0)+100000;finishFinalPrep()};
+$('prepUpgrades').onclick=()=>{initAudio();$('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';finalUpgradePick(3)};
+$('prepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalPrep()};
+
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
 const HUD_CACHE={};
 function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_CACHE[id]=value;$(id).textContent=value}}
@@ -1307,10 +1343,32 @@ function drawEnemy(e){
   for(let side of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);line(side*5,yy,side*(r+8),yy+(i-1.5)*4+w,2.5,'#241c2c');line(side*(r+8),yy+(i-1.5)*4+w,side*(r+13),yy+(i-1.5)*8-w*.5,2,'#241c2c')}
   X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();X.fillStyle='#d9d0c2';X.beginPath();X.moveTo(-4,-3);X.lineTo(-1,2);X.lineTo(0,-4);X.moveTo(4,-3);X.lineTo(1,2);X.lineTo(0,-4);X.fill();
  }else if(e.kind==='gardenHeart'){
-  X.fillStyle='#382b24';for(let a=0;a<8;a++){let an=a*.785+t*.08;line(0,10,Math.cos(an)*r*1.45,10+Math.sin(an)*r*.95,7,'#57402d')}
-  X.fillStyle='#76518a';for(let a=0;a<8;a++){let an=a*.785;X.beginPath();X.ellipse(Math.cos(an)*r*.72,Math.sin(an)*r*.58-4,r*.62,r*.28,an,0,6.28);X.fill()}
-  X.fillStyle='#a6c65c';X.beginPath();X.arc(0,-4,r*.55,0,6.28);X.fill();X.fillStyle='#51345f';X.beginPath();X.arc(0,-4,r*.28,0,6.28);X.fill();eye(-r*.12,-8,3.2);eye(r*.12,-8,3.2);
- }else if(e.kind==='mantisBoss'){
+  // THE SPORE BEHEMOTH: a living fungal mass, no flower or plant anatomy.
+  const rr=r*1.18,pulse=1+Math.sin(t*3.2)*.025;
+  // Thick fungal limbs/tendrils.
+  for(let side of [-1,1])for(let i=0;i<3;i++){
+    const sy=-rr*.18+i*rr*.42,k=(i%2?step2:step)*.12;
+    X.strokeStyle=i===1?'#5d385f':'#493044';X.lineWidth=8-i;X.lineCap='round';X.beginPath();
+    X.moveTo(side*rr*.34,sy);X.quadraticCurveTo(side*rr*(.9+i*.12),sy+rr*.16,side*rr*(1.35+i*.08),sy+rr*(.30+i*.08)+k);X.stroke();
+  }
+  X.lineCap='butt';
+  // Lumpy living fungal body.
+  X.fillStyle='#3d293c';X.beginPath();X.ellipse(0,rr*.12,rr*.90*pulse,rr*.96*pulse,0,0,6.28);X.fill();
+  X.strokeStyle='#241a27';X.lineWidth=3;X.stroke();
+  // Uneven fused mushroom lobes.
+  const lobes=[[-.50,-.52,.42],[.05,-.72,.52],[.52,-.45,.38],[-.55,.05,.34],[.50,.12,.31]];
+  for(const m of lobes){X.fillStyle=m[0]>0?'#684169':'#593858';X.beginPath();X.ellipse(m[0]*rr,m[1]*rr,m[2]*rr,m[2]*rr*.58,0,0,6.28);X.fill();X.strokeStyle='#8e5c87';X.lineWidth=1.4;X.stroke()}
+  // Central maw with fungal teeth.
+  X.fillStyle='#171319';X.beginPath();X.ellipse(0,rr*.16,rr*.44,rr*.50,0,0,6.28);X.fill();
+  X.fillStyle='#d4b88f';for(let i=0;i<8;i++){let a=i*6.283/8+.38,cx=Math.cos(a)*rr*.34,cy=rr*.16+Math.sin(a)*rr*.39;X.save();X.translate(cx,cy);X.rotate(a+1.57);X.beginPath();X.moveTo(-3,0);X.lineTo(0,rr*.16);X.lineTo(3,0);X.fill();X.restore()}
+  // Multiple glowing spore eyes/nodes.
+  for(const s of [[-.38,-.22,.09],[.36,-.27,.10],[-.18,-.53,.07],[.22,-.55,.065]]){X.fillStyle='#d27acb';X.beginPath();X.arc(s[0]*rr,s[1]*rr,s[2]*rr,0,6.28);X.fill();X.fillStyle='#f2b4e9';X.beginPath();X.arc(s[0]*rr-1,s[1]*rr-2,s[2]*rr*.35,0,6.28);X.fill()}
+  // Static mushroom towers and spore sacs: detail without particles.
+  for(const m of [[-.72,-.18,.22],[.67,-.05,.25],[-.38,-.72,.18],[.42,-.75,.17]]){
+    const mx=m[0]*rr,my=m[1]*rr,s=m[2]*rr;X.strokeStyle='#b79a8a';X.lineWidth=4;X.beginPath();X.moveTo(mx,my+s*.35);X.lineTo(mx,my-s*.35);X.stroke();
+    X.fillStyle='#815078';X.beginPath();X.ellipse(mx,my-s*.42,s*.72,s*.34,0,0,6.28);X.fill();
+  }
+  }else if(e.kind==='mantisBoss'){
   for(let side of [-1,1]){line(side*5,-3,side*r*.72,-r*.55+step,5,'#6f9d3d');line(side*r*.72,-r*.55+step,side*r*1.18,-r*1.02-step,6,'#9fc552');line(side*5,8,side*r*.72,r*.72-step2,3,'#547d35')}
   X.fillStyle='#6f9d3d';X.beginPath();X.ellipse(0,10,r*.42,r*1.05,0,0,6.28);X.fill();X.fillStyle='#8db94c';X.beginPath();X.moveTo(0,-r*1.05);X.lineTo(r*.58,-r*.38);X.lineTo(0,-r*.18);X.lineTo(-r*.58,-r*.38);X.closePath();X.fill();eye(-r*.2,-r*.55,3.4);eye(r*.2,-r*.55,3.4);line(-5,-r*.78,-12,-r*1.3,2,'#4f7130');line(5,-r*.78,12,-r*1.3,2,'#4f7130');
  }else if(e.kind==='dragonflyBoss'){
@@ -1766,6 +1824,10 @@ function draw(){
    X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);
    if(h.leaving)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);else{let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2)}
    X.font='20px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore()
+ }
+ if(p.superBuddy&&game.wave===100){
+   let a=game.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48;X.save();X.translate(hx,hy);
+   X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc4';X.beginPath();X.arc(0,0,12,0,6.28);X.fill();X.font='21px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore();
  }
 }
 function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;update(dt,now);draw();raf=requestAnimationFrame(loop)}
