@@ -254,6 +254,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
    The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
+#home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
 
 .titleScreen{
   background:
@@ -290,6 +291,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted">Best Wave: <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
+  <div class="versionStamp" aria-hidden="true">v17.8.1</div>
 </section>
 
 <section id="bugs" class="screen hidden">
