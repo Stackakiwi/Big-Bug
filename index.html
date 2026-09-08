@@ -8,13 +8,13 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.32: Sky Lancer Flight Pass -->
+<!-- Big Bug v17.8.33: Sky Lancer Flight Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101b12;color:white;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:none;user-select:none}
 body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block}.bugPreview canvas{position:static!important;inset:auto!important;width:76px!important;height:76px!important;display:block!important}
 .hidden{display:none!important}
 .screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .titleScreen{background:linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);color:var(--ink)}
@@ -33,7 +33,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .card{background:#203925;border:1px solid #ffffff18;border-radius:18px;padding:14px;text-align:left}
 .card.selected{outline:3px solid #f4b329}
-.card .art{font-size:44px}.card b{font-size:18px}.muted{opacity:.65;font-size:13px}
+.card .art{font-size:44px}.card .bugPreview{height:76px;margin-bottom:8px;display:flex;align-items:center}.card b{font-size:18px}.muted{opacity:.65;font-size:13px}
 .bar{height:10px;background:#0b130d;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#e84e45}
 #hud{position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;z-index:5;display:flex;gap:7px;justify-content:space-between;pointer-events:none}
 .pill{background:#102016dd;border:1px solid #ffffff22;border-radius:14px;padding:7px 10px;font-weight:900;font-size:13px;backdrop-filter:blur(6px)}
@@ -278,11 +278,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #gameover .panel>.btn{display:block;margin:14px auto;width:min(100%,470px)}
 /* v17.8.10 — cleaner defeat screen: remove defeat subtitle and scale title responsively. */
 #gameover #overTitle{font-size:clamp(30px,8vw,46px);line-height:1.05;text-align:left;white-space:nowrap}
-.testJump{display:flex;gap:6px;align-items:center;position:fixed;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:20;opacity:.88}.testJump select{min-height:36px;width:148px;border:1px solid #ffffff2a;border-radius:11px;background:#17231bf2;color:#fff;padding:0 7px;font:800 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005}.testJump .btn{min-height:36px;padding:6px 9px;font-size:10px}.testHint{display:none}
+.testJump{display:flex;gap:6px;align-items:center;position:absolute!important;right:8px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;z-index:50;opacity:.88;margin:0!important;transform:none!important}.testJump select{min-height:36px;width:148px;border:1px solid #ffffff2a;border-radius:11px;background:#17231bf2;color:#fff;padding:0 7px;font:800 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005}.testJump .btn{min-height:36px;padding:6px 9px;font-size:10px}.testHint{display:none}
 #gameover #overSub:empty{display:none}
 
-/* v17.8.32 — lightweight final ending / credits sequence */
-.creditsTestBtn{position:fixed;left:10px;bottom:54px;z-index:12;font-size:11px!important;padding:7px 10px!important;opacity:.72}
+/* v17.8.33 — lightweight final ending / credits sequence */
+.creditsTestBtn{position:absolute!important;left:62px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;z-index:50;font-size:10px!important;padding:7px 9px!important;opacity:.72;margin:0!important;min-width:0!important;transform:none!important}
 #ending{position:fixed;inset:0;z-index:1000;overflow:hidden;background:#020503;color:#f6f0dc;padding:0;display:block}
 #ending.hidden{display:none}
 #endingBackdrop{position:absolute;inset:0;background:
@@ -318,6 +318,12 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #creditsRoll .creditName:after{content:"";display:block;width:34px;height:1px;margin:11px auto 0;background:linear-gradient(90deg,transparent,#8c6e8e,transparent);opacity:.65}
 #creditsRoll h2{text-shadow:0 0 18px #8d568e88}
 
+
+@media(max-width:360px){
+ #home .testJump select{width:112px}
+ #home .creditsTestBtn{left:52px!important;font-size:9px!important;padding:7px 7px!important}
+}
+
 </style>
 </head>
 <body>
@@ -348,8 +354,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.32</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.32</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.33</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.33</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -444,7 +450,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.32 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
+// v17.8.33 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
 // v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
 // v17.8.13 — Mole Cricket polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
@@ -485,7 +491,7 @@ const BUGS={
 };
 
 
-// v17.8.32 — cross-platform playable bug renderer. No emoji dependencies.
+// v17.8.33 — cross-platform playable bug renderer. No emoji dependencies.
 function drawPlayableBug(ctx,id,size=28,glow=false){
  ctx.save();
  const s=size/28;
@@ -846,7 +852,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v17.8.32 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
+   // v17.8.33 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
