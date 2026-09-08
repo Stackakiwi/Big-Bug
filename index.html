@@ -24,6 +24,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 @keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}
 .btn{border:0;border-radius:18px;padding:14px 22px;background:#f3a623;color:#2a2416;font-size:18px;font-weight:950;box-shadow:inset 0 -4px #b96917,0 5px 0 #1f3b20;min-width:220px;margin:7px;cursor:pointer}
 .btn.green{background:#77c84b;box-shadow:inset 0 -4px #438c2e,0 5px 0 #1f3b20}
+.btn.red{background:#d84d48;color:white;box-shadow:inset 0 -4px #8f2926,0 5px 0 #1f3b20}
 .btn.dark{background:#223827;color:white;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
 .btn.small{min-width:0;font-size:14px;padding:10px 14px}
 .tag{margin:10px 0 18px;font-weight:850;opacity:.8}
@@ -260,10 +261,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="bugHero">🐞</div>
   <div class="logo">BIG<br>BUG<small>SMALL BUG. BIG DREAMS.</small></div>
   <div class="tag">Survive. Upgrade. Get BIGGER.</div>
-  <div class="muted" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move • Attacks are automatic</div>
+  <div class="muted" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green" data-action="play">PLAY</button>
   <div><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted">Best Wave: <b id="homeBest">0</b></div>
+  <button class="btn red small" data-action="reset" style="margin-top:12px">RESET GAME</button>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -308,6 +310,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
+// v17.7.5 — remove bullet separators from game text + add safe main-menu progress reset.
 // v17.7.4 — Garden Magic clarity: every permanent level adds exactly +10% upgrade strength, shown as progress out of 10.
 // v17.7.3 — permanent upgrade cap + names + lower resistant Beetle frequency.
 // v17.7.0 — permanent Power Ups now strengthen in-run upgrades instead of granting starting stats.
@@ -368,6 +371,15 @@ const UP=[
 
 let game=null, last=0, raf=0, audio=null;
 function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save))}
+function resetGameProgress(){
+ if(!confirm('Are you sure? This will erase ALL BIG BUG progress and cannot be undone.'))return;
+ if(raf){cancelAnimationFrame(raf);raf=0}
+ bossMusicStop();showGameUI(false);game=null;
+ localStorage.removeItem(SAVEKEY);
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:0,mainGameBeaten:false};
+ persist();buildBugScreen();buildShop();$('homeBest').textContent='0';screen('home');startTitleGardenLoop();titleMusicStart();
+ beep(180,.10,.022,'triangle');
+}
 function initAudio(){
  try{
   audio=audio||new(window.AudioContext||window.webkitAudioContext)();
@@ -415,10 +427,10 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['❤️','Harder Shell',`Health upgrades are 10% stronger per level • ${s.hp}/10${s.hp>=10?' • MAX':''}`,2500+s.hp*2500,'hp'],
-   ['🗡️','Sharper Bite',`Damage upgrades are 10% stronger per level • ${s.dmg}/10${s.dmg>=10?' • MAX':''}`,3000+s.dmg*3000,'dmg'],
-   ['⚡','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level • ${s.magnet}/10${s.magnet>=10?' • MAX':''}`,3500+s.magnet*3500,'magnet'],
-   ['✨','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level • ${s.coins}/10${s.coins>=10?' • MAX':''}`,5000+s.coins*5000,'coins']
+   ['❤️','Harder Shell',`Health upgrades are 10% stronger per level — ${s.hp}/10${s.hp>=10?' — MAX':''}`,2500+s.hp*2500,'hp'],
+   ['🗡️','Sharper Bite',`Damage upgrades are 10% stronger per level — ${s.dmg}/10${s.dmg>=10?' — MAX':''}`,3000+s.dmg*3000,'dmg'],
+   ['⚡','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level — ${s.magnet}/10${s.magnet>=10?' — MAX':''}`,3500+s.magnet*3500,'magnet'],
+   ['✨','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level — ${s.coins}/10${s.coins>=10?' — MAX':''}`,5000+s.coins*5000,'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency"><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}`}</button></div>`).join('');
@@ -855,7 +867,7 @@ function openUpgrade(afterWave=false){
  // Tiny Helper is a true lucky pull: only a 5% chance to appear on an upgrade screen.
  if(helper&&Math.random()<.05&&choices.length){choices[Math.floor(Math.random()*choices.length)]=helper}
  const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',gold:'➜'};
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'•'}</span><p class="muted">${u.desc}</p></button>`).join('');
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
    if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false}
@@ -1148,6 +1160,7 @@ function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;s
 document.addEventListener('click',e=>{
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
+ if(a==='reset')resetGameProgress();
  if(a==='home'){if(game&&!game.over)game.paused=true;bossMusicStop();showGameUI(false);screen('home');startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
