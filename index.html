@@ -255,10 +255,10 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
-/* v17.8.2 — preserve the exact title/logo layout while simplifying only the lower Home controls. */
+/* v17.8.3 — preserve the exact title/logo layout while simplifying only the lower Home controls. */
 #home .homeTextLayoutKeeper{visibility:hidden;pointer-events:none}
 #home .homeLowerLift{transform:translateY(-58px)}
-#home .homeBestFancy{position:relative;font-weight:850;opacity:.9;transform:translateY(-58px) scale(1.18);transform-origin:center}
+#home .homeBestFancy{position:relative;font-weight:850;opacity:.9;transform:translateY(-46px) scale(1.18);transform-origin:center}
 #home .homeBestFancy:before{content:"";position:absolute;inset:-7px -16px;border-radius:999px;background:#e4f2c488;border:1px solid #294b2870;box-shadow:0 3px 0 #24442255;z-index:-1}
 /* Keep the old version node as a silent layout spacer so the title never shifts. */
 #home .versionStamp{visibility:hidden!important}
@@ -273,6 +273,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
     linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);
 }
 
+
+/* v17.8.3 — small layout polish only: center game-over actions and lower Best Wave slightly. */
+#gameover .panel>.btn{display:block;margin:14px auto;width:min(100%,470px)}
 </style>
 </head>
 <body>
@@ -300,8 +303,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.2</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.2</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.3</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.3</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -366,7 +369,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
-// v17.8.2 — simplified Home copy, lifted controls, upgraded Best Wave badge, and safe 20-second title replay.
+// v17.8.3 — simplified Home copy, lifted controls, upgraded Best Wave badge, and safe 20-second title replay.
 // v17.7.6 — Settings menu, audio/damage-number toggles, and in-game reset confirmation.
 // v17.7.9 — Settings button now lives inside Home as an absolutely positioned overlay, so it can never appear on other screens.
 // v17.7.8 — restore the v17.7.5 Home Screen structure and title behavior; Settings floats independently above it.
