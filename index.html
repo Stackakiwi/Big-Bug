@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.15: Mole Cricket Above-Ground Speed Pass -->
+<!-- Big Bug v17.8.16: Sky Lancer Flight Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -309,8 +309,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.15</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.15</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.16</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.16</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -375,8 +375,9 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
+// v17.8.16 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
-// v17.8.14 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
+// v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
 // v17.8.13 — Mole Cricket polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
 // v17.8.12 — Mole Cricket burrow fix: direct player targeting, visible cracks at the exact emergence point, and no generic yellow dash telegraph.
 // v17.8.13 — Mole Cricket rework: restore original stats, much rarer burrows, exact 2-second underground time, and crack-only warning with no yellow boss ring.
@@ -847,7 +848,25 @@ function enemyMove(e,dt){
  // ants swarm faster when near other ants
  let mult=1;
  if(e.kind==='ant'){let near=0;for(const o of game.enemies)if(o!==e&&!o.dead&&o.kind==='ant'){const ax=o.x-e.x,ay=o.y-e.y;if(ax*ax+ay*ay<7225)near++}mult=1+Math.min(.35,near*.07)}
- if(e.kind==='wasp'||(e.boss&&e.kind!=='moleCricket')){
+ // Sky Lancer has its own flight pattern: visibly leave the arena at normal speed, then dash back in.
+ if(e.boss&&e.kind==='dragonflyBoss'){
+   if(e.state==='skyExit'){
+     e.x+=e.vx*dt;e.y+=e.vy*dt;
+     const out=e.skyExitDir<0?e.x<-e.r-28:e.x>W+e.r+28;
+     if(out){
+       const ax=p.x-e.x,ay=p.y-e.y,ad=Math.hypot(ax,ay)||1;
+       e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=1.05;
+       burst(e.x,e.y,4,.18,'#b9f3eb');flashBanner('💨 SKY SWEEP!',.32);
+       const a=Math.atan2(e.vy,e.vx);for(let q of [-.08,.08])game.fx.push({x:e.x,y:e.y,vx:Math.cos(a+q)*300,vy:Math.sin(a+q)*300,life:2.7,r:4.5,sting:true,damage:8+game.wave*.16});
+     }
+     return;
+   }else if(e.state==='skyDash'){
+     e.x+=e.vx*dt;e.y+=e.vy*dt;
+     if(e.stateT<=0){e.state='chase';e.shotCd=2.15;e.cool=.8}
+     return;
+   }
+ }
+ if(e.kind==='wasp'||(e.boss&&e.kind!=='moleCricket'&&e.kind!=='dragonflyBoss')){
    if(e.state==='chase'&&e.cool<=0){
       e.state='telegraph';e.stateT=e.boss?.42:.55;e.cool=e.boss?1.55:2.4;
    }else if(e.state==='telegraph'&&e.stateT<=0){
@@ -889,7 +908,7 @@ function enemyMove(e,dt){
    const shoot=(a,spd,damage=7+game.wave*.19,venom=false,r=4.5)=>game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.7,r,sting:true,venom,damage});
    if(e.kind==='stagBeetle'){e.shotCd=2.5;e.state='dash';e.stateT=.72;e.vx=Math.cos(aim)*285;e.vy=Math.sin(aim)*285;flashBanner('ANTLER CHARGE!',.28)}
    else if(e.kind==='moleCricket'){e.shotCd=5.8+Math.random()*1.0;const digX=e.x,digY=e.y;e.burrowX=Math.max(45,Math.min(W-45,p.x));e.burrowY=Math.max(120,Math.min(H-55,p.y));e.state='burrowWait';e.stateT=2.0;game.fx.push({x:digX,y:digY,vx:0,vy:0,life:1.65,maxLife:1.65,r:29,earthCrack:true,seed:Math.random()*6.283});game.fx.push({x:e.burrowX,y:e.burrowY,vx:0,vy:0,life:3.0,maxLife:3.0,r:32,earthCrack:true,seed:Math.random()*6.283});flashBanner('BURROW!',.38)}
-   else if(e.kind==='dragonflyBoss'){e.shotCd=2.15;e.state='dash';e.stateT=.82;let side=(Math.random()<.5?-1:1);e.x=side<0?-25:W+25;e.y=Math.max(115,Math.min(H-70,p.y+(Math.random()-.5)*120));e.vx=side<0?520:-520;e.vy=(p.y-e.y)*.35;flashBanner('💨 SKY SWEEP!',.32);for(let a of [-.08,.08])shoot(Math.atan2(e.vy,e.vx)+a,300,8+game.wave*.16)}
+   else if(e.kind==='dragonflyBoss'){e.shotCd=999;e.state='skyExit';e.stateT=0;e.skyExitDir=e.x<W/2?-1:1;const exitSpeed=Math.max(105,e.speed*1.05);e.vx=e.skyExitDir*exitSpeed;e.vy=Math.max(-42,Math.min(42,(p.y-e.y)*.12));flashBanner('SKY LANCER BREAKS AWAY!',.3)}
    else if(e.kind==='centipede'){e.shotCd=2.75;e.state='dash';e.stateT=1.0;e.vx=Math.cos(aim)*255;e.vy=Math.sin(aim)*255;bossRing(e,8,120,8+game.wave*.16,t*.5);flashBanner('🌀 COIL RUSH!',.32)}
    else if(e.kind==='earwig'){e.shotCd=2.25;if(d<175){e.state='dash';e.stateT=.38;e.vx=Math.cos(aim)*250;e.vy=Math.sin(aim)*250;bossHazard(p.x,p.y,48,.7,'clamp',10+game.wave*.16);flashBanner('✂️ PINCER CLAMP!',.32)}else{for(let a of [-.42,.42])shoot(aim+a,235);}}
    else if(e.kind==='cicada'){e.shotCd=2.8;bossRing(e,14,145,8+game.wave*.16,0,'sonic');setTimeout(()=>{},0);flashBanner('🔊 THUNDER CHORUS!',.38)}
@@ -1210,11 +1229,24 @@ function drawEnemy(e){
  }else if(e.kind==='mantisBoss'){
   for(let side of [-1,1]){line(side*5,-3,side*r*.72,-r*.55+step,5,'#6f9d3d');line(side*r*.72,-r*.55+step,side*r*1.18,-r*1.02-step,6,'#9fc552');line(side*5,8,side*r*.72,r*.72-step2,3,'#547d35')}
   X.fillStyle='#6f9d3d';X.beginPath();X.ellipse(0,10,r*.42,r*1.05,0,0,6.28);X.fill();X.fillStyle='#8db94c';X.beginPath();X.moveTo(0,-r*1.05);X.lineTo(r*.58,-r*.38);X.lineTo(0,-r*.18);X.lineTo(-r*.58,-r*.38);X.closePath();X.fill();eye(-r*.2,-r*.55,3.4);eye(r*.2,-r*.55,3.4);line(-5,-r*.78,-12,-r*1.3,2,'#4f7130');line(5,-r*.78,12,-r*1.3,2,'#4f7130');
- }else if(e.kind==='wasp'||e.kind==='hornet'||['dragonflyBoss','mothBoss','cicada'].includes(e.kind)){
+ }else if(e.kind==='dragonflyBoss'){
+  // Long, narrow dragonfly silhouette with four glassy wings and a segmented teal tail.
+  const rr=r*1.12;
+  X.globalAlpha=.42;X.fillStyle='#d7fff8';
+  for(let side of [-1,1]){X.beginPath();X.ellipse(side*rr*.78,-rr*.18,rr*.92,rr*.24,side*.28,0,6.28);X.fill();X.beginPath();X.ellipse(side*rr*.72,rr*.28,rr*.78,rr*.20,-side*.28,0,6.28);X.fill()}
+  X.globalAlpha=1;
+  for(let side of [-1,1]){line(side*4,-2,side*(rr+10),6+step,2,'#2e726f');line(side*4,6,side*(rr+7),15-step2,2,'#2e726f')}
+  X.fillStyle='#347f7b';X.beginPath();X.ellipse(0,4,rr*.42,rr*.78,0,0,6.28);X.fill();
+  X.fillStyle='#235e5b';for(let i=0;i<5;i++){X.beginPath();X.ellipse(0,rr*.62+i*rr*.28,rr*(.34-i*.035),rr*.22,0,0,6.28);X.fill()}
+  X.fillStyle='#539f98';X.beginPath();X.arc(0,-rr*.72,rr*.48,0,6.28);X.fill();
+  X.fillStyle='#bceee5';X.beginPath();X.arc(-rr*.24,-rr*.78,rr*.18,0,6.28);X.arc(rr*.24,-rr*.78,rr*.18,0,6.28);X.fill();eye(-rr*.24,-rr*.79,2.7);eye(rr*.24,-rr*.79,2.7);
+  line(-rr*.12,-rr*1.02,-rr*.34,-rr*1.42,1.5,'#286b67');line(rr*.12,-rr*1.02,rr*.34,-rr*1.42,1.5,'#286b67');
+  X.strokeStyle='#b9eee6';X.lineWidth=1.6;for(let side of [-1,1]){X.beginPath();X.moveTo(side*rr*.22,-rr*.12);X.lineTo(side*rr*1.48,-rr*.42);X.stroke();X.beginPath();X.moveTo(side*rr*.18,rr*.15);X.lineTo(side*rr*1.25,rr*.48);X.stroke()}
+ }else if(e.kind==='wasp'||e.kind==='hornet'||['mothBoss','cicada'].includes(e.kind)){
   const big=e.kind!=='wasp';let rr=big?r*1.15:r;
   X.globalAlpha=.45;X.fillStyle='#e8f2e9';X.beginPath();X.ellipse(-rr*.65,-2,rr*.65,rr*.28,-.6,0,6.28);X.ellipse(rr*.65,-2,rr*.65,rr*.28,.6,0,6.28);X.fill();X.globalAlpha=1;
   for(let side of [-1,1]){line(side*5,1,side*(rr+8),8+step,2.3);line(side*4,9,side*(rr+6),17-step,2.3)}
-  X.fillStyle=e.kind==='dragonflyBoss'?'#4aa7a1':e.kind==='mothBoss'?'#9a78a8':e.kind==='cicada'?'#7f9b58':'#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
+  X.fillStyle=e.kind==='mothBoss'?'#9a78a8':e.kind==='cicada'?'#7f9b58':'#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
   X.fillStyle='#5b371d';X.beginPath();X.arc(0,-rr*.7,rr*.58,0,6.28);X.fill();eye(-rr*.2,-rr*.78,big?3.5:2.4);eye(rr*.2,-rr*.78,big?3.5:2.4);line(-4,-rr*1.05,-10,-rr*1.55,1.7);line(4,-rr*1.05,10,-rr*1.55,1.7);
   X.fillStyle='#24130d';X.beginPath();X.moveTo(-5,-rr*.95);X.lineTo(0,-rr*1.25);X.lineTo(5,-rr*.95);X.fill();X.beginPath();X.moveTo(-4,rr*1.0);X.lineTo(0,rr*1.45);X.lineTo(4,rr*1.0);X.fill();
   if(big){X.strokeStyle='#f5c358';X.lineWidth=2;X.beginPath();X.arc(0,0,rr+5,0,6.28);X.stroke()}
@@ -1230,7 +1262,6 @@ function drawEnemy(e){
    const rr=r;
    if(e.kind==='stagBeetle'){line(-rr*.28,-rr*.55,-rr*.72,-rr*1.22,5,'#4a2d20');line(rr*.28,-rr*.55,rr*.72,-rr*1.22,5,'#4a2d20')}
    if(e.kind==='moleCricket'){for(let q of [-1,1])line(q*rr*.35,0,q*rr*1.18,-rr*.55,8,'#a48658')}
-   if(e.kind==='dragonflyBoss'){X.globalAlpha=.48;X.fillStyle='#b9e5dd';for(let q of [-1,1]){X.beginPath();X.ellipse(q*rr*.78,0,rr*.78,rr*.23,q*.35,0,6.28);X.fill()}X.globalAlpha=1}
    if(e.kind==='centipede'){for(let i=1;i<=4;i++){X.fillStyle=i%2?'#b55a48':'#8f4138';X.beginPath();X.arc(0,rr*.35+i*rr*.3,rr*.4,0,6.28);X.fill()}}
    if(e.kind==='earwig'){for(let q of [-1,1]){X.strokeStyle='#4b3025';X.lineWidth=6;X.beginPath();X.arc(q*rr*.3,rr*.78,rr*.38,0,Math.PI);X.stroke()}}
    if(e.kind==='cicada'){X.globalAlpha=.38;X.fillStyle='#e3e8ca';for(let q of [-1,1]){X.beginPath();X.ellipse(q*rr*.78,0,rr*.7,rr*.3,q*.2,0,6.28);X.fill()}X.globalAlpha=1}
@@ -1241,7 +1272,6 @@ function drawEnemy(e){
    if(e.kind==='tarantula'){for(let q of [-1,1])for(let i=0;i<4;i++)line(q*rr*.3,-rr*.55+i*rr*.35,q*rr*1.2,-rr*.7+i*rr*.48,5,'#39283a')}
    if(e.kind==='rootBorer'){X.strokeStyle='#8d6849';X.lineWidth=5;X.beginPath();X.arc(0,0,rr*1.18,.2,Math.PI-.2);X.stroke()}
    if(e.kind==='sporeBeetle'){X.fillStyle='#b77cc1';for(let i=0;i<5;i++){let a=i*1.25+t*.08;X.beginPath();X.arc(Math.cos(a)*rr*.65,Math.sin(a)*rr*.65,5+i%2*2,0,6.28);X.fill()}}
-   if(e.kind==='dragonflyBoss'){line(0,rr*.65,0,rr*1.75,5,'#347b78');for(let q of [-1,1]){X.strokeStyle='#d5fff7';X.lineWidth=2;X.beginPath();X.ellipse(q*rr*.95,-rr*.12,rr*.9,rr*.26,q*.25,0,6.28);X.stroke()}}
    if(e.kind==='cicada'){X.strokeStyle='#d9ed9c';X.lineWidth=3;for(let k=1;k<=2;k++){X.beginPath();X.arc(0,0,rr*(1.05+k*.18)+Math.sin(t*9)*2,0,6.28);X.stroke()}}
    if(e.kind==='bombardier'){line(-rr*.25,rr*.65,-rr*.45,rr*1.35,7,'#d87839');line(rr*.25,rr*.65,rr*.45,rr*1.35,7,'#d87839')}
    if(e.kind==='mothBoss'){X.fillStyle='#e4c6e8';for(let q of [-1,1]){X.beginPath();X.arc(q*rr*.62,-rr*.05,5,0,6.28);X.fill();X.beginPath();X.arc(q*rr*.82,rr*.32,4,0,6.28);X.fill()}}
