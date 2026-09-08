@@ -253,7 +253,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 /* v17.7.8 — title/home layout restored from v17.7.5 verbatim.
    The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
-#globalSettingsBtn{position:fixed;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
+#home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
 
 .titleScreen{
   background:
@@ -279,10 +279,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 <button id="boostBtn" class="hidden">⚡ BOOST<small>100 LEAVES</small></button>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
 
-<button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
-
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
+  <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   <div class="bugHero">🐞</div>
   <div class="logo">BIG<br>BUG<small>SMALL BUG. BIG DREAMS.</small></div>
   <div class="tag">Survive. Upgrade. Get BIGGER.</div>
@@ -356,7 +355,9 @@ save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
 // v17.7.6 — Settings menu, audio/damage-number toggles, and in-game reset confirmation.
+// v17.7.9 — Settings button now lives inside Home as an absolutely positioned overlay, so it can never appear on other screens.
 // v17.7.8 — restore the v17.7.5 Home Screen structure and title behavior; Settings floats independently above it.
+// v17.7.10 — player attacks made more visible with brighter fill only; projectile size and rendering cost unchanged.
 // v17.7.5 — remove bullet separators from game text + add safe main-menu progress reset.
 // v17.7.4 — Garden Magic clarity: every permanent level adds exactly +10% upgrade strength, shown as progress out of 10.
 // v17.7.3 — permanent upgrade cap + names + lower resistant Beetle frequency.
@@ -1192,7 +1193,7 @@ function draw(){
    if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0;i<5;i++){let a=i*1.25+performance.now()/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
    X.globalAlpha=Math.max(0,Math.min(1,f.life));
    if(f.sting){X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30');X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent'}
-   else if(f.shot){X.fillStyle='#dfff7a';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
+   else if(f.shot){X.fillStyle=f.helper?'#c9f4ff':'#fff3a6';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
  }
