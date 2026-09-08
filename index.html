@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.11: Mole Cricket Rework -->
+<!-- Big Bug v17.8.12: Mole Cricket Burrow Fix -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -309,8 +309,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.11</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.11</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.12</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.12</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -375,7 +375,8 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.11 — Mole Cricket rework: restore original stats, much rarer burrows, exact 2-second underground time, and crack-only warning with no yellow boss ring.
+// v17.8.12 — Mole Cricket burrow fix: direct player targeting, visible cracks at the exact emergence point, and no generic yellow dash telegraph.
+// v17.8.12 — Mole Cricket rework: restore original stats, much rarer burrows, exact 2-second underground time, and crack-only warning with no yellow boss ring.
 // v17.8.10 — Mole Cricket retune: faster movement, exact 2-second underground crack warning, cleaner crack-only tell, plus temporary wave/boss testing selector.
 // v17.8.7 — iOS resume recovery: safely restarts the game RAF after backgrounding and prevents active waves from becoming stranded after returning.
 // v17.8.6 — Mole Cricket readability: longer burrow warning, wider emergence spacing, and a fading earth-crack marker.
@@ -839,7 +840,7 @@ function enemyMove(e,dt){
  // ants swarm faster when near other ants
  let mult=1;
  if(e.kind==='ant'){let near=0;for(const o of game.enemies)if(o!==e&&!o.dead&&o.kind==='ant'){const ax=o.x-e.x,ay=o.y-e.y;if(ax*ax+ay*ay<7225)near++}mult=1+Math.min(.35,near*.07)}
- if(e.kind==='wasp'||e.boss){
+ if(e.kind==='wasp'||(e.boss&&e.kind!=='moleCricket')){
    if(e.state==='chase'&&e.cool<=0){
       e.state='telegraph';e.stateT=e.boss?.42:.55;e.cool=e.boss?1.55:2.4;
    }else if(e.state==='telegraph'&&e.stateT<=0){
@@ -880,7 +881,7 @@ function enemyMove(e,dt){
    const aim=Math.atan2(dy,dx);
    const shoot=(a,spd,damage=7+game.wave*.19,venom=false,r=4.5)=>game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.7,r,sting:true,venom,damage});
    if(e.kind==='stagBeetle'){e.shotCd=2.5;e.state='dash';e.stateT=.72;e.vx=Math.cos(aim)*285;e.vy=Math.sin(aim)*285;flashBanner('ANTLER CHARGE!',.28)}
-   else if(e.kind==='moleCricket'){e.shotCd=5.8+Math.random()*1.0;let a=Math.random()*6.283,dist=120+Math.random()*65;e.burrowX=Math.max(45,Math.min(W-45,p.x+Math.cos(a)*dist));e.burrowY=Math.max(120,Math.min(H-55,p.y+Math.sin(a)*dist));e.state='burrowWait';e.stateT=2.0;game.fx.push({x:e.burrowX,y:e.burrowY,vx:0,vy:0,life:2.45,maxLife:2.45,r:29,earthCrack:true,seed:Math.random()*6.283});flashBanner('BURROW!',.38)}
+   else if(e.kind==='moleCricket'){e.shotCd=5.8+Math.random()*1.0;e.burrowX=Math.max(45,Math.min(W-45,p.x));e.burrowY=Math.max(120,Math.min(H-55,p.y));e.state='burrowWait';e.stateT=2.0;game.fx.push({x:e.burrowX,y:e.burrowY,vx:0,vy:0,life:2.45,maxLife:2.45,r:32,earthCrack:true,seed:Math.random()*6.283});flashBanner('BURROW!',.38)}
    else if(e.kind==='dragonflyBoss'){e.shotCd=2.15;e.state='dash';e.stateT=.82;let side=(Math.random()<.5?-1:1);e.x=side<0?-25:W+25;e.y=Math.max(115,Math.min(H-70,p.y+(Math.random()-.5)*120));e.vx=side<0?520:-520;e.vy=(p.y-e.y)*.35;flashBanner('💨 SKY SWEEP!',.32);for(let a of [-.08,.08])shoot(Math.atan2(e.vy,e.vx)+a,300,8+game.wave*.16)}
    else if(e.kind==='centipede'){e.shotCd=2.75;e.state='dash';e.stateT=1.0;e.vx=Math.cos(aim)*255;e.vy=Math.sin(aim)*255;bossRing(e,8,120,8+game.wave*.16,t*.5);flashBanner('🌀 COIL RUSH!',.32)}
    else if(e.kind==='earwig'){e.shotCd=2.25;if(d<175){e.state='dash';e.stateT=.38;e.vx=Math.cos(aim)*250;e.vy=Math.sin(aim)*250;bossHazard(p.x,p.y,48,.7,'clamp',10+game.wave*.16);flashBanner('✂️ PINCER CLAMP!',.32)}else{for(let a of [-.42,.42])shoot(aim+a,235);}}
@@ -1286,6 +1287,19 @@ function draw(){
  for(const f of game.fx){
    if(f.healHeart){
      const q=Math.max(0,f.life/(f.maxLife||1.15));X.globalAlpha=Math.min(1,q*1.8);X.textAlign='center';X.textBaseline='middle';X.font='30px serif';X.fillText('❤️',f.x,f.y);X.globalAlpha=1;continue
+   }
+   if(f.earthCrack){
+     const max=f.maxLife||2.45,age=max-f.life,r=f.r||32,seed=f.seed||0,fade=f.life<.42?Math.max(0,f.life/.42):1,grow=Math.min(1,age/.18);
+     X.save();X.translate(f.x,f.y);X.strokeStyle='#4a3526';X.lineWidth=2.15;X.lineCap='round';X.lineJoin='round';
+     for(let i=0;i<5;i++){
+       const a=seed+i*1.24+(i%2?.13:-.08),len=r*(.58+(i%3)*.13)*grow,k=i%2?1:-1;
+       const x1=Math.cos(a)*len*.25,y1=Math.sin(a)*len*.25;
+       const x2=x1+Math.cos(a+k*.22)*len*.31,y2=y1+Math.sin(a+k*.22)*len*.31;
+       const x3=x2+Math.cos(a-k*.16)*len*.44,y3=y2+Math.sin(a-k*.16)*len*.44;
+       X.globalAlpha=(.48+.38*fade);X.beginPath();X.moveTo(0,0);X.lineTo(x1,y1);X.lineTo(x2,y2);X.lineTo(x3,y3);X.stroke();
+       if(grow>.45&&i<4){const ba=a+k*.68,bl=len*.20;X.globalAlpha=.28+.34*fade;X.beginPath();X.moveTo(x2,y2);X.lineTo(x2+Math.cos(ba)*bl,y2+Math.sin(ba)*bl);X.stroke()}
+     }
+     X.restore();X.globalAlpha=1;continue
    }
    if(f.bossHazard){
      const q=Math.max(0,f.life/(f.maxLife||1)),pulse=.85+.15*Math.sin(game.time*9);X.save();X.translate(f.x,f.y);X.globalAlpha=.28+.42*q;
