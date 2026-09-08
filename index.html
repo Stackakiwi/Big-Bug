@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.31: Sky Lancer Flight Pass -->
+<!-- Big Bug v17.8.32: Sky Lancer Flight Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -281,7 +281,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 .testJump{display:flex;gap:6px;align-items:center;position:fixed;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:20;opacity:.88}.testJump select{min-height:36px;width:148px;border:1px solid #ffffff2a;border-radius:11px;background:#17231bf2;color:#fff;padding:0 7px;font:800 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005}.testJump .btn{min-height:36px;padding:6px 9px;font-size:10px}.testHint{display:none}
 #gameover #overSub:empty{display:none}
 
-/* v17.8.31 — lightweight final ending / credits sequence */
+/* v17.8.32 — lightweight final ending / credits sequence */
 .creditsTestBtn{position:fixed;left:10px;bottom:54px;z-index:12;font-size:11px!important;padding:7px 10px!important;opacity:.72}
 #ending{position:fixed;inset:0;z-index:1000;overflow:hidden;background:#020503;color:#f6f0dc;padding:0;display:block}
 #ending.hidden{display:none}
@@ -348,8 +348,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.31</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.31</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.32</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.32</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -444,7 +444,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.31 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
+// v17.8.32 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
 // v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
 // v17.8.13 — Mole Cricket polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
@@ -479,10 +479,54 @@ if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
 const BUGS={
- ladybug:{name:'Ladybug',art:'🐞',desc:'Balanced starter. +10% crit chance.',bonus:p=>p.crit+=.10},
- beetle:{name:'Beetle',art:'🪲',desc:'+35 max HP, +15% damage, slower attack.',bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.damage*=1.15;p.rate*=1.12}},
- butterfly:{name:'Butterfly',art:'🦋',desc:'+35% attack speed and magnet range, -5% damage.',bonus:p=>{p.damage*=.95;p.rate*=.65;p.magnet+=70}}
+ ladybug:{name:'Ladybug',art:'ladybug',desc:'Balanced starter. +10% crit chance.',bonus:p=>p.crit+=.10},
+ beetle:{name:'Beetle',art:'beetle',desc:'+35 max HP, +15% damage, slower attack.',bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.damage*=1.15;p.rate*=1.12}},
+ butterfly:{name:'Butterfly',art:'butterfly',desc:'+35% attack speed and magnet range, -5% damage.',bonus:p=>{p.damage*=.95;p.rate*=.65;p.magnet+=70}}
 };
+
+
+// v17.8.32 — cross-platform playable bug renderer. No emoji dependencies.
+function drawPlayableBug(ctx,id,size=28,glow=false){
+ ctx.save();
+ const s=size/28;
+ ctx.scale(s,s);
+ ctx.lineCap='round';ctx.lineJoin='round';
+ if(glow){ctx.shadowColor='#e9b7ff';ctx.shadowBlur=14/s}
+ const leg=(x1,y1,x2,y2)=>{ctx.strokeStyle='#171714';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()};
+ if(id==='beetle'){
+   // Sturdy rounded beetle with clear horn/mandibles and hard shell.
+   for(const sy of [-8,0,8]){leg(-8,sy,-15,sy+(sy===0?0:(sy<0?-4:4)));leg(8,sy,15,sy+(sy===0?0:(sy<0?-4:4)))}
+   ctx.fillStyle='#20201d';ctx.beginPath();ctx.ellipse(0,1,10.5,13,0,0,6.283);ctx.fill();
+   ctx.fillStyle='#4c5d28';ctx.beginPath();ctx.ellipse(0,2,8.5,11,0,0,6.283);ctx.fill();
+   ctx.strokeStyle='#171714';ctx.lineWidth=1.7;ctx.stroke();
+   ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,12);ctx.stroke();
+   ctx.fillStyle='#25251f';ctx.beginPath();ctx.ellipse(0,-10,7.6,5.4,0,0,6.283);ctx.fill();
+   ctx.strokeStyle='#171714';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-3,-14);ctx.quadraticCurveTo(-7,-19,-4,-21);ctx.moveTo(3,-14);ctx.quadraticCurveTo(7,-19,4,-21);ctx.stroke();
+   ctx.fillStyle='#a8bb62';ctx.beginPath();ctx.ellipse(-3,0,1.3,3.2,-.2,0,6.283);ctx.fill();
+ }else if(id==='butterfly'){
+   // Four wings, slim body and antennae.
+   ctx.fillStyle='#8b6bc2';ctx.beginPath();ctx.ellipse(-8,-3,8.5,11,-.55,0,6.283);ctx.ellipse(8,-3,8.5,11,.55,0,6.283);ctx.fill();
+   ctx.fillStyle='#c58ac8';ctx.beginPath();ctx.ellipse(-8,7,7,8,.45,0,6.283);ctx.ellipse(8,7,7,8,-.45,0,6.283);ctx.fill();
+   ctx.fillStyle='#ead38e';for(const x of [-8,8]){ctx.beginPath();ctx.arc(x,-4,2,0,6.283);ctx.fill()}
+   ctx.fillStyle='#25221f';ctx.beginPath();ctx.ellipse(0,2,3.3,12,0,0,6.283);ctx.fill();
+   ctx.fillStyle='#393229';ctx.beginPath();ctx.arc(0,-10,4,0,6.283);ctx.fill();
+   ctx.strokeStyle='#25221f';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-1,-12);ctx.quadraticCurveTo(-5,-18,-8,-19);ctx.moveTo(1,-12);ctx.quadraticCurveTo(5,-18,8,-19);ctx.stroke();
+ }else{
+   // Ladybug: familiar red split shell with clean black spots.
+   for(const sy of [-7,0,7]){leg(-8,sy,-14,sy+(sy===0?0:(sy<0?-3:3)));leg(8,sy,14,sy+(sy===0?0:(sy<0?-3:3)))}
+   ctx.fillStyle='#24211e';ctx.beginPath();ctx.ellipse(0,-9,7,5.5,0,0,6.283);ctx.fill();
+   ctx.fillStyle='#d9473f';ctx.beginPath();ctx.ellipse(0,2,10,12.5,0,0,6.283);ctx.fill();
+   ctx.strokeStyle='#24211e';ctx.lineWidth=1.8;ctx.stroke();
+   ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,14);ctx.stroke();
+   ctx.fillStyle='#272421';for(const q of [[-5,-2],[5,-2],[-5,6],[5,6]]){ctx.beginPath();ctx.arc(q[0],q[1],2,0,6.283);ctx.fill()}
+   ctx.strokeStyle='#24211e';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-2,-12);ctx.lineTo(-6,-16);ctx.moveTo(2,-12);ctx.lineTo(6,-16);ctx.stroke();
+ }
+ ctx.restore();
+}
+function makeBugPreview(id){
+ const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
+ const q=c.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);return c;
+}
 
 const GARDEN_STORY={
 5:{title:'First Big Fight',text:'The Hornet finally buzzes off. The garden feels a little quieter now.'},
@@ -517,7 +561,7 @@ const UP=[
  {id:'triple',icon:'🎯',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
  {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65*(1+save.upgrades.coins*.10)},
  {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1+.20*(1+save.upgrades.coins*.10)},
- {id:'clone',icon:'🐞',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
+ {id:'clone',icon:'✦',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
  {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
 ];
 
@@ -647,7 +691,8 @@ function buildBugScreen(){
   const el=document.createElement('div');el.className='card'+(selected?' selected':'');
   const unlockWave=id==='beetle'?50:100;
   const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>✨ Gold Leaves can unlock early in a future update.</div>`:'';
-  el.innerHTML=`<div class="art">${b.art}</div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':`🔒 BEAT WAVE ${unlockWave}`}</button>`;
+  el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':`🔒 BEAT WAVE ${unlockWave}`}</button>`;
+  el.querySelector('.bugPreview').appendChild(makeBugPreview(id));
   el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else{beep(155,.10,.022,'triangle')}};
   grid.appendChild(el);
  });
@@ -801,7 +846,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v17.8.31 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
+   // v17.8.32 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
@@ -1932,18 +1977,18 @@ function draw(){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}X.font=`${p.r*2.1}px serif`;X.textAlign='center';X.textBaseline='middle';X.fillText(BUGS[save.selected].art,0,0);X.restore();
+ X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(performance.now()/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
 
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
  const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving)activeHCount++;
  let activeHIndex=0;for(const h of hs){let hx,hy;if(h.leaving){hx=h.x;hy=h.y}else{let a=game.time*1.8+activeHIndex++*6.283/Math.max(1,activeHCount);hx=p.x+Math.cos(a)*38;hy=p.y+Math.sin(a)*38}
    X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);
    if(h.leaving)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);else{let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2)}
-   X.font='20px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore()
+   drawPlayableBug(X,save.selected,20,false);X.restore()
  }
  if(p.superBuddy&&game.wave===100){
    let a=game.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48;X.save();X.translate(hx,hy);
-   X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc4';X.beginPath();X.arc(0,0,12,0,6.28);X.fill();X.font='21px serif';X.textAlign='center';X.textBaseline='middle';X.fillText('🐞',0,0);X.restore();
+   X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc433';X.beginPath();X.arc(0,0,13,0,6.28);X.fill();drawPlayableBug(X,save.selected,21,true);X.restore();
  }
 }
 function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;update(dt,now);draw();raf=requestAnimationFrame(loop)}
