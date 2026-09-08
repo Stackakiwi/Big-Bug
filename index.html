@@ -308,6 +308,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
+// v17.7.4 — Garden Magic clarity: every permanent level adds exactly +10% upgrade strength, shown as progress out of 10.
 // v17.7.3 — permanent upgrade cap + names + lower resistant Beetle frequency.
 // v17.7.0 — permanent Power Ups now strengthen in-run upgrades instead of granting starting stats.
 // v17.6.1 — suspend the title animation RAF completely while the home screen is hidden.
@@ -414,10 +415,10 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['❤️','Harder Shell',s.hp>=10?'Health upgrades are 100% stronger — MAX':'Health upgrades are '+(s.hp*10)+'% stronger',2500+s.hp*2500,'hp'],
-   ['🗡️','Sharper Bite',s.dmg>=10?'Damage upgrades are 100% stronger — MAX':'Damage upgrades are '+(s.dmg*10)+'% stronger',3000+s.dmg*3000,'dmg'],
-   ['⚡','Quicker Reflexes',s.magnet>=10?'Attack-speed upgrades are 100% stronger — MAX':'Attack-speed upgrades are '+(s.magnet*10)+'% stronger',3500+s.magnet*3500,'magnet'],
-   ['✨','Garden Wisdom',s.coins>=10?'Pickup & Leaf upgrades are 100% stronger — MAX':'Pickup & Leaf upgrades are '+(s.coins*10)+'% stronger',5000+s.coins*5000,'coins']
+   ['❤️','Harder Shell',`Health upgrades are 10% stronger per level • ${s.hp}/10${s.hp>=10?' • MAX':''}`,2500+s.hp*2500,'hp'],
+   ['🗡️','Sharper Bite',`Damage upgrades are 10% stronger per level • ${s.dmg}/10${s.dmg>=10?' • MAX':''}`,3000+s.dmg*3000,'dmg'],
+   ['⚡','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level • ${s.magnet}/10${s.magnet>=10?' • MAX':''}`,3500+s.magnet*3500,'magnet'],
+   ['✨','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level • ${s.coins}/10${s.coins>=10?' • MAX':''}`,5000+s.coins*5000,'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency"><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}`}</button></div>`).join('');
