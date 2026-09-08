@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.8: Run Recovery Autosave -->
+<!-- Big Bug v17.8.9: Game Over UI Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -276,6 +276,9 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 
 /* v17.8.3 — small layout polish only: center game-over actions and lower Best Wave slightly. */
 #gameover .panel>.btn{display:block;margin:14px auto;width:min(100%,470px)}
+/* v17.8.9 — cleaner defeat screen: remove defeat subtitle and scale title responsively. */
+#gameover #overTitle{font-size:clamp(30px,8vw,46px);line-height:1.05;text-align:left;white-space:nowrap}
+#gameover #overSub:empty{display:none}
 </style>
 </head>
 <body>
@@ -303,8 +306,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.8</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.8</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.9</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.9</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1043,7 +1046,7 @@ function finish(won){
  const coins=game.coins||0,earned=coins+Math.floor(game.wave/2);
  save.scrap+=earned;save.best=Math.max(save.best,game.wave);save.runs++;persist();
  $('overTitle').textContent=won?'RUN COMPLETE!':'YOU GOT SQUISHED!';
- $('overSub').textContent=won?'You pushed deep into the garden.':'The garden wins this round. Come back bigger.';
+ $('overSub').textContent=won?'You pushed deep into the garden.':'';
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;
  screen('gameover');
 }
