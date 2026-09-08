@@ -308,6 +308,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
+// v17.7.3 — permanent upgrade cap + names + lower resistant Beetle frequency.
 // v17.7.0 — permanent Power Ups now strengthen in-run upgrades instead of granting starting stats.
 // v17.6.1 — suspend the title animation RAF completely while the home screen is hidden.
 // No gameplay or visual changes; this only removes invisible background work.
@@ -320,7 +321,7 @@ if(save.best>=50)save.unlocked.push('beetle');
 if(save.mainGameBeaten)save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
-if(save.upgrades)save.upgrades.choices=0;
+if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
 const BUGS={
  ladybug:{name:'Ladybug',art:'🐞',desc:'Balanced starter. +10% crit chance.',bonus:p=>p.crit+=.10},
@@ -413,18 +414,18 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['❤️','Heartier Clovers','Health upgrades are '+(10+s.hp*10)+'% stronger',2500+s.hp*2500,'hp'],
-   ['🗡️','Sharper Sharpening','Damage upgrades are '+(10+s.dmg*10)+'% stronger',3000+s.dmg*3000,'dmg'],
-   ['⚡','Quicker Reflexes','Attack-speed upgrades are '+(10+s.magnet*10)+'% stronger',3500+s.magnet*3500,'magnet'],
-   ['✨','Garden Wisdom','Pickup & Leaf upgrades are '+(10+s.coins*10)+'% stronger',5000+s.coins*5000,'coins']
+   ['❤️','Harder Shell',s.hp>=10?'Health upgrades are 100% stronger — MAX':'Health upgrades are '+(s.hp*10)+'% stronger',2500+s.hp*2500,'hp'],
+   ['🗡️','Sharper Bite',s.dmg>=10?'Damage upgrades are 100% stronger — MAX':'Damage upgrades are '+(s.dmg*10)+'% stronger',3000+s.dmg*3000,'dmg'],
+   ['⚡','Quicker Reflexes',s.magnet>=10?'Attack-speed upgrades are 100% stronger — MAX':'Attack-speed upgrades are '+(s.magnet*10)+'% stronger',3500+s.magnet*3500,'magnet'],
+   ['✨','Garden Wisdom',s.coins>=10?'Pickup & Leaf upgrades are 100% stronger — MAX':'Pickup & Leaf upgrades are '+(s.coins*10)+'% stronger',5000+s.coins*5000,'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency"><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
-  rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}</button></div>`).join('');
+  rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}`}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
 function buyShop(k){
  const s=save.upgrades, costs={hp:2500+s.hp*2500,dmg:3000+s.dmg*3000,magnet:3500+s.magnet*3500,coins:5000+s.coins*5000};
- if(save.scrap<costs[k])return;
+ if(s[k]>=10||save.scrap<costs[k])return;
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
 function basePlayer(){
@@ -535,7 +536,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  const side=Math.floor(Math.random()*4),m=42;let x,y;
  if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
  const w=game.wave, boss=type==='boss';
- let kinds=w<2?['ant','beetle']:w<3?['ant','beetle','spider']:w<4?['ant','beetle','spider','wasp']:['ant','beetle','spider','wasp','stink'];
+ let kinds=w<2?['ant','ant','ant','beetle']:w<3?['ant','ant','spider','spider','beetle']:w<4?['ant','ant','spider','spider','wasp','wasp','beetle']:['ant','ant','spider','spider','wasp','wasp','stink','stink','stink','beetle'];
  let k=boss?(forcedKind||bossKindFor(w)):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
  let evo=evolutionTier(w),baseHp=(24+w*6)*Math.pow(1.32,evo),sp=(38+w*1.15)*(1+evo*.05),r=11+Math.random()*5,damage=(4.5+w*.5)*Math.pow(1.18,evo);
  if(k==='ant'){baseHp*=.72;sp*=1.35;r*=.82;damage*=.72}
