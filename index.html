@@ -249,6 +249,10 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #home{position:fixed;isolation:isolate;overflow:hidden}
 #titleGarden{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 #home>*:not(#titleGarden){position:relative;z-index:1}
+/* v17.7.7 — preserve the proven v17.7.5 title-screen layout exactly.
+   The hidden slot keeps the same menu height as the old Reset Game button, while Settings floats independently. */
+#home .titleLayoutSlot{visibility:hidden;pointer-events:none}
+#home .titleSettingsBtn{position:absolute!important;top:max(12px,env(safe-area-inset-top));right:12px;z-index:2!important;margin:0;min-width:0;padding:10px 13px;font-size:14px}
 .titleScreen{
   background:
     radial-gradient(ellipse at 14% 17%,#e3f1c455 0 7%,transparent 25%),
@@ -282,7 +286,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <button class="btn green" data-action="play">PLAY</button>
   <div><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted">Best Wave: <b id="homeBest">0</b></div>
-  <button class="btn dark small" data-action="settings" style="margin-top:12px">⚙️ SETTINGS</button>
+  <button class="btn red small titleLayoutSlot" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
+  <button class="btn dark small titleSettingsBtn" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -345,6 +350,7 @@ save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
 // v17.7.6 — Settings menu, audio/damage-number toggles, and in-game reset confirmation.
+// v17.7.7 — restore exact v17.7.5 title-menu geometry so the opening buddy hide/chase stays aligned.
 // v17.7.5 — remove bullet separators from game text + add safe main-menu progress reset.
 // v17.7.4 — Garden Magic clarity: every permanent level adds exactly +10% upgrade strength, shown as progress out of 10.
 // v17.7.3 — permanent upgrade cap + names + lower resistant Beetle frequency.
