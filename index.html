@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.29: Sky Lancer Flight Pass -->
+<!-- Big Bug v17.8.30: Sky Lancer Flight Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -280,6 +280,31 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #gameover #overTitle{font-size:clamp(30px,8vw,46px);line-height:1.05;text-align:left;white-space:nowrap}
 .testJump{display:flex;gap:6px;align-items:center;position:fixed;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:20;opacity:.88}.testJump select{min-height:36px;width:148px;border:1px solid #ffffff2a;border-radius:11px;background:#17231bf2;color:#fff;padding:0 7px;font:800 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005}.testJump .btn{min-height:36px;padding:6px 9px;font-size:10px}.testHint{display:none}
 #gameover #overSub:empty{display:none}
+
+/* v17.8.30 — lightweight final ending / credits sequence */
+.creditsTestBtn{position:fixed;left:10px;bottom:54px;z-index:12;font-size:11px!important;padding:7px 10px!important;opacity:.72}
+#ending{position:fixed;inset:0;z-index:1000;overflow:hidden;background:#020503;color:#f6f0dc;padding:0;display:block}
+#ending.hidden{display:none}
+#endingBackdrop{position:absolute;inset:0;background:
+ radial-gradient(circle at 50% 28%,rgba(101,63,104,.23),transparent 30%),
+ radial-gradient(circle at 22% 78%,rgba(80,112,54,.13),transparent 25%),
+ linear-gradient(#07120c,#020503 70%);transition:opacity 2.2s ease}
+#endingBackdrop:before,#endingBackdrop:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;filter:blur(38px);opacity:.15}
+#endingBackdrop:before{background:#8d568e;left:-70px;top:20%}
+#endingBackdrop:after{background:#8aa653;right:-70px;bottom:12%}
+.endingVignette{position:absolute;inset:0;box-shadow:inset 0 0 120px #000,inset 0 0 40px #000;pointer-events:none}
+#creditsRoll{position:absolute;left:0;right:0;top:100vh;text-align:center;will-change:transform;animation:creditsRise 34s linear forwards}
+#creditsRoll .endBug{font-size:44px;filter:drop-shadow(0 0 12px #9f6aa8aa);margin-bottom:18px}
+#creditsRoll h1{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:44px;letter-spacing:2px;margin:0 0 8px;text-shadow:0 4px 0 #000,0 0 22px #7c4778}
+#creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
+#creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
+#creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
+#creditsRoll .endThanks{margin-top:80px;font-size:16px;color:#96ad83;letter-spacing:3px}
+@keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 860px))}}
+#continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
+#continuePrompt.show{opacity:1}
+@media(max-width:430px){#creditsRoll h1{font-size:38px}#creditsRoll .creditName{font-size:26px}}
+
 </style>
 </head>
 <body>
@@ -307,10 +332,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="testJump"><select id="testWave" aria-label="Temporary wave and boss tester"></select><button class="btn dark small" data-action="testWave">TEST</button></div>
   <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
+  <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.29</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.29</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.30</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.30</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -353,6 +379,26 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
  </div></div>
 </section>
 
+<section id="ending" class="hidden" aria-label="Ending credits">
+ <div id="endingBackdrop"></div>
+ <div class="endingVignette"></div>
+ <div id="creditsRoll">
+  <div class="endBug">🐞</div>
+  <h1>BIG BUG</h1>
+  <div class="endSub">THE GARDEN SURVIVES</div>
+  <h2>SPECIAL THANKS</h2>
+  <div class="creditName">Dustin</div>
+  <div class="creditName">Emily</div>
+  <div class="creditName">Garrett</div>
+  <div class="creditName">Jordan</div>
+  <div class="creditName">Matthew</div>
+  <div class="creditName">Ryan</div>
+  <div class="creditName">Rylee</div>
+  <div class="endThanks">THANK YOU FOR PLAYING</div>
+ </div>
+ <div id="continuePrompt">Continue…?</div>
+</section>
+
 <section id="pause" class="screen hidden">
  <div class="panel" style="text-align:center"><h2>⏸ PAUSED</h2><p>Take a breather little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="quit">QUIT RUN</button></div>
 </section>
@@ -373,7 +419,7 @@ let W=0,H=0,D=1;
 function resize(){D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;C.width=W*D;C.height=H*D;X.setTransform(D,0,0,D,0,0)} addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
-const screens=['home','bugs','base','settings','upgrade','pause','gameover'];
+const screens=['home','bugs','base','settings','upgrade','pause','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
@@ -384,7 +430,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.29 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
+// v17.8.30 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
 // v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
 // v17.8.13 — Mole Cricket polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
@@ -557,7 +603,15 @@ let bossMusicTimer=null,bossMusicStep=0;
 function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}bossMusicStep=0}
 function bossMusicStart(){
  bossMusicStop();if(!audio||save.settings.music===false)return;
- // short hornet entrance sting, then a tense looping synthetic boss rhythm
+ const finalBoss=game?.boss?.kind==='gardenHeart';
+ if(finalBoss){
+   // Spore Behemoth: slower, lower, dissonant pulse with a breathing fungal feel.
+   beep(73,.42,.040,'sawtooth','music');setTimeout(()=>beep(109,.34,.025,'triangle','music'),170);setTimeout(()=>beep(82,.52,.022,'sine','music'),330);
+   const notes=[73,87,82,110,73,98,77,116,69,87,104,82,73,110,92,77];
+   const tick=()=>{if(!game||game.over||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.23,.019,'sawtooth','music');if(bossMusicStep%2===0)beep(n*1.5,.16,.008,'triangle','music');if(bossMusicStep%4===3)beep(55,.28,.013,'square','music');if(bossMusicStep%8===6)beep(147,.5,.006,'sine','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,235)};
+   bossMusicTimer=setTimeout(tick,520);return;
+ }
+ // Standard boss theme.
  beep(115,.20,.038,'sawtooth','music');setTimeout(()=>beep(172,.18,.030,'square','music'),110);setTimeout(()=>beep(230,.22,.024,'sawtooth','music'),210);
  const notes=[146,174,196,174,130,174,220,196,146,196,233,174,130,164,196,220];
  const tick=()=>{if(!game||game.over||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
@@ -706,7 +760,7 @@ function completeWave(){
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
  }
  flashBanner(bossClear?'❤️ FULLY HEALED! BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.55:1.1);
- setTimeout(()=>{if(game===g&&!g.over){if(bossClear)showGardenUpdate(g.wave);else openUpgrade(true)}},420);
+ setTimeout(()=>{if(game===g&&!g.over){if(bossClear&&g.wave>=100)completeGameEnding();else if(bossClear)showGardenUpdate(g.wave);else openUpgrade(true)}},420);
 }
 function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  const side=Math.floor(Math.random()*4),m=42;let x,y;
@@ -726,7 +780,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v17.8.29 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
+   // v17.8.30 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
@@ -1218,6 +1272,30 @@ function updateHud(){
  setHudText('waveProgress',g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'');
  const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0,disabled=!active&&(g.coins||0)<boostCost(),html=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`;if(HUD_CACHE.boostActive!==active){HUD_CACHE.boostActive=active;b.classList.toggle('active',active)}if(HUD_CACHE.boostDisabled!==disabled){HUD_CACHE.boostDisabled=disabled;b.disabled=disabled}if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
 }
+let endingTimers=[];
+function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
+function returnHomeAfterEnding(){
+ clearEndingTimers();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');
+ showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart();
+}
+function playEndingCredits(preview=false){
+ clearEndingTimers();bossMusicStop();titleMusicStop();stopTitleGardenLoop();showGameUI(false);
+ if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);if(!game.testMode){save.scrap+=earned;save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist()}}
+ const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
+ screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');
+ // Restart the CSS scroll every time, including the temporary preview button.
+ roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 34s linear forwards';
+ endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0'},34500));
+ endingTimers.push(setTimeout(()=>{prompt.classList.add('show')},37500));
+ endingTimers.push(setTimeout(returnHomeAfterEnding,42500));
+}
+function completeGameEnding(){
+ if(!game||game.over)return;
+ game.waveActive=false;game.intermission=true;game.paused=true;
+ flashBanner('☣️ THE SPORE BEHEMOTH FALLS...',1.8);
+ endingTimers.push(setTimeout(()=>playEndingCredits(false),2200));
+}
+
 function finish(won){
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);
@@ -1869,6 +1947,7 @@ document.addEventListener('click',e=>{
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
+ if(a==='testCredits')playEndingCredits(true)
  if(a==='settings'){stopTitleGardenLoop();showGameUI(false);titleMusicStop();buildSettings();screen('settings')}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
