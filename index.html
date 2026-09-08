@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.36: Character Icon Polish -->
+<!-- Big Bug v17.8.37: Sword Icon Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -334,7 +334,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .bbBoltIcon{width:.72em;height:1.25em;background:#f6b72b;clip-path:polygon(58% 0,8% 58%,45% 58%,29% 100%,94% 42%,57% 42%);filter:drop-shadow(0 2px 0 #6c4913)}
 .bbSparkIcon:before,.bbSparkIcon:after{content:"";position:absolute;inset:5%;background:#f5b52d;clip-path:polygon(50% 0,60% 39%,100% 50%,60% 61%,50% 100%,40% 61%,0 50%,40% 39%)}.bbSparkIcon:after{transform:translate(48%,-38%) scale(.48);opacity:.8}
 .bbSproutIcon:before,.bbSproutIcon:after{content:"";position:absolute;background:#6fb747;border-radius:100% 0 100% 0;width:58%;height:42%;top:15%}.bbSproutIcon:before{left:3%;transform:rotate(25deg)}.bbSproutIcon:after{right:3%;transform:scaleX(-1) rotate(25deg)}.bbSproutIcon{border-left:2px solid #78a84e;border-radius:50%;transform:rotate(-2deg)}
-.bbBiteIcon{width:.62em;height:1.28em;transform:rotate(43deg);margin-right:.08em}.bbBiteIcon:before{content:"";position:absolute;left:39%;top:0;width:28%;height:76%;background:linear-gradient(90deg,#9da8a4,#f6f3df 48%,#a7b1ad);clip-path:polygon(50% 0,100% 12%,100% 100%,0 100%,0 12%);border-radius:2px;filter:drop-shadow(0 1px 0 #28312d)}.bbBiteIcon:after{content:"";position:absolute;left:7%;top:72%;width:86%;height:10%;background:#d7a63c;border:1px solid #5a3d18;border-radius:99px;box-shadow:0 .16em 0 -.03em #6a4321,0 .29em 0 -.08em #2b2119}
+.bbBiteIcon{width:.82em;height:1.38em;transform:rotate(43deg);margin-right:.08em}.bbBiteIcon:before{content:"";position:absolute;left:34%;top:0;width:32%;height:72%;background:linear-gradient(90deg,#879590 0%,#f8f5df 42%,#fffbea 56%,#9ca7a2 100%);clip-path:polygon(50% 0,100% 14%,82% 100%,18% 100%,0 14%);filter:drop-shadow(0 1px 0 #26302b);border-radius:1px}.bbBiteIcon:after{content:"";position:absolute;left:2%;top:68%;width:96%;height:13%;background:#d8a13a;border:1px solid #593b17;border-radius:35% 35% 45% 45%;box-shadow:0 .18em 0 -.02em #70461f,0 .36em 0 -.10em #2b2119;transform:rotate(-1deg)}
 .bbBugIcon{width:1.02em;height:1.18em;border-radius:48% 48% 46% 46%;border:2px solid #24211e;background:radial-gradient(circle at 29% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 29% 68%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 68%,#24211e 0 8%,transparent 9%),linear-gradient(90deg,transparent 47%,#24211e 47% 53%,transparent 53%),#d9473f;box-shadow:inset 0 0 0 1px #ed6a60,0 1px 0 #111}.bbBugIcon:before{content:"";position:absolute;left:16%;top:-28%;width:68%;height:38%;border-radius:50% 50% 42% 42%;background:#24211e;border:1px solid #171714;box-sizing:border-box}.bbBugIcon:after{content:"••";position:absolute;left:20%;top:-31%;width:60%;color:#f8f3df;font:bold .36em/1 system-ui,sans-serif;letter-spacing:.35em;text-align:center;text-shadow:0 0 0 #fff}
 .leafCurrencyIcon.bbLeafIcon{width:20px;height:20px;font-size:0;background:linear-gradient(135deg,#d9f85b,#70bd38);border:1px solid #efffb7;border-radius:100% 0 100% 0;transform:rotate(-38deg);box-shadow:0 1px 2px #0008,0 0 6px #cfff5d66;filter:none}.leafCurrencyIcon.bbLeafIcon:after{content:"";position:absolute;left:9px;top:2px;width:1.5px;height:16px;background:#477d31;transform:rotate(5deg)}
 .shopDrawn{font-size:34px;margin:0 7px}.shopIcon{display:flex;align-items:center;justify-content:center}
@@ -375,8 +375,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.36</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.36</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.37</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.37</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -512,6 +512,7 @@ const BUGS={
 };
 
 
+// v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
 // v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
 // v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
 // v17.8.34 — cross-platform playable bug renderer. No emoji dependencies.
