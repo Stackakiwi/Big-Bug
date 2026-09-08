@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.7: iOS Background Resume Recovery -->
+<!-- Big Bug v17.8.8: Run Recovery Autosave -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -303,8 +303,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.7</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.7</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.8</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.8</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -368,6 +368,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+// v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.7 — iOS resume recovery: safely restarts the game RAF after backgrounding and prevents active waves from becoming stranded after returning.
 // v17.8.6 — Mole Cricket readability: longer burrow warning, wider emergence spacing, and a fading earth-crack marker.
 // v17.8.5 — smoothness pass: allocation-free Triple Shot targeting, cheaper radius checks, cached boss-bar writes, and a more reliably visible Home version label. Gameplay and visuals otherwise unchanged.
@@ -440,11 +441,61 @@ const UP=[
 
 let game=null, last=0, raf=0, audio=null;
 function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save))}
+
+const RUNSAVEKEY='big_bug_run_recovery_v1';
+function clearRunRecovery(){try{localStorage.removeItem(RUNSAVEKEY)}catch(e){}}
+function saveRunRecovery(reason='checkpoint'){
+ if(!game||game.over)return;
+ try{
+  const p=game.p;
+  const snap={
+   v:1,reason,wave:game.wave,coins:game.coins||0,time:game.time||0,
+   intermission:!!game.intermission,waveActive:!!game.waveActive,
+   p:{
+    x:p.x,y:p.y,hp:p.hp,maxHp:p.maxHp,damage:p.damage,rate:p.rate,crit:p.crit,
+    fireballs:p.fireballs||0,frost:p.frost||0,greed:p.greed,magnet:p.magnet,
+    thorns:p.thorns||0,meteor:p.meteor||0,clones:p.clones||0,fireflies:p.fireflies||0,
+    speed:p.speed,moveX:p.moveX,moveY:p.moveY,attackCount:p.attackCount||0,
+    tripleShot:!!p.tripleShot,lastAttack:0,lastMeteor:0,kills:p.kills||0,
+    face:p.face,faceTarget:p.faceTarget,helperShot:0,
+    helpers:(p.helpers||[]).map(h=>({bornWave:h.bornWave,leaving:!!h.leaving,x:h.x,y:h.y}))
+   }
+  };
+  localStorage.setItem(RUNSAVEKEY,JSON.stringify(snap));
+ }catch(e){}
+}
+function loadRunRecovery(){
+ try{const raw=localStorage.getItem(RUNSAVEKEY);return raw?JSON.parse(raw):null}catch(e){return null}
+}
+function restoreRecoveredRun(){
+ const snap=loadRunRecovery();
+ if(!snap||!snap.p||!snap.wave)return false;
+ try{
+  initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(false);
+  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:snap.time||0,wave:snap.wave,spawn:0,paused:true,over:false,boss:null,shake:0,score:0,
+        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:snap.coins||0,boostUntil:0};
+  Object.assign(game.p,snap.p);
+  game.p.x=Math.max(game.p.r,Math.min(W-game.p.r,game.p.x||W/2));
+  game.p.y=Math.max(game.p.r,Math.min(H-game.p.r,game.p.y||H/2));
+  game.p.moveX=game.p.x;game.p.moveY=game.p.y;
+  game.p.helpers=(snap.p.helpers||[]).map(h=>({bornWave:h.bornWave,leaving:!!h.leaving,x:h.x||game.p.x,y:h.y||game.p.y}));
+  if(snap.intermission){
+   game.wave=snap.wave;game.intermission=true;game.waveActive=false;
+  }else{
+   beginWave(snap.wave);
+   game.paused=true;
+  }
+  last=performance.now();
+  screen('pause');
+  return true;
+ }catch(e){game=null;clearRunRecovery();return false}
+}
+
 function resetGameProgress(){
  const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
- localStorage.removeItem(SAVEKEY);
+ localStorage.removeItem(SAVEKEY);clearRunRecovery();
  save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:0,mainGameBeaten:false,settings:keptSettings};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
@@ -526,10 +577,10 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(){
- initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);
+ initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
- beginWave(1);
+ beginWave(1);saveRunRecovery('run-start');
  last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 function hideAll(){screens.forEach(s=>$(s).classList.add('hidden'))}
@@ -599,11 +650,11 @@ function beginWave(w){
  if(enteringArea){const a=areaFor(w);flashBanner(a.icon+' NEW AREA: '+a.name.toUpperCase(),1.8)}
  else flashBanner(bossWave?'⚠️ BOSS WAVE '+w:'WAVE '+w, bossWave?1.6:1.0);
  if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0}
- updateHud();
+ updateHud();saveRunRecovery('wave-start');
 }
 function completeWave(){
  const g=game;if(!g.waveActive||g.intermission)return;
- g.waveActive=false;g.intermission=true;g.paused=true;
+ g.waveActive=false;g.intermission=true;g.paused=true;saveRunRecovery('wave-clear');
  const bossClear=g.wave%5===0;
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
@@ -972,7 +1023,7 @@ function openUpgrade(afterWave=false){
  $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
-   if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false}
+   if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false;saveRunRecovery('upgrade-picked')}
    upgradePickSound(choices[i].rarity)
  });
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
@@ -988,7 +1039,7 @@ function updateHud(){
  const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0,disabled=!active&&(g.coins||0)<boostCost(),html=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`;if(HUD_CACHE.boostActive!==active){HUD_CACHE.boostActive=active;b.classList.toggle('active',active)}if(HUD_CACHE.boostDisabled!==disabled){HUD_CACHE.boostDisabled=disabled;b.disabled=disabled}if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
 }
 function finish(won){
- if(game.over)return;game.over=true;bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
+ if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0,earned=coins+Math.floor(game.wave/2);
  save.scrap+=earned;save.best=Math.max(save.best,game.wave);save.runs++;persist();
  $('overTitle').textContent=won?'RUN COMPLETE!':'YOU GOT SQUISHED!';
@@ -1278,10 +1329,11 @@ function resumeGameAfterBackground(){
  raf=requestAnimationFrame(loop);
  if(audio&&audio.state==='suspended')audio.resume().catch(()=>{});
 }
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)resumeGameAfterBackground()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){saveRunRecovery('background')}else resumeGameAfterBackground()});
 addEventListener('pageshow',resumeGameAfterBackground);
+addEventListener('pagehide',()=>saveRunRecovery('pagehide'));
 
-function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true)}}
+function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true);saveRunRecovery('resume')}}
 
 document.addEventListener('click',e=>{
  const setting=e.target.closest('[data-setting]')?.dataset.setting;if(setting){initAudio();toggleSetting(setting);return}
@@ -1291,7 +1343,7 @@ document.addEventListener('click',e=>{
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over)game.paused=true;bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart()}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
  if(a==='resume'){startOrResume()}
@@ -1299,7 +1351,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('pointerdown',()=>{if(!$('home').classList.contains('hidden')){initAudio();if(!titleMusicTimer)titleMusicStart()}},{passive:true});
 $('boostBtn').onclick=useBoost;
-$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;showGameUI(false);screen('pause')};
+$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;saveRunRecovery('pause');showGameUI(false);screen('pause')};
 let drag=false;
 function pointerPos(e){return e.touches?e.touches[0]:e}
 function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
@@ -1453,6 +1505,7 @@ addEventListener('pageshow',tryStartTitleMusic,{once:true});
 ['pointerdown','touchstart','click'].forEach(ev=>document.addEventListener(ev,tryStartTitleMusic,{passive:true,once:true}));
 
 buildBugScreen();buildShop();buildSettings();$('homeBest').textContent=save.best;
+if(loadRunRecovery()){restoreRecoveredRun()}
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 </script>
 </body>
