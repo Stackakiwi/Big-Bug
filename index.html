@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.34: Sky Lancer Flight Pass -->
+<!-- Big Bug v17.8.35: Handcrafted Visual Identity Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -324,46 +324,67 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
  #home .creditsTestBtn{left:52px!important;font-size:9px!important;padding:7px 7px!important}
 }
 
+
+/* v17.8.35 — handcrafted visual identity pass. Lightweight CSS/canvas only; gameplay untouched. */
+.bugHero{width:112px;height:112px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 12px 5px #254d2255)}
+.bugHero canvas{width:112px;height:112px;display:block;animation:bob 1.8s ease-in-out infinite}
+.bbIcon{display:inline-block;position:relative;width:1.15em;height:1.15em;vertical-align:-.19em;flex:0 0 auto}
+.bbHeartIcon{width:1.12em;height:1em;transform:rotate(-45deg);border-radius:20% 0 20% 20%;background:#df5149;box-shadow:inset 2px 2px #ff8b78,0 2px 0 #742b28}
+.bbHeartIcon:before,.bbHeartIcon:after{content:"";position:absolute;background:inherit;border-radius:50%;width:100%;height:100%}.bbHeartIcon:before{top:-50%;left:0}.bbHeartIcon:after{left:50%;top:0}
+.bbBoltIcon{width:.72em;height:1.25em;background:#f6b72b;clip-path:polygon(58% 0,8% 58%,45% 58%,29% 100%,94% 42%,57% 42%);filter:drop-shadow(0 2px 0 #6c4913)}
+.bbSparkIcon:before,.bbSparkIcon:after{content:"";position:absolute;inset:5%;background:#f5b52d;clip-path:polygon(50% 0,60% 39%,100% 50%,60% 61%,50% 100%,40% 61%,0 50%,40% 39%)}.bbSparkIcon:after{transform:translate(48%,-38%) scale(.48);opacity:.8}
+.bbSproutIcon:before,.bbSproutIcon:after{content:"";position:absolute;background:#6fb747;border-radius:100% 0 100% 0;width:58%;height:42%;top:15%}.bbSproutIcon:before{left:3%;transform:rotate(25deg)}.bbSproutIcon:after{right:3%;transform:scaleX(-1) rotate(25deg)}.bbSproutIcon{border-left:2px solid #78a84e;border-radius:50%;transform:rotate(-2deg)}
+.bbBiteIcon:before,.bbBiteIcon:after{content:"";position:absolute;width:72%;height:3px;background:#e9e5d4;border-radius:99px;left:14%;top:49%;box-shadow:0 1px #596158}.bbBiteIcon:before{transform:rotate(45deg)}.bbBiteIcon:after{transform:rotate(-45deg)}
+.bbBugIcon{width:1.18em;height:.9em;border-radius:50%;background:#d94a42;border:2px solid #24211e;box-shadow:inset 0 0 0 1px #e9695f}.bbBugIcon:before{content:"";position:absolute;left:48%;top:0;width:2px;height:100%;background:#24211e}.bbBugIcon:after{content:"";position:absolute;left:19%;top:22%;width:4px;height:4px;border-radius:50%;background:#24211e;box-shadow:12px 0 #24211e,0 8px #24211e,12px 8px #24211e}
+.leafCurrencyIcon.bbLeafIcon{width:20px;height:20px;font-size:0;background:linear-gradient(135deg,#d9f85b,#70bd38);border:1px solid #efffb7;border-radius:100% 0 100% 0;transform:rotate(-38deg);box-shadow:0 1px 2px #0008,0 0 6px #cfff5d66;filter:none}.leafCurrencyIcon.bbLeafIcon:after{content:"";position:absolute;left:9px;top:2px;width:1.5px;height:16px;background:#477d31;transform:rotate(5deg)}
+.shopDrawn{font-size:34px;margin:0 7px}.shopIcon{display:flex;align-items:center;justify-content:center}
+#bugs .panel,#base .panel{background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border-color:#557354}
+#bugs .panel:before,#base .panel:before{content:"";display:block;position:sticky;top:-20px;height:5px;margin:-20px -18px 16px;background:repeating-linear-gradient(90deg,#6f914f 0 18px,#476b3c 18px 28px);opacity:.45;z-index:2}
+#bugs .card,#base .shopRow{border-radius:16px;background:#153923;border-color:#3c6242}
+#bugs .card.selected{outline:2px solid #efb234;box-shadow:inset 0 0 0 2px #efb23444}
+#base .shopCurrency{border-radius:14px}
+#pause .panel,#gameover .panel{border-radius:18px;border-color:#4b684d;box-shadow:0 8px 0 #08150c,0 22px 55px #0009}
+
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
 
 <div id="hud" class="hidden">
-  <div class="pill">❤️ <span id="hp">100</span>/<span id="maxhp">100</span></div>
-  <div class="pill">🌿 WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
-  <div class="pill"><span class="leafCurrencyIcon" aria-hidden="true">🍃</span><span id="coins">0</span></div>
-  <div class="pill">⚔️ <span id="dmg">10</span></div>
+  <div class="pill"><span class="bbIcon bbHeartIcon" aria-hidden="true"></span> <span id="hp">100</span>/<span id="maxhp">100</span></div>
+  <div class="pill"><span class="bbIcon bbSproutIcon" aria-hidden="true"></span> WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
+  <div class="pill"><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="coins">0</span></div>
+  <div class="pill"><span class="bbIcon bbBiteIcon" aria-hidden="true"></span> <span id="dmg">10</span></div>
 </div>
 <div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
 <div id="telegraph" class="telegraph hidden">WAVE 1</div>
-<button id="boostBtn" class="hidden">⚡ BOOST<small>100 LEAVES</small></button>
+<button id="boostBtn" class="hidden"><span class="bbIcon bbBoltIcon" aria-hidden="true"></span> BOOST<small>100 LEAVES</small></button>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
 
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
-  <div class="bugHero">🐞</div>
+  <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
   <div class="logo">BIG<br>BUG<small>SMALL BUG. BIG DREAMS.</small></div>
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
-  <div class="homeLowerLift"><button class="btn dark small" data-action="bugs">🐛 BUGS</button><button class="btn dark small" data-action="base">✨ POWER UPS</button></div>
+  <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="testJump"><select id="testWave" aria-label="Temporary wave and boss tester"></select><button class="btn dark small" data-action="testWave">TEST</button></div>
   <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.34</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.34</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.35</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.35</div>
 </section>
 
 <section id="bugs" class="screen hidden">
- <div class="panel"><h2>🐛 THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><h2><span class="bbIcon bbBugIcon" aria-hidden="true"></span> THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="base" class="screen hidden">
- <div class="panel"><h2>✨ GARDEN MAGIC</h2><p class="muted">Teach the garden’s gifts a few new tricks.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><h2><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> GARDEN MAGIC</h2><p class="muted">Teach the garden’s gifts a few new tricks.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="settings" class="screen hidden">
@@ -428,7 +449,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <h2 id="overTitle">RUN COMPLETE!</h2>
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
-  <p><span class="leafCurrencyIcon" aria-hidden="true">🍃</span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
+  <p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
   <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">POWER UPS</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
@@ -491,6 +512,7 @@ const BUGS={
 };
 
 
+// v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
 // v17.8.34 — cross-platform playable bug renderer. No emoji dependencies.
 function drawPlayableBug(ctx,id,size=28,glow=false){
  ctx.save();
@@ -529,6 +551,8 @@ function drawPlayableBug(ctx,id,size=28,glow=false){
  }
  ctx.restore();
 }
+function paintHomeHero(){const c=$('homeBugHero');if(!c)return;const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}
+
 function makeBugPreview(id){
  const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
  const q=c.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);return c;
@@ -706,13 +730,13 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['❤️','Harder Shell',`Health upgrades are 10% stronger per level — ${s.hp}/10${s.hp>=10?' — MAX':''}`,2500+s.hp*2500,'hp'],
-   ['🗡️','Sharper Bite',`Damage upgrades are 10% stronger per level — ${s.dmg}/10${s.dmg>=10?' — MAX':''}`,3000+s.dmg*3000,'dmg'],
-   ['⚡','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level — ${s.magnet}/10${s.magnet>=10?' — MAX':''}`,3500+s.magnet*3500,'magnet'],
-   ['✨','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level — ${s.coins}/10${s.coins>=10?' — MAX':''}`,5000+s.coins*5000,'coins']
+   ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`Health upgrades are 10% stronger per level — ${s.hp}/10${s.hp>=10?' — MAX':''}`,2500+s.hp*2500,'hp'],
+   ['<span class="bbIcon bbBiteIcon shopDrawn"></span>','Sharper Bite',`Damage upgrades are 10% stronger per level — ${s.dmg}/10${s.dmg>=10?' — MAX':''}`,3000+s.dmg*3000,'dmg'],
+   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level — ${s.magnet}/10${s.magnet>=10?' — MAX':''}`,3500+s.magnet*3500,'magnet'],
+   ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level — ${s.coins}/10${s.coins>=10?' — MAX':''}`,5000+s.coins*5000,'coins']
  ];
- $('shop').innerHTML=`<div class="shopCurrency"><b><span class="leafCurrencyIcon" aria-hidden="true">🍃</span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
-  rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon" aria-hidden="true">🍃</span>${r[3]}`}</button></div>`).join('');
+ $('shop').innerHTML=`<div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
+  rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
 function buyShop(k){
@@ -2205,7 +2229,7 @@ function tryStartTitleMusic(){
 addEventListener('pageshow',tryStartTitleMusic,{once:true});
 ['pointerdown','touchstart','click'].forEach(ev=>document.addEventListener(ev,tryStartTitleMusic,{passive:true,once:true}));
 
-buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;
+paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;
 if(loadRunRecovery()){restoreRecoveredRun()}
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 </script>
