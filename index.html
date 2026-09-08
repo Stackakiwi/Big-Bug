@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.35: Handcrafted Visual Identity Pass -->
+<!-- Big Bug v17.8.36: Character Icon Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -334,8 +334,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .bbBoltIcon{width:.72em;height:1.25em;background:#f6b72b;clip-path:polygon(58% 0,8% 58%,45% 58%,29% 100%,94% 42%,57% 42%);filter:drop-shadow(0 2px 0 #6c4913)}
 .bbSparkIcon:before,.bbSparkIcon:after{content:"";position:absolute;inset:5%;background:#f5b52d;clip-path:polygon(50% 0,60% 39%,100% 50%,60% 61%,50% 100%,40% 61%,0 50%,40% 39%)}.bbSparkIcon:after{transform:translate(48%,-38%) scale(.48);opacity:.8}
 .bbSproutIcon:before,.bbSproutIcon:after{content:"";position:absolute;background:#6fb747;border-radius:100% 0 100% 0;width:58%;height:42%;top:15%}.bbSproutIcon:before{left:3%;transform:rotate(25deg)}.bbSproutIcon:after{right:3%;transform:scaleX(-1) rotate(25deg)}.bbSproutIcon{border-left:2px solid #78a84e;border-radius:50%;transform:rotate(-2deg)}
-.bbBiteIcon:before,.bbBiteIcon:after{content:"";position:absolute;width:72%;height:3px;background:#e9e5d4;border-radius:99px;left:14%;top:49%;box-shadow:0 1px #596158}.bbBiteIcon:before{transform:rotate(45deg)}.bbBiteIcon:after{transform:rotate(-45deg)}
-.bbBugIcon{width:1.18em;height:.9em;border-radius:50%;background:#d94a42;border:2px solid #24211e;box-shadow:inset 0 0 0 1px #e9695f}.bbBugIcon:before{content:"";position:absolute;left:48%;top:0;width:2px;height:100%;background:#24211e}.bbBugIcon:after{content:"";position:absolute;left:19%;top:22%;width:4px;height:4px;border-radius:50%;background:#24211e;box-shadow:12px 0 #24211e,0 8px #24211e,12px 8px #24211e}
+.bbBiteIcon{width:.62em;height:1.28em;transform:rotate(43deg);margin-right:.08em}.bbBiteIcon:before{content:"";position:absolute;left:39%;top:0;width:28%;height:76%;background:linear-gradient(90deg,#9da8a4,#f6f3df 48%,#a7b1ad);clip-path:polygon(50% 0,100% 12%,100% 100%,0 100%,0 12%);border-radius:2px;filter:drop-shadow(0 1px 0 #28312d)}.bbBiteIcon:after{content:"";position:absolute;left:7%;top:72%;width:86%;height:10%;background:#d7a63c;border:1px solid #5a3d18;border-radius:99px;box-shadow:0 .16em 0 -.03em #6a4321,0 .29em 0 -.08em #2b2119}
+.bbBugIcon{width:1.02em;height:1.18em;border-radius:48% 48% 46% 46%;border:2px solid #24211e;background:radial-gradient(circle at 29% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 29% 68%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 68%,#24211e 0 8%,transparent 9%),linear-gradient(90deg,transparent 47%,#24211e 47% 53%,transparent 53%),#d9473f;box-shadow:inset 0 0 0 1px #ed6a60,0 1px 0 #111}.bbBugIcon:before{content:"";position:absolute;left:16%;top:-28%;width:68%;height:38%;border-radius:50% 50% 42% 42%;background:#24211e;border:1px solid #171714;box-sizing:border-box}.bbBugIcon:after{content:"••";position:absolute;left:20%;top:-31%;width:60%;color:#f8f3df;font:bold .36em/1 system-ui,sans-serif;letter-spacing:.35em;text-align:center;text-shadow:0 0 0 #fff}
 .leafCurrencyIcon.bbLeafIcon{width:20px;height:20px;font-size:0;background:linear-gradient(135deg,#d9f85b,#70bd38);border:1px solid #efffb7;border-radius:100% 0 100% 0;transform:rotate(-38deg);box-shadow:0 1px 2px #0008,0 0 6px #cfff5d66;filter:none}.leafCurrencyIcon.bbLeafIcon:after{content:"";position:absolute;left:9px;top:2px;width:1.5px;height:16px;background:#477d31;transform:rotate(5deg)}
 .shopDrawn{font-size:34px;margin:0 7px}.shopIcon{display:flex;align-items:center;justify-content:center}
 #bugs .panel,#base .panel{background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border-color:#557354}
@@ -375,8 +375,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.35</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.35</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.36</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.36</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -512,6 +512,7 @@ const BUGS={
 };
 
 
+// v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
 // v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
 // v17.8.34 — cross-platform playable bug renderer. No emoji dependencies.
 function drawPlayableBug(ctx,id,size=28,glow=false){
@@ -543,6 +544,9 @@ function drawPlayableBug(ctx,id,size=28,glow=false){
    // Ladybug: familiar red split shell with clean black spots.
    for(const sy of [-7,0,7]){leg(-8,sy,-14,sy+(sy===0?0:(sy<0?-3:3)));leg(8,sy,14,sy+(sy===0?0:(sy<0?-3:3)))}
    ctx.fillStyle='#24211e';ctx.beginPath();ctx.ellipse(0,-9,7,5.5,0,0,6.283);ctx.fill();
+   // Friendly eyes make the player read as a character instead of a generic ladybug symbol.
+   ctx.fillStyle='#f7f3df';for(const ex of [-2.7,2.7]){ctx.beginPath();ctx.arc(ex,-10.5,1.55,0,6.283);ctx.fill()}
+   ctx.fillStyle='#171714';for(const ex of [-2.7,2.7]){ctx.beginPath();ctx.arc(ex,-10.9,.65,0,6.283);ctx.fill()}
    ctx.fillStyle='#d9473f';ctx.beginPath();ctx.ellipse(0,2,10,12.5,0,0,6.283);ctx.fill();
    ctx.strokeStyle='#24211e';ctx.lineWidth=1.8;ctx.stroke();
    ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,14);ctx.stroke();
