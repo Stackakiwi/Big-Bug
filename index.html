@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.39: HUD Icon Cleanup -->
+<!-- Big Bug v17.8.40: HUD Fit Polish -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -347,6 +347,12 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #base .shopCurrency{border-radius:14px}
 #pause .panel,#gameover .panel{border-radius:18px;border-color:#4b684d;box-shadow:0 8px 0 #08150c,0 22px 55px #0009}
 
+
+/* v17.8.40 — keep all HUD boxes equal; fit boss wave label inside its box; enlarge sword only. */
+#hud .pill:nth-child(2){font-size:12px;gap:3px;letter-spacing:-.15px;overflow:hidden}
+#hud .pill:nth-child(2) .waveProg{font-size:9px;margin-left:2px;min-width:0}
+#hud .pill:nth-child(4) .bbSwordSvg{width:1.62em;height:1.62em;margin:-.18em -.02em}
+
 </style>
 </head>
 <body>
@@ -377,8 +383,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.39</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.39</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.40</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.40</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -514,6 +520,7 @@ const BUGS={
 };
 
 
+// v17.8.40 — equal HUD box sizes preserved; boss wave text fitted inside its box and sword enlarged.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
 // v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
