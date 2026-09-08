@@ -857,28 +857,31 @@ function quitRun(){if(game&&!game.over)finish(false)}
 
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
 function eye(x,y,r=2.5){X.fillStyle='#160806';X.beginPath();X.arc(x,y,r+1.7,0,6.28);X.fill();X.fillStyle='#ff3b32';X.beginPath();X.arc(x,y,r,0,6.28);X.fill();X.fillStyle='#ffd0a8';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill();/* tiny angry brow */X.strokeStyle='#160806';X.lineWidth=Math.max(1.4,r*.65);X.lineCap='round';X.beginPath();if(x<0){X.moveTo(x-r*1.35,y-r*1.45);X.lineTo(x+r*.55,y-r*.8)}else{X.moveTo(x+r*1.35,y-r*1.45);X.lineTo(x-r*.55,y-r*.8)}X.stroke()}
+
+// v17.6.4 SAFE — allocation-only optimization from the stable v17.6.1 baseline.
+// These scenery tables are static, so keep one shared copy instead of rebuilding them every rendered frame.
+const GARDEN_ROCKS=[[.16,.29,8,5],[.82,.24,6,4],[.73,.66,9,5],[.25,.76,7,4],[.61,.18,5,3],[.45,.86,8,4]];
+const GARDEN_TWIGS=[[.18,.58,.28,.54],[.67,.33,.76,.36],[.38,.22,.43,.17],[.72,.79,.81,.75]];
+const GARDEN_CLOVERS=[[.12,.43],[.87,.48],[.30,.35],[.76,.57],[.19,.72],[.58,.78]];
+const GARDEN_FLOWERS=[[.11,.64,'#f4d66f'],[.86,.69,'#e9a4a4'],[.53,.27,'#f1e6bb'],[.34,.82,'#d9b3e7']];
 function drawGardenDetails(){
  const ai=areaIndex();
  const sx=(ai*53)%W,sy=(ai*79)%H;
  const P=(px,py)=>[(W*px+sx)%W,(H*py+sy)%H];
 
  if(![6,13,14,18,19].includes(ai)){
-  const rocks=[[.16,.29,8,5],[.82,.24,6,4],[.73,.66,9,5],[.25,.76,7,4],[.61,.18,5,3],[.45,.86,8,4]];
-  for(const [px,py,rx,ry] of rocks){let [x,y]=P(px,py);X.fillStyle=ai===11?'#798078':'#5e684f';X.beginPath();X.ellipse(x,y,rx,ry,-.25,0,6.28);X.fill();X.fillStyle=ai===11?'#a6aaa0aa':'#8b9071aa';X.beginPath();X.ellipse(x-rx*.2,y-ry*.35,rx*.45,ry*.25,-.25,0,6.28);X.fill()}
+  for(const [px,py,rx,ry] of GARDEN_ROCKS){let [x,y]=P(px,py);X.fillStyle=ai===11?'#798078':'#5e684f';X.beginPath();X.ellipse(x,y,rx,ry,-.25,0,6.28);X.fill();X.fillStyle=ai===11?'#a6aaa0aa':'#8b9071aa';X.beginPath();X.ellipse(x-rx*.2,y-ry*.35,rx*.45,ry*.25,-.25,0,6.28);X.fill()}
  }
  if([0,1,8,9,10,15,17].includes(ai)){
-  const twigs=[[.18,.58,.28,.54],[.67,.33,.76,.36],[.38,.22,.43,.17],[.72,.79,.81,.75]];
-  for(const [a,b,c,d] of twigs){let [x1,y1]=P(a,b),[x2,y2]=P(c,d);line(x1,y1,x2,y2,3,ai>=15?'#66513a':'#59452b')}
+  for(const [a,b,c,d] of GARDEN_TWIGS){let [x1,y1]=P(a,b),[x2,y2]=P(c,d);line(x1,y1,x2,y2,3,ai>=15?'#66513a':'#59452b')}
  }
  if(ai===0||ai===2){
-  const clovers=[[.12,.43],[.87,.48],[.30,.35],[.76,.57],[.19,.72],[.58,.78]];
   const count=ai===0?6:2;
-  for(let k=0;k<count;k++){let [x,y]=P(clovers[k][0],clovers[k][1]);X.strokeStyle=ai===2?'#476d5f':'#315a2e';X.lineWidth=2;X.beginPath();X.moveTo(x,y+10);X.lineTo(x,y-1);X.stroke();for(let a=0;a<3;a++){let an=-Math.PI/2+a*2.1;X.fillStyle=ai===2?'#739688':'#69924d';X.beginPath();X.ellipse(x+Math.cos(an)*5,y+Math.sin(an)*5,5,3,an,0,6.28);X.fill()}}
+  for(let k=0;k<count;k++){let [x,y]=P(GARDEN_CLOVERS[k][0],GARDEN_CLOVERS[k][1]);X.strokeStyle=ai===2?'#476d5f':'#315a2e';X.lineWidth=2;X.beginPath();X.moveTo(x,y+10);X.lineTo(x,y-1);X.stroke();for(let a=0;a<3;a++){let an=-Math.PI/2+a*2.1;X.fillStyle=ai===2?'#739688':'#69924d';X.beginPath();X.ellipse(x+Math.cos(an)*5,y+Math.sin(an)*5,5,3,an,0,6.28);X.fill()}}
  }
  if([0,4,7].includes(ai)){
-  const flowers=[[.11,.64,'#f4d66f'],[.86,.69,'#e9a4a4'],[.53,.27,'#f1e6bb'],[.34,.82,'#d9b3e7']];
   const count=ai===0?4:ai===4?2:3;
-  for(let k=0;k<count;k++){let [x,y]=P(flowers[k][0],flowers[k][1]);let col=ai===7?(k%2?'#df7890':'#c95873'):flowers[k][2];X.strokeStyle='#456b35';X.lineWidth=1.5;X.beginPath();X.moveTo(x,y+8);X.lineTo(x,y);X.stroke();for(let a=0;a<6;a++){X.fillStyle=col;X.beginPath();X.arc(x+Math.cos(a*1.047)*3.5,y+Math.sin(a*1.047)*3.5,2.5,0,6.28);X.fill()}X.fillStyle='#c98f2d';X.beginPath();X.arc(x,y,2,0,6.28);X.fill()}
+  for(let k=0;k<count;k++){let [x,y]=P(GARDEN_FLOWERS[k][0],GARDEN_FLOWERS[k][1]);let col=ai===7?(k%2?'#df7890':'#c95873'):GARDEN_FLOWERS[k][2];X.strokeStyle='#456b35';X.lineWidth=1.5;X.beginPath();X.moveTo(x,y+8);X.lineTo(x,y);X.stroke();for(let a=0;a<6;a++){X.fillStyle=col;X.beginPath();X.arc(x+Math.cos(a*1.047)*3.5,y+Math.sin(a*1.047)*3.5,2.5,0,6.28);X.fill()}X.fillStyle='#c98f2d';X.beginPath();X.arc(x,y,2,0,6.28);X.fill()}
  }
 }
 
