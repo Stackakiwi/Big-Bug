@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.21: Sky Lancer Flight Pass -->
+<!-- Big Bug v17.8.22: Sky Lancer Flight Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -309,8 +309,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.21</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.21</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.22</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.22</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -375,7 +375,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.21 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
+// v17.8.22 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
 // v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
 // v17.8.13 — Mole Cricket polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
@@ -715,7 +715,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v17.8.21 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
+   // v17.8.22 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
@@ -952,7 +952,19 @@ function enemyMove(e,dt){
      }
      flashBanner('🔥 ACID SPRAY!',.3)
    }
-   else if(e.kind==='mothBoss'){e.shotCd=2.9;bossHazard(p.x,p.y,115,2.4,'dark',8+game.wave*.14);for(let i=0;i<6;i++)shoot(i*6.283/6+t*.35,105,8+game.wave*.15,true,7);flashBanner('🌘 DUSK VEIL!',.35)}
+   else if(e.kind==='mothBoss'){
+     e.shotCd=2.9;bossHazard(p.x,p.y,115,2.4,'dark',8+game.wave*.14);
+     for(let i=0;i<6;i++)shoot(i*6.283/6+t*.35,105,8+game.wave*.15,true,7);
+     if(Math.random()<.28){
+       let gx=p.x-e.x,gy=p.y-e.y,gd=Math.hypot(gx,gy)||1;
+       p.x=Math.max(p.r,Math.min(W-p.r,p.x+gx/gd*34));
+       p.y=Math.max(p.r,Math.min(H-p.r,p.y+gy/gd*34));
+       p.moveX=Math.max(p.r,Math.min(W-p.r,p.moveX+gx/gd*34));
+       p.moveY=Math.max(p.r,Math.min(H-p.r,p.moveY+gy/gd*34));
+       game.fx.push({x:p.x,y:p.y,vx:gx/gd*80,vy:gy/gd*80,life:.38,r:24,mothGust:true});
+       flashBanner('💨 DUSK GUST!',.25)
+     }else flashBanner('🌘 DUSK VEIL!',.35)
+   }
    else if(e.kind==='waterStrider'){e.shotCd=2.05;let tx=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*180)),ty=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*180));e.state='dash';e.stateT=.55;e.vx=(tx-e.x)/.55;e.vy=(ty-e.y)/.55;bossHazard(tx,ty,58,1.7,'ripple',9+game.wave*.15);flashBanner('💧 RIPPLE SKIM!',.3)}
    else if(e.kind==='weevil'){e.shotCd=2.65;for(let i=-2;i<=2;i++){let px=Math.max(35,Math.min(W-35,p.x+i*48)),py=Math.max(105,Math.min(H-40,p.y+(i%2)*45));bossHazard(px,py,25,2.1,'thorn',10+game.wave*.16)}flashBanner('🌿 THORN GARDEN!',.35)}
    else if(e.kind==='tarantula'){e.shotCd=2.7;let ang=aim+Math.PI/2;for(let i=-2;i<=2;i++){let dist=i*55;bossHazard(p.x+Math.cos(ang)*dist,p.y+Math.sin(ang)*dist,30,3.6,'webline',8+game.wave*.14)}flashBanner('🕸️ WEB WALL!',.35)}
@@ -1098,6 +1110,10 @@ function update(dt,now){
    if(f.web){
       if(Math.hypot(p.x-f.x,p.y-f.y)<f.r+p.r){p.webSlow=.12}
       continue;
+   }
+   if(f.mothGust){
+     f.x+=f.vx*dt;f.y+=f.vy*dt;
+     continue;
    }
    if(f.tripleShotFx)continue;
    f.x+=f.vx*dt;f.y+=f.vy*dt;
@@ -1327,7 +1343,34 @@ function drawEnemy(e){
   line(rr*.18,-rr*.96,rr*.42,-rr*1.25,1.5,'#4b603c');
   // Small lightning-like thorax mark.
   X.strokeStyle='#d9ed9c';X.lineWidth=2.4;X.beginPath();X.moveTo(-4,-rr*.35);X.lineTo(4,-rr*.18);X.lineTo(-3,0);X.lineTo(5,rr*.16);X.stroke();
- }else if(e.kind==='wasp'||e.kind==='hornet'||e.kind==='mothBoss'){
+ }else if(e.kind==='mothBoss'){
+  // DUSK MOTH: fuzzy body and four broad patterned wings, deliberately unlike hornets/wasps.
+  const rr=r*1.16,flutter=Math.sin(t*7)*.035;
+  X.globalAlpha=.88;
+  for(let side of [-1,1]){
+    X.fillStyle='#8f739c';X.beginPath();X.ellipse(side*rr*.72,-rr*.12,rr*.78,rr*.62,side*(.42+flutter),0,6.28);X.fill();
+    X.fillStyle='#705b80';X.beginPath();X.ellipse(side*rr*.62,rr*.48,rr*.60,rr*.44,side*(.25-flutter),0,6.28);X.fill();
+    // Wing eyespots and soft markings.
+    X.fillStyle='#cbb2d0';X.beginPath();X.arc(side*rr*.82,-rr*.18,rr*.16,0,6.28);X.fill();
+    X.fillStyle='#55435f';X.beginPath();X.arc(side*rr*.82,-rr*.18,rr*.075,0,6.28);X.fill();
+    X.strokeStyle='#b99bc1';X.lineWidth=1.5;X.beginPath();X.moveTo(side*rr*.16,0);X.lineTo(side*rr*1.28,-rr*.28);X.stroke();
+  }
+  X.globalAlpha=1;
+  // Thick fuzzy abdomen/thorax.
+  X.fillStyle='#66506f';X.beginPath();X.ellipse(0,rr*.18,rr*.42,rr*.92,0,0,6.28);X.fill();
+  X.fillStyle='#9d83a5';
+  for(let i=0;i<5;i++){X.beginPath();X.arc((i%2?1:-1)*rr*.12,-rr*.28+i*rr*.23,rr*.20,0,6.28);X.fill()}
+  X.fillStyle='#7d6686';X.beginPath();X.arc(0,-rr*.68,rr*.48,0,6.28);X.fill();
+  eye(-rr*.18,-rr*.74,3);eye(rr*.18,-rr*.74,3);
+  // Feathery moth antennae.
+  for(let side of [-1,1]){
+    X.strokeStyle='#b89cbd';X.lineWidth=1.8;X.beginPath();X.moveTo(side*rr*.14,-rr*.96);X.quadraticCurveTo(side*rr*.42,-rr*1.28,side*rr*.62,-rr*1.52);X.stroke();
+    for(let i=1;i<=3;i++){
+      const ax=side*rr*(.20+i*.10),ay=-rr*(1.02+i*.13);
+      line(ax,ay,ax+side*rr*.18,ay+rr*.04,1,'#b89cbd');
+    }
+  }
+ }else if(e.kind==='wasp'||e.kind==='hornet'){
   const big=e.kind!=='wasp';let rr=big?r*1.15:r;
   X.globalAlpha=.45;X.fillStyle='#e8f2e9';X.beginPath();X.ellipse(-rr*.65,-2,rr*.65,rr*.28,-.6,0,6.28);X.ellipse(rr*.65,-2,rr*.65,rr*.28,.6,0,6.28);X.fill();X.globalAlpha=1;
   for(let side of [-1,1]){line(side*5,1,side*(rr+8),8+step,2.3);line(side*4,9,side*(rr+6),17-step,2.3)}
@@ -1417,7 +1460,7 @@ function drawEnemy(e){
    
    
    
-   if(e.kind==='mothBoss'){X.globalAlpha=.58;X.fillStyle='#c7a7ce';for(let q of [-1,1]){X.beginPath();X.ellipse(q*rr*.75,0,rr*.72,rr*.52,q*.18,0,6.28);X.fill()}X.globalAlpha=1}
+   
    if(e.kind==='waterStrider'){for(let q of [-1,1])for(let yy of [-.35,.1,.55])line(q*rr*.18,rr*yy,q*rr*1.35,rr*(yy-.22),2,'#426b68')}
    if(e.kind==='weevil'){line(0,-rr*.45,0,-rr*1.35,8,'#535b31')}
    if(e.kind==='tarantula'){for(let q of [-1,1])for(let i=0;i<4;i++)line(q*rr*.3,-rr*.55+i*rr*.35,q*rr*1.2,-rr*.7+i*rr*.48,5,'#39283a')}
@@ -1425,7 +1468,7 @@ function drawEnemy(e){
    if(e.kind==='sporeBeetle'){X.fillStyle='#b77cc1';for(let i=0;i<5;i++){let a=i*1.25+t*.08;X.beginPath();X.arc(Math.cos(a)*rr*.65,Math.sin(a)*rr*.65,5+i%2*2,0,6.28);X.fill()}}
    if(e.kind==='cicada'){X.strokeStyle='#d9ed9c';X.lineWidth=3;for(let k=1;k<=2;k++){X.beginPath();X.arc(0,0,rr*(1.05+k*.18)+Math.sin(t*9)*2,0,6.28);X.stroke()}}
    
-   if(e.kind==='mothBoss'){X.fillStyle='#e4c6e8';for(let q of [-1,1]){X.beginPath();X.arc(q*rr*.62,-rr*.05,5,0,6.28);X.fill();X.beginPath();X.arc(q*rr*.82,rr*.32,4,0,6.28);X.fill()}}
+   
    if(e.kind==='waterStrider'){X.fillStyle='#bce7df';X.beginPath();X.ellipse(0,0,rr*.28,rr*1.15,0,0,6.28);X.fill()}
    if(e.kind==='weevil'){X.fillStyle='#a5b85a';X.beginPath();X.arc(0,-rr*.9,rr*.32,0,6.28);X.fill()}
    if(e.kind==='rootBorer'){for(let q of [-1,1])line(q*rr*.35,rr*.4,q*rr*1.25,rr*.95,6,'#8d6849')}
@@ -1476,6 +1519,11 @@ function draw(){
  for(const f of game.fx){
    if(f.healHeart){
      const q=Math.max(0,f.life/(f.maxLife||1.15));X.globalAlpha=Math.min(1,q*1.8);X.textAlign='center';X.textBaseline='middle';X.font='30px serif';X.fillText('❤️',f.x,f.y);X.globalAlpha=1;continue
+   }
+   if(f.mothGust){
+     const q=Math.max(0,f.life/.38);X.save();X.translate(f.x,f.y);X.globalAlpha=.18+.38*q;X.strokeStyle='#d7c6dd';X.lineWidth=2;
+     for(let i=-1;i<=1;i++){X.beginPath();X.arc(-8,i*8,20+i*3,-.7,.55);X.stroke()}
+     X.restore();X.globalAlpha=1;continue
    }
    if(f.earthCrack){
      const max=f.maxLife||3.0,age=max-f.life,r=f.r||32,seed=f.seed||0,fade=f.life<.72?Math.max(0,f.life/.72):1,grow=Math.min(1,age/.18);
