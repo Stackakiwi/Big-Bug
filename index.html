@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.9: Endless Face-On Attackers -->
+<!-- Big Bug v17.9.10: Endless Face-On Attackers -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -434,8 +434,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.9</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.9</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.10</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.10</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -514,7 +514,9 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <script>
-// v17.9.9 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
+// v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
+
+// v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
 
 const C=document.getElementById('game'),X=C.getContext('2d');
 let W=0,H=0,D=1;
@@ -532,7 +534,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
-// v17.9.9 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
+// v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
 // v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
 // v17.9.4 — Endless survival pass: no Leaf drops, stored Health Boost / 5× Attack / Repellent charges (max 3 each), and automatic move/attack-speed growth every 5 waves. Story Mode unchanged.
@@ -847,7 +849,7 @@ function startEndless(){
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
  // Endless starts 50% faster than the same selected bug in Story Mode.
- game.p.speed*=1.5;game.p.rate/=1.5;
+ game.p.speed*=1.75;game.p.rate/=1.75;
  beginWave(1);last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 function endlessActiveCap(w){return Math.min(90,30+Math.floor(w*2.2))}
