@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.50: Livelier Handcrafted Credits -->
+<!-- Big Bug v17.8.51: Livelier Handcrafted Credits -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -303,21 +303,19 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-#ending.creditsActive #creditsRoll .creditName{animation-duration:.85s;animation-timing-function:cubic-bezier(.16,.82,.22,1);animation-fill-mode:forwards;animation-iteration-count:1}
-#ending.creditsActive #creditsRoll .creditName.c1{animation-name:creditFlyLeft;animation-delay:9.8s}
-#ending.creditsActive #creditsRoll .creditName.c2{animation-name:creditFlyRight;animation-delay:10.8s}
-#ending.creditsActive #creditsRoll .creditName.c3{animation-name:creditFlyLeft;animation-delay:11.8s}
-#ending.creditsActive #creditsRoll .creditName.c4{animation-name:creditFlyRight;animation-delay:12.8s}
-#ending.creditsActive #creditsRoll .creditName.c5{animation-name:creditFlyLeft;animation-delay:13.8s}
-#ending.creditsActive #creditsRoll .creditName.c6{animation-name:creditFlyRight;animation-delay:14.8s}
-#ending.creditsActive #creditsRoll .creditName.c7{animation-name:creditFlyLeft;animation-delay:15.8s}
-@keyframes creditFlyLeft{
-  0%{opacity:0;transform:translateX(calc(-50vw - 180px)) scale(.94)}
+#ending.creditsActive #creditsRoll .creditName{opacity:0;animation-duration:.72s;animation-timing-function:cubic-bezier(.18,.86,.24,1);animation-fill-mode:forwards;animation-iteration-count:1}
+#ending.creditsActive #creditsRoll .creditName.c1{animation-name:creditFlyLeft;animation-delay:8.80s}
+#ending.creditsActive #creditsRoll .creditName.c2{animation-name:creditFlyRight;animation-delay:9.65s}
+#ending.creditsActive #creditsRoll .creditName.c3{animation-name:creditFlyLeft;animation-delay:10.50s}
+#ending.creditsActive #creditsRoll .creditName.c4{animation-name:creditFlyRight;animation-delay:11.35s}
+#ending.creditsActive #creditsRoll .creditName.c5{animation-name:creditFlyLeft;animation-delay:12.20s}
+#ending.creditsActive #creditsRoll .creditName.c6{animation-name:creditFlyRight;animation-delay:13.05s}
+#ending.creditsActive #creditsRoll .creditName.c7{animation-name:creditFlyLeft;animation-delay:13.90s}
+@keyframes creditFlyLeft{0%{opacity:0;transform:translateX(calc(-50vw - 180px))}100%{opacity:1;transform:translateX(0)}}
   68%{opacity:1;transform:translateX(12px) scale(1.02)}
   100%{opacity:1;transform:translateX(0) scale(1)}
 }
-@keyframes creditFlyRight{
-  0%{opacity:0;transform:translateX(calc(50vw + 180px)) scale(.94)}
+@keyframes creditFlyRight{0%{opacity:0;transform:translateX(calc(50vw + 180px))}100%{opacity:1;transform:translateX(0)}}
   68%{opacity:1;transform:translateX(-12px) scale(1.02)}
   100%{opacity:1;transform:translateX(0) scale(1)}
 }
@@ -430,8 +428,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.50</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.50</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.51</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.51</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -527,7 +525,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.45 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
-// v17.8.50 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
+// v17.8.51 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
@@ -576,7 +574,7 @@ const BUGS={
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
-// v17.8.50 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
+// v17.8.51 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
 // v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
 // v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
 // v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
@@ -622,7 +620,7 @@ function drawPlayableBug(ctx,id,size=28,glow=false){
  ctx.restore();
 }
 function paintHomeHero(){const c=$('homeBugHero');if(!c)return;const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}
-function paintEndingLadybugs(){const hero=$('creditsHeroBug'),wander=$('endingLadybug');if(hero){const q=hero.getContext('2d');q.clearRect(0,0,hero.width,hero.height);q.save();q.translate(hero.width/2,hero.height/2+1);drawPlayableBug(q,'ladybug',58,true);q.restore()}if(wander){const q=wander.getContext('2d');q.clearRect(0,0,wander.width,wander.height);q.save();q.translate(wander.width/2,wander.height/2);drawPlayableBug(q,'ladybug',34,false);q.restore()}}
+function paintEndingLadybugs(){const hero=$('creditsHeroBug'),wander=$('endingLadybug');if(hero){const q=hero.getContext('2d');q.clearRect(0,0,hero.width,hero.height);q.save();q.translate(hero.width/2,hero.height/2+1);drawPlayableBug(q,'ladybug',58,false);q.restore()}if(wander){const q=wander.getContext('2d');q.clearRect(0,0,wander.width,wander.height);q.save();q.translate(wander.width/2,wander.height/2);drawPlayableBug(q,'ladybug',34,false);q.restore()}}
 
 function makeBugPreview(id){
  const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
@@ -1426,9 +1424,9 @@ function playEndingCredits(preview=false){
  paintEndingLadybugs();const wander=$('endingLadybug');if(wander){wander.style.animation='none';void wander.offsetHeight;wander.style.animation='endBugWander 25s ease-in-out 4.5s 1 forwards'}
  end.classList.remove('creditsActive');void end.offsetHeight;end.classList.add('creditsActive');
  // Restart the CSS scroll every time, including the temporary preview button.
- roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 34s linear forwards';
+ roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 31s linear forwards';
  creditsMusicStart();
- endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},33000));
+ endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},31500));
  endingTimers.push(setTimeout(()=>{prompt.classList.add('show')},37500));
  endingTimers.push(setTimeout(returnHomeAfterEnding,42500));
 }
