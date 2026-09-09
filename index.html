@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.22: Green BUG Logo Word -->
+<!-- Big Bug v17.9.23: Green BUG Logo Word -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -460,39 +460,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift hidden" data-action="endless">ENDLESS MODE</button>
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
-  <div class="homeDevControls" aria-label="Temporary testing controls">
-    <div class="testJump"><select id="testWave" aria-label="Temporary wave and boss tester"></select><button class="btn dark small" data-action="testWave">TEST</button></div>
-    <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
-    <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
-  </div>
-  <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
-  <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.22</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.22</div>
-</section>
-
-<section id="bugs" class="screen hidden">
- <div class="panel"><h2><span class="bbIcon bbBugIcon" aria-hidden="true"></span> THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
-</section>
-
-<section id="base" class="screen hidden">
- <div class="panel"><h2><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> GARDEN MAGIC</h2><p class="muted">Teach the garden’s gifts a few new tricks.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
-</section>
-
-<section id="goldShop" class="screen hidden">
- <div class="panel">
-  <h2><span class="goldLeafIcon" aria-hidden="true"></span> GOLD LEAF SHOP</h2>
-  <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
-  <div class="goldPackGrid">
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>2</div><div class="bonus">STARTER PACK</div><button class="btn small" data-gold-pack="2">$0.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>7</div><div class="bonus">BETTER VALUE</div><button class="btn small" data-gold-pack="7">$2.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>13</div><div class="bonus">+30% VALUE</div><button class="btn small" data-gold-pack="13">$4.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>30</div><div class="bonus">+50% VALUE</div><button class="btn small" data-gold-pack="30">$9.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>70</div><div class="bonus">+75% VALUE</div><button class="btn small" data-gold-pack="70">$19.99</button></div>
-   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon"></span>200</div><div class="bonus">BEST VALUE • +100%</div><button class="btn small" data-gold-pack="200">$49.99</button></div>
-  </div>
   <p class="goldStoreNote">Gold Leaves are permanent and are never erased by Reset Progress. Real-money checkout will activate when the payment system is connected.</p>
-  <div class="goldDevTools" aria-label="Temporary Gold Leaf testing controls"><button class="btn small" data-action="tempAddGold">TEMP +10 GOLD</button><button class="btn small goldDevClear" data-action="tempClearGold">TEMP CLEAR GOLD</button></div>
   <button class="btn dark" data-action="home">BACK</button>
  </div>
 </section>
@@ -638,7 +606,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-const ENDLESS_TEST_ACCESS=true; // TEMP: set false before release; normal unlock still requires beating Story Mode.
+const ENDLESS_TEST_ACCESS=false; // Temporary access disabled; normal unlock requires beating Story Mode.
 function refreshEndlessHome(){const unlocked=save.mainGameBeaten||ENDLESS_TEST_ACCESS,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.toggle('hidden',!unlocked);b.textContent=save.mainGameBeaten?'ENDLESS MODE':'TEMP ENDLESS'}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
