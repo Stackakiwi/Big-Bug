@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.5: Endless Survival Pressure -->
+<!-- Big Bug v17.9.6: Endless Swarm Optimization -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -434,8 +434,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.5</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.5</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.6</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.6</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -530,6 +530,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+// v17.9.6 — Endless swarm optimization: enemy damage numbers disabled in Endless (player damage stays), Waves 1–3 greatly reduced, and from Wave 20 about 1 in 40 mosquitoes is a very-fast sprinter. Wave 4+ counts unchanged. Story Mode unchanged.
 // v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
 // v17.9.4 — Endless survival pass: no Leaf drops, stored Health Boost / 5× Attack / Repellent charges (max 3 each), and automatic move/attack-speed growth every 5 waves. Story Mode unchanged.
 // v17.9.2 — Endless refinement: lightweight mosquito spacing, 1.5× starting move/attack speed, louder mosquito buzz, and a basic Endless-only upgrade pool with a stored 5-second 3× Attack power. Story Mode unchanged.
@@ -847,7 +848,7 @@ function startEndless(){
  beginWave(1);last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 function endlessActiveCap(w){return Math.min(90,30+Math.floor(w*2.2))}
-function endlessWaveQuota(w){return Math.min(260,48+w*8)}
+function endlessWaveQuota(w){if(w===1)return 12;if(w===2)return 20;if(w===3)return 30;return Math.min(260,48+w*8)}
 
 function buildTestWaveSelector(){
  const sel=$('testWave');if(!sel)return;let html='';
@@ -1016,7 +1017,8 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7;sp=Math.min(250,116+ew*1.85);damage=3.8;evo=0}
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:boss?'entrance':'chase',cool:Math.random()*1.5+.8,stateT:boss?1.15:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo,
-          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05};
+          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025};
+ if(e.sprinter)e.speed*=1.8;
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
  if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
  game.enemies.push(e);
@@ -1034,7 +1036,7 @@ function damageEnemy(e,d,source='player'){
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
- if(save.settings.damageNumbers!==false&&countFxFlag('damageText',24)<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
+ if(game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',24)<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
  burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
