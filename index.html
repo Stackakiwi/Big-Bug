@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.42: Matching Attack Sword Icon -->
+<!-- Big Bug v17.8.43: Clear Attacks + Performance Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -387,8 +387,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.42</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.42</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.43</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.43</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -524,6 +524,7 @@ const BUGS={
 };
 
 
+// v17.8.43 — normal player attacks now use the same clear target-travel visual as Triple Shot; performance-only cleanup removes dead duplicate rendering and per-frame helper allocation.
 // v17.8.42 — Sharper Bite now uses the exact same hand-drawn sword artwork as the attack HUD.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
@@ -948,7 +949,7 @@ function shootAt(target){
    if(first){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(first,dd)}
    if(second){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd)}
    game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,ax:target.x,ay:target.y,bx:first?first.x:null,by:first?first.y:null,cx:second?second.x:null,cy:second?second.y:null});
- }else game.fx.push({x:p.x,y:p.y,vx:(target.x-p.x)*3.2,vy:(target.y-p.y)*3.2,life:.16,r:3.5,shot:true});
+ }else game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,playerShotFx:true,ax:target.x,ay:target.y});
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
  if(p.frost)target.slow=2;
@@ -1243,11 +1244,11 @@ function update(dt,now){
    if(h.leaving){h.x+=h.vx*dt;h.y+=h.vy*dt}
  }
  compactInPlace(p.helpers,h=>!h.leaving||h.x>-50&&h.x<W+50&&h.y>-60&&h.y<H+60);
- const activeHelpers=[];for(const h of p.helpers)if(!h.leaving)activeHelpers.push(h);
- p.clones=activeHelpers.length;
- if(activeHelpers.length&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,activeHelpers.length*.06)))){
-   p.helperShot=now;
-   activeHelpers.forEach((h,i)=>{let a=g.time*1.8+i*6.283/activeHelpers.length,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelpers.length*.04)),'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.16,r:2.4,shot:true,helper:true})}})
+ let activeHelperCount=0;for(const h of p.helpers)if(!h.leaving)activeHelperCount++;
+ p.clones=activeHelperCount;
+ if(activeHelperCount&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,activeHelperCount*.06)))){
+   p.helperShot=now;let activeHelperIndex=0;
+   for(const h of p.helpers)if(!h.leaving){let a=g.time*1.8+activeHelperIndex++*6.283/activeHelperCount,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelperCount*.04)),'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.16,r:2.4,shot:true,helper:true})}}
  }
  if(p.superBuddy&&g.wave===100&&now-(p.superBuddyShot||0)>Math.max(150,p.rate/1.5)){
    p.superBuddyShot=now;let a=g.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48,t=nearestEnemy(hx,hy);
@@ -1260,8 +1261,8 @@ function update(dt,now){
    enemyMove(e,dt);
    if(e.kind==='moleCricket'&&e.state==='burrowWait')continue;
    if(e.boss&&e.kind==='scarab'){e.knockX=0;e.knockY=0}else{e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=Math.pow(.05,dt);e.knockY*=Math.pow(.05,dt);}
-   let d=Math.hypot(p.x-e.x,p.y-e.y)||1;
-   if(d<e.r+p.r){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
+   const cdx=p.x-e.x,cdy=p.y-e.y,cr=e.r+p.r;
+   if(cdx*cdx+cdy*cdy<cr*cr){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
  }
  separateEnemies();
  for(const d of g.drops){
@@ -1273,77 +1274,31 @@ function update(dt,now){
    f.life-=dt;
    if(f.bossHazard){
       f.tick=(f.tick||0)-dt;
-      const hitR=f.style==='rootFinal'?f.r*.72:f.r;const inside=Math.hypot(p.x-f.x,p.y-f.y)<hitR+p.r*.35;
+      const hitR=f.style==='rootFinal'?f.r*.72:f.r,dx=p.x-f.x,dy=p.y-f.y,rr=hitR+p.r*.35;const inside=dx*dx+dy*dy<rr*rr;
       if(inside&&f.tick<=0){f.tick=f.style==='webline'?.35:.55;hurtPlayer(f.damage*(f.style==='dark'?.45:1));if(f.style==='webline'||f.style==='thorn')p.webSlow=.18}
       continue;
    }
    if(f.toxic){
-      f.tick-=dt;if(f.tick<=0){f.tick=.22;if(Math.hypot(p.x-f.x,p.y-f.y)<f.r+p.r){hurtPlayer(f.damage*.22)}}
+      f.tick-=dt;if(f.tick<=0){f.tick=.22;const dx=p.x-f.x,dy=p.y-f.y,rr=f.r+p.r;if(dx*dx+dy*dy<rr*rr){hurtPlayer(f.damage*.22)}}
       continue;
    }
    if(f.toxicScar){
-      f.tick-=dt;if(f.tick<=0){f.tick=.65;if(Math.hypot(p.x-f.x,p.y-f.y)<f.r+p.r*.45)hurtPlayer(f.damage*.18)}
+      f.tick-=dt;if(f.tick<=0){f.tick=.65;const dx=p.x-f.x,dy=p.y-f.y,rr=f.r+p.r*.45;if(dx*dx+dy*dy<rr*rr)hurtPlayer(f.damage*.18)}
       continue;
    }
-   if(f.earthCrack){
-     const max=f.maxLife||3.0,age=max-f.life,r=f.r||29,seed=f.seed||0,fade=f.life<.72?Math.max(0,f.life/.72):1,grow=Math.min(1,age/.22);
-     X.save();X.translate(f.x,f.y);X.globalAlpha=.34+.48*fade;X.strokeStyle='#493729';X.lineWidth=1.65;X.lineCap='round';X.lineJoin='round';
-     // Crack-only burrow tell: four short, uneven dirt fissures with small branches. No ring, glow, fill, or target circle.
-     for(let i=0;i<4;i++){
-       const a=seed+i*1.52+(i%2?.17:-.10),len=r*(.55+(i%3)*.14)*grow;
-       const k=i%2?1:-1;
-       const x1=Math.cos(a)*len*.28,y1=Math.sin(a)*len*.28;
-       const x2=x1+Math.cos(a+k*.20)*len*.31,y2=y1+Math.sin(a+k*.20)*len*.31;
-       const x3=x2+Math.cos(a-k*.14)*len*.41,y3=y2+Math.sin(a-k*.14)*len*.41;
-       X.beginPath();X.moveTo(0,0);X.lineTo(x1,y1);X.lineTo(x2,y2);X.lineTo(x3,y3);X.stroke();
-       if(grow>.5&&i<3){const ba=a+k*.62,bl=len*.22;X.globalAlpha=(.22+.34*fade);X.beginPath();X.moveTo(x2,y2);X.lineTo(x2+Math.cos(ba)*bl,y2+Math.sin(ba)*bl);X.stroke();X.globalAlpha=.34+.48*fade}
-     }
-     X.restore();X.globalAlpha=1;continue
-   }
-   if(f.bossHazard){
-     const q=Math.max(0,f.life/(f.maxLife||1)),pulse=.85+.15*Math.sin(game.time*9);X.save();X.translate(f.x,f.y);X.globalAlpha=.28+.42*q;
-     const cols={acid:'#e58b3b',dark:'#7d5a91',ripple:'#a8e7df',thorn:'#b8d05b',webline:'#e8d9f4',root:'#9a6a42',rootFinal:'#b77a4d',spore:'#c879d1',clamp:'#d86b45'};X.strokeStyle=cols[f.style]||'#f0d16a';X.fillStyle=cols[f.style]||'#f0d16a';X.lineWidth=f.style==='webline'?3:2.5;
-     if(f.style==='acid'){
-       const ang=f.sprayAngle||0,seed=f.spraySeed||0;
-       X.rotate(ang);
-       // Tapered hot chemical jet.
-       X.globalAlpha=.18+.28*q;X.fillStyle='#e58b3b';X.beginPath();
-       X.moveTo(-f.r*.95,-f.r*.18);X.quadraticCurveTo(0,-f.r*.62,f.r*.92,0);X.quadraticCurveTo(0,f.r*.62,-f.r*.95,f.r*.18);X.closePath();X.fill();
-       // Uneven gas/flame puffs make the hazard read as a spray instead of a target circle.
-       for(let i=0;i<5;i++){
-         const px=-f.r*.55+i*f.r*.30+Math.sin(seed+i*1.7+game.time*3)*3;
-         const py=Math.sin(seed+i*2.2)*f.r*.25;
-         const pr=f.r*(.18+(i%3)*.055)*pulse;
-         X.globalAlpha=.18+.30*q;X.beginPath();X.arc(px,py,pr,0,6.28);X.fill();
-       }
-       X.globalAlpha=.35+.38*q;X.strokeStyle='#f3b35d';X.lineWidth=2.2;X.beginPath();
-       X.moveTo(-f.r*.8,0);X.quadraticCurveTo(-f.r*.1,Math.sin(game.time*7+seed)*7,f.r*.75,0);X.stroke();
-     }
-     else if(f.style==='thorn'){for(let i=0;i<7;i++){let a=i*6.283/7;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r*pulse,Math.sin(a)*f.r*pulse);X.stroke()}}
-     else if(f.style==='rootFinal'){
-       X.lineWidth=3.2;X.globalAlpha=.38+.46*q;
-       for(let i=0;i<4;i++){
-         let a=i*1.5708+.38;
-         X.beginPath();X.moveTo(Math.cos(a+.78)*f.r*.20,Math.sin(a+.78)*f.r*.20);
-         X.quadraticCurveTo(Math.cos(a+.58)*f.r*.64,Math.sin(a+.58)*f.r*.64,Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke();
-       }
-     }
-     else if(f.style==='root'){for(let i=0;i<5;i++){let a=i*1.25+.4;X.beginPath();X.moveTo(0,0);X.quadraticCurveTo(Math.cos(a+.5)*f.r*.55,Math.sin(a+.5)*f.r*.55,Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}}
-     else if(f.style==='webline'){for(let i=-2;i<=2;i++){X.beginPath();X.moveTo(-f.r,i*6);X.lineTo(f.r,-i*6);X.stroke()}}
-     else{X.beginPath();X.arc(0,0,f.r*pulse,0,6.28);X.stroke();if(f.style==='dark'){X.globalAlpha=.09+.13*q;X.fill()}if(f.style==='spore')for(let i=0;i<6;i++){let a=i*1.047+game.time;X.beginPath();X.arc(Math.cos(a)*f.r*.55,Math.sin(a)*f.r*.55,5,0,6.28);X.fill()}}
-     X.restore();X.globalAlpha=1;continue
-   }
+   // Visual-only crack/hazard rendering belongs in draw(); skip it here to avoid duplicate canvas work.
+   if(f.earthCrack)continue;
    if(f.web){
-      if(Math.hypot(p.x-f.x,p.y-f.y)<f.r+p.r){p.webSlow=.12}
+      {const dx=p.x-f.x,dy=p.y-f.y,rr=f.r+p.r;if(dx*dx+dy*dy<rr*rr)p.webSlow=.12}
       continue;
    }
    if(f.mothGust){
      f.x+=f.vx*dt;f.y+=f.vy*dt;
      continue;
    }
-   if(f.tripleShotFx)continue;
+   if(f.tripleShotFx||f.playerShotFx)continue;
    f.x+=f.vx*dt;f.y+=f.vy*dt;
-   if(f.sting&&Math.hypot(p.x-f.x,p.y-f.y)<p.r+f.r){hurtPlayer(f.damage);f.life=0;burst(f.x,f.y,3,.2,f.venom?'#b56cff':'#ff665b')}
+   if(f.sting){const dx=p.x-f.x,dy=p.y-f.y,rr=p.r+f.r;if(dx*dx+dy*dy<rr*rr){hurtPlayer(f.damage);f.life=0;burst(f.x,f.y,3,.2,f.venom?'#b56cff':'#ff665b')}}
    if(f.orb){for(const e of g.enemies)if(!e.dead){const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){damageEnemy(e,f.damage);f.life=0;break}}}
    f.vx*=.985;f.vy*=.985;
  }
@@ -2035,6 +1990,7 @@ function draw(){
    if(f.killPop){let q=Math.max(0,f.life/(f.maxLife||.28));X.globalAlpha=.55*q;X.strokeStyle='#ffe49a';X.lineWidth=3;X.beginPath();X.arc(f.x,f.y,f.r*(1-q*.55),0,6.28);X.stroke();X.globalAlpha=1;continue}
    if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/.42)),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease;X.globalAlpha=1-q*.35;X.fillStyle='#b9f04d';X.beginPath();X.ellipse(xx,yy,Math.max(2,f.r*(1-q*.55)),Math.max(1.5,f.r*.55*(1-q*.45)),-.5,0,6.28);X.fill();X.strokeStyle='#f5ffd0';X.lineWidth=1;X.stroke();X.globalAlpha=1;continue}
    if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0;i<5;i++){let a=i*1.25+performance.now()/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
+   if(f.playerShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
    if(f.tripleShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16)),dot=(tx,ty)=>{if(tx==null)return;X.beginPath();X.arc(f.x+(tx-f.x)*q,f.y+(ty-f.y)*q,f.r,0,6.28);X.fill()};X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';dot(f.ax,f.ay);dot(f.bx,f.by);dot(f.cx,f.cy);X.globalAlpha=1;continue}
    X.globalAlpha=Math.max(0,Math.min(1,f.life));
    if(f.sting){X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30');X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent'}
