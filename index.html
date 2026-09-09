@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.28: Endless unlock at Wave 20 clear + home dev controls removed -->
+<!-- Big Bug v17.9.29: Endless unlock at Wave 20 clear + home dev controls removed -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -28,6 +28,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .btn.red{background:#d84d48;color:white;box-shadow:inset 0 -4px #8f2926,0 5px 0 #1f3b20}
 .btn.dark{background:#223827;color:white;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
 .btn.small{min-width:0;font-size:14px;padding:10px 14px}
+#endlessBtn:disabled{opacity:.62;filter:saturate(.55);cursor:default;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
 .tag{margin:10px 0 18px;font-weight:850;opacity:.8}
 .panel{width:min(720px,100%);max-height:92vh;overflow:auto;background:#15271aee;border:2px solid #d9efbf33;border-radius:24px;padding:20px;box-shadow:0 25px 80px #0008}
 .panel h2{margin:0 0 6px;font-size:28px}.panel p{opacity:.72}
@@ -456,12 +457,12 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
-  <button id="endlessBtn" class="btn dark homeLowerLift hidden" data-action="endless">ENDLESS MODE</button>
+  <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled>🔒 ENDLESS MODE</button>
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.28</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.28</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.29</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.29</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -631,10 +632,10 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.28 — Endless Mode permanently unlocks after clearing Wave 20.
+// v17.9.29 — Endless Mode permanently unlocks after clearing Wave 20.
 // A best wave above 20 proves Wave 20 was cleared in older saves, so migrate those automatically.
 save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=21;
-function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.toggle('hidden',!unlocked);b.textContent='ENDLESS MODE'}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
+function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;b.textContent=unlocked?'ENDLESS MODE':'🔒 ENDLESS MODE'}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
