@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.30: Endless unlock at Wave 20 clear + home dev controls removed -->
+<!-- Big Bug v17.9.31: Regular spider face/fangs corrected to point forward -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -461,8 +461,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.30</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.30</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.31</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.31</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -632,6 +632,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
+// v17.9.31 — Regular spider face/fangs now project forward from the head.
 // v17.9.30 — Endless button now explains the Wave 20 unlock requirement.
 // v17.9.30 performance-only pass: preserve gameplay, timings, audio, and graphics while reducing repeated late-wave work.
 // v17.9.30 — Endless Mode permanently unlocks after clearing Wave 20.
@@ -1859,7 +1860,7 @@ function drawEnemy(e){
   X.fillStyle='#2a0c09';X.beginPath();X.moveTo(-3,-r*1.18);X.lineTo(0,-r*1.5);X.lineTo(3,-r*1.18);X.fill();
  }else if(e.kind==='spider'||e.kind==='queenSpider'){
   for(let side of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);line(side*5,yy,side*(r+8),yy+(i-1.5)*4+w,2.5,'#241c2c');line(side*(r+8),yy+(i-1.5)*4+w,side*(r+13),yy+(i-1.5)*8-w*.5,2,'#241c2c')}
-  X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();X.fillStyle='#d9d0c2';X.beginPath();X.moveTo(-4,-3);X.lineTo(-1,2);X.lineTo(0,-4);X.moveTo(4,-3);X.lineTo(1,2);X.lineTo(0,-4);X.fill();
+  X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);X.strokeStyle='#70506f';X.lineWidth=2;X.beginPath();X.moveTo(-r*.45,5);X.quadraticCurveTo(0,0,r*.45,5);X.stroke();X.fillStyle='#d9d0c2';X.beginPath();if(e.kind==='spider'){X.moveTo(-4,-9);X.lineTo(-1,-15);X.lineTo(0,-8);X.moveTo(4,-9);X.lineTo(1,-15);X.lineTo(0,-8)}else{X.moveTo(-4,-3);X.lineTo(-1,2);X.lineTo(0,-4);X.moveTo(4,-3);X.lineTo(1,2);X.lineTo(0,-4)}X.fill();
  }else if(e.kind==='gardenHeart'){
   // THE SPORE BEHEMOTH: a living fungal mass, no flower or plant anatomy.
   const rr=r*1.18,pulse=1+Math.sin(t*3.2)*.025;
