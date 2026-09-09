@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.18: Gold Leaf Revive Button -->
+<!-- Big Bug v17.9.19: Quit Run Confirmation -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -466,8 +466,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.18</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.18</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.19</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.19</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -550,7 +550,10 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <section id="pause" class="screen hidden">
- <div class="panel" style="text-align:center"><h2>PAUSED</h2><p>Take a breather little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="quit">QUIT RUN</button></div>
+ <div class="panel" style="text-align:center">
+  <div id="pauseMain"><h2>PAUSED</h2><p>Take a breather little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="showQuitConfirm">QUIT RUN</button></div>
+  <div id="quitConfirm" class="hidden"><h2>QUIT THIS RUN?</h2><p>Your current run will end.</p><button class="btn red" data-action="confirmQuit">QUIT RUN</button><button class="btn green" data-action="cancelQuit">NO</button></div>
+ </div>
 </section>
 
 <section id="gameover" class="screen hidden">
@@ -2385,11 +2388,13 @@ document.addEventListener('click',e=>{
  if(a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+10;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +10 GOLD LEAVES',.9)}
  if(a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
  if(a==='resume'){startOrResume()}
- if(a==='quit'){quitRun()}
+ if(a==='showQuitConfirm'){$('pauseMain').classList.add('hidden');$('quitConfirm').classList.remove('hidden')}
+ if(a==='cancelQuit'){$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden')}
+ if(a==='confirmQuit'){quitRun()}
 });
 document.addEventListener('pointerdown',()=>{if(!$('home').classList.contains('hidden')){initAudio();if(!titleMusicTimer)titleMusicStart()}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
-$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;saveRunRecovery('pause');showGameUI(false);screen('pause')};
+$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
 function pointerPos(e){return e.touches?e.touches[0]:e}
 function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
