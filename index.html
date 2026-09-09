@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.42: Help screen BIG BUG art/layout polish and simpler descriptions -->
+<!-- Big Bug v17.9.43: Help screen BIG BUG art/layout polish and simpler descriptions -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -435,7 +435,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
-/* v17.9.42 — restored quick Help guide; informational UI only. */
+/* v17.9.43 — restored quick Help guide; informational UI only. */
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #help h2{text-align:center;margin:0 0 4px;font:700 30px "Marker Felt","Chalkboard SE","Noteworthy",cursive;color:#f8f3df}
@@ -444,14 +444,14 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #help .helpCard b .bbIcon{font-size:18px}
 #help .helpLeafIcon{width:20px;height:20px;display:inline-block;vertical-align:middle;margin:0;flex:0 0 20px}
 #help .helpMosquitoIcon{display:inline-block;width:22px;height:18px;position:relative;vertical-align:middle;flex:0 0 22px;transform:scale(.8);transform-origin:center}
-#help .helpHornetSvg{width:26px;height:26px;display:block;flex:0 0 auto;overflow:visible}
+#help .helpGameBugIcon{width:28px;height:28px;display:block;flex:0 0 28px}#help .helpMosquitoIcon{width:28px;height:28px;transform:none}
 #help .sensePic .bbBugIcon{transform:translateY(4px)}
 #help h2 .bbBugIcon{font-size:25px;margin-right:7px;vertical-align:-.12em}
 .settingsHelpBtn .bbBugIcon{font-size:16px;margin-right:5px}
 
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
 @media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}.sensePic{flex-basis:68px}.sensePic .senseRing{width:61px;height:61px}}
-/* v17.9.42 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
+/* v17.9.43 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
 #help .panel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 12% 8%,#21472b55 0 14%,transparent 15%),radial-gradient(ellipse at 92% 20%,#173e2655 0 12%,transparent 13%),linear-gradient(165deg,#102f1d,#071b10 72%,#04130b)}
 #help .panel:before,#help .panel:after{content:"";position:absolute;width:90px;height:34px;border-radius:70% 30% 70% 30%;background:#315c3570;pointer-events:none;z-index:0}
 #help .panel:before{left:-35px;top:105px;transform:rotate(-28deg)}#help .panel:after{right:-38px;bottom:100px;transform:rotate(32deg)}
@@ -498,8 +498,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.42</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.42</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.43</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.43</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -547,15 +547,15 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 <section id="help" class="screen hidden">
  <div class="panel">
-  <h2><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> HOW TO PLAY</h2>
+  <h2>HOW TO PLAY</h2>
   <div class="helpGrid">
    <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Tap or drag to move. Attacks are automatic.</div></div>
    <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves. Choose upgrades between waves.</div></div>
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
-   <div class="helpCard"><b><svg class="helpHornetSvg" viewBox="0 0 64 64" aria-hidden="true"><g stroke="#30251b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><g fill="#e8f2e9" fill-opacity=".58" stroke="#8da69a" stroke-width="1.5"><ellipse cx="18" cy="27" rx="14" ry="6" transform="rotate(-25 18 27)"/><ellipse cx="46" cy="27" rx="14" ry="6" transform="rotate(25 46 27)"/></g><g fill="none"><path d="M25 36 10 46M25 42 12 55M39 36 54 46M39 42 52 55"/></g><ellipse cx="32" cy="38" rx="12" ry="17" fill="#e0a622"/><path d="M21 31h22M20 39h24M22 47h20"/><circle cx="32" cy="20" r="10" fill="#5b371d"/><circle cx="28" cy="18" r="2.5" fill="#f8f3df" stroke="none"/><circle cx="36" cy="18" r="2.5" fill="#f8f3df" stroke="none"/><path d="M28 12 21 5M36 12 43 5" fill="none"/><path d="M28 13 32 7 36 13" fill="#24130d"/><path d="M28 54 32 63 36 54" fill="#24130d"/></g></svg> Bosses</b><div class="muted">A boss appears every 5 waves. Watch for attacks!</div></div>
+   <div class="helpCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Watch for attacks!</div></div>
    <div class="helpCard bugSenseCard"><div class="sensePic" aria-hidden="true"><span class="senseRing"></span><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg></div><div><b>BUG SENSE</b><div class="muted">A red circle means an attack is coming.</div></div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Permanent upgrades make your runs a little smoother.</div></div>
-   <div class="helpCard"><b><span class="mosquitoCounterIcon helpMosquitoIcon" aria-hidden="true"></span> Endless</b><div class="muted">Beat Wave 20 to unlock Endless Mode.</div></div>
+   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Endless</b><div class="muted">Beat Wave 20 to unlock Endless Mode.</div></div>
   </div>
   <button class="btn dark helpBack" data-action="settings">BACK TO SETTINGS</button>
  </div>
@@ -686,7 +686,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.42 — Shifted the regular spider's flipped original head slightly farther forward.
+// v17.9.43 — Shifted the regular spider's flipped original head slightly farther forward.
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
 // v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
 // v17.9.31 — Regular spider face/fangs now project forward from the head.
@@ -2654,7 +2654,22 @@ function tryStartTitleMusic(){
 addEventListener('pageshow',tryStartTitleMusic,{once:true});
 ['pointerdown','touchstart','click'].forEach(ev=>document.addEventListener(ev,tryStartTitleMusic,{passive:true,once:true}));
 
-paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
+function paintHelpGameIcons(){
+ document.querySelectorAll('canvas[data-help-bug]').forEach(c=>{const q=c.getContext('2d'),k=c.dataset.helpBug;q.clearRect(0,0,64,64);q.save();q.translate(32,32);q.lineCap='round';q.lineJoin='round';
+ const ln=(x1,y1,x2,y2,w=3,col='#30251b')=>{q.strokeStyle=col;q.lineWidth=w;q.beginPath();q.moveTo(x1,y1);q.lineTo(x2,y2);q.stroke()};
+ const eye=(x,y,r=3)=>{q.fillStyle='#f8f3df';q.beginPath();q.arc(x,y,r,0,Math.PI*2);q.fill();q.fillStyle='#191713';q.beginPath();q.arc(x+.6,y+.4,r*.42,0,Math.PI*2);q.fill()};
+ if(k==='hornet'){
+  q.globalAlpha=.45;q.fillStyle='#e8f2e9';q.beginPath();q.ellipse(-15,-3,14,6,-.6,0,Math.PI*2);q.ellipse(15,-3,14,6,.6,0,Math.PI*2);q.fill();q.globalAlpha=1;
+  for(const z of [-1,1]){ln(z*5,1,z*25,10,3);ln(z*4,10,z*23,22,3)}
+  q.fillStyle='#e0a622';q.beginPath();q.ellipse(0,9,15,21,0,0,Math.PI*2);q.fill();q.fillStyle='#30251b';for(let y=-1;y<19;y+=8)q.fillRect(-13,y,26,4);
+  q.fillStyle='#5b371d';q.beginPath();q.arc(0,-16,12,0,Math.PI*2);q.fill();eye(-4,-18,3.2);eye(4,-18,3.2);ln(-4,-25,-11,-31,2);ln(4,-25,11,-31,2);q.fillStyle='#24130d';q.beginPath();q.moveTo(-4,-23);q.lineTo(0,-30);q.lineTo(4,-23);q.fill();q.beginPath();q.moveTo(-4,28);q.lineTo(0,35);q.lineTo(4,28);q.fill();
+ }else{
+  q.strokeStyle='#29231d';q.lineWidth=2.5;for(const z of [-1,1]){ln(z*3,-1,z*17,-9,2.3);ln(z*3,5,z*18,10,2.3);ln(z*2,11,z*14,21,2.1)}
+  q.globalAlpha=.42;q.fillStyle='#dbe8df';q.beginPath();q.ellipse(-10,-4,11,5,-.55,0,Math.PI*2);q.ellipse(10,-4,11,5,.55,0,Math.PI*2);q.fill();q.globalAlpha=1;
+  q.fillStyle='#6c5d4d';q.beginPath();q.ellipse(0,8,7,15,0,0,Math.PI*2);q.fill();q.fillStyle='#3b3028';q.beginPath();q.arc(0,-8,7,0,Math.PI*2);q.fill();eye(-2.5,-9,1.7);eye(2.5,-9,1.7);ln(-2,-14,-7,-21,1.5);ln(2,-14,7,-21,1.5);ln(0,-15,0,-28,2,'#30251b');
+ }
+ q.restore()})}
+paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
