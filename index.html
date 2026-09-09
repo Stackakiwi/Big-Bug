@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.34: Regular spider head shifted slightly forward -->
+<!-- Big Bug v17.9.35: Regular spider head shifted slightly forward -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -461,8 +461,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.34</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.34</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.35</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.35</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -547,7 +547,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 <section id="pause" class="screen hidden">
  <div class="panel" style="text-align:center">
   <div id="pauseMain"><h2>PAUSED</h2><p>Take a breather little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="showQuitConfirm">QUIT RUN</button></div>
-  <div id="quitConfirm" class="hidden"><h2>QUIT THIS RUN?</h2><p>Your current run will end.</p><button class="btn red" data-action="confirmQuit">QUIT RUN</button><button class="btn green" data-action="cancelQuit">NO</button></div>
+  <div id="quitConfirm" class="hidden"><h2>QUIT THIS RUN?</h2><p>Your current run will end.</p><button class="btn red" data-action="confirmQuit">QUIT RUN</button><button class="btn green" data-action="cancelQuit">KEEP GOING</button></div>
  </div>
 </section>
 
@@ -632,7 +632,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.34 — Shifted the regular spider's flipped original head slightly farther forward.
+// v17.9.35 — Shifted the regular spider's flipped original head slightly farther forward.
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
 // v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
 // v17.9.31 — Regular spider face/fangs now project forward from the head.
