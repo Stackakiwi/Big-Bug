@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.48: Livelier Handcrafted Credits -->
+<!-- Big Bug v17.8.49: Livelier Handcrafted Credits -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -298,11 +298,29 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #endingBackdrop:after{background:#8aa653;right:-70px;bottom:12%}
 .endingVignette{position:absolute;inset:0;box-shadow:inset 0 0 120px #000,inset 0 0 40px #000;pointer-events:none}
 #creditsRoll{position:absolute;left:0;right:0;top:100vh;text-align:center;will-change:transform;animation:creditsRise 34s linear forwards}
-#creditsRoll .endBug{width:76px;height:76px;display:block;margin:0 auto 14px;filter:none!important;}
+#creditsRoll .endBug{width:76px;height:76px;display:block;margin:0 auto 14px;filter:none!important}
 #creditsRoll h1{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:44px;letter-spacing:2px;margin:0 0 8px;text-shadow:0 4px 0 #000,0 0 22px #7c4778}
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
+#ending.creditsActive #creditsRoll .creditName{animation-duration:.85s;animation-timing-function:cubic-bezier(.16,.82,.22,1);animation-fill-mode:both}
+#ending.creditsActive #creditsRoll .creditName:nth-of-type(1){animation-name:creditFlyLeft;animation-delay:11.8s}
+#ending.creditsActive #creditsRoll .creditName:nth-of-type(2){animation-name:creditFlyRight;animation-delay:12.8s}
+#ending.creditsActive #creditsRoll .creditName:nth-of-type(3){animation-name:creditFlyLeft;animation-delay:13.8s}
+#ending.creditsActive #creditsRoll .creditName:nth-of-type(4){animation-name:creditFlyRight;animation-delay:14.8s}
+#ending.creditsActive #creditsRoll .creditName:nth-of-type(5){animation-name:creditFlyLeft;animation-delay:15.8s}
+#ending.creditsActive #creditsRoll .creditName:nth-of-type(6){animation-name:creditFlyRight;animation-delay:16.8s}
+#ending.creditsActive #creditsRoll .creditName:nth-of-type(7){animation-name:creditFlyLeft;animation-delay:17.8s}
+@keyframes creditFlyLeft{
+  0%{opacity:0;transform:translateX(calc(-50vw - 180px)) scale(.94)}
+  68%{opacity:1;transform:translateX(12px) scale(1.02)}
+  100%{opacity:1;transform:translateX(0) scale(1)}
+}
+@keyframes creditFlyRight{
+  0%{opacity:0;transform:translateX(calc(50vw + 180px)) scale(.94)}
+  68%{opacity:1;transform:translateX(-12px) scale(1.02)}
+  100%{opacity:1;transform:translateX(0) scale(1)}
+}
 #creditsRoll .endThanks{margin-top:80px;font-size:16px;color:#96ad83;letter-spacing:3px}
 @keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 860px))}}
 #continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
@@ -337,18 +355,9 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endFlourish:before,#creditsRoll .endFlourish:after{content:"";position:absolute;top:8px;width:48px;height:1px;background:linear-gradient(90deg,transparent,#88a16b)}
 #creditsRoll .endFlourish:before{left:0}.endFlourish:after{right:0;transform:scaleX(-1)}
 #creditsRoll .endFlourish i{position:absolute;left:54px;top:2px;width:10px;height:10px;border:1px solid #8da66d;border-radius:70% 0 70% 0;transform:rotate(45deg)}
-#creditsRoll .creditName{opacity:0;will-change:transform,opacity;animation-duration:.9s;animation-timing-function:cubic-bezier(.16,.82,.22,1);animation-fill-mode:forwards}
-#creditsRoll .creditName.creditFromLeft{animation-name:creditFlyLeft}
-#creditsRoll .creditName.creditFromRight{animation-name:creditFlyRight}
-#creditsRoll .creditName:nth-of-type(1){animation-delay:13.25s}
-#creditsRoll .creditName:nth-of-type(2){animation-delay:14.35s}
-#creditsRoll .creditName:nth-of-type(3){animation-delay:15.45s}
-#creditsRoll .creditName:nth-of-type(4){animation-delay:16.55s}
-#creditsRoll .creditName:nth-of-type(5){animation-delay:17.65s}
-#creditsRoll .creditName:nth-of-type(6){animation-delay:18.75s}
-#creditsRoll .creditName:nth-of-type(7){animation-delay:19.85s}
-@keyframes creditFlyLeft{0%{opacity:0;transform:translateX(calc(-50vw - 180px)) scale(.92)}68%{opacity:1;transform:translateX(14px) scale(1.025)}100%{opacity:1;transform:translateX(0) scale(1)}}
-@keyframes creditFlyRight{0%{opacity:0;transform:translateX(calc(50vw + 180px)) scale(.92)}68%{opacity:1;transform:translateX(-14px) scale(1.025)}100%{opacity:1;transform:translateX(0) scale(1)}}
+#creditsRoll .creditName{animation:creditGlow 3.6s ease-in-out infinite}
+#creditsRoll .creditName:nth-of-type(2n){animation-delay:-1.8s}
+@keyframes creditGlow{0%,100%{text-shadow:0 3px 0 #000,0 0 0 transparent}50%{text-shadow:0 3px 0 #000,0 0 12px rgba(148,102,151,.24)}}
 #creditsRoll .creditName:after{content:"";display:block;width:34px;height:1px;margin:11px auto 0;background:linear-gradient(90deg,transparent,#8c6e8e,transparent);opacity:.65}
 #creditsRoll h2{text-shadow:0 0 18px #8d568e88}
 
@@ -391,9 +400,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #hud .pill:nth-child(2).waveTriple .waveProg{font-size:7.5px;margin-left:1px}
 #hud .pill:nth-child(4) .bbSwordSvg{width:1.62em;height:1.62em;margin:-.18em -.02em}
 
-
-/* v17.8.48 credits fixes */
-#creditsRoll .endBug,#creditsRoll .endBug canvas,#creditsRoll .endBug img{filter:none!important;text-shadow:none!important;box-shadow:none!important}
 </style>
 </head>
 <body>
@@ -426,8 +432,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.48</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.48</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.49</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.49</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -523,6 +529,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.45 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
+// v17.8.49 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
@@ -571,7 +578,7 @@ const BUGS={
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
-// v17.8.48 — Special Thanks names now alternate quick off-screen left/right entrances into center; removed the glow from the top credits ladybug.
+// v17.8.49 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
 // v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
 // v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
 // v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
@@ -581,7 +588,8 @@ function drawPlayableBug(ctx,id,size=28,glow=false){
  const s=size/28;
  ctx.scale(s,s);
  ctx.lineCap='round';ctx.lineJoin='round';
- if(glow){ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()};
+ if(glow){ctx.shadowColor='#e9b7ff';ctx.shadowBlur=14/s}
+ const leg=(x1,y1,x2,y2)=>{ctx.strokeStyle='#171714';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()};
  if(id==='beetle'){
    // Sturdy rounded beetle with clear horn/mandibles and hard shell.
    for(const sy of [-8,0,8]){leg(-8,sy,-15,sy+(sy===0?0:(sy<0?-4:4)));leg(8,sy,15,sy+(sy===0?0:(sy<0?-4:4)))}
@@ -1409,7 +1417,7 @@ function updateHud(){
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
- clearEndingTimers();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
+ clearEndingTimers();creditsMusicStop();$('ending').classList.remove('creditsActive');$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
  showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart();
 }
 function playEndingCredits(preview=false){
@@ -1418,7 +1426,7 @@ function playEndingCredits(preview=false){
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
  screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');
  paintEndingLadybugs();const wander=$('endingLadybug');if(wander){wander.style.animation='none';void wander.offsetHeight;wander.style.animation='endBugWander 25s ease-in-out 4.5s 1 forwards'}
- const creditNames=roll.querySelectorAll('.creditName');creditNames.forEach((n,i)=>{n.style.animation='none';n.classList.remove('creditFromLeft','creditFromRight');n.classList.add(i%2===0?'creditFromLeft':'creditFromRight');n.style.animationDelay=(13.25+i*1.10)+'s'});void roll.offsetHeight;creditNames.forEach(n=>n.style.animationName='');
+ end.classList.remove('creditsActive');void end.offsetHeight;end.classList.add('creditsActive');
  // Restart the CSS scroll every time, including the temporary preview button.
  roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 34s linear forwards';
  creditsMusicStart();
