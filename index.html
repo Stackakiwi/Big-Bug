@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.16: Major Performance Pass -->
+<!-- Big Bug v17.9.17: Gold Leaf Revive Button -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -360,6 +360,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .homeGoldBalance{position:absolute!important;left:50%!important;top:max(10px,env(safe-area-inset-top))!important;transform:translateX(-50%)!important;z-index:45!important;background:#17301edd;border:1px solid #ffe47a88;border-radius:999px;padding:7px 12px;color:#fff4bd;font-weight:1000;box-shadow:0 3px 10px #0005;pointer-events:auto;cursor:pointer;font-family:inherit}.homeGoldBalance small{font-size:9px;letter-spacing:.7px;color:#ffe98b;margin-left:4px}
 .goldCurrency{border-color:#a77c24!important;background:linear-gradient(145deg,#3a3218,#27240f)!important;color:#fff2b0}.goldCount{font-size:25px;color:#ffd94d;font-weight:1000}
 .goldUnlockBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #1f3b20!important}.continueGold{background:#e7b72e!important;box-shadow:inset 0 -4px #9b6c13,0 5px 0 #1f3b20!important}
+#gameover #goldContinueBtn{width:min(88%,410px);min-width:0;padding:12px 18px;font-size:17px;margin:10px auto 12px}.continueGold:disabled{opacity:.48;filter:saturate(.55);cursor:default}
 
 .shopDrawn{font-size:34px;margin:0 7px}.shopIcon{display:flex;align-items:center;justify-content:center}
 #bugs .panel,#base .panel{background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border-color:#557354}
@@ -465,8 +466,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.16</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.16</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.17</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.17</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1689,6 +1690,7 @@ function finish(won){
  $('overTitle').textContent=game.mode==='endless'?'ENDLESS RUN OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!');
  $('overSub').textContent=game.mode==='endless'?'The mosquito swarm finally got you.':(won?'You pushed deep into the garden.':'');
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;
+ const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<1;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1';reviveBtn.title=reviveBtn.disabled?'You need 1 Gold Leaf to revive':'';}
  screen('gameover');
 }
 function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<1)return;save.goldLeaves--;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
@@ -2545,6 +2547,7 @@ addEventListener('pageshow',tryStartTitleMusic,{once:true});
 paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+// v17.9.17 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
 </body>
 </html>
