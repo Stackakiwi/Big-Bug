@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.52: Livelier Handcrafted Credits -->
+<!-- Big Bug v17.8.53: Logo-Anchored Title Hide + Isolated Test Controls -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -255,7 +255,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
-/* v17.8.45 — temporary Home test controls live in one isolated overlay and cannot affect title layout. */
+/* v17.8.53 — temporary Home test controls live in one isolated overlay and cannot affect title layout. */
 #home .homeDevControls{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:0!important;z-index:50!important;pointer-events:none!important;margin:0!important;padding:0!important;contain:layout style!important}
 #home .homeDevControls .testJump,#home .homeDevControls .creditsTestBtn{pointer-events:auto!important}
 #home .logoMain{display:block}
@@ -298,38 +298,27 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #endingBackdrop:after{background:#8aa653;right:-70px;bottom:12%}
 .endingVignette{position:absolute;inset:0;box-shadow:inset 0 0 120px #000,inset 0 0 40px #000;pointer-events:none}
 #creditsRoll{position:absolute;left:0;right:0;top:100vh;text-align:center;will-change:transform;animation:creditsRise 34s linear forwards}
-#creditsRoll .endBug{width:76px;height:76px;display:block;margin:0 auto 14px;filter:none!important}
+#creditsRoll .endBug{font-size:44px;filter:drop-shadow(0 0 12px #9f6aa8aa);margin-bottom:18px}
 #creditsRoll h1{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:44px;letter-spacing:2px;margin:0 0 8px;text-shadow:0 4px 0 #000,0 0 22px #7c4778}
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-#ending.creditsActive #creditsRoll .creditName{
-  opacity:0;
-  transform:translateX(0);
-  animation-name:creditNameSlide;
-  animation-duration:.72s;
-  animation-timing-function:cubic-bezier(.18,.86,.24,1);
-  animation-fill-mode:forwards;
-  animation-iteration-count:1;
-}
-#ending.creditsActive #creditsRoll .creditName.c1{--creditFrom:-110vw;animation-delay:8.80s}
-#ending.creditsActive #creditsRoll .creditName.c2{--creditFrom:110vw;animation-delay:9.65s}
-#ending.creditsActive #creditsRoll .creditName.c3{--creditFrom:-110vw;animation-delay:10.50s}
-#ending.creditsActive #creditsRoll .creditName.c4{--creditFrom:110vw;animation-delay:11.35s}
-#ending.creditsActive #creditsRoll .creditName.c5{--creditFrom:-110vw;animation-delay:12.20s}
-#ending.creditsActive #creditsRoll .creditName.c6{--creditFrom:110vw;animation-delay:13.05s}
-#ending.creditsActive #creditsRoll .creditName.c7{--creditFrom:-110vw;animation-delay:13.90s}
-@keyframes creditNameSlide{
-  0%{opacity:0;transform:translateX(var(--creditFrom))}
-  8%{opacity:1}
-  100%{opacity:1;transform:translateX(0)}
-}
-#endingGarden:after{content:"";position:absolute;left:7%;right:7%;bottom:18px;height:1px;background:linear-gradient(90deg,transparent,rgba(135,163,94,.15),rgba(135,163,94,.05),transparent)}
-#creditsRoll .endFlourish{width:118px;height:18px;margin:22px auto 58px;opacity:.48;position:relative}
-#creditsRoll .endFlourish:before,#creditsRoll .endFlourish:after{content:"";position:absolute;top:8px;width:48px;height:1px;background:linear-gradient(90deg,transparent,#88a16b)}
-#creditsRoll .endFlourish:before{left:0}.endFlourish:after{right:0;transform:scaleX(-1)}
-#creditsRoll .endFlourish i{position:absolute;left:54px;top:2px;width:10px;height:10px;border:1px solid #8da66d;border-radius:70% 0 70% 0;transform:rotate(45deg)}
-50%{text-shadow:0 3px 0 #000,0 0 12px rgba(148,102,151,.24)}}
+#creditsRoll .endThanks{margin-top:80px;font-size:16px;color:#96ad83;letter-spacing:3px}
+@keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 860px))}}
+#continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
+#continuePrompt.show{opacity:1}
+@media(max-width:430px){#creditsRoll h1{font-size:38px}#creditsRoll .creditName{font-size:26px}}
+
+
+/* peaceful garden credits polish */
+#endingGarden{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.endGrass{position:absolute;left:-5%;right:-5%;bottom:-6px;height:92px;opacity:.22;background:repeating-linear-gradient(78deg,transparent 0 18px,#6e8a59 19px 21px,transparent 22px 35px);mask-image:linear-gradient(to top,#000,transparent)}
+.endMoon{position:absolute;width:72px;height:72px;border-radius:50%;right:10%;top:10%;background:#d8d4b6;opacity:.09;box-shadow:0 0 38px #c7c3a288}
+.endSpore{position:absolute;width:4px;height:4px;border-radius:50%;background:#d7c5dc;opacity:.28;box-shadow:0 0 7px #d7c5dc;animation:endFloat 9s ease-in-out infinite}
+.endSpore.s2{left:18%;top:68%;animation-delay:-2s}.endSpore.s3{left:76%;top:52%;animation-delay:-5s}.endSpore.s4{left:88%;top:78%;animation-delay:-7s}.endSpore.s5{left:34%;top:38%;animation-delay:-3.5s}.endSpore.s6{left:61%;top:82%;animation-delay:-1s}
+@keyframes endFloat{0%,100%{transform:translate(0,14px);opacity:.12}50%{transform:translate(14px,-22px);opacity:.36}}
+#endingLadybug{position:absolute;bottom:38px;left:-42px;font-size:25px;opacity:.72;filter:drop-shadow(0 3px 3px #000);animation:endBugWalk 22s linear 7s 1 forwards}
+@keyframes endBugWalk{from{transform:translateX(0) rotate(-5deg)}to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 #creditsRoll .creditName:after{content:"";display:block;width:34px;height:1px;margin:11px auto 0;background:linear-gradient(90deg,transparent,#8c6e8e,transparent);opacity:.65}
 #creditsRoll h2{text-shadow:0 0 18px #8d568e88}
 
@@ -404,8 +393,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.52</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.52</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.53</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.53</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -450,21 +439,20 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 
 <section id="ending" class="hidden" aria-label="Ending credits">
  <div id="endingBackdrop"></div>
- <div id="endingGarden"><div class="endMoon"></div><div class="endGrass"></div><i class="endSpore s2"></i><i class="endSpore s3"></i><i class="endSpore s4"></i><i class="endSpore s5"></i><i class="endSpore s6"></i><canvas id="endingLadybug" width="48" height="48" aria-hidden="true"></canvas></div>
+ <div id="endingGarden"><div class="endMoon"></div><div class="endGrass"></div><i class="endSpore s2"></i><i class="endSpore s3"></i><i class="endSpore s4"></i><i class="endSpore s5"></i><i class="endSpore s6"></i><div id="endingLadybug">🐞</div></div>
  <div class="endingVignette"></div>
  <div id="creditsRoll">
-  <canvas class="endBug" id="creditsHeroBug" width="76" height="76" aria-hidden="true"></canvas>
+  <div class="endBug">🐞</div>
   <h1>BIG BUG</h1>
   <div class="endSub">THE GARDEN SURVIVES</div>
-  <div class="endFlourish"><i></i></div>
   <h2>SPECIAL THANKS</h2>
-  <div class="creditName c1">Dustin</div>
-  <div class="creditName c2">Emily</div>
-  <div class="creditName c3">Garrett</div>
-  <div class="creditName c4">Jordan</div>
-  <div class="creditName c5">Matthew</div>
-  <div class="creditName c6">Ryan</div>
-  <div class="creditName c7">Rylee</div>
+  <div class="creditName">Dustin</div>
+  <div class="creditName">Emily</div>
+  <div class="creditName">Garrett</div>
+  <div class="creditName">Jordan</div>
+  <div class="creditName">Matthew</div>
+  <div class="creditName">Ryan</div>
+  <div class="creditName">Rylee</div>
   <div class="endThanks">THANK YOU FOR PLAYING</div>
  </div>
  <div id="continuePrompt">Continue…?</div>
@@ -500,8 +488,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
-// v17.8.45 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
-// v17.8.52 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
+// v17.8.53 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
@@ -544,13 +531,12 @@ const BUGS={
 };
 
 
-// v17.8.44 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
+// v17.8.53 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
 // v17.8.43 — normal player attacks now use the same clear target-travel visual as Triple Shot; performance-only cleanup removes dead duplicate rendering and per-frame helper allocation.
 // v17.8.42 — Sharper Bite now uses the exact same hand-drawn sword artwork as the attack HUD.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
-// v17.8.52 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
 // v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
 // v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
 // v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
@@ -596,7 +582,6 @@ function drawPlayableBug(ctx,id,size=28,glow=false){
  ctx.restore();
 }
 function paintHomeHero(){const c=$('homeBugHero');if(!c)return;const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}
-function paintEndingLadybugs(){const hero=$('creditsHeroBug'),wander=$('endingLadybug');if(hero){const q=hero.getContext('2d');q.clearRect(0,0,hero.width,hero.height);q.save();q.translate(hero.width/2,hero.height/2+1);drawPlayableBug(q,'ladybug',58,false);q.restore()}if(wander){const q=wander.getContext('2d');q.clearRect(0,0,wander.width,wander.height);q.save();q.translate(wander.width/2,wander.height/2);drawPlayableBug(q,'ladybug',34,false);q.restore()}}
 
 function makeBugPreview(id){
  const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
@@ -1389,7 +1374,7 @@ function updateHud(){
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
- clearEndingTimers();creditsMusicStop();$('ending').classList.remove('creditsActive');$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
+ clearEndingTimers();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
  showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart();
 }
 function playEndingCredits(preview=false){
@@ -1397,12 +1382,10 @@ function playEndingCredits(preview=false){
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);if(!game.testMode){save.scrap+=earned;save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist()}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
  screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');
- paintEndingLadybugs();const wander=$('endingLadybug');if(wander){wander.style.animation='none';void wander.offsetHeight;wander.style.animation='endBugWander 25s ease-in-out 4.5s 1 forwards'}
- end.classList.remove('creditsActive');void end.offsetHeight;end.classList.add('creditsActive');
  // Restart the CSS scroll every time, including the temporary preview button.
- roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 31s linear forwards';
+ roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 34s linear forwards';
  creditsMusicStart();
- endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},31500));
+ endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},34500));
  endingTimers.push(setTimeout(()=>{prompt.classList.add('show')},37500));
  endingTimers.push(setTimeout(returnHomeAfterEnding,42500));
 }
@@ -2169,7 +2152,7 @@ function titleGardenLoop(now){
   if(titleSceneStart){
    let t=(now-titleSceneStart)/1000;
    const cx=w*.5;
-   // v17.8.45 — anchor the hide/peek path to the rendered BIG BUG letters, not screen height.
+   // v17.8.53 — anchor the hide/peek path to the rendered BIG BUG letters, not screen height.
    // This keeps the buddy tucked behind the logo even when safe areas/device sizes differ.
    const homeRect=$('home').getBoundingClientRect(),logoMain=$('home').querySelector('.logoMain'),logoRect=logoMain?.getBoundingClientRect();
    const logoTop=logoRect?logoRect.top-homeRect.top:h*.27,logoH=logoRect?logoRect.height:h*.18;
@@ -2222,7 +2205,7 @@ function startTitleGardenLoop(){
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();
-// v17.8.44 — let the first real animation frame initialize the intro using stable rendered dimensions.
+// v17.8.53 — let the first real animation frame initialize the intro using stable rendered dimensions.
 // This avoids iOS/Safari occasionally reporting a transient width during initial script execution,
 // which could bunch or misplace the opening swarm without changing the animation itself.
 titleSceneStart=0;titleScenePlayed=false;titleSceneLastStart=0;titleSceneEnemyOffsets=[];
