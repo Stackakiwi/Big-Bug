@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.11: Gold Leaves -->
+<!-- Big Bug v17.9.12: Gold Leaves -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -357,7 +357,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%23b88718' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
 .goldLeafIcon:after{content:"✦";position:absolute;right:-6px;top:-7px;color:#fff7c7;font-size:11px;text-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
 @keyframes goldTwinkle{0%,100%{opacity:.3;transform:scale(.65) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(22deg)}}
-.homeGoldBalance{position:absolute!important;left:50%!important;top:max(10px,env(safe-area-inset-top))!important;transform:translateX(-50%)!important;z-index:45!important;background:#17301edd;border:1px solid #ffe47a88;border-radius:999px;padding:7px 12px;color:#fff4bd;font-weight:1000;box-shadow:0 3px 10px #0005;pointer-events:none}
+.homeGoldBalance{position:absolute!important;left:50%!important;top:max(10px,env(safe-area-inset-top))!important;transform:translateX(-50%)!important;z-index:45!important;background:#17301edd;border:1px solid #ffe47a88;border-radius:999px;padding:7px 12px;color:#fff4bd;font-weight:1000;box-shadow:0 3px 10px #0005;pointer-events:auto;cursor:pointer;font-family:inherit}.homeGoldBalance small{font-size:9px;letter-spacing:.7px;color:#ffe98b;margin-left:4px}
 .goldCurrency{border-color:#a77c24!important;background:linear-gradient(145deg,#3a3218,#27240f)!important;color:#fff2b0}.goldCount{font-size:25px;color:#ffd94d;font-weight:1000}
 .goldUnlockBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #1f3b20!important}.continueGold{background:#e7b72e!important;box-shadow:inset 0 -4px #9b6c13,0 5px 0 #1f3b20!important}
 
@@ -407,6 +407,21 @@ html:has(#pause:not(.hidden)),body:has(#pause:not(.hidden)),
 html:has(#gameover:not(.hidden)),body:has(#gameover:not(.hidden)){background:#03110a!important}
 html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503!important}
 
+
+/* v17.9.12 — Gold Leaf storefront + direct permanent base-stat upgrades */
+#goldShop{background:rgba(3,17,10,.97);padding:18px}
+#goldShop .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#2c2610,#171708 72%,#0b1107);border:2px solid #9b7622;border-radius:28px;padding:22px 18px 18px;box-shadow:0 10px 0 #090704,0 24px 55px #000b,inset 0 0 38px #d6a72b22}
+#goldShop h2{text-align:center;margin:0 0 6px;color:#fff0a4;font:700 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive}
+#goldShop .goldShopBalance{text-align:center;margin:0 auto 15px;font-weight:1000;font-size:22px;color:#ffe47a}
+.goldPackGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.goldPack{position:relative;background:linear-gradient(145deg,#3c3316,#27220e);border:1px solid #9d7c2d;border-radius:18px;padding:15px 10px;text-align:center;box-shadow:inset 0 0 20px #f5c63a12}
+.goldPack.best{border-color:#f2cf55;box-shadow:0 0 16px #eabb3240,inset 0 0 20px #f5c63a22}
+.goldPack .amount{display:flex;justify-content:center;align-items:center;font-size:27px;font-weight:1000;color:#fff3ad;margin-bottom:6px}.goldPack .amount .goldLeafIcon{width:29px;height:29px}
+.goldPack .bonus{min-height:17px;font-size:11px;font-weight:900;color:#e8cf73;letter-spacing:.4px}.goldPack .btn{min-width:0;width:100%;margin:8px 0 0;background:#e3b42c;box-shadow:inset 0 -4px #996e13,0 4px 0 #0d160c}
+.goldPack .btn:active{transform:translateY(2px)}
+.goldStoreNote{text-align:center;font-size:12px;line-height:1.35;color:#c8c6a2;margin:14px 4px 0}
+@media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
+
 </style>
 </head>
 <body>
@@ -427,7 +442,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
-  <div class="homeGoldBalance"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span></div>
+  <button class="homeGoldBalance" data-action="goldShop" aria-label="Open Gold Leaf Shop"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span><small> SHOP</small></button>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
   <div class="logo"><span class="logoMain">BIG<br>BUG</span><small>SMALL BUG. BIG DREAMS.</small></div>
@@ -443,8 +458,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.11</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.11</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.12</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.12</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -453,6 +468,23 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 <section id="base" class="screen hidden">
  <div class="panel"><h2><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> GARDEN MAGIC</h2><p class="muted">Teach the garden’s gifts a few new tricks.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+</section>
+
+<section id="goldShop" class="screen hidden">
+ <div class="panel">
+  <h2><span class="goldLeafIcon" aria-hidden="true"></span> GOLD LEAF SHOP</h2>
+  <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
+  <div class="goldPackGrid">
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>2</div><div class="bonus">STARTER PACK</div><button class="btn small" data-gold-pack="2">$0.99</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>7</div><div class="bonus">BETTER VALUE</div><button class="btn small" data-gold-pack="7">$2.99</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>13</div><div class="bonus">+30% VALUE</div><button class="btn small" data-gold-pack="13">$4.99</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>30</div><div class="bonus">+50% VALUE</div><button class="btn small" data-gold-pack="30">$9.99</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>70</div><div class="bonus">+75% VALUE</div><button class="btn small" data-gold-pack="70">$19.99</button></div>
+   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon"></span>200</div><div class="bonus">BEST VALUE • +100%</div><button class="btn small" data-gold-pack="200">$49.99</button></div>
+  </div>
+  <p class="goldStoreNote">Gold Leaves are permanent and are never erased by Reset Progress. Real-money checkout will activate when the payment system is connected.</p>
+  <button class="btn dark" data-action="home">BACK</button>
+ </div>
 </section>
 
 <section id="settings" class="screen hidden">
@@ -523,7 +555,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <script>
-// v17.9.11 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
+// v17.9.12 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
 
 // v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
@@ -533,7 +565,7 @@ let W=0,H=0,D=1;
 function resize(){D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;C.width=W*D;C.height=H*D;X.setTransform(D,0,0,D,0,0)} addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
-const screens=['home','bugs','base','settings','upgrade','pause','gameover','finalPrep','ending'];
+const screens=['home','bugs','base','goldShop','settings','upgrade','pause','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
@@ -682,20 +714,20 @@ let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;$('story').classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 $('storyContinue').onclick=()=>{initAudio();$('story').classList.add('hidden');beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
 const UP=[
- {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1+.10*(1+save.upgrades.dmg*.10)},
- {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{const n=20*(1+save.upgrades.hp*.10);p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
- {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{const n=.10*(1+save.upgrades.magnet*.10);p.rate=Math.max(360,p.rate*(1-n))}},
+ {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
+ {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
+ {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{p.rate=Math.max(360,p.rate/1.10)}},
  {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
  {id:'triple',icon:'🎯',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
- {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65*(1+save.upgrades.coins*.10)},
- {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1+.20*(1+save.upgrades.coins*.10)},
+ {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65 pickup range + auto-collect Leaves',rarity:'common',apply:p=>p.magnet+=65},
+ {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
  {id:'clone',icon:'✦',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];p.helpers.push({bornWave:game.wave,leaving:false,x:p.x,y:p.y})}},
  {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
 ];
 
 let game=null, last=0, raf=0, audio=null;
 function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save));localStorage.setItem(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));localStorage.setItem(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]));refreshGoldUI()}
-function refreshGoldUI(){const n=Math.max(0,save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n}
+function refreshGoldUI(){const n=Math.max(0,save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n}
 
 const RUNSAVEKEY='big_bug_run_recovery_v1';
 function clearRunRecovery(){try{localStorage.removeItem(RUNSAVEKEY)}catch(e){}}
@@ -831,10 +863,10 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`Health upgrades are 10% stronger per level — ${s.hp}/10${s.hp>=10?' — MAX':''}`,2500+s.hp*2500,'hp'],
-   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`Damage upgrades are 10% stronger per level — ${s.dmg}/10${s.dmg>=10?' — MAX':''}`,3000+s.dmg*3000,'dmg'],
-   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level — ${s.magnet}/10${s.magnet>=10?' — MAX':''}`,3500+s.magnet*3500,'magnet'],
-   ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level — ${s.coins}/10${s.coins>=10?' — MAX':''}`,5000+s.coins*5000,'coins']
+   ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`+10% base max health per level — ${s.hp}/10 • Current +${s.hp*10}%`,2500+s.hp*2500,'hp'],
+   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% base attack damage per level — ${s.dmg}/10 • Current +${s.dmg*10}%`,3000+s.dmg*3000,'dmg'],
+   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% base attack speed per level — ${s.magnet}/10 • Current +${s.magnet*10}%`,3500+s.magnet*3500,'magnet'],
+   ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% base pickup range & Leaves per level — ${s.coins}/10 • Current +${s.coins*10}%`,5000+s.coins*5000,'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${save.goldLeaves||0}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button></div>`).join('');
@@ -847,6 +879,12 @@ function buyShop(k){
 }
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[]};
+ const u=save.upgrades||{};
+ p.maxHp*=1+.10*(u.hp||0);
+ p.damage*=1+.10*(u.dmg||0);
+ p.rate/=1+.10*(u.magnet||0);
+ p.magnet*=1+.10*(u.coins||0);
+ p.greed*=1+.10*(u.coins||0);
  p.hp=p.maxHp;
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
@@ -2281,6 +2319,7 @@ addEventListener('pagehide',()=>saveRunRecovery('pagehide'));
 function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true);saveRunRecovery('resume')}}
 
 document.addEventListener('click',e=>{
+ const pack=e.target.closest('[data-gold-pack]');if(pack){initAudio();beep(520,.08,.022,'triangle');alert('Gold Leaf purchasing is ready visually, but real-money checkout is not connected in this web build yet.');return}
  const setting=e.target.closest('[data-setting]')?.dataset.setting;if(setting){initAudio();toggleSetting(setting);return}
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
@@ -2295,6 +2334,7 @@ document.addEventListener('click',e=>{
  if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
+ if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop();refreshGoldUI();screen('goldShop')}
  if(a==='resume'){startOrResume()}
  if(a==='quit'){quitRun()}
 });
