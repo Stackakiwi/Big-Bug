@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.19: Quit Run Confirmation -->
+<!-- Big Bug v17.9.20: Quit Run Confirmation -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -466,8 +466,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.19</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.19</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.20</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.20</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -826,7 +826,8 @@ function initAudio(){
   return resumed;
  }catch(e){return Promise.resolve()}
 }
-function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){if(!audio)return;if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){if(!audio)return;if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;if(category==='sfx'&&window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setTimeout(()=>{if(!audio||save.settings.sfx===false)return;beep(560,.028,.0065,'triangle')},0)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
@@ -2367,6 +2368,15 @@ addEventListener('pageshow',resumeGameAfterBackground);
 addEventListener('pagehide',()=>saveRunRecovery('pagehide'));
 
 function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true);saveRunRecovery('resume')}}
+
+// v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
+// Existing button sounds remain untouched and do not get doubled.
+document.addEventListener('click',e=>{
+ const btn=e.target.closest('button');
+ window.__bbButtonClickActive=!!btn;
+ window.__bbButtonSfxPlayed=false;
+ if(btn)queueMicrotask(()=>{if(!btn.disabled&&!window.__bbButtonSfxPlayed)quietButtonClick();window.__bbButtonClickActive=false});
+},true);
 
 document.addEventListener('click',e=>{
  const pack=e.target.closest('[data-gold-pack]');if(pack){initAudio();beep(520,.08,.022,'triangle');alert('Gold Leaf purchasing is ready visually, but real-money checkout is not connected in this web build yet.');return}
