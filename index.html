@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.22: Green BUG Logo Word -->
+<!-- Big Bug v17.9.28: Endless unlock at Wave 20 clear + home dev controls removed -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -256,9 +256,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
-/* v17.8.57 — temporary Home test controls live in one isolated overlay and cannot affect title layout. */
-#home .homeDevControls{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:0!important;z-index:50!important;pointer-events:none!important;margin:0!important;padding:0!important;contain:layout style!important}
-#home .homeDevControls .testJump,#home .homeDevControls .creditsTestBtn{pointer-events:auto!important}
 #home .logoMain{display:block}
 /* v17.8.3 — preserve the exact title/logo layout while simplifying only the lower Home controls. */
 #home .homeTextLayoutKeeper{visibility:hidden;pointer-events:none}
@@ -430,6 +427,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .goldDevTools{display:flex;gap:8px;margin:12px 0 4px;padding:10px;border:1px dashed #d8b64d88;border-radius:14px;background:#3a301255}.goldDevTools .btn{flex:1;min-width:0;margin:0;font-size:12px;padding:10px 8px}.goldDevTools .goldDevClear{background:#7b3930;color:#fff;box-shadow:inset 0 -4px #4e211d,0 4px 0 #0d160c}
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
+.mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
 </style>
 </head>
 <body>
@@ -439,7 +437,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 <div id="hud" class="hidden">
   <div class="pill"><span class="bbIcon bbHeartIcon" aria-hidden="true"></span> <span id="hp">100</span>/<span id="maxhp">100</span></div>
   <div class="pill">WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
-  <div class="pill"><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="coins">0</span></div>
+  <div class="pill"><span id="hudCurrencyIcon" class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="coins">0</span></div>
   <div class="pill"><svg class="bbSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg><span id="dmg">10</span></div>
 </div>
 <div id="bossbar"><div class="bossName" id="bossName">BIG BUG</div><div class="bossBar"><i id="bossFill" style="width:100%"></i></div></div>
@@ -460,15 +458,10 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift hidden" data-action="endless">ENDLESS MODE</button>
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
-  <div class="homeDevControls" aria-label="Temporary testing controls">
-    <div class="testJump"><select id="testWave" aria-label="Temporary wave and boss tester"></select><button class="btn dark small" data-action="testWave">TEST</button></div>
-    <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
-    <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
-  </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.22</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.22</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.28</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.28</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -592,7 +585,7 @@ function screen(id){
 const SAVEKEY='big_bug_save_v1';
 const GOLDKEY='big_bug_gold_v1';
 const GOLDUNLOCKKEY='big_bug_gold_unlocks_v1';
-let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0};
+let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,endlessUnlocked:false};
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeaves||0);localStorage.setItem(GOLDKEY,String(save.goldLeaves));
 save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
@@ -638,8 +631,10 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-const ENDLESS_TEST_ACCESS=true; // TEMP: set false before release; normal unlock still requires beating Story Mode.
-function refreshEndlessHome(){const unlocked=save.mainGameBeaten||ENDLESS_TEST_ACCESS,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.toggle('hidden',!unlocked);b.textContent=save.mainGameBeaten?'ENDLESS MODE':'TEMP ENDLESS'}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
+// v17.9.28 — Endless Mode permanently unlocks after clearing Wave 20.
+// A best wave above 20 proves Wave 20 was cleared in older saves, so migrate those automatically.
+save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=21;
+function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.toggle('hidden',!unlocked);b.textContent='ENDLESS MODE'}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
@@ -805,7 +800,7 @@ function resetGameProgress(){
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessBest:0,settings:keptSettings};
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,settings:keptSettings};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -935,7 +930,7 @@ function startRun(startWave=1,testMode=false){
 }
 
 function startEndless(){
- if(!save.mainGameBeaten&&!ENDLESS_TEST_ACCESS)return;
+ if(!save.endlessUnlocked)return;
  initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
@@ -1067,11 +1062,16 @@ function completeWave(){
    setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return
  }
  const bossClear=g.wave%5===0;
+ if(g.wave>=20&&!save.endlessUnlocked){
+   save.endlessUnlocked=true;
+   persist();
+   if(g.wave===20)setTimeout(()=>flashBanner('🦟 ENDLESS MODE UNLOCKED!',1.8),1250);
+ }
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
    save.unlocked=['ladybug','beetle','butterfly'];
    persist();
-   setTimeout(()=>flashBanner('🦟 ENDLESS MODE + 🪲 BEETLE + 🦋 BUTTERFLY UNLOCKED!',2.2),1900);
+   setTimeout(()=>flashBanner('🪲 BEETLE + 🦋 BUTTERFLY UNLOCKED!',2.2),1900);
  }
  let heal;
  if(bossClear){
@@ -1643,8 +1643,9 @@ function updateHud(){
  const p=game.p,g=game,active=boostActive();
  setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
- const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis=endless?'hidden':'';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
- setHudText('coins',g.coins||0);setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):''));
+ const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis='';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
+ const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
+ setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):''));
  const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
  const et=hudNode('endlessTripleBtn');if(et){const ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`2× BOOST<small>${left.toFixed(1)}s</small>`:`2× BOOST<small>x${charges} / 3</small>`;setHudClass(et,'tripleHidden','hidden',!endless);setHudClass(et,'tripleActive','active',ta);setHudDisabled(et,'tripleDisabled',!ta&&charges<=0);if(HUD_CACHE.tripleHtml!==html){HUD_CACHE.tripleHtml=html;et.innerHTML=html}}
  const er=hudNode('endlessRepelBtn');if(er){const ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charges=g.endlessRepelCharge||0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>x${charges} / 3</small>`;setHudClass(er,'repelHidden','hidden',!endless);setHudClass(er,'repelActive','active',ra);setHudDisabled(er,'repelDisabled',!ra&&charges<=0);if(HUD_CACHE.repelHtml!==html){HUD_CACHE.repelHtml=html;er.innerHTML=html}}
