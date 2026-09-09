@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.6: Endless Swarm Optimization -->
+<!-- Big Bug v17.9.8: Endless Face-On Attackers -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -434,8 +434,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.6</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.6</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.8</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.8</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -530,7 +530,8 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
-// v17.9.6 — Endless swarm optimization: enemy damage numbers disabled in Endless (player damage stays), Waves 1–3 greatly reduced, and from Wave 20 about 1 in 40 mosquitoes is a very-fast sprinter. Wave 4+ counts unchanged. Story Mode unchanged.
+// v17.9.8 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
+// v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
 // v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
 // v17.9.4 — Endless survival pass: no Leaf drops, stored Health Boost / 5× Attack / Repellent charges (max 3 each), and automatic move/attack-speed growth every 5 waves. Story Mode unchanged.
 // v17.9.2 — Endless refinement: lightweight mosquito spacing, 1.5× starting move/attack speed, louder mosquito buzz, and a basic Endless-only upgrade pool with a stored 5-second 3× Attack power. Story Mode unchanged.
@@ -906,15 +907,15 @@ function useEndlessHealth(){
  if(!game||game.mode!=='endless'||game.paused||game.over)return;initAudio();
  if(endlessHealthActive()){beep(310,.06,.018,'triangle');return}
  if(!(game.endlessHealthCharge>0)){beep(145,.10,.020,'sawtooth');return}
- game.endlessHealthCharge--;game.endlessHealthUntil=game.time+5;
+ game.endlessHealthCharge--;game.endlessHealthUntil=game.time+10;
  beep(300,.09,.030,'sine');setTimeout(()=>beep(470,.10,.024,'triangle'),70);
- flashBanner('♥ HEALTH BOOST! 5 SECONDS',.85);updateHud();
+ flashBanner('♥ HEALTH BOOST! 10 SECONDS',.85);updateHud();
 }
 function useEndlessTriple(){
  if(!game||game.mode!=='endless'||game.paused||game.over)return;initAudio();
  if(endlessFiveActive()){beep(340,.06,.018,'triangle');return}
  if(!(game.endlessTripleCharge>0)){beep(145,.10,.020,'sawtooth');return}
- game.endlessTripleCharge--;game.endlessTripleUntil=game.time+5;
+ game.endlessTripleCharge--;game.endlessTripleUntil=game.time+6;
  beep(460,.06,.030,'triangle');setTimeout(()=>beep(700,.07,.026,'triangle'),55);setTimeout(()=>beep(980,.11,.020,'sine'),110);
  flashBanner('⚡ 2× BOOST! RAPID + DOUBLE DAMAGE + 2 SHOT',.9);updateHud();
 }
@@ -1017,7 +1018,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7;sp=Math.min(250,116+ew*1.85);damage=3.8;evo=0}
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:boss?'entrance':'chase',cool:Math.random()*1.5+.8,stateT:boss?1.15:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo,
-          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025};
+          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,faceOn:k==='mosquito'&&Math.random()<.25,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025};
  if(e.sprinter)e.speed*=1.8;
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
  if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
@@ -1038,7 +1039,7 @@ function damageEnemy(e,d,source='player'){
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
  if(game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',24)<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
- burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
+ if(game.mode==='endless'&&e.kind==='mosquito')burst(e.x,e.y,1,.16,'#d7d1b7');else burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
    if(game.mode!=='endless'){
@@ -1052,7 +1053,8 @@ function damageEnemy(e,d,source='player'){
      // Endless swarms can die in large bursts, so keep each death deliberately tiny and cheap.
      burst(e.x,e.y,3,.20,'#cfd8cf');
      game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.16,maxLife:.16,r:12,killPop:true});
-     beep(155,.040,.015,'square'); // still restrained, but clearly audible mosquito "bzzzt"
+     // Keep the audible bzzzt, but collapse near-simultaneous deaths into one sound to avoid WebAudio node spikes.
+     const buzzNow=performance.now();if(buzzNow-(game.lastMosquitoBuzz||0)>32){game.lastMosquitoBuzz=buzzNow;beep(155,.040,.015,'square')}
    }else{
      burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
      game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
@@ -1150,8 +1152,9 @@ function enemyMove(e,dt){
      e.x+=dx/pd*e.speed*.28*slow*dt;e.y+=dy/pd*e.speed*.28*slow*dt;return;
    }
    let tx=p.x,ty=p.y;
-   if(e.interceptor){
-     const lead=.52,lvx=p.motionX||0,lvy=p.motionY||0,lm=Math.hypot(lvx,lvy),cap=125,scale=lm>cap?cap/lm:1;
+   if(e.interceptor||e.faceOn){
+     // Most mosquitoes chase directly, but 1 in 4 tries to meet the player head-on. The rarer interceptor leads farther ahead.
+     const lead=e.interceptor?.52:.28,lvx=p.motionX||0,lvy=p.motionY||0,lm=Math.hypot(lvx,lvy),cap=e.interceptor?125:105,scale=lm>cap?cap/lm:1;
      tx+=lvx*lead*scale;ty+=lvy*lead*scale;
    }else if(pd>95){
      const spread=10+(e.phase%1.3)*8,a=e.phase;tx+=Math.cos(a)*spread;ty+=Math.sin(a)*spread;
@@ -1357,17 +1360,27 @@ function separateEnemies(){
  }
 }
 function separateMosquitoes(){
- const a=game.enemies,n=a.length,min=19,min2=min*min,p=game.p;
- // Prevent obvious stacking, but weaken separation near the player so the swarm can actually surround and contact them.
- for(let i=0;i<n;i++){const x=a[i];if(x.dead||x.kind!=='mosquito')continue;for(let j=i+1;j<n;j++){const y=a[j];if(y.dead||y.kind!=='mosquito')continue;let dx=y.x-x.x,dy=y.y-x.y;if(Math.abs(dx)>=min||Math.abs(dy)>=min)continue;const d2=dx*dx+dy*dy;if(d2>=min2)continue;let d=Math.sqrt(d2)||.001,nx=dx/d,ny=dy/d,mx=(x.x+y.x)*.5-p.x,my=(x.y+y.y)*.5-p.y,near=mx*mx+my*my<4900,push=(min-d)*(near?.055:.20);x.x-=nx*push;x.y-=ny*push;y.x+=nx*push;y.y+=ny*push}}
+ const a=game.enemies,n=a.length,min=19,min2=min*min,p=game.p,cell=min;
+ // Spatial buckets preserve the same close-range spacing while avoiding an all-pairs swarm scan.
+ const cols=Math.max(1,Math.ceil(W/cell)+2),rows=Math.max(1,Math.ceil(H/cell)+2),cells=cols*rows;
+ let head=game.mosquitoGridHead;if(!head||head.length!==cells){head=game.mosquitoGridHead=new Int32Array(cells)}head.fill(-1);
+ let next=game.mosquitoGridNext;if(!next||next.length<n)next=game.mosquitoGridNext=new Int32Array(Math.max(n,128));
+ for(let i=0;i<n;i++){const e=a[i];if(e.dead||e.kind!=='mosquito'){next[i]=-1;continue}const cx=Math.max(0,Math.min(cols-1,Math.floor(e.x/cell)+1)),cy=Math.max(0,Math.min(rows-1,Math.floor(e.y/cell)+1)),ci=cy*cols+cx;e._mgx=cx;e._mgy=cy;next[i]=head[ci];head[ci]=i}
+ for(let i=0;i<n;i++){
+   const x=a[i];if(x.dead||x.kind!=='mosquito')continue;const cx=x._mgx,cy=x._mgy;
+   for(let oy=-1;oy<=1;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-1;ox<=1;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;for(let j=head[gy*cols+gx];j!==-1;j=next[j]){
+     if(j<=i)continue;const y=a[j];if(y.dead||y.kind!=='mosquito')continue;let dx=y.x-x.x,dy=y.y-x.y;if(Math.abs(dx)>=min||Math.abs(dy)>=min)continue;const d2=dx*dx+dy*dy;if(d2>=min2)continue;
+     let d=Math.sqrt(d2)||.001,nx=dx/d,ny=dy/d,mx=(x.x+y.x)*.5-p.x,my=(x.y+y.y)*.5-p.y,near=mx*mx+my*my<4900,push=(min-d)*(near?.055:.20);x.x-=nx*push;x.y-=ny*push;y.x+=nx*push;y.y+=ny*push;
+   }}}
+ }
 }
 function update(dt,now){
  const g=game,p=g.p;if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);
  // Flush accumulated contact damage into one readable popup roughly six times per second.
  if((p.pendingDamage||0)>0&&now-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=now}
  g.time+=dt;
- // Endless Health Boost: a five-second emergency recovery that steadily restores up to 60% max HP.
- if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.12*dt);
+ // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
+ if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.hypot(mdx,mdy),oldPX=p.x,oldPY=p.y;
  p.webSlow=Math.max(0,(p.webSlow||0)-dt);if(md>1){let moveMult=p.webSlow>0?.48:1,step=Math.min(md,p.speed*moveMult*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
@@ -1475,8 +1488,8 @@ function openUpgrade(afterWave=false){
  $('upgradeSub').textContent=afterWave?(g.mode==='endless'?'Store an ability charge, then get right back into the swarm.':(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.')):'Pick one. Stack effects and discover crazy combinations.';
  if(g.mode==='endless'){
    const endlessUp=[];
-   if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:`Store 5 seconds of rapid healing  •  ${(g.endlessHealthCharge||0)}/3 stored`,rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
-   if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'2× BOOST',desc:`Store 5 seconds of rapid attack + double damage + 2-shot  •  ${(g.endlessTripleCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
+   if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:`Store 10 seconds of rapid healing  •  ${(g.endlessHealthCharge||0)}/3 stored`,rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
+   if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'2× BOOST',desc:`Store 6 seconds of rapid attack + double damage + 2-shot  •  ${(g.endlessTripleCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
    if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:`Store 5 seconds of swarm slow + pushback  •  ${(g.endlessRepelCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
    if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
    const emarks={endlessHealth:'♥',endlessTriple:'≋',endlessRepel:'◌'};
