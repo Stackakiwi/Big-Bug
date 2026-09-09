@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.3: Endless Swarm Intelligence -->
+<!-- Big Bug v17.9.4: Endless Swarm Intelligence -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -434,8 +434,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.3</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.3</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.4</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.4</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -530,7 +530,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
-// v17.9.3 — Endless swarm pass: fixed mosquito HP/damage, stronger close-range swarming, ~5% predictive interceptors, stored 5× Attack + Mosquito Repellent abilities, and no Endless damage upgrade. Story Mode unchanged.
+// v17.9.4 — Endless survival pass: no Leaf drops, stored Health Boost / 5× Attack / Repellent charges (max 3 each), and automatic move/attack-speed growth every 5 waves. Story Mode unchanged.
 // v17.9.2 — Endless refinement: lightweight mosquito spacing, 1.5× starting move/attack speed, louder mosquito buzz, and a basic Endless-only upgrade pool with a stored 5-second 3× Attack power. Story Mode unchanged.
 // v17.9.1 — Endless test pass: temporary Home access, much faster/denser mosquito swarms, and a quiet mosquito death buzz. Story Mode unchanged.
 // v17.8.59 — performance-only: every arena now uses the same static background cache; only tiny animated accents are drawn live. Gameplay and visuals unchanged.
@@ -840,7 +840,7 @@ function startEndless(){
  if(!save.mainGameBeaten&&!ENDLESS_TEST_ACCESS)return;
  initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
-       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
  // Endless starts 50% faster than the same selected bug in Story Mode.
  game.p.speed*=1.5;game.p.rate/=1.5;
  beginWave(1);last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
@@ -897,13 +897,22 @@ function bossKindFor(w=game?.wave||5){return bossKindsFor(w)[0]}
 function bossSecondFight(w=game?.wave||5){return false}
 function evolutionTier(w=game?.wave||1){return Math.floor(Math.max(0,w-1)/10)}
 function boostActive(){return !!(game&&game.boostUntil&&game.time<game.boostUntil)}
+function endlessHealthActive(){return !!(game&&game.mode==='endless'&&game.endlessHealthUntil>game.time)}
 function endlessFiveActive(){return !!(game&&game.mode==='endless'&&game.endlessTripleUntil>game.time)}
 function endlessRepelActive(){return !!(game&&game.mode==='endless'&&game.endlessRepelUntil>game.time)}
+function useEndlessHealth(){
+ if(!game||game.mode!=='endless'||game.paused||game.over)return;initAudio();
+ if(endlessHealthActive()){beep(310,.06,.018,'triangle');return}
+ if(!(game.endlessHealthCharge>0)){beep(145,.10,.020,'sawtooth');return}
+ game.endlessHealthCharge--;game.endlessHealthUntil=game.time+5;
+ beep(300,.09,.030,'sine');setTimeout(()=>beep(470,.10,.024,'triangle'),70);
+ flashBanner('♥ HEALTH BOOST! 5 SECONDS',.85);updateHud();
+}
 function useEndlessTriple(){
  if(!game||game.mode!=='endless'||game.paused||game.over)return;initAudio();
  if(endlessFiveActive()){beep(340,.06,.018,'triangle');return}
  if(!(game.endlessTripleCharge>0)){beep(145,.10,.020,'sawtooth');return}
- game.endlessTripleCharge=0;game.endlessTripleUntil=game.time+5;
+ game.endlessTripleCharge--;game.endlessTripleUntil=game.time+5;
  beep(460,.06,.030,'triangle');setTimeout(()=>beep(700,.07,.026,'triangle'),55);setTimeout(()=>beep(980,.11,.020,'sine'),110);
  flashBanner('5× ATTACK! 5 SECONDS',.8);updateHud();
 }
@@ -911,12 +920,14 @@ function useEndlessRepel(){
  if(!game||game.mode!=='endless'||game.paused||game.over)return;initAudio();
  if(endlessRepelActive()){beep(310,.06,.018,'triangle');return}
  if(!(game.endlessRepelCharge>0)){beep(145,.10,.020,'sawtooth');return}
- game.endlessRepelCharge=0;game.endlessRepelUntil=game.time+5;
+ game.endlessRepelCharge--;game.endlessRepelUntil=game.time+5;
  beep(430,.11,.030,'triangle');setTimeout(()=>beep(620,.08,.020,'sine'),65);
  flashBanner('MOSQUITO REPELLENT! 5 SECONDS',.9);updateHud();
 }
 function useBoost(){
- if(!game||game.paused||game.over)return;initAudio();
+ if(!game||game.paused||game.over)return;
+ if(game.mode==='endless'){useEndlessHealth();return}
+ initAudio();
  const cost=boostCost();
  if(boostActive()){beep(310,.07,.018,'triangle');return}
  if((game.coins||0)<cost){beep(145,.12,.025,'sawtooth');return}
@@ -952,7 +963,12 @@ function completeWave(){
  g.waveActive=false;g.intermission=true;g.paused=true;
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('🎯 TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
- if(g.mode==='endless'){const heal=Math.ceil(g.p.maxHp*.10);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);flashBanner('SWARM CLEAR! +'+heal+' HP',1.0);setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return}
+ if(g.mode==='endless'){
+   const heal=Math.ceil(g.p.maxHp*.10);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
+   if(g.wave%5===0){g.p.speed*=1.04;g.p.rate=Math.max(70,g.p.rate*.96);flashBanner('SWARM CLEAR! +'+heal+' HP  •  SPEED UP!',1.15)}
+   else flashBanner('SWARM CLEAR! +'+heal+' HP',1.0);
+   setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return
+ }
  const bossClear=g.wave%5===0;
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
@@ -1023,11 +1039,13 @@ function damageEnemy(e,d,source='player'){
  burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
-   let val=Math.max(1,Math.floor((2+game.wave*.35)*game.p.greed));
-   let luckyLeaf=false;
-   if(e.boss){val*=20;}
-   else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
-   game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
+   if(game.mode!=='endless'){
+     let val=Math.max(1,Math.floor((2+game.wave*.35)*game.p.greed));
+     let luckyLeaf=false;
+     if(e.boss){val*=20;}
+     else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
+     game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
+   }
    if(e.kind==='mosquito'){
      // Endless swarms can die in large bursts, so keep each death deliberately tiny and cheap.
      burst(e.x,e.y,3,.20,'#cfd8cf');
@@ -1347,6 +1365,8 @@ function update(dt,now){
  // Flush accumulated contact damage into one readable popup roughly six times per second.
  if((p.pendingDamage||0)>0&&now-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=now}
  g.time+=dt;
+ // Endless Health Boost: a five-second emergency recovery that steadily restores up to 60% max HP.
+ if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.12*dt);
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.hypot(mdx,mdy),oldPX=p.x,oldPY=p.y;
  p.webSlow=Math.max(0,(p.webSlow||0)-dt);if(md>1){let moveMult=p.webSlow>0?.48:1,step=Math.min(md,p.speed*moveMult*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
@@ -1451,14 +1471,14 @@ function update(dt,now){
 function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
  $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'🦟 SWARM '+g.wave+' CLEARED!':(g.wave%5===0?'👑 BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
- $('upgradeSub').textContent=afterWave?(g.mode==='endless'?'Choose one simple upgrade, then get right back into the swarm.':(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.')):'Pick one. Stack effects and discover crazy combinations.';
+ $('upgradeSub').textContent=afterWave?(g.mode==='endless'?'Store an ability charge, then get right back into the swarm.':(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.')):'Pick one. Stack effects and discover crazy combinations.';
  if(g.mode==='endless'){
-   const endlessUp=[
-    {id:'endlessSpeed',name:'FASTER BUG',desc:'+10% move speed + 10% attack speed',rarity:'common',apply:p=>{p.speed*=1.10;p.rate=Math.max(90,p.rate*.90)}}
-   ];
-   if(!(g.endlessTripleCharge>0)&&!endlessFiveActive())endlessUp.push({id:'endlessTriple',name:'5× ATTACK',desc:'Store a 5-second 5× attack power',rarity:'rare',apply:p=>{g.endlessTripleCharge=1}});
-   if(!(g.endlessRepelCharge>0)&&!endlessRepelActive())endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:'Store 5 seconds of swarm slow + pushback',rarity:'rare',apply:p=>{g.endlessRepelCharge=1}});
-   const emarks={endlessSpeed:'➜',endlessTriple:'≋',endlessRepel:'◌'};
+   const endlessUp=[];
+   if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:`Store 5 seconds of rapid healing  •  ${(g.endlessHealthCharge||0)}/3 stored`,rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
+   if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'5× ATTACK',desc:`Store 5 seconds of 5× attack  •  ${(g.endlessTripleCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
+   if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:`Store 5 seconds of swarm slow + pushback  •  ${(g.endlessRepelCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
+   if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
+   const emarks={endlessHealth:'♥',endlessTriple:'≋',endlessRepel:'◌'};
    $('choices').innerHTML=endlessUp.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><b>${u.name}</b><span class="upgradeMark">${emarks[u.id]}</span><p class="muted">${u.desc}</p></button>`).join('');
    [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();endlessUp[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1)});
    $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
@@ -1505,11 +1525,11 @@ function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_
 function setBossFill(value){if(HUD_CACHE.bossFill!==value){HUD_CACHE.bossFill=value;$('bossFill').style.width=value}}
 function updateHud(){
  const p=game.p,g=game,active=boostActive();
- setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);const wavePill=$('wave').parentElement;wavePill.classList.toggle('waveDouble',g.wave>=10&&g.wave<100);wavePill.classList.toggle('waveTriple',g.wave>=100);setHudText('coins',g.coins||0);setHudText('dmg',Math.round(p.damage*(active?2:1)));
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);const wavePill=$('wave').parentElement;wavePill.classList.toggle('waveDouble',g.wave>=10&&g.wave<100);wavePill.classList.toggle('waveTriple',g.wave>=100);const coinPill=$('coins').parentElement;coinPill.style.visibility=g.mode==='endless'?'hidden':'';setHudText('coins',g.coins||0);setHudText('dmg',Math.round(p.damage*(active?2:1)));
  setHudText('waveProgress',g.mode==='endless'?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):''));
- const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0,disabled=!active&&(g.coins||0)<boostCost(),html=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`;if(HUD_CACHE.boostActive!==active){HUD_CACHE.boostActive=active;b.classList.toggle('active',active)}if(HUD_CACHE.boostDisabled!==disabled){HUD_CACHE.boostDisabled=disabled;b.disabled=disabled}if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
- const et=$('endlessTripleBtn');if(et){const show=g.mode==='endless',ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charged=(g.endlessTripleCharge||0)>0,html=ta?`5× ATTACK<small>${left.toFixed(1)}s</small>`:`5× ATTACK<small>${charged?'READY':'EMPTY'}</small>`;et.classList.toggle('hidden',!show);et.classList.toggle('active',ta);et.disabled=!ta&&!charged;if(et.innerHTML!==html)et.innerHTML=html}
- const er=$('endlessRepelBtn');if(er){const show=g.mode==='endless',ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charged=(g.endlessRepelCharge||0)>0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>${charged?'READY':'EMPTY'}</small>`;er.classList.toggle('hidden',!show);er.classList.toggle('active',ra);er.disabled=!ra&&!charged;if(er.innerHTML!==html)er.innerHTML=html}
+ const b=$('boostBtn');if(b){const healthMode=g.mode==='endless',ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);if(HUD_CACHE.boostActive!==ba){HUD_CACHE.boostActive=ba;b.classList.toggle('active',ba)}if(HUD_CACHE.boostDisabled!==disabled){HUD_CACHE.boostDisabled=disabled;b.disabled=disabled}if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
+ const et=$('endlessTripleBtn');if(et){const show=g.mode==='endless',ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`5× ATTACK<small>${left.toFixed(1)}s</small>`:`5× ATTACK<small>x${charges} / 3</small>`;et.classList.toggle('hidden',!show);et.classList.toggle('active',ta);et.disabled=!ta&&charges<=0;if(et.innerHTML!==html)et.innerHTML=html}
+ const er=$('endlessRepelBtn');if(er){const show=g.mode==='endless',ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charges=g.endlessRepelCharge||0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>x${charges} / 3</small>`;er.classList.toggle('hidden',!show);er.classList.toggle('active',ra);er.disabled=!ra&&charges<=0;if(er.innerHTML!==html)er.innerHTML=html}
 }
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
