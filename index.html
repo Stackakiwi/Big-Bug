@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.13: Gold Leaves -->
+<!-- Big Bug v17.9.14: Cleaner Power Up Descriptions -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -408,7 +408,7 @@ html:has(#gameover:not(.hidden)),body:has(#gameover:not(.hidden)){background:#03
 html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503!important}
 
 
-/* v17.9.13 — Gold Leaf storefront + direct permanent base-stat upgrades */
+/* v17.9.14 — Gold Leaf storefront + direct permanent base-stat upgrades */
 #base .shopBuyStack{display:flex;flex-direction:column;gap:7px;flex:0 0 118px}
 #base .shopBuyStack .btn{width:100%;min-width:0!important;margin:0!important}
 #base .shopBuyStack .goldUpgradeBtn{background:linear-gradient(#f1c642,#c98e16)!important;color:#2a210b!important;border:1px solid #ffe889;box-shadow:inset 0 -4px #8d6110,0 4px 0 #132214,0 0 10px #ffd84f44!important}
@@ -463,8 +463,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.13</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.13</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.14</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.14</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -560,7 +560,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <script>
-// v17.9.13 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
+// v17.9.14 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
 
 // v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
@@ -868,10 +868,10 @@ function buildBugScreen(){
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`+10% base max health per level — ${s.hp}/10 • Current +${s.hp*10}%`,2500+s.hp*2500,'hp'],
-   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% base attack damage per level — ${s.dmg}/10 • Current +${s.dmg*10}%`,3000+s.dmg*3000,'dmg'],
-   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% base attack speed per level — ${s.magnet}/10 • Current +${s.magnet*10}%`,3500+s.magnet*3500,'magnet'],
-   ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% base pickup range & Leaves per level — ${s.coins}/10 • Current +${s.coins*10}%`,5000+s.coins*5000,'coins']
+   ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`+10% Base Health — ${s.hp}/10`,2500+s.hp*2500,'hp'],
+   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% Base Damage — ${s.dmg}/10`,3000+s.dmg*3000,'dmg'],
+   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% Attack Speed — ${s.magnet}/10`,3500+s.magnet*3500,'magnet'],
+   ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% Pickup Range & Leaves — ${s.coins}/10`,5000+s.coins*5000,'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${save.goldLeaves||0}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><div class="shopBuyStack"><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button><button class="btn small goldUpgradeBtn" data-buy-gold="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="goldLeafIcon" aria-hidden="true"></span>1`}</button></div></div>`).join('');
