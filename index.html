@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.0: Major Performance Update -->
+<!-- Big Bug v17.9.1: Endless Swarm Test Pass -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -423,16 +423,17 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
+  <button id="endlessBtn" class="btn dark homeLowerLift hidden" data-action="endless">ENDLESS MODE</button>
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="homeDevControls" aria-label="Temporary testing controls">
     <div class="testJump"><select id="testWave" aria-label="Temporary wave and boss tester"></select><button class="btn dark small" data-action="testWave">TEST</button></div>
     <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
     <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   </div>
-  <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
+  <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.0</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.0</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.1</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.1</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -525,8 +526,9 @@ const SAVEKEY='big_bug_save_v1';
 let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0};
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
+save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
-// v17.9.0 — major performance-only pass: global arena caching, one frame clock for rendering, offscreen draw culling, and cheaper pickup distance checks. Gameplay and graphics unchanged.
+// v17.9.1 — Endless test pass: temporary Home access, much faster/denser mosquito swarms, and a quiet mosquito death buzz. Story Mode unchanged.
 // v17.8.59 — performance-only: every arena now uses the same static background cache; only tiny animated accents are drawn live. Gameplay and visuals unchanged.
 // v17.8.57 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
@@ -561,6 +563,8 @@ save.unlocked=['ladybug'];
 if(save.best>=50)save.unlocked.push('beetle');
 if(save.mainGameBeaten)save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
+const ENDLESS_TEST_ACCESS=true; // TEMP: set false before release; normal unlock still requires beating Story Mode.
+function refreshEndlessHome(){const unlocked=save.mainGameBeaten||ENDLESS_TEST_ACCESS,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.toggle('hidden',!unlocked);b.textContent=save.mainGameBeaten?'ENDLESS MODE':'TEMP ENDLESS'}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
@@ -671,7 +675,7 @@ function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save))}
 const RUNSAVEKEY='big_bug_run_recovery_v1';
 function clearRunRecovery(){try{localStorage.removeItem(RUNSAVEKEY)}catch(e){}}
 function saveRunRecovery(reason='checkpoint'){
- if(!game||game.over||game.testMode)return;
+ if(!game||game.over||game.testMode||game.mode==='endless')return;
  try{
   const p=game.p;
   const snap={
@@ -723,8 +727,8 @@ function resetGameProgress(){
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:0,mainGameBeaten:false,settings:keptSettings};
- persist();buildBugScreen();buildShop();$('homeBest').textContent='0';$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:0,mainGameBeaten:false,endlessBest:0,settings:keptSettings};
+ persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
 function buildSettings(){
@@ -822,11 +826,22 @@ function basePlayer(){
 function startRun(startWave=1,testMode=false){
  initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const w=Math.max(1,Math.min(100,Number(startWave)||1));
- game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,
+ game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
  beginWave(w);if(!testMode)saveRunRecovery('run-start');
  last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
+
+function startEndless(){
+ if(!save.mainGameBeaten&&!ENDLESS_TEST_ACCESS)return;
+ initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
+ game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
+ beginWave(1);last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
+}
+function endlessActiveCap(w){return Math.min(90,30+Math.floor(w*2.2))}
+function endlessWaveQuota(w){return Math.min(260,48+w*8)}
+
 function buildTestWaveSelector(){
  const sel=$('testWave');if(!sel)return;let html='';
  for(let w=1;w<=100;w++){const boss=w%5===0, label=boss?`Wave ${w} — ${bossKindsFor(w).map(k=>BOSS_NAMES[k]).join(' + ')}`:`Wave ${w}`;html+=`<option value="${w}"${w===20?' selected':''}>${label}</option>`}
@@ -891,6 +906,11 @@ function flashBanner(text,sec=1.25){
 }
 function beginWave(w){
  const g=game;
+ if(g.mode==='endless'){
+   g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;
+   g.waveQuota=endlessWaveQuota(w);g.spawnLeft=g.waveQuota;$('bossbar').style.display='none';
+   flashBanner('🦟 ENDLESS SWARM '+w,w===1?1.5:1.0);updateHud();return;
+ }
  if(w===100&&!g.finalPrepDone){showFinalPrep();return}
  g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;
  const bossWave=w%5===0;
@@ -908,12 +928,13 @@ function completeWave(){
  g.waveActive=false;g.intermission=true;g.paused=true;
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('🎯 TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
+ if(g.mode==='endless'){const heal=Math.ceil(g.p.maxHp*.10);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);flashBanner('SWARM CLEAR! +'+heal+' HP',1.0);setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return}
  const bossClear=g.wave%5===0;
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
    save.unlocked=['ladybug','beetle','butterfly'];
    persist();
-   setTimeout(()=>flashBanner('🪲 BEETLE + 🦋 BUTTERFLY UNLOCKED!',1.8),1900);
+   setTimeout(()=>flashBanner('🦟 ENDLESS MODE + 🪲 BEETLE + 🦋 BUTTERFLY UNLOCKED!',2.2),1900);
  }
  let heal;
  if(bossClear){
@@ -932,7 +953,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  const side=Math.floor(Math.random()*4),m=42;let x,y;
  if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
  const w=game.wave, boss=type==='boss';
- let kinds=w<2?['ant','ant','ant','beetle']:w<3?['ant','ant','spider','spider','beetle']:w<4?['ant','ant','spider','spider','wasp','wasp','beetle']:['ant','ant','spider','spider','wasp','wasp','stink','stink','stink','beetle'];
+ let kinds=game.mode==='endless'?['mosquito']:w<2?['ant','ant','ant','beetle']:w<3?['ant','ant','spider','spider','beetle']:w<4?['ant','ant','spider','spider','wasp','wasp','beetle']:['ant','ant','spider','spider','wasp','wasp','stink','stink','stink','beetle'];
  let k=boss?(forcedKind||bossKindFor(w)):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
  let evo=evolutionTier(w),baseHp=(24+w*6)*Math.pow(1.32,evo),sp=(38+w*1.15)*(1+evo*.05),r=11+Math.random()*5,damage=(4.5+w*.5)*Math.pow(1.18,evo);
  if(k==='ant'){baseHp*=.72;sp*=1.35;r*=.82;damage*=.72}
@@ -952,6 +973,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
     const earlyBossHp={hornet:.90,stagBeetle:.85,queenSpider:.90,moleCricket:.93};
     if(earlyBossHp[k])baseHp*=earlyBossHp[k];
  }
+ if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7*Math.pow(1.052,ew-1);sp=Math.min(225,116+ew*1.65);damage=3.8*Math.pow(1.032,ew-1);evo=0}
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:boss?'entrance':'chase',cool:Math.random()*1.5+.8,stateT:boss?1.15:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo,
           invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0};
@@ -982,9 +1004,16 @@ function damageEnemy(e,d,source='player'){
    if(e.boss){val*=20;}
    else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
    game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
-   burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
-   game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
-   beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth');
+   if(e.kind==='mosquito'){
+     // Endless swarms can die in large bursts, so keep each death deliberately tiny and cheap.
+     burst(e.x,e.y,3,.20,'#cfd8cf');
+     game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.16,maxLife:.16,r:12,killPop:true});
+     beep(150,.028,.0055,'square'); // quiet, short mosquito "bzzzt"
+   }else{
+     burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
+     game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
+     beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth');
+   }
  }
 }
 function tripleShotActive(p=game.p){return !!p.tripleShot&&game.wave<=(p.tripleShotUntilWave||0)}
@@ -1062,7 +1091,9 @@ function stingBurst(e,count=8,speed=145){
  for(let i=0;i<count;i++){let a=i*6.283/count+performance.now()/900;game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:3,r:4,sting:true,damage:7+game.wave*.25})}
 }
 function enemyMove(e,dt){
- const p=game.p,t=game.time;let dx=p.x-e.x,dy=p.y-e.y,d=Math.hypot(dx,dy)||1,slow=e.slow>0?.45:1;
+ const p=game.p,t=game.time;let dx=p.x-e.x,dy=p.y-e.y,slow=e.slow>0?.45:1;
+ if(e.kind==='mosquito'){const d2=dx*dx+dy*dy;if(d2>.01){const inv=1/Math.sqrt(d2);e.x+=dx*inv*e.speed*slow*dt;e.y+=dy*inv*e.speed*slow*dt}return}
+ let d=Math.hypot(dx,dy)||1;
  if(e.boss&&(e.invuln||0)>0){
    e.invuln=Math.max(0,e.invuln-dt);
    const tx=e.enterX||W/2,ty=e.enterY||H*.20,ex=tx-e.x,ey=ty-e.y,ed=Math.hypot(ex,ey)||1;
@@ -1268,7 +1299,10 @@ function update(dt,now){
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.hypot(mdx,mdy);
  p.webSlow=Math.max(0,(p.webSlow||0)-dt);if(md>1){let moveMult=p.webSlow>0?.48:1,step=Math.min(md,p.speed*moveMult*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
  // quota-based waves: spawn a set number, then clear the field
- if(g.waveActive&&g.wave%5!==0){
+ if(g.mode==='endless'&&g.waveActive){
+   g.spawn+=dt*1000;const active=countActiveEnemies(),cap=endlessActiveCap(g.wave),spawnEvery=Math.max(55,125-g.wave*2);
+   if(g.spawnLeft>0&&active<cap&&g.spawn>spawnEvery){g.spawn=0;const batch=Math.min(g.spawnLeft,Math.min(6,cap-active));for(let i=0;i<batch;i++){spawnEnemy('normal','mosquito');g.spawnLeft--}}
+ }else if(g.waveActive&&g.wave%5!==0){
    g.spawn+=dt*1000;
    const active=countActiveEnemies(),cap=Math.min(activeEnemyCap(g.wave),Math.min(8+Math.floor(g.wave/12),activeEnemyCap(g.wave)));
    const spawnEvery=Math.max(330,720-g.wave*12);
@@ -1312,7 +1346,7 @@ function update(dt,now){
    const cdx=p.x-e.x,cdy=p.y-e.y,cr=e.r+p.r;
    if(cdx*cdx+cdy*cdy<cr*cr){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
  }
- separateEnemies();
+ if(g.mode!=='endless')separateEnemies();
  for(const d of g.drops){
    d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,dist=0,mag2=p.magnet*p.magnet;
    if(d2<mag2){dist=Math.sqrt(d2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt}
@@ -1363,8 +1397,8 @@ function update(dt,now){
 }
 function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
- $('upgradeTitle').textContent=afterWave?(g.wave%5===0?'👑 BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!'):'LEVEL UP!';
- $('upgradeSub').textContent=afterWave?(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.'):'Pick one. Stack effects and discover crazy combinations.';
+ $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'🦟 SWARM '+g.wave+' CLEARED!':(g.wave%5===0?'👑 BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
+ $('upgradeSub').textContent=afterWave?(g.mode==='endless'?'Choose one upgrade, then face an even bigger swarm.':(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.')):'Pick one. Stack effects and discover crazy combinations.';
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
@@ -1408,14 +1442,14 @@ function setBossFill(value){if(HUD_CACHE.bossFill!==value){HUD_CACHE.bossFill=va
 function updateHud(){
  const p=game.p,g=game,active=boostActive();
  setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);const wavePill=$('wave').parentElement;wavePill.classList.toggle('waveDouble',g.wave>=10&&g.wave<100);wavePill.classList.toggle('waveTriple',g.wave>=100);setHudText('coins',g.coins||0);setHudText('dmg',Math.round(p.damage*(active?2:1)));
- setHudText('waveProgress',g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'');
+ setHudText('waveProgress',g.mode==='endless'?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):''));
  const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0,disabled=!active&&(g.coins||0)<boostCost(),html=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`;if(HUD_CACHE.boostActive!==active){HUD_CACHE.boostActive=active;b.classList.toggle('active',active)}if(HUD_CACHE.boostDisabled!==disabled){HUD_CACHE.boostDisabled=disabled;b.disabled=disabled}if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
 }
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
  clearEndingTimers();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
- showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart();
+ showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();titleMusicStart();
 }
 
 function paintEndingLadybugs(){
@@ -1468,9 +1502,9 @@ function completeGameEnding(){
 function finish(won){
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);
- if(!game.testMode){save.scrap+=earned;save.best=Math.max(save.best,game.wave);save.runs++;persist()}
- $('overTitle').textContent=game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!');
- $('overSub').textContent=won?'You pushed deep into the garden.':'';
+ if(!game.testMode){save.scrap+=earned;if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;persist();refreshEndlessHome()}
+ $('overTitle').textContent=game.mode==='endless'?'ENDLESS RUN OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!');
+ $('overSub').textContent=game.mode==='endless'?'The mosquito swarm finally got you.':(won?'You pushed deep into the garden.':'');
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;
  screen('gameover');
 }
@@ -1591,7 +1625,13 @@ function drawEnemy(e){
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
  if(e.boss&&(e.invuln||0)>0){X.save();X.globalAlpha=.55+.25*Math.sin(FRAME_NOW/80);X.strokeStyle='#fff1a8';X.lineWidth=3;X.beginPath();X.arc(0,0,r+10,0,6.28);X.stroke();X.restore()}
  if(e.state==='telegraph'&&e.kind!=='moleCricket'){X.save();X.globalAlpha=.8;X.strokeStyle=e.boss?'#ffb23d':'#ff5a4f';X.lineWidth=3;X.beginPath();X.arc(0,0,r+8+Math.sin(FRAME_NOW/80)*2,0,6.28);X.stroke();X.restore();}
- if(e.kind==='ant'){
+ if(e.kind==='mosquito'){
+  X.strokeStyle='#24251f';X.lineWidth=1.2;X.lineCap='round';
+  X.globalAlpha=.30;X.fillStyle='#d8e6df';X.beginPath();X.ellipse(-5,-1,6,2.2,-.45,0,6.28);X.ellipse(5,-1,6,2.2,.45,0,6.28);X.fill();X.globalAlpha=1;
+  X.fillStyle='#34372f';X.beginPath();X.ellipse(0,4,3,6.5,0,0,6.28);X.fill();X.fillStyle='#4b4f43';X.beginPath();X.arc(0,-3,3.2,0,6.28);X.fill();
+  X.fillStyle='#b83c33';X.beginPath();X.arc(-1.2,-3.6,.65,0,6.28);X.arc(1.2,-3.6,.65,0,6.28);X.fill();line(0,-6,0,-12,1.1,'#24251f');
+  for(let side of [-1,1]){line(side*2,1,side*8,6+step*.18,1,'#24251f');line(side*2,4,side*7,10-step2*.14,1,'#24251f')}
+ }else if(e.kind==='ant'){
   for(let side of [-1,1]){line(side*3,-2,side*13,-8+step,2);line(side*4,3,side*14,5-step,2);line(side*2,8,side*12,14+step2,2)}
   X.fillStyle='#6d281f';X.beginPath();X.ellipse(0,8,r*.66,r*.72,0,0,6.28);X.fill();X.fillStyle='#9b3328';X.beginPath();X.arc(0,-3,r*.5,0,6.28);X.fill();X.fillStyle='#722018';X.beginPath();X.arc(0,-r*.85,r*.46,0,6.28);X.fill();line(-3,-r*1.15,-8,-r*1.7,1.5);line(3,-r*1.15,8,-r*1.7,1.5);eye(-r*.18,-r*.92,2);eye(r*.18,-r*.92,2);
   X.fillStyle='#2a0c09';X.beginPath();X.moveTo(-3,-r*1.18);X.lineTo(0,-r*1.5);X.lineTo(3,-r*1.18);X.fill();
@@ -2120,13 +2160,14 @@ document.addEventListener('click',e=>{
  const setting=e.target.closest('[data-setting]')?.dataset.setting;if(setting){initAudio();toggleSetting(setting);return}
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
+ if(a==='endless')startEndless();
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testCredits')playEndingCredits(true)
  if(a==='settings'){stopTitleGardenLoop();showGameUI(false);titleMusicStop();buildSettings();screen('settings')}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart()}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
  if(a==='resume'){startOrResume()}
@@ -2293,7 +2334,7 @@ function tryStartTitleMusic(){
 addEventListener('pageshow',tryStartTitleMusic,{once:true});
 ['pointerdown','touchstart','click'].forEach(ev=>document.addEventListener(ev,tryStartTitleMusic,{passive:true,once:true}));
 
-paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;
+paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();
 if(loadRunRecovery()){restoreRecoveredRun()}
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 </script>
