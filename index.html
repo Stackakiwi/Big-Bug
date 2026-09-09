@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.10: Endless Face-On Attackers -->
+<!-- Big Bug v17.9.11: Gold Leaves -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -353,6 +353,14 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .bbSwordSvg{width:1.28em;height:1.28em;display:block;flex:0 0 auto;overflow:visible;filter:drop-shadow(0 1px 1px #0008)}
 #pause .panel h2{display:block;text-align:center;width:100%;margin-left:auto;margin-right:auto}
 .leafCurrencyIcon.bbLeafIcon{width:24px;height:24px;font-size:0;background:none;border:0;box-shadow:none;filter:drop-shadow(0 0 5px #dfff63);transform:none}.leafCurrencyIcon.bbLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23c9f84f' stroke='%23fbffe1' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%233d792d' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%2373963c' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}.leafCurrencyIcon.bbLeafIcon:after{display:none}
+.goldLeafIcon{display:inline-block;position:relative;width:24px;height:24px;vertical-align:-6px;margin-right:4px;filter:drop-shadow(0 0 5px #ffd84f) drop-shadow(0 0 10px #fff0a055)}
+.goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%23b88718' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
+.goldLeafIcon:after{content:"✦";position:absolute;right:-6px;top:-7px;color:#fff7c7;font-size:11px;text-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
+@keyframes goldTwinkle{0%,100%{opacity:.3;transform:scale(.65) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(22deg)}}
+.homeGoldBalance{position:absolute!important;left:50%!important;top:max(10px,env(safe-area-inset-top))!important;transform:translateX(-50%)!important;z-index:45!important;background:#17301edd;border:1px solid #ffe47a88;border-radius:999px;padding:7px 12px;color:#fff4bd;font-weight:1000;box-shadow:0 3px 10px #0005;pointer-events:none}
+.goldCurrency{border-color:#a77c24!important;background:linear-gradient(145deg,#3a3218,#27240f)!important;color:#fff2b0}.goldCount{font-size:25px;color:#ffd94d;font-weight:1000}
+.goldUnlockBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #1f3b20!important}.continueGold{background:#e7b72e!important;box-shadow:inset 0 -4px #9b6c13,0 5px 0 #1f3b20!important}
+
 .shopDrawn{font-size:34px;margin:0 7px}.shopIcon{display:flex;align-items:center;justify-content:center}
 #bugs .panel,#base .panel{background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border-color:#557354}
 #bugs .panel:before,#base .panel:before{content:"";display:block;position:sticky;top:-20px;height:5px;margin:-20px -18px 16px;background:repeating-linear-gradient(90deg,#6f914f 0 18px,#476b3c 18px 28px);opacity:.45;z-index:2}
@@ -419,6 +427,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
+  <div class="homeGoldBalance"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span></div>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
   <div class="logo"><span class="logoMain">BIG<br>BUG</span><small>SMALL BUG. BIG DREAMS.</small></div>
@@ -434,8 +443,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.10</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.10</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.11</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.11</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -454,7 +463,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="settingRow"><div class="settingText"><b>🔊 Sound Effects</b><div class="muted">Attacks, pickups, upgrades, and hits</div></div><button class="toggleBtn" id="sfxToggle" data-setting="sfx">ON</button></div>
   <div class="settingRow"><div class="settingText"><b>💥 Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
   <div class="settingsDanger">
-   <h3>Reset Progress</h3><p class="muted">Erase Leaves, unlocks, upgrades, and your best wave. Settings stay the same.</p>
+   <h3>Reset Progress</h3><p class="muted">Erase Leaves, unlocks, upgrades, and your best wave. Gold Leaves and settings stay safe.</p>
    <button class="btn red" data-action="showResetConfirm">RESET PROGRESS</button>
    <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This will erase all BIG BUG progress and cannot be undone.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
   </div>
@@ -509,11 +518,12 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
   <p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
-  <button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">POWER UPS</button><button class="btn dark" data-action="home">HOME</button>
+  <button id="goldContinueBtn" class="btn continueGold hidden" data-action="goldContinue"><span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1</button><button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">POWER UPS</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
 
 <script>
+// v17.9.11 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
 
 // v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
@@ -529,9 +539,12 @@ function screen(id){
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
 }
 const SAVEKEY='big_bug_save_v1';
+const GOLDKEY='big_bug_gold_v1';
+const GOLDUNLOCKKEY='big_bug_gold_unlocks_v1';
 let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0};
 if(save.selected==='dragonfly')save.selected='butterfly';
-save.goldLeaves=save.goldLeaves||0;
+save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeaves||0);localStorage.setItem(GOLDKEY,String(save.goldLeaves));
+save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
@@ -571,8 +584,8 @@ save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settin
 // v17.5.2 — Beetle and Butterfly are post-game rewards. Existing clears still count.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
 save.unlocked=['ladybug'];
-if(save.best>=50)save.unlocked.push('beetle');
-if(save.mainGameBeaten)save.unlocked.push('butterfly');
+if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
+if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 const ENDLESS_TEST_ACCESS=true; // TEMP: set false before release; normal unlock still requires beating Story Mode.
 function refreshEndlessHome(){const unlocked=save.mainGameBeaten||ENDLESS_TEST_ACCESS,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.toggle('hidden',!unlocked);b.textContent=save.mainGameBeaten?'ENDLESS MODE':'TEMP ENDLESS'}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
@@ -681,7 +694,8 @@ const UP=[
 ];
 
 let game=null, last=0, raf=0, audio=null;
-function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save))}
+function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save));localStorage.setItem(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));localStorage.setItem(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]));refreshGoldUI()}
+function refreshGoldUI(){const n=Math.max(0,save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n}
 
 const RUNSAVEKEY='big_bug_run_recovery_v1';
 function clearRunRecovery(){try{localStorage.removeItem(RUNSAVEKEY)}catch(e){}}
@@ -735,10 +749,12 @@ function restoreRecoveredRun(){
 
 function resetGameProgress(){
  const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+  const keptGold=Math.max(0,save.goldLeaves||0);
+  const keptGoldUnlocks=[...(save.goldUnlocks||[])];
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:0,mainGameBeaten:false,endlessBest:0,settings:keptSettings};
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessBest:0,settings:keptSettings};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -805,10 +821,10 @@ function buildBugScreen(){
   const unlocked=save.unlocked.includes(id), selected=save.selected===id, starter=id==='ladybug';
   const el=document.createElement('div');el.className='card'+(selected?' selected':'');
   const unlockWave=id==='beetle'?50:100;
-  const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>✨ Gold Leaves can unlock early in a future update.</div>`:'';
-  el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'dark'}">${selected?'SELECTED':unlocked?'SELECT':`🔒 BEAT WAVE ${unlockWave}`}</button>`;
+  const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>Or unlock early for 1 Gold Leaf.</div>`:'';
+  el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'goldUnlockBtn'}">${selected?'SELECTED':unlocked?'SELECT':`<span class="goldLeafIcon" aria-hidden="true"></span> UNLOCK — 1`}</button>`;
   el.querySelector('.bugPreview').appendChild(makeBugPreview(id));
-  el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else{beep(155,.10,.022,'triangle')}};
+  el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else if(save.goldLeaves>=1){save.goldLeaves--;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id);if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}else{beep(155,.10,.022,'triangle')}};
   grid.appendChild(el);
  });
 }
@@ -820,7 +836,7 @@ function buildShop(){
    ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level — ${s.magnet}/10${s.magnet>=10?' — MAX':''}`,3500+s.magnet*3500,'magnet'],
    ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level — ${s.coins}/10${s.coins>=10?' — MAX':''}`,5000+s.coins*5000,'coins']
  ];
- $('shop').innerHTML=`<div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
+ $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${save.goldLeaves||0}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
 }
@@ -1052,6 +1068,7 @@ function damageEnemy(e,d,source='player'){
      if(e.boss){val*=20;}
      else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
      game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
+      if(e.boss&&Math.random()<1/1000)game.drops.push({x:e.x+18,y:e.y-8,v:0,r:15,age:0,phase:Math.random()*6.28,goldLeaf:true});
    }
    if(e.kind==='mosquito'){
      // Endless swarms can die in large bursts, so keep each death deliberately tiny and cheap.
@@ -1441,7 +1458,7 @@ function update(dt,now){
  for(const d of g.drops){
    d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,dist=0,mag2=p.magnet*p.magnet;
    if(d2<mag2){dist=Math.sqrt(d2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt}
-   const pick=p.r+d.r+5;if(d2<pick*pick){game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.42,r:7,scrapFly:true,tx:W*.72,ty:42});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}
+   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+1;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ GOLD LEAF FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.42,r:7,scrapFly:true,tx:W*.72,ty:42});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
  }
  for(const f of g.fx){
    f.life-=dt;
@@ -1553,7 +1570,7 @@ let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
  clearEndingTimers();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
- showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();titleMusicStart();
+ showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart();
 }
 
 function paintEndingLadybugs(){
@@ -1586,7 +1603,7 @@ function playEndingCredits(preview=false){
  }
 
  clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
- if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);if(!game.testMode){save.scrap+=earned;save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist()}}
+ if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);if(!game.testMode){save.scrap+=earned;save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
  screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');
  // Restart the CSS scroll every time, including the temporary preview button.
@@ -1606,12 +1623,13 @@ function completeGameEnding(){
 function finish(won){
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);
- if(!game.testMode){save.scrap+=earned;if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;persist();refreshEndlessHome()}
+ if(!game.testMode&&!game.rewardsBanked){save.scrap+=earned;if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome()}
  $('overTitle').textContent=game.mode==='endless'?'ENDLESS RUN OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!');
  $('overSub').textContent=game.mode==='endless'?'The mosquito swarm finally got you.':(won?'You pushed deep into the garden.':'');
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;
  screen('gameover');
 }
+function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<1)return;save.goldLeaves--;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
 function quitRun(){if(game&&!game.over)finish(false)}
 
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
@@ -1683,11 +1701,12 @@ function drawLeaves(d){
  X.rotate(-0.45+Math.sin(t*2.2+(d.phase||0))*.18);
  const r=Math.max(9,(d.r||8)*1.28);
 
- // A bright, collectible leaf intentionally distinct from scenery.
- X.shadowColor='#dfff63';
- X.shadowBlur=13;
- X.fillStyle='#c9f84f';
- X.strokeStyle='#fbffe1';
+ // Gold Leaves deliberately keep the exact normal-leaf silhouette, with a metallic palette and sparkle.
+ const gold=!!d.goldLeaf;
+ X.shadowColor=gold?'#ffd84d':'#dfff63';
+ X.shadowBlur=gold?20:13;
+ X.fillStyle=gold?'#f4c62f':'#c9f84f';
+ X.strokeStyle=gold?'#fff2a6':'#fbffe1';
  X.lineWidth=2;
 
  X.beginPath();
@@ -1699,7 +1718,7 @@ function drawLeaves(d){
  X.stroke();
 
  X.shadowBlur=0;
- X.strokeStyle='#3d792d';
+ X.strokeStyle=gold?'#956b12':'#3d792d';
  X.lineWidth=1.6;
  X.beginPath();
  X.moveTo(0,-r*.78);
@@ -1713,12 +1732,13 @@ function drawLeaves(d){
  X.stroke();
 
  // short stem
- X.strokeStyle='#73963c';
+ X.strokeStyle=gold?'#b88718':'#73963c';
  X.lineWidth=2.2;
  X.beginPath();
  X.moveTo(0,r*.78);
  X.lineTo(r*.22,r*1.12);
  X.stroke();
+ if(gold){X.rotate(.45-Math.sin(t*2.2+(d.phase||0))*.18);X.fillStyle='#fff8c9';X.shadowColor='#fff';X.shadowBlur=8;const sp=.55+.45*Math.sin(t*7+(d.phase||0));X.globalAlpha=Math.max(.25,sp);X.font='bold '+Math.round(r*.85)+'px system-ui';X.fillText('✦',r*.45,-r*.45)}
 
  X.restore();
 }
@@ -2264,6 +2284,7 @@ document.addEventListener('click',e=>{
  const setting=e.target.closest('[data-setting]')?.dataset.setting;if(setting){initAudio();toggleSetting(setting);return}
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
+  if(a==='goldContinue')goldContinue();
  if(a==='endless')startEndless();
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testCredits')playEndingCredits(true)
@@ -2271,7 +2292,7 @@ document.addEventListener('click',e=>{
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();titleMusicStart()}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
  if(a==='resume'){startOrResume()}
@@ -2438,7 +2459,7 @@ function tryStartTitleMusic(){
 addEventListener('pageshow',tryStartTitleMusic,{once:true});
 ['pointerdown','touchstart','click'].forEach(ev=>document.addEventListener(ev,tryStartTitleMusic,{passive:true,once:true}));
 
-paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();
+paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 </script>
