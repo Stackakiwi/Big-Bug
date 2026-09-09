@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.44: Help screen BIG BUG art/layout polish and simpler descriptions -->
+<!-- Big Bug v17.9.45: Help screen BIG BUG art/layout polish and simpler descriptions -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -259,7 +259,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 /* v17.7.8 — title/home layout restored from v17.7.5 verbatim.
    The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
-#home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
+#home #globalSettingsBtn{position:absolute;right:12px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
 #home .logoMain{display:block}
 /* v17.8.3 — preserve the exact title/logo layout while simplifying only the lower Home controls. */
@@ -361,7 +361,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%23b88718' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
 .goldLeafIcon:after{content:"✦";position:absolute;right:-6px;top:-7px;color:#fff7c7;font-size:11px;text-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
 @keyframes goldTwinkle{0%,100%{opacity:.3;transform:scale(.65) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(22deg)}}
-.homeGoldBalance{position:absolute!important;left:50%!important;top:max(10px,env(safe-area-inset-top))!important;transform:translateX(-50%)!important;z-index:45!important;background:#17301edd;border:1px solid #ffe47a88;border-radius:999px;padding:7px 12px;color:#fff4bd;font-weight:1000;box-shadow:0 3px 10px #0005;pointer-events:auto;cursor:pointer;font-family:inherit}.homeGoldBalance small{font-size:9px;letter-spacing:.7px;color:#ffe98b;margin-left:4px}
+.homeGoldBalance{position:absolute!important;right:12px!important;left:auto!important;top:max(10px,env(safe-area-inset-top))!important;transform:none!important;z-index:45!important;background:#17301edd;border:1px solid #ffe47a88;border-radius:999px;padding:10px 16px;color:#fff4bd;font-size:17px;font-weight:1000;box-shadow:0 4px 12px #0006;pointer-events:auto;cursor:pointer;font-family:inherit;min-height:44px}.homeGoldBalance .goldLeafIcon{width:23px;height:23px;vertical-align:-6px;margin-right:3px}.homeGoldBalance small{font-size:11px;letter-spacing:.8px;color:#ffe98b;margin-left:5px}
 .goldCurrency{border-color:#a77c24!important;background:linear-gradient(145deg,#3a3218,#27240f)!important;color:#fff2b0}.goldCount{font-size:25px;color:#ffd94d;font-weight:1000}
 .goldUnlockBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #1f3b20!important}.continueGold{background:#e7b72e!important;box-shadow:inset 0 -4px #9b6c13,0 5px 0 #1f3b20!important}
 #gameover #goldContinueBtn{display:block;margin:14px auto;width:min(100%,470px)}.continueGold:disabled{opacity:.48;filter:saturate(.55);cursor:default}
@@ -435,7 +435,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
-/* v17.9.44 — restored quick Help guide; informational UI only. */
+/* v17.9.45 — Home controls polish: Settings moved bottom-right; Gold Leaf Shop shifted right and enlarged. */
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #help h2{text-align:center;margin:0 0 4px;font:700 30px "Marker Felt","Chalkboard SE","Noteworthy",cursive;color:#f8f3df}
@@ -451,7 +451,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
 @media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}.sensePic{flex-basis:68px}.sensePic .senseRing{width:61px;height:61px}}
-/* v17.9.44 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
+/* v17.9.45 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
 #help .panel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 12% 8%,#21472b55 0 14%,transparent 15%),radial-gradient(ellipse at 92% 20%,#173e2655 0 12%,transparent 13%),linear-gradient(165deg,#102f1d,#071b10 72%,#04130b)}
 #help .panel:before,#help .panel:after{content:"";position:absolute;width:90px;height:34px;border-radius:70% 30% 70% 30%;background:#315c3570;pointer-events:none;z-index:0}
 #help .panel:before{left:-35px;top:105px;transform:rotate(-28deg)}#help .panel:after{right:-38px;bottom:100px;transform:rotate(32deg)}
@@ -498,8 +498,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.44</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.44</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.45</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.45</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -686,7 +686,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.44 — Shifted the regular spider's flipped original head slightly farther forward.
+// v17.9.45 — Shifted the regular spider's flipped original head slightly farther forward.
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
 // v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
 // v17.9.31 — Regular spider face/fangs now project forward from the head.
