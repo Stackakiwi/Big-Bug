@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.41: Double-Digit Boss HUD Fit -->
+<!-- Big Bug v17.8.42: Matching Attack Sword Icon -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -387,8 +387,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.41</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.41</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.42</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.42</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -524,6 +524,7 @@ const BUGS={
 };
 
 
+// v17.8.42 — Sharper Bite now uses the exact same hand-drawn sword artwork as the attack HUD.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
@@ -751,7 +752,7 @@ function buildShop(){
  const s=save.upgrades;
  const rows=[
    ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`Health upgrades are 10% stronger per level — ${s.hp}/10${s.hp>=10?' — MAX':''}`,2500+s.hp*2500,'hp'],
-   ['<span class="bbIcon bbBiteIcon shopDrawn"></span>','Sharper Bite',`Damage upgrades are 10% stronger per level — ${s.dmg}/10${s.dmg>=10?' — MAX':''}`,3000+s.dmg*3000,'dmg'],
+   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`Damage upgrades are 10% stronger per level — ${s.dmg}/10${s.dmg>=10?' — MAX':''}`,3000+s.dmg*3000,'dmg'],
    ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`Attack-speed upgrades are 10% stronger per level — ${s.magnet}/10${s.magnet>=10?' — MAX':''}`,3500+s.magnet*3500,'magnet'],
    ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`Pickup & Leaf upgrades are 10% stronger per level — ${s.coins}/10${s.coins>=10?' — MAX':''}`,5000+s.coins*5000,'coins']
  ];
