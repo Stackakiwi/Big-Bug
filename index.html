@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.14: Cleaner Power Up Descriptions -->
+<!-- Big Bug v17.9.15: Cleaner Power Up Descriptions -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -408,7 +408,7 @@ html:has(#gameover:not(.hidden)),body:has(#gameover:not(.hidden)){background:#03
 html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503!important}
 
 
-/* v17.9.14 — Gold Leaf storefront + direct permanent base-stat upgrades */
+/* v17.9.15 — Gold Leaf storefront + direct permanent base-stat upgrades */
 #base .shopBuyStack{display:flex;flex-direction:column;gap:7px;flex:0 0 118px}
 #base .shopBuyStack .btn{width:100%;min-width:0!important;margin:0!important}
 #base .shopBuyStack .goldUpgradeBtn{background:linear-gradient(#f1c642,#c98e16)!important;color:#2a210b!important;border:1px solid #ffe889;box-shadow:inset 0 -4px #8d6110,0 4px 0 #132214,0 0 10px #ffd84f44!important}
@@ -425,6 +425,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .goldPack .bonus{min-height:17px;font-size:11px;font-weight:900;color:#e8cf73;letter-spacing:.4px}.goldPack .btn{min-width:0;width:100%;margin:8px 0 0;background:#e3b42c;box-shadow:inset 0 -4px #996e13,0 4px 0 #0d160c}
 .goldPack .btn:active{transform:translateY(2px)}
 .goldStoreNote{text-align:center;font-size:12px;line-height:1.35;color:#c8c6a2;margin:14px 4px 0}
+.goldDevTools{display:flex;gap:8px;margin:12px 0 4px;padding:10px;border:1px dashed #d8b64d88;border-radius:14px;background:#3a301255}.goldDevTools .btn{flex:1;min-width:0;margin:0;font-size:12px;padding:10px 8px}.goldDevTools .goldDevClear{background:#7b3930;color:#fff;box-shadow:inset 0 -4px #4e211d,0 4px 0 #0d160c}
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
 </style>
@@ -463,8 +464,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.14</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.14</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.15</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.15</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -488,6 +489,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
    <div class="goldPack best"><div class="amount"><span class="goldLeafIcon"></span>200</div><div class="bonus">BEST VALUE • +100%</div><button class="btn small" data-gold-pack="200">$49.99</button></div>
   </div>
   <p class="goldStoreNote">Gold Leaves are permanent and are never erased by Reset Progress. Real-money checkout will activate when the payment system is connected.</p>
+  <div class="goldDevTools" aria-label="Temporary Gold Leaf testing controls"><button class="btn small" data-action="tempAddGold">TEMP +10 GOLD</button><button class="btn small goldDevClear" data-action="tempClearGold">TEMP CLEAR GOLD</button></div>
   <button class="btn dark" data-action="home">BACK</button>
  </div>
 </section>
@@ -560,7 +562,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <script>
-// v17.9.14 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
+// v17.9.15 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
 
 // v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
@@ -2346,6 +2348,8 @@ document.addEventListener('click',e=>{
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
  if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop();refreshGoldUI();screen('goldShop')}
+ if(a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+10;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +10 GOLD LEAVES',.9)}
+ if(a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
  if(a==='resume'){startOrResume()}
  if(a==='quit'){quitRun()}
 });
