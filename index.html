@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.49: Livelier Handcrafted Credits -->
+<!-- Big Bug v17.8.50: Livelier Handcrafted Credits -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -303,14 +303,14 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-#ending.creditsActive #creditsRoll .creditName{animation-duration:.85s;animation-timing-function:cubic-bezier(.16,.82,.22,1);animation-fill-mode:both}
-#ending.creditsActive #creditsRoll .creditName:nth-of-type(1){animation-name:creditFlyLeft;animation-delay:11.8s}
-#ending.creditsActive #creditsRoll .creditName:nth-of-type(2){animation-name:creditFlyRight;animation-delay:12.8s}
-#ending.creditsActive #creditsRoll .creditName:nth-of-type(3){animation-name:creditFlyLeft;animation-delay:13.8s}
-#ending.creditsActive #creditsRoll .creditName:nth-of-type(4){animation-name:creditFlyRight;animation-delay:14.8s}
-#ending.creditsActive #creditsRoll .creditName:nth-of-type(5){animation-name:creditFlyLeft;animation-delay:15.8s}
-#ending.creditsActive #creditsRoll .creditName:nth-of-type(6){animation-name:creditFlyRight;animation-delay:16.8s}
-#ending.creditsActive #creditsRoll .creditName:nth-of-type(7){animation-name:creditFlyLeft;animation-delay:17.8s}
+#ending.creditsActive #creditsRoll .creditName{animation-duration:.85s;animation-timing-function:cubic-bezier(.16,.82,.22,1);animation-fill-mode:forwards;animation-iteration-count:1}
+#ending.creditsActive #creditsRoll .creditName.c1{animation-name:creditFlyLeft;animation-delay:9.8s}
+#ending.creditsActive #creditsRoll .creditName.c2{animation-name:creditFlyRight;animation-delay:10.8s}
+#ending.creditsActive #creditsRoll .creditName.c3{animation-name:creditFlyLeft;animation-delay:11.8s}
+#ending.creditsActive #creditsRoll .creditName.c4{animation-name:creditFlyRight;animation-delay:12.8s}
+#ending.creditsActive #creditsRoll .creditName.c5{animation-name:creditFlyLeft;animation-delay:13.8s}
+#ending.creditsActive #creditsRoll .creditName.c6{animation-name:creditFlyRight;animation-delay:14.8s}
+#ending.creditsActive #creditsRoll .creditName.c7{animation-name:creditFlyLeft;animation-delay:15.8s}
 @keyframes creditFlyLeft{
   0%{opacity:0;transform:translateX(calc(-50vw - 180px)) scale(.94)}
   68%{opacity:1;transform:translateX(12px) scale(1.02)}
@@ -355,9 +355,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endFlourish:before,#creditsRoll .endFlourish:after{content:"";position:absolute;top:8px;width:48px;height:1px;background:linear-gradient(90deg,transparent,#88a16b)}
 #creditsRoll .endFlourish:before{left:0}.endFlourish:after{right:0;transform:scaleX(-1)}
 #creditsRoll .endFlourish i{position:absolute;left:54px;top:2px;width:10px;height:10px;border:1px solid #8da66d;border-radius:70% 0 70% 0;transform:rotate(45deg)}
-#creditsRoll .creditName{animation:creditGlow 3.6s ease-in-out infinite}
-#creditsRoll .creditName:nth-of-type(2n){animation-delay:-1.8s}
-@keyframes creditGlow{0%,100%{text-shadow:0 3px 0 #000,0 0 0 transparent}50%{text-shadow:0 3px 0 #000,0 0 12px rgba(148,102,151,.24)}}
+50%{text-shadow:0 3px 0 #000,0 0 12px rgba(148,102,151,.24)}}
 #creditsRoll .creditName:after{content:"";display:block;width:34px;height:1px;margin:11px auto 0;background:linear-gradient(90deg,transparent,#8c6e8e,transparent);opacity:.65}
 #creditsRoll h2{text-shadow:0 0 18px #8d568e88}
 
@@ -432,8 +430,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.49</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.49</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.50</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.50</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -486,13 +484,13 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <div class="endSub">THE GARDEN SURVIVES</div>
   <div class="endFlourish"><i></i></div>
   <h2>SPECIAL THANKS</h2>
-  <div class="creditName">Dustin</div>
-  <div class="creditName">Emily</div>
-  <div class="creditName">Garrett</div>
-  <div class="creditName">Jordan</div>
-  <div class="creditName">Matthew</div>
-  <div class="creditName">Ryan</div>
-  <div class="creditName">Rylee</div>
+  <div class="creditName c1">Dustin</div>
+  <div class="creditName c2">Emily</div>
+  <div class="creditName c3">Garrett</div>
+  <div class="creditName c4">Jordan</div>
+  <div class="creditName c5">Matthew</div>
+  <div class="creditName c6">Ryan</div>
+  <div class="creditName c7">Rylee</div>
   <div class="endThanks">THANK YOU FOR PLAYING</div>
  </div>
  <div id="continuePrompt">Continue…?</div>
@@ -529,7 +527,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.45 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
-// v17.8.49 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
+// v17.8.50 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
@@ -578,7 +576,7 @@ const BUGS={
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
-// v17.8.49 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
+// v17.8.50 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
 // v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
 // v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
 // v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
@@ -1430,7 +1428,7 @@ function playEndingCredits(preview=false){
  // Restart the CSS scroll every time, including the temporary preview button.
  roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 34s linear forwards';
  creditsMusicStart();
- endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},34500));
+ endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},33000));
  endingTimers.push(setTimeout(()=>{prompt.classList.add('show')},37500));
  endingTimers.push(setTimeout(returnHomeAfterEnding,42500));
 }
