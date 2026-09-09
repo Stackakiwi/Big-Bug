@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.20: Quit Run Confirmation -->
+<!-- Big Bug v17.9.21: Continue Prompt Mystery Music -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -466,8 +466,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.20</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.20</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.21</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.21</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -845,6 +845,17 @@ function creditsMusicStart(){
  creditsMusicStop();if(!audio||save.settings.music===false)return;
  const melody=[392,440,523,440,349,392,440,330,349,392,523,494,440,392,349,330],harmony=[196,220,262,220,175,196,220,165];
  const tick=()=>{if($('ending')?.classList.contains('hidden')){creditsMusicStop();return}const n=melody[creditsMusicStep%melody.length],h=harmony[Math.floor(creditsMusicStep/2)%harmony.length];beep(n,.58,.0065,'sine','music');if(creditsMusicStep%2===0)beep(h,.82,.0045,'triangle','music');if(creditsMusicStep%4===0)beep(n/2,.95,.0028,'sine','music');creditsMusicStep++;creditsMusicTimer=setTimeout(tick,620)};tick();
+}
+// v17.9.21 — short mysterious/playful cue while the fully-black Continue… prompt is visible.
+function continueMysteryMusicStart(){
+ if(!audio||save.settings.music===false)return;
+ const notes=[294,349,440,523,466,392,330,440,587];
+ const delays=[0,430,860,1290,1780,2270,2760,3290,3820];
+ notes.forEach((n,i)=>endingTimers.push(setTimeout(()=>{
+   if($('ending')?.classList.contains('hidden')||!$('continuePrompt')?.classList.contains('show'))return;
+   beep(n,.42,i===3||i===8?.007:.0055,i%3===1?'triangle':'sine','music');
+   if(i===0||i===4||i===8)beep(n/2,.72,.0028,'triangle','music');
+ },delays[i])));
 }
 let bossMusicTimer=null,bossMusicStep=0;
 function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}bossMusicStep=0}
@@ -1681,7 +1692,7 @@ function playEndingCredits(preview=false){
  roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 34s linear forwards';
  creditsMusicStart();
  endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},34500));
- endingTimers.push(setTimeout(()=>{prompt.classList.add('show')},37500));
+ endingTimers.push(setTimeout(()=>{prompt.classList.add('show');continueMysteryMusicStart()},37500));
  endingTimers.push(setTimeout(returnHomeAfterEnding,42500));
 }
 function completeGameEnding(){
