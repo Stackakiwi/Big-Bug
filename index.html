@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.43: Clear Attacks + Performance Pass -->
+<!-- Big Bug v17.8.44: Stable Title Animation Start -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -387,8 +387,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.43</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.43</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.44</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.44</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -524,6 +524,7 @@ const BUGS={
 };
 
 
+// v17.8.44 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
 // v17.8.43 — normal player attacks now use the same clear target-travel visual as Triple Shot; performance-only cleanup removes dead duplicate rendering and per-frame helper allocation.
 // v17.8.42 — Sharper Bite now uses the exact same hand-drawn sword artwork as the attack HUD.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
@@ -2192,9 +2193,10 @@ function startTitleGardenLoop(){
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();
-// IMPORTANT: initialize the first scene's spread offsets before the animation begins.
-// Previous builds started the timer without ever filling titleSceneEnemyOffsets, so the buddy ran correctly but no enemies were created.
-resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);
+// v17.8.44 — let the first real animation frame initialize the intro using stable rendered dimensions.
+// This avoids iOS/Safari occasionally reporting a transient width during initial script execution,
+// which could bunch or misplace the opening swarm without changing the animation itself.
+titleSceneStart=0;titleScenePlayed=false;titleSceneLastStart=0;titleSceneEnemyOffsets=[];
 addEventListener('resize',resizeTitleGarden);startTitleGardenLoop();
 
 // Browsers—especially iPhone/iPad Safari—require a real user gesture before audible WebAudio can run.
