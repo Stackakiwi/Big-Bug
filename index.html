@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.51: Livelier Handcrafted Credits -->
+<!-- Big Bug v17.8.52: Livelier Handcrafted Credits -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -303,50 +303,26 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-#ending.creditsActive #creditsRoll .creditName{opacity:0;animation-duration:.72s;animation-timing-function:cubic-bezier(.18,.86,.24,1);animation-fill-mode:forwards;animation-iteration-count:1}
-#ending.creditsActive #creditsRoll .creditName.c1{animation-name:creditFlyLeft;animation-delay:8.80s}
-#ending.creditsActive #creditsRoll .creditName.c2{animation-name:creditFlyRight;animation-delay:9.65s}
-#ending.creditsActive #creditsRoll .creditName.c3{animation-name:creditFlyLeft;animation-delay:10.50s}
-#ending.creditsActive #creditsRoll .creditName.c4{animation-name:creditFlyRight;animation-delay:11.35s}
-#ending.creditsActive #creditsRoll .creditName.c5{animation-name:creditFlyLeft;animation-delay:12.20s}
-#ending.creditsActive #creditsRoll .creditName.c6{animation-name:creditFlyRight;animation-delay:13.05s}
-#ending.creditsActive #creditsRoll .creditName.c7{animation-name:creditFlyLeft;animation-delay:13.90s}
-@keyframes creditFlyLeft{0%{opacity:0;transform:translateX(calc(-50vw - 180px))}100%{opacity:1;transform:translateX(0)}}
-  68%{opacity:1;transform:translateX(12px) scale(1.02)}
-  100%{opacity:1;transform:translateX(0) scale(1)}
+#ending.creditsActive #creditsRoll .creditName{
+  opacity:0;
+  transform:translateX(0);
+  animation-name:creditNameSlide;
+  animation-duration:.72s;
+  animation-timing-function:cubic-bezier(.18,.86,.24,1);
+  animation-fill-mode:forwards;
+  animation-iteration-count:1;
 }
-@keyframes creditFlyRight{0%{opacity:0;transform:translateX(calc(50vw + 180px))}100%{opacity:1;transform:translateX(0)}}
-  68%{opacity:1;transform:translateX(-12px) scale(1.02)}
-  100%{opacity:1;transform:translateX(0) scale(1)}
-}
-#creditsRoll .endThanks{margin-top:80px;font-size:16px;color:#96ad83;letter-spacing:3px}
-@keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 860px))}}
-#continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
-#continuePrompt.show{opacity:1}
-@media(max-width:430px){#creditsRoll h1{font-size:38px}#creditsRoll .creditName{font-size:26px}}
-
-
-/* peaceful garden credits polish */
-#endingGarden{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.endGrass{position:absolute;left:-5%;right:-5%;bottom:-6px;height:92px;opacity:.22;background:repeating-linear-gradient(78deg,transparent 0 18px,#6e8a59 19px 21px,transparent 22px 35px);mask-image:linear-gradient(to top,#000,transparent)}
-.endMoon{position:absolute;width:72px;height:72px;border-radius:50%;right:10%;top:10%;background:#d8d4b6;opacity:.09;box-shadow:0 0 38px #c7c3a288}
-.endSpore{position:absolute;width:4px;height:4px;border-radius:50%;background:#d7c5dc;opacity:.28;box-shadow:0 0 7px #d7c5dc;animation:endFloat 9s ease-in-out infinite}
-.endSpore.s2{left:18%;top:68%;animation-delay:-2s}.endSpore.s3{left:76%;top:52%;animation-delay:-5s}.endSpore.s4{left:88%;top:78%;animation-delay:-7s}.endSpore.s5{left:34%;top:38%;animation-delay:-3.5s}.endSpore.s6{left:61%;top:82%;animation-delay:-1s}
-@keyframes endFloat{0%,100%{transform:translate(0,14px);opacity:.12}50%{transform:translate(14px,-22px);opacity:.36}}
-#endingLadybug{position:absolute;bottom:30px;left:-54px;width:48px;height:48px;opacity:.9;filter:drop-shadow(0 3px 3px #000);transform-origin:50% 55%;animation:endBugWander 25s ease-in-out 4.5s 1 forwards}
-@keyframes endBugWander{
- 0%{transform:translate(0,0) rotate(78deg)}
- 10%{transform:translate(calc(14vw + 32px),-8px) rotate(86deg)}
- 18%{transform:translate(calc(23vw + 40px),-1px) rotate(62deg)}
- 26%{transform:translate(calc(31vw + 42px),-15px) rotate(92deg)}
- 34%{transform:translate(calc(39vw + 44px),-5px) rotate(106deg)}
- 42%{transform:translate(calc(47vw + 48px),-20px) rotate(74deg)}
- 50%{transform:translate(calc(55vw + 50px),-8px) rotate(94deg)}
- 58%{transform:translate(calc(63vw + 54px),-2px) rotate(112deg)}
- 67%{transform:translate(calc(71vw + 58px),-18px) rotate(72deg)}
- 76%{transform:translate(calc(79vw + 62px),-7px) rotate(96deg)}
- 86%{transform:translate(calc(89vw + 70px),-14px) rotate(84deg)}
- 100%{transform:translate(calc(100vw + 110px),-3px) rotate(98deg)}
+#ending.creditsActive #creditsRoll .creditName.c1{--creditFrom:-110vw;animation-delay:8.80s}
+#ending.creditsActive #creditsRoll .creditName.c2{--creditFrom:110vw;animation-delay:9.65s}
+#ending.creditsActive #creditsRoll .creditName.c3{--creditFrom:-110vw;animation-delay:10.50s}
+#ending.creditsActive #creditsRoll .creditName.c4{--creditFrom:110vw;animation-delay:11.35s}
+#ending.creditsActive #creditsRoll .creditName.c5{--creditFrom:-110vw;animation-delay:12.20s}
+#ending.creditsActive #creditsRoll .creditName.c6{--creditFrom:110vw;animation-delay:13.05s}
+#ending.creditsActive #creditsRoll .creditName.c7{--creditFrom:-110vw;animation-delay:13.90s}
+@keyframes creditNameSlide{
+  0%{opacity:0;transform:translateX(var(--creditFrom))}
+  8%{opacity:1}
+  100%{opacity:1;transform:translateX(0)}
 }
 #endingGarden:after{content:"";position:absolute;left:7%;right:7%;bottom:18px;height:1px;background:linear-gradient(90deg,transparent,rgba(135,163,94,.15),rgba(135,163,94,.05),transparent)}
 #creditsRoll .endFlourish{width:118px;height:18px;margin:22px auto 58px;opacity:.48;position:relative}
@@ -428,8 +404,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.51</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.51</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.52</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.52</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -525,7 +501,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
 // v17.8.45 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
-// v17.8.51 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
+// v17.8.52 — credits-only repair: stable fade/Continue ending restored; Special Thanks alternate left/right entrances; top credits ladybug glow removed.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
@@ -574,7 +550,7 @@ const BUGS={
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
-// v17.8.51 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
+// v17.8.52 — credits polish: game-style ladybugs replace emoji, subtle garden flourishes, and a livelier lightweight wandering ladybug.
 // v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
 // v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
 // v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
