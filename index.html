@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.44: Stable Title Animation Start -->
+<!-- Big Bug v17.8.45: Logo-Anchored Title Hide + Isolated Test Controls -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -255,6 +255,10 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
+/* v17.8.45 — temporary Home test controls live in one isolated overlay and cannot affect title layout. */
+#home .homeDevControls{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:0!important;z-index:50!important;pointer-events:none!important;margin:0!important;padding:0!important;contain:layout style!important}
+#home .homeDevControls .testJump,#home .homeDevControls .creditsTestBtn{pointer-events:auto!important}
+#home .logoMain{display:block}
 /* v17.8.3 — preserve the exact title/logo layout while simplifying only the lower Home controls. */
 #home .homeTextLayoutKeeper{visibility:hidden;pointer-events:none}
 #home .homeLowerLift{transform:translateY(-58px)}
@@ -377,18 +381,20 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
-  <div class="logo">BIG<br>BUG<small>SMALL BUG. BIG DREAMS.</small></div>
+  <div class="logo"><span class="logoMain">BIG<br>BUG</span><small>SMALL BUG. BIG DREAMS.</small></div>
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
-  <div class="testJump"><select id="testWave" aria-label="Temporary wave and boss tester"></select><button class="btn dark small" data-action="testWave">TEST</button></div>
-  <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
-  <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
+  <div class="homeDevControls" aria-label="Temporary testing controls">
+    <div class="testJump"><select id="testWave" aria-label="Temporary wave and boss tester"></select><button class="btn dark small" data-action="testWave">TEST</button></div>
+    <div class="testHint">TEMP TEST SELECTOR — boss fights are every 5 waves</div>
+    <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
+  </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.44</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.44</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.45</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.45</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -482,6 +488,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+// v17.8.45 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
@@ -524,7 +531,7 @@ const BUGS={
 };
 
 
-// v17.8.44 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
+// v17.8.45 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
 // v17.8.43 — normal player attacks now use the same clear target-travel visual as Triple Shot; performance-only cleanup removes dead duplicate rendering and per-frame helper allocation.
 // v17.8.42 — Sharper Bite now uses the exact same hand-drawn sword artwork as the attack HUD.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
@@ -2144,7 +2151,12 @@ function titleGardenLoop(now){
   if(!titleSceneStart&&(!titleScenePlayed||now-titleSceneLastStart>=20000))resetTitleScene(now,w);
   if(titleSceneStart){
    let t=(now-titleSceneStart)/1000;
-   const cx=w*.5,logoHideY=h*.345,peekY=h*.43;
+   const cx=w*.5;
+   // v17.8.45 — anchor the hide/peek path to the rendered BIG BUG letters, not screen height.
+   // This keeps the buddy tucked behind the logo even when safe areas/device sizes differ.
+   const homeRect=$('home').getBoundingClientRect(),logoMain=$('home').querySelector('.logoMain'),logoRect=logoMain?.getBoundingClientRect();
+   const logoTop=logoRect?logoRect.top-homeRect.top:h*.27,logoH=logoRect?logoRect.height:h*.18;
+   const logoHideY=logoTop+logoH*.50,peekY=logoTop+logoH+13;
    let buddyY,lookBack=false;
    // Buddy arrives first, pauses physically behind the logo (the logo itself masks him),
    // peeks out to look back, then bolts as the swarm catches up.
@@ -2193,7 +2205,7 @@ function startTitleGardenLoop(){
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();
-// v17.8.44 — let the first real animation frame initialize the intro using stable rendered dimensions.
+// v17.8.45 — let the first real animation frame initialize the intro using stable rendered dimensions.
 // This avoids iOS/Safari occasionally reporting a transient width during initial script execution,
 // which could bunch or misplace the opening swarm without changing the animation itself.
 titleSceneStart=0;titleScenePlayed=false;titleSceneLastStart=0;titleSceneEnemyOffsets=[];
