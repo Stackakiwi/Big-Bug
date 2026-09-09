@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.40: HUD Fit Polish -->
+<!-- Big Bug v17.8.41: Double-Digit Boss HUD Fit -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -348,9 +348,13 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #pause .panel,#gameover .panel{border-radius:18px;border-color:#4b684d;box-shadow:0 8px 0 #08150c,0 22px 55px #0009}
 
 
-/* v17.8.40 — keep all HUD boxes equal; fit boss wave label inside its box; enlarge sword only. */
+/* v17.8.41 — preserve four equal HUD boxes and compact the wave label only when digits grow. */
 #hud .pill:nth-child(2){font-size:12px;gap:3px;letter-spacing:-.15px;overflow:hidden}
 #hud .pill:nth-child(2) .waveProg{font-size:9px;margin-left:2px;min-width:0}
+#hud .pill:nth-child(2).waveDouble{font-size:10.5px;gap:2px;letter-spacing:-.35px;padding-left:4px;padding-right:4px}
+#hud .pill:nth-child(2).waveDouble .waveProg{font-size:8px;margin-left:1px;letter-spacing:-.2px}
+#hud .pill:nth-child(2).waveTriple{font-size:9.5px;gap:1px;letter-spacing:-.45px;padding-left:3px;padding-right:3px}
+#hud .pill:nth-child(2).waveTriple .waveProg{font-size:7.5px;margin-left:1px}
 #hud .pill:nth-child(4) .bbSwordSvg{width:1.62em;height:1.62em;margin:-.18em -.02em}
 
 </style>
@@ -383,8 +387,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.40</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.40</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.41</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.41</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -520,7 +524,7 @@ const BUGS={
 };
 
 
-// v17.8.40 — equal HUD box sizes preserved; boss wave text fitted inside its box and sword enlarged.
+// v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
 // v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
@@ -1399,7 +1403,7 @@ function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_
 function setBossFill(value){if(HUD_CACHE.bossFill!==value){HUD_CACHE.bossFill=value;$('bossFill').style.width=value}}
 function updateHud(){
  const p=game.p,g=game,active=boostActive();
- setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);setHudText('coins',g.coins||0);setHudText('dmg',Math.round(p.damage*(active?2:1)));
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);const wavePill=$('wave').parentElement;wavePill.classList.toggle('waveDouble',g.wave>=10&&g.wave<100);wavePill.classList.toggle('waveTriple',g.wave>=100);setHudText('coins',g.coins||0);setHudText('dmg',Math.round(p.damage*(active?2:1)));
  setHudText('waveProgress',g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'');
  const b=$('boostBtn');if(b){const left=active?Math.max(0,g.boostUntil-g.time):0,disabled=!active&&(g.coins||0)<boostCost(),html=active?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`;if(HUD_CACHE.boostActive!==active){HUD_CACHE.boostActive=active;b.classList.toggle('active',active)}if(HUD_CACHE.boostDisabled!==disabled){HUD_CACHE.boostDisabled=disabled;b.disabled=disabled}if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
 }
