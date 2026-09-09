@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.40: Bug Parade and app icons now use the in-game ladybug artwork -->
+<!-- Big Bug v17.9.41: Bug Parade and app icons now use the in-game ladybug artwork -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -435,7 +435,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
-/* v17.9.40 — restored quick Help guide; informational UI only. */
+/* v17.9.41 — restored quick Help guide; informational UI only. */
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #help h2{text-align:center;margin:0 0 4px;font:700 30px "Marker Felt","Chalkboard SE","Noteworthy",cursive;color:#f8f3df}
@@ -481,11 +481,11 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled>🔒 ENDLESS MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
-  <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
+  <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.40</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.40</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.41</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.41</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -672,7 +672,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.40 — Shifted the regular spider's flipped original head slightly farther forward.
+// v17.9.41 — Shifted the regular spider's flipped original head slightly farther forward.
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
 // v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
 // v17.9.31 — Regular spider face/fangs now project forward from the head.
@@ -742,7 +742,7 @@ function drawPlayableBug(ctx,id,size=28,glow=false){
  }
  ctx.restore();
 }
-function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}}
+function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
 
 function makeBugPreview(id){
  const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
