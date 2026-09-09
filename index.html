@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.37: Bug Parade and app icons now use the in-game ladybug artwork -->
+<!-- Big Bug v17.9.38: Bug Parade and app icons now use the in-game ladybug artwork -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -431,11 +431,19 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
-/* v17.9.37 — restored quick Help guide; informational UI only. */
+/* v17.9.38 — restored quick Help guide; informational UI only. */
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #help h2{text-align:center;margin:0 0 4px;font:700 30px "Marker Felt","Chalkboard SE","Noteworthy",cursive;color:#f8f3df}
 #help .helpIntro{text-align:center;margin:0 0 12px}.helpGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.helpCard{background:#153923;border:1px solid #3c6242;border-radius:15px;padding:11px 12px}.helpCard b{display:block;color:#fff8e7;font-size:16px;margin-bottom:3px}.helpCard .muted{font-size:13px;line-height:1.25}.bugSenseCard{grid-column:1/-1;display:flex;align-items:center;gap:14px}.sensePic{position:relative;flex:0 0 76px;height:76px;display:flex;align-items:center;justify-content:center}.sensePic .senseRing{position:absolute;width:68px;height:68px;border:3px solid #ff5a4f;border-radius:50%;box-shadow:0 0 9px #ff5a4f88}.sensePic .bbBugIcon{font-size:32px}.helpBack{display:block;width:100%;margin:14px 0 0!important}.settingsHelpBtn{display:block;width:100%;margin:12px 0 4px!important}
+#help .helpCard b{display:flex;align-items:center;gap:7px}
+#help .helpCard b .bbIcon{font-size:18px}
+#help .helpLeafIcon{width:20px;height:20px;display:inline-block;vertical-align:middle;margin:0;flex:0 0 20px}
+#help .helpMosquitoIcon{display:inline-block;width:22px;height:18px;position:relative;vertical-align:middle;flex:0 0 22px;transform:scale(.8);transform-origin:center}
+#help .sensePic .bbBugIcon{transform:translateY(4px)}
+#help h2 .bbBugIcon{font-size:25px;margin-right:7px;vertical-align:-.12em}
+.settingsHelpBtn .bbBugIcon{font-size:16px;margin-right:5px}
+
 @media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}.sensePic{flex-basis:68px}.sensePic .senseRing{width:61px;height:61px}}
 
 </style>
@@ -470,8 +478,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.37</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.37</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.38</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.38</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -507,7 +515,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="settingRow"><div class="settingText"><b>🎵 Music</b><div class="muted">Title and boss music</div></div><button class="toggleBtn" id="musicToggle" data-setting="music">ON</button></div>
   <div class="settingRow"><div class="settingText"><b>🔊 Sound Effects</b><div class="muted">Attacks, pickups, upgrades, and hits</div></div><button class="toggleBtn" id="sfxToggle" data-setting="sfx">ON</button></div>
   <div class="settingRow"><div class="settingText"><b>💥 Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
-  <button class="btn dark settingsHelpBtn" data-action="help">❓ HOW TO PLAY</button>
+  <button class="btn dark settingsHelpBtn" data-action="help"><span class="bbIcon bbBugIcon" aria-hidden="true"></span> HOW TO PLAY</button>
   <div class="settingsDanger">
    <h3>Reset Progress</h3><p class="muted">Erase Leaves, unlocks, upgrades, and your best wave. Gold Leaves and settings stay safe.</p>
    <button class="btn red" data-action="showResetConfirm">RESET PROGRESS</button>
@@ -519,16 +527,16 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 <section id="help" class="screen hidden">
  <div class="panel">
-  <h2>❓ HOW TO PLAY</h2>
+  <h2><span class="bbIcon bbBugIcon" aria-hidden="true"></span> HOW TO PLAY</h2>
   <p class="muted helpIntro">The quick garden guide.</p>
   <div class="helpGrid">
-   <div class="helpCard"><b>🐞 Move</b><div class="muted">Tap or drag. Your bug attacks nearby enemies automatically.</div></div>
-   <div class="helpCard"><b>🍃 Grow Stronger</b><div class="muted">Collect Leaves and choose upgrades between waves.</div></div>
-   <div class="helpCard"><b>⚡ Boost</b><div class="muted">Spend Leaves during a run for a short burst of extra attack power.</div></div>
-   <div class="helpCard"><b>👑 Bosses</b><div class="muted">Bosses arrive every 5 waves. Watch their tells and keep moving.</div></div>
+   <div class="helpCard"><b><span class="bbIcon bbBugIcon" aria-hidden="true"></span> Move</b><div class="muted">Tap or drag. Your bug attacks nearby enemies automatically.</div></div>
+   <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves and choose upgrades between waves.</div></div>
+   <div class="helpCard"><b><span class="bbIcon bbBoltIcon" aria-hidden="true"></span> Boost</b><div class="muted">Spend Leaves during a run for a short burst of extra attack power.</div></div>
+   <div class="helpCard"><b><span class="bbIcon bbBiteIcon" aria-hidden="true"></span> Bosses</b><div class="muted">Bosses arrive every 5 waves. Watch their tells and keep moving.</div></div>
    <div class="helpCard bugSenseCard"><div class="sensePic" aria-hidden="true"><span class="senseRing"></span><span class="bbIcon bbBugIcon"></span></div><div><b>BUG SENSE</b><div class="muted">See a warning circle around an enemy? An attack is coming. Get ready to move!</div></div></div>
-   <div class="helpCard"><b>✨ Power Ups</b><div class="muted">Permanent upgrades make future runs stronger.</div></div>
-   <div class="helpCard"><b>🦟 Endless</b><div class="muted">Beat Wave 20 to unlock Endless Mode and survive the swarm.</div></div>
+   <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Permanent upgrades make future runs stronger.</div></div>
+   <div class="helpCard"><b><span class="mosquitoCounterIcon helpMosquitoIcon" aria-hidden="true"></span> Endless</b><div class="muted">Beat Wave 20 to unlock Endless Mode and survive the swarm.</div></div>
   </div>
   <button class="btn dark helpBack" data-action="settings">BACK TO SETTINGS</button>
  </div>
@@ -659,7 +667,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.37 — Shifted the regular spider's flipped original head slightly farther forward.
+// v17.9.38 — Shifted the regular spider's flipped original head slightly farther forward.
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
 // v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
 // v17.9.31 — Regular spider face/fangs now project forward from the head.
