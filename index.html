@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="manifest" href="manifest.json">
 <title>BIG BUG</title>
-<!-- Big Bug v17.8.53: Logo-Anchored Title Hide + Isolated Test Controls -->
+<!-- Big Bug v17.8.54: Logo-Anchored Title Hide + Isolated Test Controls -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -255,7 +255,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:40;margin:0;min-width:0;padding:10px 13px;font-size:14px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
-/* v17.8.53 — temporary Home test controls live in one isolated overlay and cannot affect title layout. */
+/* v17.8.54 — temporary Home test controls live in one isolated overlay and cannot affect title layout. */
 #home .homeDevControls{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:0!important;z-index:50!important;pointer-events:none!important;margin:0!important;padding:0!important;contain:layout style!important}
 #home .homeDevControls .testJump,#home .homeDevControls .creditsTestBtn{pointer-events:auto!important}
 #home .logoMain{display:block}
@@ -317,8 +317,18 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .endSpore{position:absolute;width:4px;height:4px;border-radius:50%;background:#d7c5dc;opacity:.28;box-shadow:0 0 7px #d7c5dc;animation:endFloat 9s ease-in-out infinite}
 .endSpore.s2{left:18%;top:68%;animation-delay:-2s}.endSpore.s3{left:76%;top:52%;animation-delay:-5s}.endSpore.s4{left:88%;top:78%;animation-delay:-7s}.endSpore.s5{left:34%;top:38%;animation-delay:-3.5s}.endSpore.s6{left:61%;top:82%;animation-delay:-1s}
 @keyframes endFloat{0%,100%{transform:translate(0,14px);opacity:.12}50%{transform:translate(14px,-22px);opacity:.36}}
-#endingLadybug{position:absolute;bottom:38px;left:-42px;font-size:25px;opacity:.72;filter:drop-shadow(0 3px 3px #000);animation:endBugWalk 22s linear 7s 1 forwards}
-@keyframes endBugWalk{from{transform:translateX(0) rotate(-5deg)}to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
+#endingLadybug{
+position:absolute;
+bottom:30px;
+left:24px;
+width:48px;
+height:48px;
+opacity:.92;
+filter:none;
+transform-origin:50% 55%;
+animation:endingBugWatch 26.5s ease-in-out 0s 1 forwards
+}
+to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 #creditsRoll .creditName:after{content:"";display:block;width:34px;height:1px;margin:11px auto 0;background:linear-gradient(90deg,transparent,#8c6e8e,transparent);opacity:.65}
 #creditsRoll h2{text-shadow:0 0 18px #8d568e88}
 
@@ -361,6 +371,23 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #hud .pill:nth-child(2).waveTriple .waveProg{font-size:7.5px;margin-left:1px}
 #hud .pill:nth-child(4) .bbSwordSvg{width:1.62em;height:1.62em;margin:-.18em -.02em}
 
+
+@keyframes endingBugWatch{
+  0%{transform:translateX(0) translateY(0) rotate(0deg)}
+  8%{transform:translateX(0) translateY(-1px) rotate(-3deg)}
+  16%{transform:translateX(0) translateY(0) rotate(2deg)}
+  28%{transform:translateX(0) translateY(-1px) rotate(-2deg)}
+  40%{transform:translateX(0) translateY(0) rotate(3deg)}
+  52%{transform:translateX(0) translateY(-1px) rotate(-2deg)}
+  64%{transform:translateX(0) translateY(0) rotate(2deg)}
+  76%{transform:translateX(0) translateY(-1px) rotate(-2deg)}
+  84%{transform:translateX(0) translateY(0) rotate(8deg)}
+  88%{transform:translateX(8vw) translateY(-1px) rotate(84deg)}
+  92%{transform:translateX(28vw) translateY(0) rotate(88deg)}
+  96%{transform:translateX(58vw) translateY(-1px) rotate(91deg)}
+  100%{transform:translateX(calc(100vw + 80px)) translateY(0) rotate(92deg)}
+}
+
 </style>
 </head>
 <body>
@@ -393,8 +420,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   </div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.8.53</div>
-  <div class="versionCorner" aria-hidden="true">v17.8.53</div>
+  <div class="versionStamp" aria-hidden="true">v17.8.54</div>
+  <div class="versionCorner" aria-hidden="true">v17.8.54</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -439,10 +466,10 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 
 <section id="ending" class="hidden" aria-label="Ending credits">
  <div id="endingBackdrop"></div>
- <div id="endingGarden"><div class="endMoon"></div><div class="endGrass"></div><i class="endSpore s2"></i><i class="endSpore s3"></i><i class="endSpore s4"></i><i class="endSpore s5"></i><i class="endSpore s6"></i><div id="endingLadybug">🐞</div></div>
+ <div id="endingGarden"><div class="endMoon"></div><div class="endGrass"></div><i class="endSpore s2"></i><i class="endSpore s3"></i><i class="endSpore s4"></i><i class="endSpore s5"></i><i class="endSpore s6"></i><canvas id="endingLadybug" width="48" height="48" aria-hidden="true"></canvas></div>
  <div class="endingVignette"></div>
  <div id="creditsRoll">
-  <div class="endBug">🐞</div>
+  <canvas class="endBug" id="creditsHeroBug" width="76" height="76" aria-hidden="true"></canvas>
   <h1>BIG BUG</h1>
   <div class="endSub">THE GARDEN SURVIVES</div>
   <h2>SPECIAL THANKS</h2>
@@ -488,7 +515,7 @@ let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,sele
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=save.goldLeaves||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
-// v17.8.53 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
+// v17.8.54 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
 // v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
 // v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
 // v17.8.15 — Mole Cricket above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
@@ -531,7 +558,7 @@ const BUGS={
 };
 
 
-// v17.8.53 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
+// v17.8.54 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
 // v17.8.43 — normal player attacks now use the same clear target-travel visual as Triple Shot; performance-only cleanup removes dead duplicate rendering and per-frame helper allocation.
 // v17.8.42 — Sharper Bite now uses the exact same hand-drawn sword artwork as the attack HUD.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
@@ -1377,7 +1404,36 @@ function returnHomeAfterEnding(){
  clearEndingTimers();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
  showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;titleMusicStart();
 }
+
+function paintEndingLadybugs(){
+ const hero=$('creditsHeroBug'),watcher=$('endingLadybug');
+ if(hero){
+   const q=hero.getContext('2d');
+   q.clearRect(0,0,hero.width,hero.height);
+   q.save();
+   q.translate(hero.width/2,hero.height/2+1);
+   drawPlayableBug(q,'ladybug',58,false);
+   q.restore();
+ }
+ if(watcher){
+   const q=watcher.getContext('2d');
+   q.clearRect(0,0,watcher.width,watcher.height);
+   q.save();
+   q.translate(watcher.width/2,watcher.height/2);
+   drawPlayableBug(q,'ladybug',34,false);
+   q.restore();
+ }
+}
+
 function playEndingCredits(preview=false){
+ paintEndingLadybugs();
+ const watcher=$('endingLadybug');
+ if(watcher){
+   watcher.style.animation='none';
+   void watcher.offsetHeight;
+   watcher.style.animation='endingBugWatch 26.5s ease-in-out 0s 1 forwards';
+ }
+
  clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);if(!game.testMode){save.scrap+=earned;save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist()}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
@@ -2152,7 +2208,7 @@ function titleGardenLoop(now){
   if(titleSceneStart){
    let t=(now-titleSceneStart)/1000;
    const cx=w*.5;
-   // v17.8.53 — anchor the hide/peek path to the rendered BIG BUG letters, not screen height.
+   // v17.8.54 — anchor the hide/peek path to the rendered BIG BUG letters, not screen height.
    // This keeps the buddy tucked behind the logo even when safe areas/device sizes differ.
    const homeRect=$('home').getBoundingClientRect(),logoMain=$('home').querySelector('.logoMain'),logoRect=logoMain?.getBoundingClientRect();
    const logoTop=logoRect?logoRect.top-homeRect.top:h*.27,logoH=logoRect?logoRect.height:h*.18;
@@ -2205,7 +2261,7 @@ function startTitleGardenLoop(){
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();
-// v17.8.53 — let the first real animation frame initialize the intro using stable rendered dimensions.
+// v17.8.54 — let the first real animation frame initialize the intro using stable rendered dimensions.
 // This avoids iOS/Safari occasionally reporting a transient width during initial script execution,
 // which could bunch or misplace the opening swarm without changing the animation itself.
 titleSceneStart=0;titleScenePlayed=false;titleSceneLastStart=0;titleSceneEnemyOffsets=[];
