@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.46: Help screen BIG BUG art/layout polish and simpler descriptions -->
+<!-- Big Bug v17.9.47: Help screen BIG BUG art/layout polish and simpler descriptions -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -435,7 +435,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
-/* v17.9.46 — Home controls polish: Settings moved bottom-right; Gold Leaf Shop shifted right and enlarged. */
+/* v17.9.47 — Home controls polish: Settings moved bottom-right; Gold Leaf Shop shifted right and enlarged. */
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #help h2{text-align:center;margin:0 0 4px;font:700 30px "Marker Felt","Chalkboard SE","Noteworthy",cursive;color:#f8f3df}
@@ -451,7 +451,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
 @media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}.sensePic{flex-basis:68px}.sensePic .senseRing{width:61px;height:61px}}
-/* v17.9.46 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
+/* v17.9.47 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
 #help .panel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 12% 8%,#21472b55 0 14%,transparent 15%),radial-gradient(ellipse at 92% 20%,#173e2655 0 12%,transparent 13%),linear-gradient(165deg,#102f1d,#071b10 72%,#04130b)}
 #help .panel:before,#help .panel:after{content:"";position:absolute;width:90px;height:34px;border-radius:70% 30% 70% 30%;background:#315c3570;pointer-events:none;z-index:0}
 #help .panel:before{left:-35px;top:105px;transform:rotate(-28deg)}#help .panel:after{right:-38px;bottom:100px;transform:rotate(32deg)}
@@ -465,6 +465,29 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #help .helpCard .muted{font-size:13.5px;line-height:1.28;color:#c4cec4}
 #help .helpBack{border-radius:20px 15px 22px 17px}
 
+
+
+/* v17.9.47 — brighter handcrafted BIG BUG button pass. Visual-only; no gameplay changes. */
+.btn.dark{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#5f9f4d 0%,#447f3d 58%,#2d6133 100%);
+  color:#fff8df;
+  border:1px solid #86bb68;
+  box-shadow:inset 0 2px 0 #c8e7a755,inset 0 -4px 0 #214b2a,0 5px 0 #18351f,0 8px 14px #0004;
+  text-shadow:0 2px 0 #17341f;
+}
+.btn.dark:after{content:"";position:absolute;left:9%;right:38%;top:4px;height:5px;border-radius:999px;background:linear-gradient(90deg,transparent,#fff7c480,transparent);pointer-events:none}
+.btn.dark[data-action="bugs"]{background:linear-gradient(180deg,#ef7064,#ce4a43 60%,#a93634);border-color:#ff9b8d;box-shadow:inset 0 2px 0 #ffd1c755,inset 0 -4px 0 #8b2e2c,0 5px 0 #542b22,0 8px 14px #0004;text-shadow:0 2px 0 #7c2727}
+.btn.dark[data-action="base"]{background:linear-gradient(180deg,#f2be43,#d58b25 60%,#a65d1d);border-color:#ffdd76;color:#35220a;box-shadow:inset 0 2px 0 #fff3bd99,inset 0 -4px 0 #874715,0 5px 0 #4e391c,0 8px 14px #0004;text-shadow:0 1px 0 #ffe699}
+#endlessBtn.btn.dark:not(:disabled){background:linear-gradient(180deg,#5e9ea5,#35767e 60%,#24555e);border-color:#8fcbd0;box-shadow:inset 0 2px 0 #d5ffff55,inset 0 -4px 0 #1b454d,0 5px 0 #17353a,0 8px 14px #0004;text-shadow:0 2px 0 #183f45}
+#endlessBtn.btn.dark:disabled{background:linear-gradient(180deg,#72806b,#596753 60%,#414e40);border-color:#94a28c;color:#e9eddf;opacity:.78;filter:none;box-shadow:inset 0 2px 0 #dce4d133,inset 0 -4px 0 #354137,0 5px 0 #263229;text-shadow:0 2px 0 #29342b}
+#globalSettingsBtn.btn.dark{background:linear-gradient(180deg,#8eaa70,#668952 62%,#496b43);border-color:#bed19c;color:#fffbe8;box-shadow:inset 0 2px 0 #eef9cf66,inset 0 -4px 0 #3a5c37,0 4px 0 #29472c,0 7px 12px #0004;text-shadow:0 2px 0 #355230}
+#settings .settingsHelpBtn{background:linear-gradient(180deg,#4ca8a1,#317c78 60%,#245e5c);border-color:#83d1c8;box-shadow:inset 0 2px 0 #d8fff666,inset 0 -4px 0 #1d4f4d,0 5px 0 #173b3a,0 8px 14px #0004;text-shadow:0 2px 0 #1a4b48}
+#settings .btn.dark[data-action="home"],#help .btn.dark[data-action="settings"],#bugs .btn.dark[data-action="home"],#base .btn.dark[data-action="home"],#goldShop .btn.dark[data-action="home"]{background:linear-gradient(180deg,#9b744d,#765337 60%,#563c2b);border-color:#c59a6d;box-shadow:inset 0 2px 0 #efd1a555,inset 0 -4px 0 #493126,0 5px 0 #2c251b,0 8px 14px #0004;text-shadow:0 2px 0 #493224}
+#resetConfirm .btn.dark[data-action="cancelReset"]{background:linear-gradient(180deg,#7f9292,#5f7070 60%,#485757);border-color:#aabcbc;box-shadow:inset 0 2px 0 #e6ffff44,inset 0 -4px 0 #394646,0 4px 0 #293535;text-shadow:0 2px 0 #344141}
+.toggleBtn{background:linear-gradient(180deg,#8a9890,#65746b);border:1px solid #aebbb2;box-shadow:inset 0 2px 0 #fff4,inset 0 -4px 0 #4e5c53,0 3px 0 #26382d}
+.toggleBtn.on{background:linear-gradient(180deg,#78d85c,#4fad3b 62%,#378a30);border-color:#9ceb7e;box-shadow:inset 0 2px 0 #e4ffd566,inset 0 -4px 0 #2c7827,0 3px 0 #244c25}
+.toggleBtn.off{background:linear-gradient(180deg,#8b9892,#68736e 62%,#515c57);border-color:#aeb8b2;box-shadow:inset 0 2px 0 #fff3,inset 0 -4px 0 #444f49,0 3px 0 #2e3933}
 
 </style>
 </head>
@@ -498,8 +521,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.46</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.46</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.47</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.47</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -686,7 +709,7 @@ save.unlocked=['ladybug'];
 if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.46 — Shifted the regular spider's flipped original head slightly farther forward.
+// v17.9.47 — Shifted the regular spider's flipped original head slightly farther forward.
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
 // v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
 // v17.9.31 — Regular spider face/fangs now project forward from the head.
