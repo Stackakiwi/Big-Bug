@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.91: quit-screen copy + end-screen music polish -->
+<!-- Big Bug v17.9.92: Mosquito Mode replay routing + unique swarm music -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -701,6 +701,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 }
 
 
+/* v17.9.92 — Mosquito result replay stays in Mosquito Mode; QUITTER is emphasized. */
 /* v17.9.91 — quit copy can wrap cleanly without affecting normal defeat titles. */
 #gameover #overTitle.quitTitle{font-size:clamp(25px,6.4vw,40px);line-height:1.08;text-align:center;white-space:normal;max-width:100%;overflow-wrap:anywhere}
 /* v17.9.91 — Mosquito Mode HUD icon mirrors the actual in-game mosquito. */
@@ -737,8 +738,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.91</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.91</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.92</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.92</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1122,10 +1123,11 @@ function toggleSetting(key){
  save.settings[key]=!save.settings[key];persist();buildSettings();
  if(key==='music'){
   if(save.settings.music){
-   if(shouldTitleMusicPlay())titleMusicStart();
+   if(game&&game.mode==='endless'&&!game.over&&!game.paused)endlessMusicStart(false);
+   else if(shouldTitleMusicPlay())titleMusicStart();
    else if(!$('goldShop').classList.contains('hidden'))shopMusicStart(false);
    else if(game&&game.boss&&!game.boss.dead&&!game.paused)bossMusicStart();
-  }else{titleMusicStop();shopMusicStop();bossMusicStop()}
+  }else{titleMusicStop();shopMusicStop();endlessMusicStop();bossMusicStop()}
  }
 }
 
@@ -1133,7 +1135,7 @@ function initAudio(){
  try{
   audio=audio||new(window.AudioContext||window.webkitAudioContext)();
   const resumed=audio.state==='suspended'?audio.resume():Promise.resolve();
-  if(resumed&&resumed.then)resumed.then(()=>{if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart();else if($('goldShop')&&!$('goldShop').classList.contains('hidden')&&!shopMusicTimer)shopMusicStart(false);else if(game&&game.boss&&!game.boss.dead&&!game.paused&&!bossMusicTimer)bossMusicStart()}).catch(()=>{});
+  if(resumed&&resumed.then)resumed.then(()=>{if(game&&game.mode==='endless'&&!game.over&&!game.paused&&!endlessMusicTimer)endlessMusicStart(false);else if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart();else if($('goldShop')&&!$('goldShop').classList.contains('hidden')&&!shopMusicTimer)shopMusicStart(false);else if(game&&game.boss&&!game.boss.dead&&!game.paused&&!bossMusicTimer)bossMusicStart()}).catch(()=>{});
   return resumed;
  }catch(e){return Promise.resolve()}
 }
@@ -1151,6 +1153,17 @@ function titleMusicStart(){
  // Soft, playful garden-loop shared by Home/menu/help and reused quietly during normal Story gameplay.
  const notes=[523,659,784,659,587,698,784,698,523,659,880,784,587,659,698,659];
  const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035;const n=notes[titleMusicStep%notes.length];beep(n,.28,gain,'sine','music');if(titleMusicStep%4===0)beep(n/2,.34,bassGain,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,420)};
+ tick();
+}
+// v17.9.92 — faster, lightweight Mosquito Mode-only swarm theme.
+let endlessMusicTimer=null,endlessMusicStep=0;
+function endlessMusicStop(resetStep=true){if(endlessMusicTimer){clearTimeout(endlessMusicTimer);endlessMusicTimer=null}if(resetStep)endlessMusicStep=0}
+function endlessMusicStart(resetStep=true){
+ if(resetStep)endlessMusicStop();else if(endlessMusicTimer)return;
+ if(!audio||save.settings.music===false||!game||game.mode!=='endless'||game.over||game.paused)return;
+ const melody=[659,784,880,1047,880,988,1175,988,784,932,1047,1319,1175,988,880,1047];
+ const pulse=[165,196,220,196,175,220,247,220];
+ const tick=()=>{if(!game||game.mode!=='endless'||game.over||game.paused){endlessMusicStop(false);return}const n=melody[endlessMusicStep%melody.length];beep(n,.13,.0058,endlessMusicStep%3===1?'triangle':'sine','music');if(endlessMusicStep%2===0)beep(pulse[Math.floor(endlessMusicStep/2)%pulse.length],.17,.0032,'triangle','music');if(endlessMusicStep%4===3)beep(n*1.5,.07,.0024,'sine','music');endlessMusicStep++;endlessMusicTimer=setTimeout(tick,215)};
  tick();
 }
 let shopMusicTimer=null,shopMusicStep=0;
@@ -1250,7 +1263,7 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(startWave=1,testMode=false){
- initAudio();titleMusicStop(false);shopMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
+ initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const w=Math.max(1,Math.min(100,Number(startWave)||1));
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
@@ -1260,12 +1273,12 @@ function startRun(startWave=1,testMode=false){
 
 function startEndless(){
  if(!save.endlessUnlocked)return;
- initAudio();titleMusicStop();shopMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
+ initAudio();titleMusicStop();shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
  // Endless starts 50% faster than the same selected bug in Story Mode.
  game.p.speed*=1.75;game.p.rate/=1.75;
- beginWave(1);last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
+ beginWave(1);endlessMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 function endlessActiveCap(w){return Math.min(90,30+Math.floor(w*2.2))}
 function endlessWaveQuota(w){if(w===1)return 12;if(w===2)return 20;if(w===3)return 30;return Math.min(260,48+w*8)}
@@ -2067,20 +2080,20 @@ function completeGameEnding(){
 }
 
 function finish(won,quit=false){
- if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
+ if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
  if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:Math.floor(game.wave/2);if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome()}
  $('overTitle').classList.toggle('quitTitle',!!quit);
- $('overTitle').textContent=quit?'You safely escaped…quitter.':(game.mode==='endless'?'MOSQUITO MODE OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
+ $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='endless'?'MOSQUITO MODE OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
  $('overSub').textContent=game.mode==='endless'?`${earned} ${earned===1?'Leaf':'Leaves'} earned from ${game.p.kills||0} mosquitoes.`:(won?'You pushed deep into the garden.':'');
- $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;
+ $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<1;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1';reviveBtn.title=reviveBtn.disabled?'You need 1 Gold Leaf to revive':'';}
  screen('gameover');
  if(save.settings.music)titleMusicStart();
 }
-function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<1)return;save.goldLeaves--;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
+function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<1)return;save.goldLeaves--;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart();else if(!game.boss||game.boss.dead)titleMusicStart();last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
 function quitRun(){if(game&&!game.over)finish(false,true)}
 
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
@@ -2815,13 +2828,13 @@ function resumeGameAfterBackground(){
  last=performance.now();
  if(raf)cancelAnimationFrame(raf);
  raf=requestAnimationFrame(loop);
- if(audio&&audio.state==='suspended')audio.resume().catch(()=>{});
+ if(audio&&audio.state==='suspended')audio.resume().then(()=>{if(game&&game.mode==='endless'&&!game.paused&&!game.over&&!endlessMusicTimer)endlessMusicStart(false)}).catch(()=>{});else if(game&&game.mode==='endless'&&!game.paused&&!game.over&&!endlessMusicTimer)endlessMusicStart(false);
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden){saveRunRecovery('background')}else resumeGameAfterBackground()});
 addEventListener('pageshow',resumeGameAfterBackground);
 addEventListener('pagehide',()=>saveRunRecovery('pagehide'));
 
-function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true);saveRunRecovery('resume')}}
+function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();saveRunRecovery('resume')}}
 
 // v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
 // Existing button sounds remain untouched and do not get doubled.
@@ -2846,7 +2859,7 @@ document.addEventListener('click',e=>{
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();shopMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart()}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();shopMusicStop();endlessMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
  if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');shopMusicStart(true)}
@@ -2857,9 +2870,9 @@ document.addEventListener('click',e=>{
  if(a==='cancelQuit'){$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden')}
  if(a==='confirmQuit'){quitRun()}
 });
-document.addEventListener('pointerdown',()=>{if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
+document.addEventListener('pointerdown',()=>{if(game&&game.mode==='endless'&&!game.over&&!game.paused){initAudio();if(!endlessMusicTimer)endlessMusicStart(false)}else if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
-$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
+$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
 function pointerPos(e){return e.touches?e.touches[0]:e}
 function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
