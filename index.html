@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.92: Mosquito Mode replay routing + unique swarm music -->
+<!-- Big Bug v17.9.93: Mosquito reward shown in Leaves stat + Bug Camp wording -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -701,6 +701,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 }
 
 
+/* v17.9.93 — Mosquito reward is shown in the Leaves result stat; Base Camp copy renamed Bug Camp. */
 /* v17.9.92 — Mosquito result replay stays in Mosquito Mode; QUITTER is emphasized. */
 /* v17.9.91 — quit copy can wrap cleanly without affecting normal defeat titles. */
 #gameover #overTitle.quitTitle{font-size:clamp(25px,6.4vw,40px);line-height:1.08;text-align:center;white-space:normal;max-width:100%;overflow-wrap:anywhere}
@@ -738,8 +739,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.92</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.92</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.93</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.93</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -850,7 +851,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <h2 id="overTitle">RUN COMPLETE!</h2>
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
-  <p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><b id="earnedLeaves">0</b> Leaves secured at Base Camp</p>
+  <p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><b id="earnedLeaves">0</b> Leaves secured at Bug Camp</p>
   <button id="goldContinueBtn" class="btn continueGold hidden" data-action="goldContinue"><span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1</button><button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">POWER UPS</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
@@ -2088,7 +2089,7 @@ function finish(won,quit=false){
  $('overTitle').classList.toggle('quitTitle',!!quit);
  $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='endless'?'MOSQUITO MODE OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
  $('overSub').textContent=game.mode==='endless'?`${earned} ${earned===1?'Leaf':'Leaves'} earned from ${game.p.kills||0} mosquitoes.`:(won?'You pushed deep into the garden.':'');
- $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':'play';
+ $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<1;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1';reviveBtn.title=reviveBtn.disabled?'You need 1 Gold Leaf to revive':'';}
  screen('gameover');
  if(save.settings.music)titleMusicStart();
