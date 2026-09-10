@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.71: Hornet attacks stinger-first; visuals/stats/hitbox unchanged -->
+<!-- Big Bug v17.9.72: Hornet attacks stinger-first; visuals/stats/hitbox unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -433,16 +433,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .goldStoreNote{text-align:center;font-size:12px;line-height:1.35;color:#c8c6a2;margin:14px 4px 0}
 .goldDevTools{display:flex;gap:8px;margin:12px 0 4px;padding:10px;border:1px dashed #d8b64d88;border-radius:14px;background:#3a301255}.goldDevTools .btn{flex:1;min-width:0;margin:0;font-size:12px;padding:10px 8px}.goldDevTools .goldDevClear{background:#7b3930;color:#fff;box-shadow:inset 0 -4px #4e211d,0 4px 0 #0d160c}
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
-/* v17.9.71 — Gold Leaf-only permanent cosmetics. */
-.cosmeticTitle{margin:18px 0 8px;text-align:center;color:#fff0a4;font:700 23px "Marker Felt","Chalkboard SE","Noteworthy",cursive}
-.cosmeticGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
-.cosmeticCard{background:linear-gradient(145deg,#24331b,#172511);border:1px solid #5d7134;border-radius:17px;padding:12px 9px;text-align:center}
-.cosmeticPreview{height:42px;display:flex;align-items:center;justify-content:center;font-size:27px;margin-bottom:3px}
-.cosmeticCard b{display:block;color:#fff8d8;font-size:15px}.cosmeticCard .muted{font-size:11px;min-height:29px;margin:4px 0 7px}
-.cosmeticCard .btn{width:100%;min-width:0;margin:0;padding:9px 6px;font-size:13px}
-.cosmeticCard.equipped{border-color:#f2cf55;box-shadow:0 0 13px #eabb3238,inset 0 0 15px #f5c63a13}
-@media(max-width:390px){.cosmeticGrid{gap:7px}.cosmeticCard{padding:10px 7px}.cosmeticCard b{font-size:14px}}
-
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
 /* v17.9.52 — Home controls polish: Settings moved bottom-right; Gold Leaf Shop shifted right and enlarged. */
@@ -584,12 +574,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 /* v17.9.68 — Stag King dedicated visual redesign only; gameplay and hitbox unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:30px;line-height:1;letter-spacing:0;padding-left:3px;padding-right:3px}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px;margin-left:6px}
-
-.bugSkinBox{margin-top:12px;padding-top:11px;border-top:1px solid #ffffff1f}
-.bugSkinTitle{font-weight:800;font-size:13px;color:#fff1b2;margin-bottom:7px;letter-spacing:.3px}
-.bugSkinBtns{display:flex;gap:7px;flex-wrap:wrap}
-.bugSkinBtns .btn{margin:0;padding:8px 10px;min-width:0;font-size:12px}
-
 </style>
 </head>
 <body>
@@ -622,8 +606,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.71</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.71</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.72</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.72</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -638,7 +622,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
  <div class="panel">
   <h2><span class="goldLeafIcon" aria-hidden="true"></span> GOLD LEAF SHOP</h2>
   <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
-  <div class="cosmeticTitle">GOLD LEAF PACKS</div>
   <div class="goldPackGrid">
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>2</div><div class="bonus">STARTER PACK</div><button class="btn small" data-gold-pack="2">$0.99</button></div>
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>7</div><div class="bonus">BETTER VALUE</div><button class="btn small" data-gold-pack="7">$2.99</button></div>
@@ -741,7 +724,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <script>
-// v17.9.71 — Gold Leaf-only permanent cosmetics with unlock/equip persistence and lightweight canvas effects.
 // v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
@@ -760,7 +742,6 @@ function resize(){
 const $=id=>document.getElementById(id);
 const screens=['home','bugs','base','goldShop','settings','help','upgrade','pause','gameover','finalPrep','ending'];
 function screen(id){
- setTimeout(()=>{if(document.body.textContent.includes('THE BUG PARADE'))refreshBugCosmetics()},0);
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
 }
@@ -773,9 +754,6 @@ save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeave
 save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
-save.cosmetics=Array.isArray(save.cosmetics)?save.cosmetics:[];
-save.equippedCosmetic=save.equippedCosmetic||'none';
-
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
 // v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
@@ -988,11 +966,10 @@ function resetGameProgress(){
  const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
   const keptGold=Math.max(0,save.goldLeaves||0);
   const keptGoldUnlocks=[...(save.goldUnlocks||[])];
- const keptCosmetics=[...(save.cosmetics||[])],keptEquippedCosmetic=save.equippedCosmetic||'none';
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,cosmetics:keptCosmetics,equippedCosmetic:keptEquippedCosmetic,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,settings:keptSettings};
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,settings:keptSettings};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -1078,39 +1055,6 @@ function buildBugScreen(){
   grid.appendChild(el);
  });
 }
-
-const COSMETICS=[
- {id:'ladyGold',name:'Golden Ladybug',desc:'A gleaming gold shell for Ladybug.',cost:1,bug:'ladybug'},
- {id:'ladyPink',name:'Pink Ladybug',desc:'A cute pink shell with a playful girly look.',cost:1,bug:'ladybug'}
-];
-function buildCosmeticShop(){ /* Cosmetics now live in The Bug Parade. */ }
-function buyOrEquipCosmetic(id){
- if(id==='none'){save.equippedCosmetic='none';persist();buildCosmeticShop();beep(650,.08,.02,'triangle');return}
- const c=COSMETICS.find(x=>x.id===id);if(!c)return;
- if(!(save.cosmetics||[]).includes(id)){
-  if((save.goldLeaves||0)<c.cost){beep(155,.10,.022,'triangle');return}
-  save.goldLeaves-=c.cost;save.cosmetics.push(id);
- }
- save.equippedCosmetic=id;persist();buildCosmeticShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);
-}
-
-
-function ladybugCosmeticControls(){
- const owned=save.cosmetics||[],eq=save.equippedCosmetic||'none';
- const one=(id,label)=>{const has=owned.includes(id),on=eq===id;return `<button class="btn small ${has?'green':'goldUpgradeBtn'}" onclick="event.stopPropagation();buyOrEquipCosmetic('${id}');refreshBugCosmetics()">${on?'✓ '+label:has?label:`${label} — 1 GL`}</button>`};
- return `<div class="bugSkinBox"><div class="bugSkinTitle">LADYBUG COSMETICS</div><div class="bugSkinBtns">${one('ladyGold','GOLD')}${one('ladyPink','PINK')}<button class="btn small green" onclick="event.stopPropagation();save.equippedCosmetic='none';persist();refreshBugCosmetics()">CLASSIC</button></div></div>`;
-}
-function refreshBugCosmetics(){
- document.querySelectorAll('.bugSkinBox').forEach(x=>x.remove());
- const parade=document.getElementById('bugSelect')||document.getElementById('bugs')||document.querySelector('[data-screen="bugs"]');
- if(!parade)return;
- const cards=parade.querySelectorAll('.bugCard,.bug-card,.card');
- for(const card of cards){
-  const txt=(card.textContent||'').toLowerCase();
-  if(txt.includes('ladybug')){card.insertAdjacentHTML('beforeend',ladybugCosmeticControls());break}
- }
-}
-
 function buildShop(){
  const s=save.upgrades;
  const rows=[
@@ -2678,18 +2622,7 @@ function draw(now=performance.now()){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- X.save();X.translate(p.x,p.y+bob);
- const cosmetic=save.equippedCosmetic||'none';
- if(cosmetic==='ladyGold'&&save.selected==='ladybug'){X.shadowColor='#ffd84f';X.shadowBlur=10}
- else if(cosmetic==='ladyPink'&&save.selected==='ladybug'){X.shadowColor='#ff8fcf';X.shadowBlur=10}
- X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);
- if(save.selected==='ladybug'&&(cosmetic==='ladyGold'||cosmetic==='ladyPink')){
-   X.save();X.globalAlpha=.72;X.globalCompositeOperation='source-atop';
-   X.fillStyle=cosmetic==='ladyGold'?'#e5b82e':'#f07fbd';
-   X.beginPath();X.ellipse(0,2,p.r*.82,p.r*1.02,0,0,6.283);X.fill();X.restore();
- }X.restore();
- if(false){X.save();X.fillStyle='#f6e879';X.shadowColor='#f6e879';X.shadowBlur=7;for(let i=0;i<3;i++){let a=game.time*(1.15+i*.09)+i*2.094,rr=27+(i%2)*5;X.beginPath();X.arc(p.x+Math.cos(a)*rr,p.y+bob+Math.sin(a)*rr,2.1,0,6.283);X.fill()}X.restore()}
- else if(false){X.save();X.fillStyle='#ffe58a';X.shadowColor='#ffd84f';X.shadowBlur=5;for(let i=0;i<4;i++){let a=game.time*.8+i*1.571,rr=25+4*Math.sin(game.time*1.7+i);let sx=p.x+Math.cos(a)*rr,sy=p.y+bob+Math.sin(a)*rr;X.save();X.translate(sx,sy);X.rotate(a);X.fillRect(-1.1,-4,2.2,8);X.fillRect(-4,-1.1,8,2.2);X.restore()}X.restore()}
+ X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
 
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
  const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving)activeHCount++;
@@ -2747,7 +2680,7 @@ document.addEventListener('click',e=>{
  if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs')}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base')}
- if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop();refreshGoldUI();buildCosmeticShop();screen('goldShop')}
+ if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop();refreshGoldUI();screen('goldShop')}
  if(a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+10;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +10 GOLD LEAVES',.9)}
  if(a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
  if(a==='resume'){startOrResume()}
