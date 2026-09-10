@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.67: unique Stag King visual redesign; gameplay unchanged -->
+<!-- Big Bug v17.9.69: Hornet attacks stinger-first; visuals/stats/hitbox unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -571,7 +571,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 /* v17.9.65 — temp Test removed; performance sanity pass with no gameplay/visual changes. */
 
 /* v17.9.66 — larger centered Wave/Boss counter; no HUD box added. */
-/* v17.9.67 — Stag King dedicated visual redesign only; gameplay and hitbox unchanged. */
+/* v17.9.68 — Stag King dedicated visual redesign only; gameplay and hitbox unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:30px;line-height:1;letter-spacing:0;padding-left:3px;padding-right:3px}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px;margin-left:6px}
 </style>
@@ -606,8 +606,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.67</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.67</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.69</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.69</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2039,7 +2039,7 @@ function drawMosquitoBody(step,step2){
 function drawEnemy(e){
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  const margin=e.r*2.7+24;if(e.x+margin<0||e.x-margin>W||e.y+margin<0||e.y-margin>H)return;
- const r=e.r,t=FRAME_NOW/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
+ const r=e.r,t=FRAME_NOW/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+(e.kind==='hornet'?Math.PI:0)+Math.sin(t*5)*.025);if(e.hit>0){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
  if(e.boss&&(e.invuln||0)>0){X.save();X.globalAlpha=.55+.25*Math.sin(FRAME_NOW/80);X.strokeStyle='#fff1a8';X.lineWidth=3;X.beginPath();X.arc(0,0,r+10,0,6.28);X.stroke();X.restore()}
  if(e.state==='telegraph'&&e.kind!=='moleCricket'){X.save();X.globalAlpha=.8;X.strokeStyle=e.boss?'#ffb23d':'#ff5a4f';X.lineWidth=3;X.beginPath();X.arc(0,0,r+8+Math.sin(FRAME_NOW/80)*2,0,6.28);X.stroke();X.restore();}
@@ -2165,14 +2165,42 @@ function drawEnemy(e){
       line(ax,ay,ax+side*rr*.18,ay+rr*.04,1,'#b89cbd');
     }
   }
- }else if(e.kind==='wasp'||e.kind==='hornet'){
-  const big=e.kind!=='wasp';let rr=big?r*1.15:r;
+ }else if(e.kind==='hornet'){
+  // v17.9.68 — HORNET: dedicated first-boss silhouette; visual-only, hitbox/gameplay unchanged.
+  const rr=r*1.17;
+  // Four sharper wings give the boss a broad, fast silhouette without extra effects.
+  X.globalAlpha=.48;X.fillStyle='#e7f3e9';X.strokeStyle='#aabdaf';X.lineWidth=1.2;
+  for(let side of [-1,1]){
+    X.beginPath();X.ellipse(side*rr*.72,-rr*.22,rr*.78,rr*.27,side*.48,0,6.28);X.fill();X.stroke();
+    X.beginPath();X.ellipse(side*rr*.64,rr*.18,rr*.62,rr*.20,side*.22,0,6.28);X.fill();X.stroke();
+  }
+  X.globalAlpha=1;
+  // Heavy hooked legs.
+  for(let side of [-1,1]){
+    line(side*rr*.30,-rr*.02,side*rr*.92,rr*.12+step,3.2,'#38251a');line(side*rr*.92,rr*.12+step,side*rr*1.13,rr*.42,2.4,'#38251a');
+    line(side*rr*.28,rr*.34,side*rr*.88,rr*.62-step2,3.2,'#38251a');line(side*rr*.88,rr*.62-step2,side*rr*1.05,rr*.92,2.4,'#38251a');
+  }
+  // Long armored abdomen with bold broken bands and pointed tail armor.
+  X.fillStyle='#d99b1c';X.beginPath();X.ellipse(0,rr*.30,rr*.66,rr*1.02,0,0,6.28);X.fill();X.strokeStyle='#4a2c16';X.lineWidth=2.2;X.stroke();
+  X.fillStyle='#332117';for(let yy=-rr*.16;yy<rr*.78;yy+=rr*.30){X.beginPath();X.roundRect(-rr*.62,yy,rr*1.24,rr*.13,rr*.05);X.fill()}
+  X.fillStyle='#f1bd36';X.beginPath();X.ellipse(0,-rr*.16,rr*.50,rr*.23,0,0,6.28);X.fill();
+  // Broad dark thorax and angular head distinguish him from regular wasps.
+  X.fillStyle='#5a351d';X.beginPath();X.ellipse(0,-rr*.42,rr*.70,rr*.52,0,0,6.28);X.fill();X.strokeStyle='#321d13';X.lineWidth=2.4;X.stroke();
+  X.fillStyle='#6d4020';X.beginPath();X.ellipse(0,-rr*.91,rr*.66,rr*.48,0,0,6.28);X.fill();X.stroke();
+  // Large readable eyes and short horn-like jaw points.
+  eye(-rr*.25,-rr*.96,3.7);eye(rr*.25,-rr*.96,3.7);
+  line(-rr*.18,-rr*1.22,-rr*.50,-rr*1.56,2.2,'#392116');line(rr*.18,-rr*1.22,rr*.50,-rr*1.56,2.2,'#392116');
+  X.fillStyle='#2b1710';
+  for(let side of [-1,1]){X.beginPath();X.moveTo(side*rr*.18,-rr*1.18);X.lineTo(side*rr*.48,-rr*1.38);X.lineTo(side*rr*.34,-rr*1.05);X.closePath();X.fill()}
+  // Oversized stinger makes the first boss instantly recognizable.
+  X.fillStyle='#24130d';X.beginPath();X.moveTo(-rr*.16,rr*1.16);X.lineTo(0,rr*1.68);X.lineTo(rr*.16,rr*1.16);X.closePath();X.fill();
+ }else if(e.kind==='wasp'){
+  const rr=r;
   X.globalAlpha=.45;X.fillStyle='#e8f2e9';X.beginPath();X.ellipse(-rr*.65,-2,rr*.65,rr*.28,-.6,0,6.28);X.ellipse(rr*.65,-2,rr*.65,rr*.28,.6,0,6.28);X.fill();X.globalAlpha=1;
   for(let side of [-1,1]){line(side*5,1,side*(rr+8),8+step,2.3);line(side*4,9,side*(rr+6),17-step,2.3)}
-  X.fillStyle=e.kind==='mothBoss'?'#9a78a8':e.kind==='cicada'?'#7f9b58':'#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
-  X.fillStyle='#5b371d';X.beginPath();X.arc(0,-rr*.7,rr*.58,0,6.28);X.fill();eye(-rr*.2,-rr*.78,big?3.5:2.4);eye(rr*.2,-rr*.78,big?3.5:2.4);line(-4,-rr*1.05,-10,-rr*1.55,1.7);line(4,-rr*1.05,10,-rr*1.55,1.7);
+  X.fillStyle='#e0a622';X.beginPath();X.ellipse(0,7,rr*.7,rr,0,0,6.28);X.fill();X.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)X.fillRect(-rr*.62,yy,rr*1.24,4);
+  X.fillStyle='#5b371d';X.beginPath();X.arc(0,-rr*.7,rr*.58,0,6.28);X.fill();eye(-rr*.2,-rr*.78,2.4);eye(rr*.2,-rr*.78,2.4);line(-4,-rr*1.05,-10,-rr*1.55,1.7);line(4,-rr*1.05,10,-rr*1.55,1.7);
   X.fillStyle='#24130d';X.beginPath();X.moveTo(-5,-rr*.95);X.lineTo(0,-rr*1.25);X.lineTo(5,-rr*.95);X.fill();X.beginPath();X.moveTo(-4,rr*1.0);X.lineTo(0,rr*1.45);X.lineTo(4,rr*1.0);X.fill();
-  if(big){X.strokeStyle='#f5c358';X.lineWidth=2;X.beginPath();X.arc(0,0,rr+5,0,6.28);X.stroke()}
  }else if(e.kind==='centipede'){
   // Long armored red centipede silhouette with many independently stepping legs.
   const segN=7;
@@ -2408,7 +2436,7 @@ function drawEnemy(e){
   for(let side of [-1,1]){X.fillStyle='#b09168';X.beginPath();X.ellipse(side*r*.92,-r*.02,r*.42,r*.24,side*.22,0,6.28);X.fill();line(side*r*.76,-r*.02,side*r*1.22,-r*.20,5,'#a48658');line(side*r*.77,r*.05,side*r*1.22,r*.12,4,'#a48658')}
   for(let side of [-1,1]){line(side*r*.38,r*.48,side*r*.70,r*.92+step*.08,3,'#5d4b3b')}
  }else if(e.kind==='stagBeetle'){
-  // v17.9.67 — Stag King gets a dedicated royal stag-beetle silhouette. Visual-only.
+  // v17.9.68 — Stag King gets a dedicated royal stag-beetle silhouette. Visual-only.
   for(let side of [-1,1]){line(side*r*.34,-r*.20,side*(r+10),-r*.42+step,3.1,'#2d211c');line(side*r*.42,r*.10,side*(r+12),r*.08-step,3.1,'#2d211c');line(side*r*.36,r*.40,side*(r+9),r*.72+step2,3.1,'#2d211c')}
   // Broad, armored abdomen with a crown-like gold seam.
   X.fillStyle='#5a3325';X.beginPath();X.ellipse(0,r*.25,r*.88,r*.88,0,0,6.28);X.fill();
@@ -2832,10 +2860,13 @@ function paintHelpGameIcons(){
  const ln=(x1,y1,x2,y2,w=3,col='#30251b')=>{q.strokeStyle=col;q.lineWidth=w;q.beginPath();q.moveTo(x1,y1);q.lineTo(x2,y2);q.stroke()};
  const eye=(x,y,r=3)=>{q.fillStyle='#f8f3df';q.beginPath();q.arc(x,y,r,0,Math.PI*2);q.fill();q.fillStyle='#191713';q.beginPath();q.arc(x+.6,y+.4,r*.42,0,Math.PI*2);q.fill()};
  if(k==='hornet'){
-  q.globalAlpha=.45;q.fillStyle='#e8f2e9';q.beginPath();q.ellipse(-15,-3,14,6,-.6,0,Math.PI*2);q.ellipse(15,-3,14,6,.6,0,Math.PI*2);q.fill();q.globalAlpha=1;
-  for(const z of [-1,1]){ln(z*5,1,z*25,10,3);ln(z*4,10,z*23,22,3)}
-  q.fillStyle='#e0a622';q.beginPath();q.ellipse(0,9,15,21,0,0,Math.PI*2);q.fill();q.fillStyle='#30251b';for(let y=-1;y<19;y+=8)q.fillRect(-13,y,26,4);
-  q.fillStyle='#5b371d';q.beginPath();q.arc(0,-16,12,0,Math.PI*2);q.fill();eye(-4,-18,3.2);eye(4,-18,3.2);ln(-4,-25,-11,-31,2);ln(4,-25,11,-31,2);q.fillStyle='#24130d';q.beginPath();q.moveTo(-4,-23);q.lineTo(0,-30);q.lineTo(4,-23);q.fill();q.beginPath();q.moveTo(-4,28);q.lineTo(0,35);q.lineTo(4,28);q.fill();
+  // Match the dedicated Hornet boss art used in gameplay.
+  q.globalAlpha=.48;q.fillStyle='#e7f3e9';q.strokeStyle='#aabdaf';q.lineWidth=1;
+  for(const z of [-1,1]){q.beginPath();q.ellipse(z*16,-5,16,5.5,z*.48,0,Math.PI*2);q.fill();q.stroke();q.beginPath();q.ellipse(z*14,4,13,4,z*.22,0,Math.PI*2);q.fill();q.stroke()}q.globalAlpha=1;
+  for(const z of [-1,1]){ln(z*6,0,z*22,7,2.5,'#38251a');ln(z*22,7,z*27,14,2,'#38251a');ln(z*6,8,z*21,17,2.5,'#38251a')}
+  q.fillStyle='#d99b1c';q.beginPath();q.ellipse(0,10,14,21,0,0,Math.PI*2);q.fill();q.strokeStyle='#4a2c16';q.lineWidth=1.8;q.stroke();q.fillStyle='#332117';for(let y=1;y<23;y+=7)q.fillRect(-12,y,24,3.2);
+  q.fillStyle='#5a351d';q.beginPath();q.ellipse(0,-7,14,10,0,0,Math.PI*2);q.fill();q.fillStyle='#6d4020';q.beginPath();q.ellipse(0,-19,13,9,0,0,Math.PI*2);q.fill();eye(-5,-20,3);eye(5,-20,3);ln(-4,-26,-11,-32,1.8,'#392116');ln(4,-26,11,-32,1.8,'#392116');
+  q.fillStyle='#2b1710';for(const z of [-1,1]){q.beginPath();q.moveTo(z*4,-25);q.lineTo(z*10,-29);q.lineTo(z*7,-22);q.closePath();q.fill()}q.fillStyle='#24130d';q.beginPath();q.moveTo(-3,29);q.lineTo(0,38);q.lineTo(3,29);q.closePath();q.fill();
  }else{
   q.strokeStyle='#29231d';q.lineWidth=2.5;for(const z of [-1,1]){ln(z*3,-1,z*17,-9,2.3);ln(z*3,5,z*18,10,2.3);ln(z*2,11,z*14,21,2.1)}
   q.globalAlpha=.42;q.fillStyle='#dbe8df';q.beginPath();q.ellipse(-10,-4,11,5,-.55,0,Math.PI*2);q.ellipse(10,-4,11,5,.55,0,Math.PI*2);q.fill();q.globalAlpha=1;
