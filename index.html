@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.0: menu backgrounds now echo distinct in-game wave biomes; emoji-like silhouettes redrawn as custom BIG BUG art; based on user-provided v17.9.94 branch -->
+<!-- Big Bug v18.0.1: menu backgrounds now echo distinct in-game wave biomes; emoji-like silhouettes redrawn as custom BIG BUG art; based on user-provided v17.9.94 branch -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -721,50 +721,30 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .goldLeafIcon:after{content:""!important;width:5px;height:5px;border-radius:50%;background:#fff7c7;right:-3px;top:-3px;box-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
 
 
-/* v17.9.99 — menu background-only biome pass. Panels, cards, buttons, text and layout untouched. */
-#settings{background:
- radial-gradient(ellipse at 12% 18%,rgba(138,169,90,.22) 0 7%,transparent 24%),
- radial-gradient(ellipse at 88% 78%,rgba(73,108,57,.20) 0 10%,transparent 28%),
- radial-gradient(circle at 78% 22%,rgba(200,220,140,.08) 0 2px,transparent 3px),
- linear-gradient(180deg,#29492d 0%,#315431 54%,#244329 100%)!important}
-#bugs{background:
- radial-gradient(ellipse at 8% 16%,rgba(192,138,67,.18) 0 8%,transparent 25%),
- radial-gradient(ellipse at 90% 72%,rgba(113,65,38,.24) 0 11%,transparent 30%),
- radial-gradient(ellipse at 34% 92%,rgba(155,90,45,.16) 0 9%,transparent 26%),
- linear-gradient(180deg,#5a4325 0%,#6a4d29 52%,#3e3422 100%)!important}
-#base{background:
- radial-gradient(circle at 14% 22%,rgba(217,237,156,.10) 0 2px,transparent 3px),
- radial-gradient(circle at 82% 16%,rgba(217,237,156,.08) 0 2px,transparent 3px),
- radial-gradient(ellipse at 16% 76%,rgba(49,93,92,.22) 0 10%,transparent 29%),
- radial-gradient(ellipse at 86% 66%,rgba(65,109,103,.18) 0 8%,transparent 27%),
- linear-gradient(180deg,#182f3d 0%,#203b46 55%,#142936 100%)!important}
-
-
-/* v17.9.99 — wave-inspired leafy menu backgrounds only; UI/layout unchanged */
-#settings{background:
- radial-gradient(ellipse at 12% 18%,#88a95a55 0 5%,transparent 6%),
- radial-gradient(ellipse at 87% 31%,#6f914f55 0 6%,transparent 7%),
- radial-gradient(ellipse at 28% 78%,#476b3c66 0 7%,transparent 8%),
- linear-gradient(145deg,#19391f 0%,#0d2716 48%,#07180f 100%)!important}
-#bugs{background:
- radial-gradient(ellipse at 8% 14%,#91b35d55 0 6%,transparent 7%),
- radial-gradient(ellipse at 91% 22%,#527b3f66 0 7%,transparent 8%),
- radial-gradient(ellipse at 18% 83%,#395e3255 0 8%,transparent 9%),
- linear-gradient(160deg,#24472a 0%,#14331e 50%,#091d12 100%)!important}
-#base{background:
- radial-gradient(ellipse at 16% 12%,#a0ad4f44 0 5%,transparent 6%),
- radial-gradient(ellipse at 84% 19%,#667d3555 0 7%,transparent 8%),
- radial-gradient(ellipse at 73% 83%,#405d2e66 0 8%,transparent 9%),
- linear-gradient(155deg,#334522 0%,#1d3119 45%,#0c2112 100%)!important}
-#settings:before,#bugs:before,#base:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:
- radial-gradient(ellipse at 4% 7%,#6f9b46 0 1.4%,transparent 1.6%),
- radial-gradient(ellipse at 96% 10%,#7aa14b 0 1.7%,transparent 1.9%),
- radial-gradient(ellipse at 3% 91%,#527d3b 0 2%,transparent 2.2%),
- radial-gradient(ellipse at 94% 88%,#426c35 0 2.1%,transparent 2.3%),
- radial-gradient(ellipse at 48% 2%,#789b49 0 1.3%,transparent 1.5%),
- radial-gradient(ellipse at 55% 97%,#426b36 0 1.6%,transparent 1.8%)}
-#settings>.panel,#bugs>.panel,#base>.panel{position:relative;z-index:1}
-
+/* v18.0.1 — wave-inspired detail belongs inside menu cards, not behind the menu.
+   Keeps all layout, text, buttons and screen backgrounds unchanged. */
+#settings .settingRow,
+#bugs .card,
+#base .shopRow,
+#base .shopCurrency{
+  background:
+    radial-gradient(ellipse at 8% 18%,rgba(112,151,70,.20) 0 5%,transparent 5.7%),
+    radial-gradient(ellipse at 92% 76%,rgba(83,126,57,.18) 0 6%,transparent 6.8%),
+    radial-gradient(ellipse at 78% 14%,rgba(141,171,83,.12) 0 3.5%,transparent 4.2%),
+    radial-gradient(circle at 18% 82%,rgba(122,92,49,.13) 0 3px,transparent 4px),
+    radial-gradient(circle at 72% 68%,rgba(108,82,43,.11) 0 2px,transparent 3px),
+    linear-gradient(150deg,#173d25 0%,#12351f 56%,#0e2d1a 100%)!important;
+}
+#settings .settingRow, #bugs .card, #base .shopRow{
+  box-shadow:inset 0 1px rgba(255,255,255,.045),inset 0 -8px 18px rgba(3,17,10,.12)!important;
+}
+#bugs .card:nth-child(2n),#base .shopRow:nth-child(2n){
+  background:
+    radial-gradient(ellipse at 12% 72%,rgba(106,148,66,.19) 0 5%,transparent 5.8%),
+    radial-gradient(ellipse at 88% 20%,rgba(78,120,54,.18) 0 6%,transparent 6.8%),
+    radial-gradient(circle at 68% 82%,rgba(123,91,46,.12) 0 3px,transparent 4px),
+    linear-gradient(155deg,#163b23 0%,#11321e 58%,#0d2a19 100%)!important;
+}
 </style>
 </head>
 <body>
@@ -797,8 +777,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.0</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.0</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.1</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.1</div>
 </section>
 
 <section id="bugs" class="screen hidden">
