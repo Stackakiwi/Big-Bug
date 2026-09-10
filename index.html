@@ -1609,10 +1609,10 @@ function stingBurst(e,count=8,speed=145){
 function enemyMove(e,dt){
  const p=game.p,t=game.time;let dx=p.x-e.x,dy=p.y-e.y,slow=e.slow>0?.45:1;
  if(e.kind==='mosquito'){
-   // Close-range swarmers attack the player directly; about 1 in 20 predicts movement and cuts off the escape path.
-   const pd2=dx*dx+dy*dy,pd=Math.sqrt(pd2)||1,repel=!!game.endlessRepelFrame;
+   // v17.9.94 — same steering, but avoid a redundant square-root for every mosquito on every frame.
+   const pd2=dx*dx+dy*dy,repel=!!game.endlessRepelFrame;
    if(repel){
-     const pushRange=230;if(pd<pushRange){const force=(1-pd/pushRange)*185;e.x-=dx/pd*force*dt;e.y-=dy/pd*force*dt}
+     const pd=Math.sqrt(pd2)||1,pushRange=230;if(pd<pushRange){const force=(1-pd/pushRange)*185;e.x-=dx/pd*force*dt;e.y-=dy/pd*force*dt}
      e.x+=dx/pd*e.speed*.28*slow*dt;e.y+=dy/pd*e.speed*.28*slow*dt;return;
    }
    let tx=p.x,ty=p.y;
@@ -1620,7 +1620,7 @@ function enemyMove(e,dt){
      // Most mosquitoes chase directly, but 1 in 4 tries to meet the player head-on. The rarer interceptor leads farther ahead.
      const lead=e.interceptor?.52:.28,lvx=p.motionX||0,lvy=p.motionY||0,scale=e.interceptor?p.motionScale125:p.motionScale105;
      tx+=lvx*lead*scale;ty+=lvy*lead*scale;
-   }else if(pd>95){
+   }else if(pd2>9025){
      const spread=10+(e.phase%1.3)*8,a=e.phase;tx+=Math.cos(a)*spread;ty+=Math.sin(a)*spread;
    }
    const mdx=tx-e.x,mdy=ty-e.y,d2=mdx*mdx+mdy*mdy;
@@ -1899,12 +1899,14 @@ function update(dt,now){
    if(t){damageEnemy(t,p.damage*1.5,'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.18,r:3.4,shot:true,helper:true})}
  }
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
+ // v17.9.94 — this decay factor is identical for every enemy in a frame, so calculate it once.
+ const knockDecay=Math.pow(.05,dt);
  for(const e of g.enemies)if(!e.dead){
    e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,e.hit-dt);
    if(e.poison)damageEnemy(e,e.poison*dt*.8);
    enemyMove(e,dt);
    if(e.kind==='moleCricket'&&e.state==='burrowWait')continue;
-   if(e.boss&&e.kind==='scarab'){e.knockX=0;e.knockY=0}else{e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=Math.pow(.05,dt);e.knockY*=Math.pow(.05,dt);}
+   if(e.boss&&e.kind==='scarab'){e.knockX=0;e.knockY=0}else{e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=knockDecay;e.knockY*=knockDecay;}
    const cdx=p.x-e.x,cdy=p.y-e.y,cr=e.r+p.r;
    if(cdx*cdx+cdy*cdy<cr*cr){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
  }
@@ -1955,7 +1957,7 @@ function update(dt,now){
  }
  if(g.waveActive&&g.spawnLeft<=0&&g.enemies.length===0)completeWave();
  if(p.hp<=0)finish(false);
- updateHud();
+ updateHud(false,now);
 }
 function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
@@ -2015,7 +2017,10 @@ function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_
 function setBossFill(value){if(HUD_CACHE.bossFill!==value){HUD_CACHE.bossFill=value;hudNode('bossFill').style.width=value}}
 function setHudClass(el,key,cls,on){if(HUD_CACHE[key]!==on||el.classList.contains(cls)!==on){HUD_CACHE[key]=on;el.classList.toggle(cls,on)}}
 function setHudDisabled(el,key,on){if(HUD_CACHE[key]!==on||el.disabled!==on){HUD_CACHE[key]=on;el.disabled=on}}
-function updateHud(){
+function updateHud(force=true,now=performance.now()){
+ // v17.9.94 — HUD values are event-driven plus a lightweight 25 Hz refresh during live play.
+ // This avoids needless DOM/class/style work on every animation frame while preserving the same displayed values.
+ if(!force&&now-(HUD_CACHE.lastPaint||0)<40)return;HUD_CACHE.lastPaint=now;
  const p=game.p,g=game,active=boostActive();
  setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
