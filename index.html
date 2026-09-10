@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.73: fewer beetles in story waves 1-4; later waves unchanged -->
+<!-- Big Bug v17.9.74: post-Wave-5 beetle odds tuned to about 1-in-9, 1-in-11, then 1-in-13 -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -606,8 +606,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.73</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.73</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.74</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.74</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1213,7 +1213,7 @@ function beginWave(w){
  const bossWave=w%5===0;
  g.waveQuota=bossWave?bossKindsFor(w).length:(w===1?6:w===2?8:Math.min(activeEnemyCap(w),5+w*2));
  g.spawnLeft=g.waveQuota;
- // v17.9.73 — lighter beetle presence in the opening four waves; later waves unchanged.
+ // v17.9.74 — opening waves stay light on beetles; post-Wave-5 odds are 1/9, 1/11, then 1/13.
  g.earlyWaveQueue=w===1?['ant','ant','ant','ant','ant','mosquito']:null;
  $('bossbar').style.display='none';
  const enteringArea=w>1&&(w-1)%5===0;
@@ -1269,16 +1269,16 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  const side=Math.floor(Math.random()*4),m=42;let x,y;
  if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
  const w=game.wave, boss=type==='boss';
- let kinds=game.mode==='endless'?['mosquito']:w<5?['ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','beetle']:w<11?['ant','ant','wasp','wasp','beetle','mosquito','mosquito','mosquito']:w<16?['ant','ant','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito']:['ant','ant','spider','spider','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito'];
+ let kinds=game.mode==='endless'?['mosquito']:w<5?['ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','beetle']:w<11?['ant','ant','wasp','wasp','beetle','mosquito','mosquito','mosquito','mosquito']:w<16?['ant','ant','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito','mosquito']:['ant','ant','spider','spider','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito','mosquito'];
  let k=boss?(forcedKind||bossKindFor(w)):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
  if(!boss&&game.mode!=='endless'){
    game.normalSpawned=game.normalSpawned||0;
    if(k==='mosquito'&&game.normalSpawned<5){
      // Avoid a temporary array allocation during spawning; preserve the same early-wave rule.
      if(w<5)k=Math.random()<.97?'ant':'beetle';
-     else if(w<11){const r0=Math.random();k=r0<.5?'ant':r0<.78?'wasp':'beetle'}
-     else if(w<16){const r0=Math.random();k=r0<.34?'ant':r0<.62?'wasp':r0<.90?'stink':'beetle'}
-     else{const r0=Math.random();k=r0<.24?'ant':r0<.48?'spider':r0<.68?'wasp':r0<.88?'stink':'beetle'}
+     else if(w<11){k=Math.random()<.64?'ant':'wasp'}
+     else if(w<16){const r0=Math.random();k=r0<.38?'ant':r0<.69?'wasp':'stink'}
+     else{const r0=Math.random();k=r0<.27?'ant':r0<.54?'spider':r0<.77?'wasp':'stink'}
    }
    game.normalSpawned++;
  }
