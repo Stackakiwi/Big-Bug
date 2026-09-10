@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.89: Mosquito Mode rewards, mosquito HUD icon, and player-hit sound -->
+<!-- Big Bug v17.9.90: Mosquito Mode rewards, mosquito HUD icon, and player-hit sound -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -701,7 +701,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 }
 
 
-/* v17.9.89 — Mosquito Mode HUD icon mirrors the actual in-game mosquito. */
+/* v17.9.90 — Mosquito Mode HUD icon mirrors the actual in-game mosquito. */
 .mosquitoCounterIcon{width:28px!important;height:28px!important;flex:0 0 28px!important;transform:none!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 32'%3E%3Cg stroke='%2324251f' stroke-linecap='round'%3E%3Cg fill='%23d8e6df' opacity='.30' stroke='none'%3E%3Cellipse cx='-5' cy='-1' rx='6' ry='2.2' transform='rotate(-26 -5 -1)'/%3E%3Cellipse cx='5' cy='-1' rx='6' ry='2.2' transform='rotate(26 5 -1)'/%3E%3C/g%3E%3Cellipse cx='0' cy='4' rx='3' ry='6.5' fill='%2334372f' stroke='none'/%3E%3Ccircle cx='0' cy='-3' r='3.2' fill='%234b4f43' stroke='none'/%3E%3Ccircle cx='-1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Ccircle cx='1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Cpath d='M0-6V-12M-2 1L-8 6M2 1L8 6M-2 4L-7 10M2 4L7 10' fill='none' stroke-width='1.1'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat!important}.mosquitoCounterIcon::before,.mosquitoCounterIcon::after{content:none!important;display:none!important}
 </style>
 </head>
@@ -735,8 +735,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.89</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.89</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.90</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.90</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1556,7 +1556,7 @@ function showPlayerDamage(amount){
  const p=game.p,shown=Math.max(1,Math.round(amount));
  // Red floating number above the player, matching the enemy damage-number feel.
  if(save.settings.damageNumbers!==false&&countFxFlag('playerDamageText',8)<8)game.fx.push({x:p.x+(Math.random()-.5)*8,y:p.y-p.r-12,vx:(Math.random()-.5)*9,vy:-31,life:.78,maxLife:.78,r:0,playerDamageText:shown});
- // v17.9.89 — tiny two-note player-hit chirp.
+ // v17.9.90 — tiny two-note player-hit chirp.
  beep(510,.035,.007,'triangle');setTimeout(()=>beep(690,.045,.0045,'sine'),22);
 }
 function hurtPlayer(amount){
@@ -2066,10 +2066,12 @@ function completeGameEnding(){
 
 function finish(won){
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
- const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);
+ const coins=game.coins||0;
+ const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
+ const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
  if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:Math.floor(game.wave/2);if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome()}
  $('overTitle').textContent=game.mode==='endless'?'MOSQUITO MODE OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!');
- $('overSub').textContent=game.mode==='endless'?`The mosquito swarm finally got you. ${earned} ${earned===1?'Leaf':'Leaves'} earned from ${game.p.kills||0} mosquitoes.`:(won?'You pushed deep into the garden.':'');
+ $('overSub').textContent=game.mode==='endless'?`${earned} ${earned===1?'Leaf':'Leaves'} earned from ${game.p.kills||0} mosquitoes.`:(won?'You pushed deep into the garden.':'');
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<1;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1';reviveBtn.title=reviveBtn.disabled?'You need 1 Gold Leaf to revive':'';}
  screen('gameover');
