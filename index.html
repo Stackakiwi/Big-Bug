@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.52: Help screen BIG BUG art/layout polish and simpler descriptions -->
+<!-- Big Bug v17.9.53: unified handcrafted button styling + clean transparent gameplay HUD -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -489,6 +489,55 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .toggleBtn.on{background:linear-gradient(180deg,#78d85c,#4fad3b 62%,#378a30);border-color:#9ceb7e;box-shadow:inset 0 2px 0 #e4ffd566,inset 0 -4px 0 #2c7827,0 3px 0 #244c25}
 .toggleBtn.off{background:linear-gradient(180deg,#8b9892,#68736e 62%,#515c57);border-color:#aeb8b2;box-shadow:inset 0 2px 0 #fff3,inset 0 -4px 0 #444f49,0 3px 0 #2e3933}
 
+
+/* v17.9.53 — unified handcrafted controls + clean floating gameplay HUD. Visual-only. */
+.btn{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#f4c454 0%,#df982d 60%,#b96d20 100%);
+  color:#35220a;
+  border:1px solid #ffe083;
+  box-shadow:inset 0 2px 0 #fff4c999,inset 0 -4px 0 #92521a,0 5px 0 #4e391c,0 8px 14px #0004;
+  text-shadow:0 1px 0 #ffe9a7;
+}
+.btn:after{content:"";position:absolute;left:9%;right:38%;top:4px;height:5px;border-radius:999px;background:linear-gradient(90deg,transparent,#fff7c480,transparent);pointer-events:none}
+.btn.green{
+  background:linear-gradient(180deg,#8bd65e 0%,#62b747 58%,#418f39 100%);
+  color:#fffbea;border-color:#b6ed8d;
+  box-shadow:inset 0 2px 0 #eaffd766,inset 0 -4px 0 #347a30,0 5px 0 #245428,0 8px 14px #0004;
+  text-shadow:0 2px 0 #34702f;
+}
+.btn.red{
+  background:linear-gradient(180deg,#ef7064 0%,#ce4a43 60%,#a93634 100%);
+  color:#fff8ef;border-color:#ff9b8d;
+  box-shadow:inset 0 2px 0 #ffd1c766,inset 0 -4px 0 #8b2e2c,0 5px 0 #542b22,0 8px 14px #0004;
+  text-shadow:0 2px 0 #7c2727;
+}
+/* Gameplay buttons get the same dimensional finish while retaining distinct functions. */
+#boostBtn,#endlessTripleBtn,#endlessRepelBtn,#pauseBtn,#storyContinue{
+  border-width:1px;border-style:solid;position:fixed;overflow:hidden;
+  box-shadow:inset 0 2px 0 #ffffff45,inset 0 -4px 0 #00000042,0 5px 0 #102518,0 8px 14px #0004;
+  text-shadow:0 2px 0 #0008;
+}
+#boostBtn:after,#endlessTripleBtn:after,#endlessRepelBtn:after,#pauseBtn:after,#storyContinue:after{content:"";position:absolute;left:12%;right:42%;top:4px;height:4px;border-radius:999px;background:linear-gradient(90deg,transparent,#fff8c56f,transparent);pointer-events:none}
+#boostBtn{background:linear-gradient(180deg,#5f9f4d,#447f3d 58%,#2d6133);border-color:#86bb68}
+#endlessTripleBtn{background:linear-gradient(180deg,#8a65b4,#68458f 60%,#493367);border-color:#b493d7}
+#endlessRepelBtn{background:linear-gradient(180deg,#52a9a4,#327e7a 60%,#235c59);border-color:#86d4cc}
+#pauseBtn{background:linear-gradient(180deg,#76947c,#536f5b 60%,#3b5545);border-color:#9fb5a2}
+#storyContinue{position:relative;background:linear-gradient(180deg,#6e9c4f,#4f763c 60%,#385d32);border-color:#91b66b;box-shadow:inset 0 2px 0 #eaffc855,inset 0 -4px 0 #304f2b,0 4px 0 #294627,0 7px 12px #0004}
+/* Remove the recently-added green HUD boxes; preserve their four-column layout. */
+#hud{gap:6px}
+#hud .pill{
+  background:transparent;border:0;border-radius:0;box-shadow:none;
+  padding:6px 3px;
+  font-size:14px;
+  text-shadow:0 2px 3px #000,0 0 5px #000b;
+}
+#hud .pill:nth-child(2){font-size:13px}
+#hud .pill:nth-child(2).waveDouble{font-size:11.5px}
+#hud .pill:nth-child(2).waveTriple{font-size:10.5px}
+#hud .pill:nth-child(2) .waveProg{font-size:9.5px}
+#hud .pill:nth-child(3),#hud .pill:nth-child(4){font-size:14px}
+
 </style>
 </head>
 <body>
@@ -521,8 +570,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.52</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.52</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.53</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.53</div>
 </section>
 
 <section id="bugs" class="screen hidden">
