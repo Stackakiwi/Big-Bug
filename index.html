@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.99: menu backgrounds now echo distinct in-game wave biomes; emoji-like silhouettes redrawn as custom BIG BUG art; based on user-provided v17.9.94 branch -->
+<!-- Big Bug v18.0.0: menu backgrounds now echo distinct in-game wave biomes; emoji-like silhouettes redrawn as custom BIG BUG art; based on user-provided v17.9.94 branch -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -701,7 +701,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 }
 
 
-/* v17.9.98 — settings icons refined to keep familiar emoji-like silhouettes using original BIG BUG CSS art. */
+/* v17.9.99 — settings icons refined to keep familiar emoji-like silhouettes using original BIG BUG CSS art. */
 /* v17.9.93 — Mosquito reward is shown in the Leaves result stat; Base Camp copy renamed Bug Camp. */
 /* v17.9.92 — Mosquito result replay stays in Mosquito Mode; QUITTER is emphasized. */
 /* v17.9.91 — quit copy can wrap cleanly without affecting normal defeat titles. */
@@ -709,7 +709,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 /* v17.9.91 — Mosquito Mode HUD icon mirrors the actual in-game mosquito. */
 .mosquitoCounterIcon{width:28px!important;height:28px!important;flex:0 0 28px!important;transform:none!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 32'%3E%3Cg stroke='%2324251f' stroke-linecap='round'%3E%3Cg fill='%23d8e6df' opacity='.30' stroke='none'%3E%3Cellipse cx='-5' cy='-1' rx='6' ry='2.2' transform='rotate(-26 -5 -1)'/%3E%3Cellipse cx='5' cy='-1' rx='6' ry='2.2' transform='rotate(26 5 -1)'/%3E%3C/g%3E%3Cellipse cx='0' cy='4' rx='3' ry='6.5' fill='%2334372f' stroke='none'/%3E%3Ccircle cx='0' cy='-3' r='3.2' fill='%234b4f43' stroke='none'/%3E%3Ccircle cx='-1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Ccircle cx='1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Cpath d='M0-6V-12M-2 1L-8 6M2 1L8 6M-2 4L-7 10M2 4L7 10' fill='none' stroke-width='1.1'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat!important}.mosquitoCounterIcon::before,.mosquitoCounterIcon::after{content:none!important;display:none!important}
 
-/* v17.9.98 — familiar emoji silhouettes, hand-drawn in the same chunky BIG BUG bug-art language. */
+/* v17.9.99 — familiar emoji silhouettes, hand-drawn in the same chunky BIG BUG bug-art language. */
 .bbUiIcon{display:inline-block;position:relative;width:1.3em;height:1.3em;vertical-align:-.25em;margin-right:.34em;flex:0 0 auto;filter:drop-shadow(0 2px 0 #172018)}
 .bbGear{width:1.2em;height:1.2em;background:#9da69a;clip-path:polygon(40% 0,60% 0,64% 14%,76% 19%,88% 10%,100% 25%,89% 35%,92% 48%,100% 54%,95% 72%,80% 70%,70% 81%,70% 96%,51% 100%,45% 86%,31% 82%,20% 91%,7% 77%,17% 65%,12% 52%,0 44%,6% 27%,21% 29%,29% 17%,27% 5%);border-radius:24%}.bbGear:before{content:"";position:absolute;inset:25%;border-radius:48% 52% 46% 54%;background:#26372a;border:3px solid #d4d9cc;box-shadow:inset 1px 1px 0 #1118}.bbGear:after{content:"";position:absolute;left:12%;top:12%;width:26%;height:12%;border-radius:50%;background:#dfe3d8;transform:rotate(-28deg);opacity:.6}
 .bbMusic{width:1.2em;height:1.25em;transform:rotate(-4deg)}.bbMusic:before{content:"";position:absolute;left:54%;top:2%;width:5px;height:70%;background:#6d94b8;border:2px solid #26362e;border-radius:4px;box-shadow:-11px 4px 0 -1px #6d94b8,-11px 4px 0 1px #26362e}.bbMusic:after{content:"";position:absolute;left:1%;bottom:0;width:12px;height:9px;border-radius:58% 48% 55% 45%;background:#739bbd;border:2px solid #26362e;box-shadow:14px -4px 0 -1px #739bbd,14px -4px 0 1px #26362e}
@@ -738,6 +738,32 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
  radial-gradient(ellipse at 16% 76%,rgba(49,93,92,.22) 0 10%,transparent 29%),
  radial-gradient(ellipse at 86% 66%,rgba(65,109,103,.18) 0 8%,transparent 27%),
  linear-gradient(180deg,#182f3d 0%,#203b46 55%,#142936 100%)!important}
+
+
+/* v17.9.99 — wave-inspired leafy menu backgrounds only; UI/layout unchanged */
+#settings{background:
+ radial-gradient(ellipse at 12% 18%,#88a95a55 0 5%,transparent 6%),
+ radial-gradient(ellipse at 87% 31%,#6f914f55 0 6%,transparent 7%),
+ radial-gradient(ellipse at 28% 78%,#476b3c66 0 7%,transparent 8%),
+ linear-gradient(145deg,#19391f 0%,#0d2716 48%,#07180f 100%)!important}
+#bugs{background:
+ radial-gradient(ellipse at 8% 14%,#91b35d55 0 6%,transparent 7%),
+ radial-gradient(ellipse at 91% 22%,#527b3f66 0 7%,transparent 8%),
+ radial-gradient(ellipse at 18% 83%,#395e3255 0 8%,transparent 9%),
+ linear-gradient(160deg,#24472a 0%,#14331e 50%,#091d12 100%)!important}
+#base{background:
+ radial-gradient(ellipse at 16% 12%,#a0ad4f44 0 5%,transparent 6%),
+ radial-gradient(ellipse at 84% 19%,#667d3555 0 7%,transparent 8%),
+ radial-gradient(ellipse at 73% 83%,#405d2e66 0 8%,transparent 9%),
+ linear-gradient(155deg,#334522 0%,#1d3119 45%,#0c2112 100%)!important}
+#settings:before,#bugs:before,#base:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:
+ radial-gradient(ellipse at 4% 7%,#6f9b46 0 1.4%,transparent 1.6%),
+ radial-gradient(ellipse at 96% 10%,#7aa14b 0 1.7%,transparent 1.9%),
+ radial-gradient(ellipse at 3% 91%,#527d3b 0 2%,transparent 2.2%),
+ radial-gradient(ellipse at 94% 88%,#426c35 0 2.1%,transparent 2.3%),
+ radial-gradient(ellipse at 48% 2%,#789b49 0 1.3%,transparent 1.5%),
+ radial-gradient(ellipse at 55% 97%,#426b36 0 1.6%,transparent 1.8%)}
+#settings>.panel,#bugs>.panel,#base>.panel{position:relative;z-index:1}
 
 </style>
 </head>
@@ -771,8 +797,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.99</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.99</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.0</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.0</div>
 </section>
 
 <section id="bugs" class="screen hidden">
