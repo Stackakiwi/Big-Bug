@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.65: unified handcrafted button styling + clean transparent gameplay HUD -->
+<!-- Big Bug v17.9.67: unique Stag King visual redesign; gameplay unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -569,6 +569,11 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 /* v17.9.65 — story mosquito staging, Hornet-only bees, lighter beetle mix, temp Test restored. */
 
 /* v17.9.65 — temp Test removed; performance sanity pass with no gameplay/visual changes. */
+
+/* v17.9.66 — larger centered Wave/Boss counter; no HUD box added. */
+/* v17.9.67 — Stag King dedicated visual redesign only; gameplay and hitbox unchanged. */
+#hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:30px;line-height:1;letter-spacing:0;padding-left:3px;padding-right:3px}
+#hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px;margin-left:6px}
 </style>
 </head>
 <body>
@@ -601,8 +606,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.65</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.65</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.67</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.67</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1294,6 +1299,8 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.585,stagBeetle:.578,queenSpider:.765,moleCricket:.93};
     if(earlyBossHp[k])baseHp*=earlyBossHp[k];
+    // v17.9.66 — global boss balance pass: all bosses have 5% less max HP.
+    baseHp*=.95;
  }
  if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7;sp=Math.min(250,116+ew*1.85);damage=3.8;evo=0}
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
@@ -2400,9 +2407,31 @@ function drawEnemy(e){
   // Broad shovel-like forepaws keep its old attack silhouette but make it unmistakably a burrower.
   for(let side of [-1,1]){X.fillStyle='#b09168';X.beginPath();X.ellipse(side*r*.92,-r*.02,r*.42,r*.24,side*.22,0,6.28);X.fill();line(side*r*.76,-r*.02,side*r*1.22,-r*.20,5,'#a48658');line(side*r*.77,r*.05,side*r*1.22,r*.12,4,'#a48658')}
   for(let side of [-1,1]){line(side*r*.38,r*.48,side*r*.70,r*.92+step*.08,3,'#5d4b3b')}
- }else if(e.kind==='stink'||['scarab','stagBeetle'].includes(e.kind)){
+ }else if(e.kind==='stagBeetle'){
+  // v17.9.67 — Stag King gets a dedicated royal stag-beetle silhouette. Visual-only.
+  for(let side of [-1,1]){line(side*r*.34,-r*.20,side*(r+10),-r*.42+step,3.1,'#2d211c');line(side*r*.42,r*.10,side*(r+12),r*.08-step,3.1,'#2d211c');line(side*r*.36,r*.40,side*(r+9),r*.72+step2,3.1,'#2d211c')}
+  // Broad, armored abdomen with a crown-like gold seam.
+  X.fillStyle='#5a3325';X.beginPath();X.ellipse(0,r*.25,r*.88,r*.88,0,0,6.28);X.fill();
+  X.strokeStyle='#2b1b17';X.lineWidth=3;X.stroke();
+  X.fillStyle='#74452e';X.beginPath();X.ellipse(0,-r*.34,r*.72,r*.58,0,0,6.28);X.fill();X.strokeStyle='#2b1b17';X.lineWidth=2.5;X.stroke();
+  line(0,-r*.70,0,r*.92,2.2,'#c49a45');
+  line(-r*.45,r*.05,-r*.14,r*.30,2,'#8d5d36');line(r*.45,r*.05,r*.14,r*.30,2,'#8d5d36');
+  // Heavy helmet/head makes him read as a boss even at a glance.
+  X.fillStyle='#3c241d';X.beginPath();X.ellipse(0,-r*.78,r*.58,r*.42,0,0,6.28);X.fill();X.strokeStyle='#211713';X.lineWidth=2.5;X.stroke();
+  eye(-r*.20,-r*.84,2.5);eye(r*.20,-r*.84,2.5);
+  // Oversized branched stag mandibles, distinct from regular beetles.
+  for(let side of [-1,1]){
+    X.strokeStyle='#2a1b16';X.lineCap='round';X.lineJoin='round';X.lineWidth=Math.max(5,r*.16);
+    X.beginPath();X.moveTo(side*r*.24,-r*.98);X.quadraticCurveTo(side*r*.46,-r*1.38,side*r*.70,-r*1.58);X.quadraticCurveTo(side*r*.96,-r*1.75,side*r*.86,-r*2.02);X.stroke();
+    X.lineWidth=Math.max(3,r*.10);
+    X.beginPath();X.moveTo(side*r*.54,-r*1.48);X.lineTo(side*r*.28,-r*1.76);X.moveTo(side*r*.73,-r*1.63);X.lineTo(side*r*.52,-r*1.91);X.moveTo(side*r*.86,-r*1.78);X.lineTo(side*r*1.08,-r*1.94);X.stroke();
+    X.strokeStyle='#8d6b3c';X.lineWidth=1.4;X.beginPath();X.moveTo(side*r*.27,-r*1.00);X.quadraticCurveTo(side*r*.47,-r*1.37,side*r*.68,-r*1.56);X.stroke();
+  }
+  // Small royal shell marks add identity without extra animation cost.
+  X.fillStyle='#d0a84e';for(const q of [[-.34,.18],[.34,.18],[-.26,.48],[.26,.48]]){X.beginPath();X.arc(q[0]*r,q[1]*r,Math.max(2,r*.07),0,6.28);X.fill()}
+ }else if(e.kind==='stink'||e.kind==='scarab'){
   for(let side of [-1,1]){line(side*6,-4,side*(r+7),-10+step,2);line(side*7,3,side*(r+9),4-step,2);line(side*5,10,side*(r+7),17+step2,2)}
-  X.fillStyle=e.kind==='scarab'?'#71898d':e.kind==='stagBeetle'?'#70452d':'#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
+  X.fillStyle=e.kind==='scarab'?'#71898d':'#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
  }else{
   for(let side of [-1,1]){line(side*6,-5,side*(r+7),-10+step,2.3);line(side*7,2,side*(r+9),4-step,2.3);line(side*5,10,side*(r+7),17+step2,2.3)}
   X.fillStyle='#39473d';X.beginPath();X.ellipse(0,5,r*.82,r*1.02,0,0,6.28);X.fill();X.strokeStyle='#65786b';X.lineWidth=2;X.beginPath();X.moveTo(0,-r*.8);X.lineTo(0,r*.92);X.stroke();X.fillStyle='#4b5e50';X.beginPath();X.arc(0,-r*.65,r*.58,0,6.28);X.fill();eye(-r*.2,-r*.74,2.2);eye(r*.2,-r*.74,2.2);X.fillStyle='#1c211d';X.beginPath();X.moveTo(-4,-r*.98);X.lineTo(-9,-r*1.35);X.lineTo(-2,-r*1.14);X.moveTo(4,-r*.98);X.lineTo(9,-r*1.35);X.lineTo(2,-r*1.14);X.fill();
@@ -2410,7 +2439,6 @@ function drawEnemy(e){
 
  if(e.boss){
    const rr=r;
-   if(e.kind==='stagBeetle'){line(-rr*.28,-rr*.55,-rr*.72,-rr*1.22,5,'#4a2d20');line(rr*.28,-rr*.55,rr*.72,-rr*1.22,5,'#4a2d20')}
    
    
    
