@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.86: menu/help music continuity + quiet story gameplay music; boss themes take priority -->
+<!-- Big Bug v17.9.88: regular beetles take full damage; shell toughness moved into higher base HP -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -732,8 +732,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.86</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.86</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.88</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.88</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1439,7 +1439,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  }
  let evo=evolutionTier(w),baseHp=(24+w*6)*Math.pow(1.32,evo),sp=(38+w*1.15)*(1+evo*.05),r=11+Math.random()*5,damage=(4.5+w*.5)*Math.pow(1.18,evo);
  if(k==='ant'){baseHp*=.72;sp*=1.35;r*=.82;damage*=.72}
- if(k==='beetle'){baseHp*=2.35;sp*=.62;r*=1.18;damage*=1.25}
+ if(k==='beetle'){baseHp*=3.645;sp*=.62;r*=1.18;damage*=1.25} // v17.9.88 — full incoming damage; beetle HP trimmed 10% from v17.9.87
  if(k==='spider'){baseHp*=1.05;sp*=.92;r*=1.05}
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
@@ -1475,7 +1475,6 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
- if(e.kind==='beetle'&&!e.boss)d*=.58;
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
