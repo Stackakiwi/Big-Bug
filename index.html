@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.2: menu backgrounds now echo distinct in-game wave biomes; emoji-like silhouettes redrawn as custom BIG BUG art; based on user-provided v17.9.94 branch -->
+<!-- Big Bug v18.0.3: menu backgrounds now echo distinct in-game wave biomes; emoji-like silhouettes redrawn as custom BIG BUG art; based on user-provided v17.9.94 branch -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -721,7 +721,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .goldLeafIcon:after{content:""!important;width:5px;height:5px;border-radius:50%;background:#fff7c7;right:-3px;top:-3px;box-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
 
 
-/* v18.0.2 — more natural wave-style card detail.
+/* v18.0.3 — more natural wave-style card detail.
    Leaf litter is deliberately scattered differently from card to card; layout/background screens unchanged. */
 #settings .settingRow,
 #bugs .card,
@@ -775,8 +775,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.2</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.2</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.3</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.3</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2128,7 +2128,7 @@ function finish(won,quit=false){
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
  if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:Math.floor(game.wave/2);if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome()}
  $('overTitle').classList.toggle('quitTitle',!!quit);
- $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='endless'?'MOSQUITO MODE OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
+ $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='endless'?'YOU GOT SWARMED!':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
  $('overSub').textContent=game.mode==='endless'?`${earned} ${earned===1?'Leaf':'Leaves'} earned from ${game.p.kills||0} mosquitoes.`:(won?'You pushed deep into the garden.':'');
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<1;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1';reviveBtn.title=reviveBtn.disabled?'You need 1 Gold Leaf to revive':'';}
