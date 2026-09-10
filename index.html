@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.82: Tiny Helper normal rarity restored; Triple Shot hidden while already active; Home version stamp corrected -->
+<!-- Big Bug v17.9.83: Tiny Helper normal rarity restored; Triple Shot hidden while already active; Home version stamp corrected -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -575,7 +575,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:30px;line-height:1;letter-spacing:0;padding-left:3px;padding-right:3px}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px;margin-left:6px}
 
-/* v17.9.82 — Mosquito Mode naming + BIG BUG-style hand-drawn mosquito icon polish. */
+/* v17.9.83 — Mosquito Mode naming + BIG BUG-style hand-drawn mosquito icon polish. */
 .mosquitoCounterIcon{
   position:relative;
   display:inline-block;
@@ -612,7 +612,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 }
 
 
-/* v17.9.82 — tighter, more handcrafted BIG BUG Bugs + Power Ups screens. */
+/* v17.9.83 — tighter, more handcrafted BIG BUG Bugs + Power Ups screens. */
 #bugs,#base{padding:12px!important;justify-content:center!important}
 #bugs .panel,#base .panel{
   width:min(500px,100%)!important;
@@ -714,8 +714,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.82</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.82</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.83</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.83</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -899,7 +899,8 @@ save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settin
 // v17.5.2 — Beetle and Butterfly are post-game rewards. Existing clears still count.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
 save.unlocked=['ladybug'];
-if(save.best>=50||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
+if(save.best>=40||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
+if(save.best>=50||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // v17.9.52 — Shifted the regular spider's flipped original head slightly farther forward.
@@ -1018,7 +1019,7 @@ const UP=[
 
 let game=null, last=0, raf=0, audio=null;
 
-// v17.9.82 — performance-only: coalesce rapid leaf pickup storage writes.
+// v17.9.83 — performance-only: coalesce rapid leaf pickup storage writes.
 let leafPersistTimer=0;
 function persistLeafPickup(){
  if(leafPersistTimer)return;
@@ -1917,7 +1918,7 @@ function openUpgrade(afterWave=false){
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v17.9.82 — Tiny Helper uses its normal 5% rarity; Triple Shot is excluded while already active.
+ // v17.9.83 — Tiny Helper uses its normal 5% rarity; Triple Shot is excluded while already active.
  const lucky=[];if(helper&&Math.random()<.05)lucky.push(helper);if(triple&&!g.p.tripleShot&&Math.random()<.05)lucky.push(triple);
  lucky.forEach((u,i)=>{if(i<choices.length)choices[i]=u});
  const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',triple:'≋',gold:'➜'};
