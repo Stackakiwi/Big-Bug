@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.93: Mosquito reward shown in Leaves stat + Bug Camp wording -->
+<!-- Big Bug v17.9.95: custom BIG BUG icon art replaces platform emoji; based on user-provided v17.9.94 -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -66,7 +66,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #upgrade .choice p{color:#4b5940}#upgrade .choice .rarity{color:#64714f;opacity:1;text-transform:none;font-style:italic;letter-spacing:.3px}
 #story{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:22px;background:#0c1c13d8;backdrop-filter:blur(2px)}
 #story.hidden{display:none}.storyLeaf{position:relative;width:min(390px,94vw);padding:24px 22px 20px;border-radius:22px 22px 28px 18px;background:linear-gradient(155deg,#f2e6b9,#d8ca91);color:#26331f;border:2px solid #789656;box-shadow:0 9px 0 #21371f,0 16px 35px #0009,inset 0 0 0 4px #fff4ca55}
-.storyLeaf:before{content:"";position:absolute;inset:9px;border:1px dashed #728b5266;border-radius:15px;pointer-events:none}.storyKicker{font:700 12px Georgia,serif;letter-spacing:1.4px;text-transform:uppercase;color:#647b43}.storyTitle{font:700 25px Georgia,serif;margin:6px 0 11px;color:#263a20}.storyText{font:17px/1.45 Georgia,'Times New Roman',serif;min-height:72px}.storyTwig{height:1px;background:#81935c88;margin:15px 0 13px;position:relative}.storyTwig:after{content:"🍃";position:absolute;right:8px;top:-12px;font-size:18px}#storyContinue{width:100%;min-height:48px;border:0;border-radius:13px;background:#476b36;color:#fff5d4;font:700 17px Georgia,serif;box-shadow:0 4px 0 #294627}
+.storyLeaf:before{content:"";position:absolute;inset:9px;border:1px dashed #728b5266;border-radius:15px;pointer-events:none}.storyKicker{font:700 12px Georgia,serif;letter-spacing:1.4px;text-transform:uppercase;color:#647b43}.storyTitle{font:700 25px Georgia,serif;margin:6px 0 11px;color:#263a20}.storyText{font:17px/1.45 Georgia,'Times New Roman',serif;min-height:72px}.storyTwig{height:1px;background:#81935c88;margin:15px 0 13px;position:relative}.storyTwig:after{content:"";position:absolute;right:8px;top:-12px;font-size:18px}#storyContinue{width:100%;min-height:48px;border:0;border-radius:13px;background:#476b36;color:#fff5d4;font:700 17px Georgia,serif;box-shadow:0 4px 0 #294627}
 
 /* v16.1 — cleaner upgrade cards: rarity by glow, not labels */
 #upgrade .panel{border-radius:10px}
@@ -434,7 +434,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .goldDevTools{display:flex;gap:8px;margin:12px 0 4px;padding:10px;border:1px dashed #d8b64d88;border-radius:14px;background:#3a301255}.goldDevTools .btn{flex:1;min-width:0;margin:0;font-size:12px;padding:10px 8px}.goldDevTools .goldDevClear{background:#7b3930;color:#fff;box-shadow:inset 0 -4px #4e211d,0 4px 0 #0d160c}
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
-.mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:"🦟"}
+.mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:""}
 /* v17.9.52 — Home controls polish: Settings moved bottom-right; Gold Leaf Shop shifted right and enlarged. */
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
@@ -701,12 +701,25 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 }
 
 
+/* v17.9.95 — platform emoji removed from visible game UI and replaced with BIG BUG-styled CSS art. */
 /* v17.9.93 — Mosquito reward is shown in the Leaves result stat; Base Camp copy renamed Bug Camp. */
 /* v17.9.92 — Mosquito result replay stays in Mosquito Mode; QUITTER is emphasized. */
 /* v17.9.91 — quit copy can wrap cleanly without affecting normal defeat titles. */
 #gameover #overTitle.quitTitle{font-size:clamp(25px,6.4vw,40px);line-height:1.08;text-align:center;white-space:normal;max-width:100%;overflow-wrap:anywhere}
 /* v17.9.91 — Mosquito Mode HUD icon mirrors the actual in-game mosquito. */
 .mosquitoCounterIcon{width:28px!important;height:28px!important;flex:0 0 28px!important;transform:none!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 32'%3E%3Cg stroke='%2324251f' stroke-linecap='round'%3E%3Cg fill='%23d8e6df' opacity='.30' stroke='none'%3E%3Cellipse cx='-5' cy='-1' rx='6' ry='2.2' transform='rotate(-26 -5 -1)'/%3E%3Cellipse cx='5' cy='-1' rx='6' ry='2.2' transform='rotate(26 5 -1)'/%3E%3C/g%3E%3Cellipse cx='0' cy='4' rx='3' ry='6.5' fill='%2334372f' stroke='none'/%3E%3Ccircle cx='0' cy='-3' r='3.2' fill='%234b4f43' stroke='none'/%3E%3Ccircle cx='-1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Ccircle cx='1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Cpath d='M0-6V-12M-2 1L-8 6M2 1L8 6M-2 4L-7 10M2 4L7 10' fill='none' stroke-width='1.1'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat!important}.mosquitoCounterIcon::before,.mosquitoCounterIcon::after{content:none!important;display:none!important}
+
+/* v17.9.95 — no platform emoji: lightweight handcrafted BIG BUG UI icons. */
+.bbUiIcon{display:inline-block;position:relative;width:1.15em;height:1.15em;vertical-align:-.2em;margin-right:.28em;flex:0 0 auto}
+.bbGear{border:3px solid #d9e6c5;border-radius:50%;box-shadow:0 0 0 2px #526b4c;transform:rotate(12deg)}.bbGear:before{content:"";position:absolute;inset:27%;border-radius:50%;background:#18301f;box-shadow:0 -9px 0 -5px #d9e6c5,0 9px 0 -5px #d9e6c5,9px 0 0 -5px #d9e6c5,-9px 0 0 -5px #d9e6c5}
+.bbMusic:before{content:"";position:absolute;left:54%;top:4%;width:3px;height:68%;background:#e7c45a;border-radius:3px;transform:rotate(-8deg)}.bbMusic:after{content:"";position:absolute;left:5%;bottom:4%;width:11px;height:8px;border-radius:55%;background:#e7c45a;box-shadow:11px -3px 0 -1px #e7c45a}
+.bbSound:before{content:"";position:absolute;left:2%;top:32%;width:35%;height:38%;background:#b9df9b;clip-path:polygon(0 25%,45% 25%,100% 0,100% 100%,45% 75%,0 75%)}.bbSound:after{content:"";position:absolute;left:48%;top:22%;width:42%;height:56%;border:2px solid #b9df9b;border-left:0;border-top-color:transparent;border-bottom-color:transparent;border-radius:0 70% 70% 0}
+.bbBurst:before,.bbBurst:after{content:"";position:absolute;inset:5%;background:#f0b33c;clip-path:polygon(50% 0,61% 34%,91% 18%,72% 45%,100% 54%,68% 61%,82% 92%,57% 70%,42% 100%,39% 68%,7% 82%,31% 57%,0 43%,34% 40%,18% 9%,45% 31%)}.bbBurst:after{inset:31%;background:#fff0a5;border-radius:50%;clip-path:none}
+.bbLock{width:.9em;height:.72em;margin-right:.38em;border:2px solid #d8e3ca;border-radius:3px;vertical-align:-.08em}.bbLock:before{content:"";position:absolute;left:17%;top:-72%;width:58%;height:70%;border:2px solid #d8e3ca;border-bottom:0;border-radius:8px 8px 0 0}
+.mosquitoCounterIcon:before{content:""!important;position:absolute;left:10%;top:39%;width:78%;height:18%;border-radius:60%;background:#c7d7b5;transform:rotate(-18deg);box-shadow:-5px -5px 0 -3px #a9c99b,5px 5px 0 -3px #a9c99b}.mosquitoCounterIcon:after{content:"";position:absolute;left:42%;top:5%;width:2px;height:88%;background:#c7d7b5;transform:rotate(22deg);box-shadow:6px 0 0 -0.5px #c7d7b5,-6px 0 0 -0.5px #c7d7b5}
+.storyTwig:after{content:""!important;width:18px;height:11px;right:8px;top:-6px;background:#719b48;border-radius:100% 0 100% 0;transform:rotate(-24deg)}
+.goldLeafIcon:after{content:""!important;width:5px;height:5px;border-radius:50%;background:#fff7c7;right:-3px;top:-3px;box-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
+
 </style>
 </head>
 <body>
@@ -729,18 +742,18 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button class="homeGoldBalance" data-action="goldShop" aria-label="Open Gold Leaf Shop"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span><small> SHOP</small></button>
-  <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
+  <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings"><span class="bbUiIcon bbGear"></span>SETTINGS</button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
   <div class="logo"><span class="logoMain"><span class="logoBigWord">BIG</span><br><span class="logoBugWord">BUG</span></span><small>SMALL BUG. BIG ADVENTURE.</small></div>
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
-  <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled>🔒 MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
+  <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.93</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.93</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.95</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.95</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -771,11 +784,11 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 <section id="settings" class="screen hidden">
  <div class="panel">
-  <h2>⚙️ SETTINGS</h2>
+  <h2><span class="bbUiIcon bbGear"></span>SETTINGS</h2>
   <p class="muted settingsIntro">Tweak the garden to your liking.</p>
-  <div class="settingRow"><div class="settingText"><b>🎵 Music</b><div class="muted">Title and boss music</div></div><button class="toggleBtn" id="musicToggle" data-setting="music">ON</button></div>
-  <div class="settingRow"><div class="settingText"><b>🔊 Sound Effects</b><div class="muted">Attacks, pickups, upgrades, and hits</div></div><button class="toggleBtn" id="sfxToggle" data-setting="sfx">ON</button></div>
-  <div class="settingRow"><div class="settingText"><b>💥 Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
+  <div class="settingRow"><div class="settingText"><b><span class="bbUiIcon bbMusic"></span>Music</b><div class="muted">Title and boss music</div></div><button class="toggleBtn" id="musicToggle" data-setting="music">ON</button></div>
+  <div class="settingRow"><div class="settingText"><b><span class="bbUiIcon bbSound"></span>Sound Effects</b><div class="muted">Attacks, pickups, upgrades, and hits</div></div><button class="toggleBtn" id="sfxToggle" data-setting="sfx">ON</button></div>
+  <div class="settingRow"><div class="settingText"><b><span class="bbUiIcon bbBurst"></span>Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
   <button class="btn dark settingsHelpBtn" data-action="help">HOW TO PLAY</button>
   <div class="settingsDanger">
    <h3>Reset Progress</h3><p class="muted">Erase Leaves, unlocks, upgrades, and your best wave. Gold Leaves and settings stay safe.</p>
@@ -803,18 +816,18 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <section id="story" class="hidden">
- <div class="storyLeaf"><div class="storyKicker">🍃 Garden Update</div><div class="storyTitle" id="storyTitle">Whispers in the Leaves</div><div class="storyText" id="storyText"></div><div class="storyTwig"></div><button id="storyContinue">Follow the trail →</button></div>
+ <div class="storyLeaf"><div class="storyKicker"><span class="leafCurrencyIcon bbLeafIcon"></span> Garden Update</div><div class="storyTitle" id="storyTitle">Whispers in the Leaves</div><div class="storyText" id="storyText"></div><div class="storyTwig"></div><button id="storyContinue">Follow the trail →</button></div>
 </section>
 <section id="upgrade" class="screen hidden">
  <div class="panel"><h2 id="upgradeTitle">A GIFT FROM THE GARDEN</h2><p id="upgradeSub">Pick one little advantage before you scurry onward.</p><div id="choices" class="grid"></div></div>
 </section>
 
 <section id="finalPrep" class="screen hidden">
- <div class="panel"><h2>☣️ FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p>
+ <div class="panel"><h2>☣ FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p>
  <div class="grid">
-  <button class="choice rare" id="prepLeaves"><div class="art">🍃</div><b>100,000 LEAVES</b><p class="muted">Take 100,000 Leaves into the final fight.</p></button>
-  <button class="choice epic" id="prepUpgrades"><div class="art">🎴</div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p></button>
-  <button class="choice epic" id="prepBuddy"><div class="art">✨🐞</div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p></button>
+  <button class="choice rare" id="prepLeaves"><div class="art"><span class="leafCurrencyIcon bbLeafIcon"></span></div><b>100,000 LEAVES</b><p class="muted">Take 100,000 Leaves into the final fight.</p></button>
+  <button class="choice epic" id="prepUpgrades"><div class="art"><span class="bbUiIcon bbBurst"></span></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p></button>
+  <button class="choice epic" id="prepBuddy"><div class="art"><span class="bbIcon bbBugIcon"></span></div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p></button>
  </div></div>
 </section>
 
@@ -937,7 +950,7 @@ if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // v17.9.30 — Mosquito Mode permanently unlocks after clearing Wave 20.
 // A best wave above 20 proves Wave 20 was cleared in older saves, so migrate those automatically.
 save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=21;
-function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;const html=unlocked?'MOSQUITO MODE':'🔒 MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small>';if(b.innerHTML!==html)b.innerHTML=html}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
+function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;const html=unlocked?'MOSQUITO MODE':' MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small>';if(b.innerHTML!==html)b.innerHTML=html}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
@@ -1031,15 +1044,15 @@ let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
 const UP=[
- {id:'sharp',icon:'🗡️',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
- {id:'heart',icon:'❤️',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
- {id:'speed',icon:'⚡',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{p.rate=Math.max(360,p.rate/1.10)}},
- {id:'crit',icon:'💥',name:'Lucky Ladybug Spots',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
- {id:'triple',icon:'🎯',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
- {id:'magnet',icon:'🧲',name:'Pollen Pull',desc:'+65% Leaf range',rarity:'common',apply:p=>p.magnet+=65},
- {id:'greed',icon:'🔩',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
- {id:'clone',icon:'✦',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];const edge=Math.floor(Math.random()*4),pad=34;let hx=p.x,hy=p.y;if(edge===0){hx=-pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===1){hx=W+pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===2){hx=Math.max(24,Math.min(W-24,p.x));hy=-pad}else{hx=Math.max(24,Math.min(W-24,p.x));hy=H+pad}p.helpers.push({bornWave:game.wave,leaving:false,entering:true,joining:0,x:hx,y:hy})}},
- {id:'gold',icon:'⚙️',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
+ {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
+ {id:'heart',icon:'',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
+ {id:'speed',icon:'',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{p.rate=Math.max(360,p.rate/1.10)}},
+ {id:'crit',icon:'',name:'Lucky Ladybug Spots',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
+ {id:'triple',icon:'',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
+ {id:'magnet',icon:'',name:'Pollen Pull',desc:'+65% Leaf range',rarity:'common',apply:p=>p.magnet+=65},
+ {id:'greed',icon:'',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
+ {id:'clone',icon:'',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];const edge=Math.floor(Math.random()*4),pad=34;let hx=p.x,hy=p.y;if(edge===0){hx=-pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===1){hx=W+pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===2){hx=Math.max(24,Math.min(W-24,p.x));hy=-pad}else{hx=Math.max(24,Math.min(W-24,p.x));hy=H+pad}p.helpers.push({bornWave:game.wave,leaving:false,entering:true,joining:0,x:hx,y:hy})}},
+ {id:'gold',icon:'',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
 ];
 
 let game=null, last=0, raf=0, audio=null;
@@ -1293,26 +1306,26 @@ function hideAll(){screens.forEach(s=>$(s).classList.add('hidden'))}
 function screenCanvas(){}
 
 const AREAS=[
- {name:'Garden Grove',icon:'🌿',top:'#29492d',mid:'#315431',bot:'#244329',patch1:'#8aa95a',patch2:'#172f20',leaf1:'#496c39',leaf2:'#587842',leaf3:'#3d6438',edge1:'#315d32',edge2:'#426f38',vignette:'#102a1870'},
- {name:'Autumn Thicket',icon:'🍂',top:'#5a4325',mid:'#6a4d29',bot:'#3e3422',patch1:'#c08a43',patch2:'#38281c',leaf1:'#9b5a2d',leaf2:'#b97935',leaf3:'#714126',edge1:'#6d4b28',edge2:'#855b2d',vignette:'#24170f88'},
- {name:'Moonlit Meadow',icon:'🌙',top:'#182f3d',mid:'#203b46',bot:'#142936',patch1:'#6d8d82',patch2:'#10212c',leaf1:'#315d5c',leaf2:'#416d67',leaf3:'#284b50',edge1:'#244e50',edge2:'#356263',vignette:'#07131f99'},
- {name:'Mushroom Hollow',icon:'🍄',top:'#49374e',mid:'#3d3548',bot:'#282b38',patch1:'#8c668b',patch2:'#242033',leaf1:'#67506d',leaf2:'#775c76',leaf3:'#4d455f',edge1:'#503f5d',edge2:'#624d69',vignette:'#160f228f'},
- {name:'Sunflower Field',icon:'🌻',top:'#53672d',mid:'#64783a',bot:'#3d552a',patch1:'#d5b84b',patch2:'#31451f',leaf1:'#789642',leaf2:'#91a94b',leaf3:'#5e8038',edge1:'#587c35',edge2:'#769444',vignette:'#24331970'},
- {name:'Mossy Creek',icon:'💧',top:'#214b45',mid:'#2c5b4f',bot:'#183d3a',patch1:'#5d9a7d',patch2:'#16332e',leaf1:'#3f7460',leaf2:'#568b6c',leaf3:'#315e54',edge1:'#346c58',edge2:'#467d65',vignette:'#0b282780'},
- {name:'Firefly Marsh',icon:'✨',top:'#253b35',mid:'#30483c',bot:'#172d2b',patch1:'#78934f',patch2:'#132724',leaf1:'#496a4a',leaf2:'#617d50',leaf3:'#395d45',edge1:'#3e6748',edge2:'#557753',vignette:'#081d1b99'},
- {name:'Rose Garden',icon:'🌹',top:'#493238',mid:'#553a3f',bot:'#30272f',patch1:'#a55f70',patch2:'#2d2028',leaf1:'#6d4652',leaf2:'#80515d',leaf3:'#593b49',edge1:'#65414e',edge2:'#794c58',vignette:'#1d101888'},
- {name:'Tallgrass Wilds',icon:'🌾',top:'#46582b',mid:'#586936',bot:'#304326',patch1:'#a7a95a',patch2:'#26351e',leaf1:'#718342',leaf2:'#8b9748',leaf3:'#596f36',edge1:'#637b38',edge2:'#819044',vignette:'#1c2b157d'},
- {name:'Rotwood Grove',icon:'🪵',top:'#3d3829',mid:'#4b432e',bot:'#292b22',patch1:'#7d7048',patch2:'#25231c',leaf1:'#655b39',leaf2:'#786944',leaf3:'#4d4d32',edge1:'#514a31',edge2:'#675b39',vignette:'#17160f91'},
- {name:'Berry Bramble',icon:'🫐',top:'#39354d',mid:'#46405a',bot:'#29293d',patch1:'#77638f',patch2:'#252236',leaf1:'#5e536e',leaf2:'#725f7e',leaf3:'#4d4962',edge1:'#594d69',edge2:'#6c5c79',vignette:'#16142591'},
- {name:'Stone Garden',icon:'🪨',top:'#465047',mid:'#555d50',bot:'#343d38',patch1:'#8c927d',patch2:'#2e3631',leaf1:'#68735f',leaf2:'#78806c',leaf3:'#566256',edge1:'#59665a',edge2:'#70786a',vignette:'#20272187'},
- {name:'Rain-soaked Hollow',icon:'🌧️',top:'#253b42',mid:'#304a4e',bot:'#1b3038',patch1:'#66898b',patch2:'#17292f',leaf1:'#3e6260',leaf2:'#527572',leaf3:'#345454',edge1:'#3a5d5b',edge2:'#4e706b',vignette:'#0c1c2599'},
- {name:'Lily Pond',icon:'🪷',top:'#25514c',mid:'#31635b',bot:'#1c403f',patch1:'#71a58d',patch2:'#173532',leaf1:'#467967',leaf2:'#5c8f75',leaf3:'#396b60',edge1:'#3c705f',edge2:'#52856d',vignette:'#0b29288f'},
- {name:'Abandoned Weblands',icon:'🕸️',top:'#3b3444',mid:'#443b4b',bot:'#282a36',patch1:'#786f82',patch2:'#24232f',leaf1:'#5b5263',leaf2:'#696070',leaf3:'#494653',edge1:'#504858',edge2:'#615769',vignette:'#15131f99'},
- {name:'Old Root Forest',icon:'🌲',top:'#273c2d',mid:'#334a35',bot:'#1d3025',patch1:'#6f8052',patch2:'#18291f',leaf1:'#465e3d',leaf2:'#587047',leaf3:'#384f37',edge1:'#3b593b',edge2:'#4d6843',vignette:'#0d20158f'},
- {name:'Sporewood',icon:'🍄',top:'#423449',mid:'#4d3c51',bot:'#2d2938',patch1:'#8a648e',patch2:'#282133',leaf1:'#68506c',leaf2:'#795a78',leaf3:'#55455e',edge1:'#5a4660',edge2:'#704f70',vignette:'#1c102699'},
- {name:'Withered Garden',icon:'🥀',top:'#4c3d32',mid:'#584536',bot:'#322e29',patch1:'#947057',patch2:'#2b241f',leaf1:'#755344',leaf2:'#865e48',leaf3:'#60473d',edge1:'#67493e',edge2:'#795447',vignette:'#21161199'},
- {name:'The Bloom',icon:'☣️',top:'#3c2f43',mid:'#49344a',bot:'#27252f',patch1:'#8f567f',patch2:'#241d2a',leaf1:'#68405d',leaf2:'#7b4a69',leaf3:'#54394f',edge1:'#5b3b52',edge2:'#71445f',vignette:'#180d209e'},
- {name:'Heart of the Garden',icon:'🌑',top:'#202a25',mid:'#29332b',bot:'#171e1b',patch1:'#625363',patch2:'#151a18',leaf1:'#3e493e',leaf2:'#514554',leaf3:'#343b35',edge1:'#39483b',edge2:'#4a5142',vignette:'#070b099f'}
+ {name:'Garden Grove',icon:'',top:'#29492d',mid:'#315431',bot:'#244329',patch1:'#8aa95a',patch2:'#172f20',leaf1:'#496c39',leaf2:'#587842',leaf3:'#3d6438',edge1:'#315d32',edge2:'#426f38',vignette:'#102a1870'},
+ {name:'Autumn Thicket',icon:'',top:'#5a4325',mid:'#6a4d29',bot:'#3e3422',patch1:'#c08a43',patch2:'#38281c',leaf1:'#9b5a2d',leaf2:'#b97935',leaf3:'#714126',edge1:'#6d4b28',edge2:'#855b2d',vignette:'#24170f88'},
+ {name:'Moonlit Meadow',icon:'',top:'#182f3d',mid:'#203b46',bot:'#142936',patch1:'#6d8d82',patch2:'#10212c',leaf1:'#315d5c',leaf2:'#416d67',leaf3:'#284b50',edge1:'#244e50',edge2:'#356263',vignette:'#07131f99'},
+ {name:'Mushroom Hollow',icon:'',top:'#49374e',mid:'#3d3548',bot:'#282b38',patch1:'#8c668b',patch2:'#242033',leaf1:'#67506d',leaf2:'#775c76',leaf3:'#4d455f',edge1:'#503f5d',edge2:'#624d69',vignette:'#160f228f'},
+ {name:'Sunflower Field',icon:'',top:'#53672d',mid:'#64783a',bot:'#3d552a',patch1:'#d5b84b',patch2:'#31451f',leaf1:'#789642',leaf2:'#91a94b',leaf3:'#5e8038',edge1:'#587c35',edge2:'#769444',vignette:'#24331970'},
+ {name:'Mossy Creek',icon:'',top:'#214b45',mid:'#2c5b4f',bot:'#183d3a',patch1:'#5d9a7d',patch2:'#16332e',leaf1:'#3f7460',leaf2:'#568b6c',leaf3:'#315e54',edge1:'#346c58',edge2:'#467d65',vignette:'#0b282780'},
+ {name:'Firefly Marsh',icon:'',top:'#253b35',mid:'#30483c',bot:'#172d2b',patch1:'#78934f',patch2:'#132724',leaf1:'#496a4a',leaf2:'#617d50',leaf3:'#395d45',edge1:'#3e6748',edge2:'#557753',vignette:'#081d1b99'},
+ {name:'Rose Garden',icon:'',top:'#493238',mid:'#553a3f',bot:'#30272f',patch1:'#a55f70',patch2:'#2d2028',leaf1:'#6d4652',leaf2:'#80515d',leaf3:'#593b49',edge1:'#65414e',edge2:'#794c58',vignette:'#1d101888'},
+ {name:'Tallgrass Wilds',icon:'',top:'#46582b',mid:'#586936',bot:'#304326',patch1:'#a7a95a',patch2:'#26351e',leaf1:'#718342',leaf2:'#8b9748',leaf3:'#596f36',edge1:'#637b38',edge2:'#819044',vignette:'#1c2b157d'},
+ {name:'Rotwood Grove',icon:'',top:'#3d3829',mid:'#4b432e',bot:'#292b22',patch1:'#7d7048',patch2:'#25231c',leaf1:'#655b39',leaf2:'#786944',leaf3:'#4d4d32',edge1:'#514a31',edge2:'#675b39',vignette:'#17160f91'},
+ {name:'Berry Bramble',icon:'',top:'#39354d',mid:'#46405a',bot:'#29293d',patch1:'#77638f',patch2:'#252236',leaf1:'#5e536e',leaf2:'#725f7e',leaf3:'#4d4962',edge1:'#594d69',edge2:'#6c5c79',vignette:'#16142591'},
+ {name:'Stone Garden',icon:'',top:'#465047',mid:'#555d50',bot:'#343d38',patch1:'#8c927d',patch2:'#2e3631',leaf1:'#68735f',leaf2:'#78806c',leaf3:'#566256',edge1:'#59665a',edge2:'#70786a',vignette:'#20272187'},
+ {name:'Rain-soaked Hollow',icon:'',top:'#253b42',mid:'#304a4e',bot:'#1b3038',patch1:'#66898b',patch2:'#17292f',leaf1:'#3e6260',leaf2:'#527572',leaf3:'#345454',edge1:'#3a5d5b',edge2:'#4e706b',vignette:'#0c1c2599'},
+ {name:'Lily Pond',icon:'',top:'#25514c',mid:'#31635b',bot:'#1c403f',patch1:'#71a58d',patch2:'#173532',leaf1:'#467967',leaf2:'#5c8f75',leaf3:'#396b60',edge1:'#3c705f',edge2:'#52856d',vignette:'#0b29288f'},
+ {name:'Abandoned Weblands',icon:'',top:'#3b3444',mid:'#443b4b',bot:'#282a36',patch1:'#786f82',patch2:'#24232f',leaf1:'#5b5263',leaf2:'#696070',leaf3:'#494653',edge1:'#504858',edge2:'#615769',vignette:'#15131f99'},
+ {name:'Old Root Forest',icon:'',top:'#273c2d',mid:'#334a35',bot:'#1d3025',patch1:'#6f8052',patch2:'#18291f',leaf1:'#465e3d',leaf2:'#587047',leaf3:'#384f37',edge1:'#3b593b',edge2:'#4d6843',vignette:'#0d20158f'},
+ {name:'Sporewood',icon:'',top:'#423449',mid:'#4d3c51',bot:'#2d2938',patch1:'#8a648e',patch2:'#282133',leaf1:'#68506c',leaf2:'#795a78',leaf3:'#55455e',edge1:'#5a4660',edge2:'#704f70',vignette:'#1c102699'},
+ {name:'Withered Garden',icon:'',top:'#4c3d32',mid:'#584536',bot:'#322e29',patch1:'#947057',patch2:'#2b241f',leaf1:'#755344',leaf2:'#865e48',leaf3:'#60473d',edge1:'#67493e',edge2:'#795447',vignette:'#21161199'},
+ {name:'The Bloom',icon:'',top:'#3c2f43',mid:'#49344a',bot:'#27252f',patch1:'#8f567f',patch2:'#241d2a',leaf1:'#68405d',leaf2:'#7b4a69',leaf3:'#54394f',edge1:'#5b3b52',edge2:'#71445f',vignette:'#180d209e'},
+ {name:'Heart of the Garden',icon:'',top:'#202a25',mid:'#29332b',bot:'#171e1b',patch1:'#625363',patch2:'#151a18',leaf1:'#3e493e',leaf2:'#514554',leaf3:'#343b35',edge1:'#39483b',edge2:'#4a5142',vignette:'#070b099f'}
 ];
 function areaIndex(w=game?.wave||1){return Math.min(AREAS.length-1,Math.floor((Math.max(1,w)-1)/5))}
 function areaFor(w=game?.wave||1){return AREAS[areaIndex(w)]}
@@ -1380,7 +1393,7 @@ function beginWave(w){
  if(g.mode==='endless'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
    g.waveQuota=endlessWaveQuota(w);g.spawnLeft=g.waveQuota;$('bossbar').style.display='none';
-   flashBanner('🦟 ENDLESS SWARM '+w,w===1?1.5:1.0);updateHud();return;
+   flashBanner('MOSQUITO SWARM '+w,w===1?1.5:1.0);updateHud();return;
  }
  if(w===100&&!g.finalPrepDone){showFinalPrep();return}
  g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
@@ -1392,14 +1405,14 @@ function beginWave(w){
  $('bossbar').style.display='none';
  const enteringArea=w>1&&(w-1)%5===0;
  if(enteringArea){const a=areaFor(w);flashBanner(a.icon+' NEW AREA: '+a.name.toUpperCase(),1.8)}
- else flashBanner(bossWave?'⚠️ BOSS WAVE '+w:'WAVE '+w, bossWave?1.6:1.0);
+ else flashBanner(bossWave?'⚠ BOSS WAVE '+w:'WAVE '+w, bossWave?1.6:1.0);
  if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0}
  updateHud();saveRunRecovery('wave-start');
 }
 function completeWave(){
  const g=game;if(!g.waveActive||g.intermission)return;
  g.waveActive=false;g.intermission=true;g.paused=true;
- if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('🎯 TRIPLE SHOT ENDED',.9)}
+ if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='endless'){
    if(g.wave%5===0){g.p.speed*=1.04;g.p.rate=Math.max(70,g.p.rate*.96);flashBanner('SWARM CLEAR!  •  SPEED UP!',1.15)}
@@ -1410,13 +1423,13 @@ function completeWave(){
  if(g.wave>=20&&!save.endlessUnlocked){
    save.endlessUnlocked=true;
    persist();
-   if(g.wave===20)setTimeout(()=>flashBanner('🦟 MOSQUITO MODE UNLOCKED!',1.8),1250);
+   if(g.wave===20)setTimeout(()=>flashBanner('MOSQUITO MODE UNLOCKED!',1.8),1250);
  }
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
    save.unlocked=['ladybug','beetle','butterfly'];
    persist();
-   setTimeout(()=>flashBanner('🪲 BEETLE + 🦋 BUTTERFLY UNLOCKED!',2.2),1900);
+   setTimeout(()=>flashBanner('BEETLE + BUTTERFLY UNLOCKED!',2.2),1900);
  }
  let heal;
  if(bossClear){
@@ -1428,7 +1441,7 @@ function completeWave(){
    heal=Math.ceil(g.p.maxHp*.10);
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
  }
- flashBanner(bossClear?'❤️ FULLY HEALED! BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.55:1.1);
+ flashBanner(bossClear?'❤ FULLY HEALED! BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.55:1.1);
  // v17.9.65 — boss-clear transition safety:
  // open the garden story immediately after the boss clear instead of leaving the run paused
  // while waiting on a timer. This prevents iOS from getting stranded on "WAVE CLEAR".
@@ -1484,7 +1497,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
  if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
  game.enemies.push(e);
- if(boss){game.bosses=game.bosses||[];game.bosses.push(e);game.boss=e;$('bossName').textContent='👑 '+bossKindsFor(w).map(q=>BOSS_NAMES[q]).join(' + ');$('bossbar').style.display='block';bossMusicStart()}
+ if(boss){game.bosses=game.bosses||[];game.bosses.push(e);game.boss=e;$('bossName').textContent=''+bossKindsFor(w).map(q=>BOSS_NAMES[q]).join(' + ');$('bossbar').style.display='block';bossMusicStart()}
  return e;
 }
 function burst(x,y,n=8,life=.5,col=null){
@@ -1631,7 +1644,7 @@ function enemyMove(e,dt){
    e.invuln=Math.max(0,e.invuln-dt);
    const tx=e.enterX||W/2,ty=e.enterY||H*.20,ex=tx-e.x,ey=ty-e.y,ed=Math.hypot(ex,ey)||1;
    e.x+=ex/ed*Math.min(210,ed/dt)*dt;e.y+=ey/ed*Math.min(210,ed/dt)*dt;
-   if(e.invuln<=0){e.state='chase';e.stateT=0;flashBanner('⚔️ FIGHT!',.55)}
+   if(e.invuln<=0){e.state='chase';e.stateT=0;flashBanner('⚔ FIGHT!',.55)}
    return;
  }
  e.cool-=dt;e.stateT-=dt;
@@ -1650,7 +1663,7 @@ function enemyMove(e,dt){
        let px=Math.max(35,Math.min(W-35,e.weevilAimX+i*48)),py=Math.max(105,Math.min(H-40,e.weevilAimY+(i%2)*45));
        bossHazard(px,py,22.5,2.1,'thorn',10+game.wave*.16);
      }
-     burst(e.x,e.y,5,.22,'#b8d05b');flashBanner('🌿 THORNS ERUPT!',.26);
+     burst(e.x,e.y,5,.22,'#b8d05b');flashBanner('THORNS ERUPT!',.26);
    }
    return;
  }
@@ -1669,7 +1682,7 @@ function enemyMove(e,dt){
      if(out){
        const ax=p.x-e.x,ay=p.y-e.y,ad=Math.hypot(ax,ay)||1;
        e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=1.05;
-       burst(e.x,e.y,4,.18,'#b9f3eb');flashBanner('💨 SKY SWEEP!',.32);
+       burst(e.x,e.y,4,.18,'#b9f3eb');flashBanner('SKY SWEEP!',.32);
        const a=Math.atan2(e.vy,e.vx);for(let q of [-.08,.08])game.fx.push({x:e.x,y:e.y,vx:Math.cos(a+q)*300,vy:Math.sin(a+q)*300,life:2.7,r:4.5,sting:true,damage:8+game.wave*.16});
      }
      return;
@@ -1691,7 +1704,7 @@ function enemyMove(e,dt){
      let ax=e.pinchX-e.x,ay=e.pinchY-e.y,ad=Math.hypot(ax,ay)||1;
      e.vx=ax/ad*340;e.vy=ay/ad*340;
      bossHazard(e.pinchX,e.pinchY,42,.34,'clamp',28+game.wave*.34);
-     flashBanner('✂️ CRUSH!',.22)
+     flashBanner('✂ CRUSH!',.22)
    }
    return;
  }
@@ -1733,7 +1746,7 @@ function enemyMove(e,dt){
      e.webCd=bossSecondFight(game.wave)?2.8:3.7;
      let lead=.38,tx=p.x+(p.moveX-p.x)*lead,ty=p.y+(p.moveY-p.y)*lead;
      webPatch(Math.max(38,Math.min(W-38,tx)),Math.max(90,Math.min(H-38,ty)),bossSecondFight(game.wave)?68:56,bossSecondFight(game.wave)?4.4:3.5);
-     flashBanner('🕸️ WEB!',.45);
+     flashBanner('WEB!',.45);
    }
  }
   if(e.boss&&e.kind!=='mantisBoss'&&e.shotCd<=0){
@@ -1746,14 +1759,14 @@ function enemyMove(e,dt){
    else if(e.kind==='earwig'){
      if(d<210&&Math.random()<.13){
        e.shotCd=4.6;e.state='pinchWindup';e.stateT=.58;
-       e.pinchX=p.x;e.pinchY=p.y;flashBanner('⚠️ BIG PINCH!',.48)
+       e.pinchX=p.x;e.pinchY=p.y;flashBanner('⚠ BIG PINCH!',.48)
      }else{
        e.shotCd=2.25;
-       if(d<175){e.state='dash';e.stateT=.38;e.vx=Math.cos(aim)*250;e.vy=Math.sin(aim)*250;bossHazard(p.x,p.y,48,.7,'clamp',10+game.wave*.16);flashBanner('✂️ PINCER CLAMP!',.32)}
+       if(d<175){e.state='dash';e.stateT=.38;e.vx=Math.cos(aim)*250;e.vy=Math.sin(aim)*250;bossHazard(p.x,p.y,48,.7,'clamp',10+game.wave*.16);flashBanner('✂ PINCER CLAMP!',.32)}
        else{for(let a of [-.42,.42])shoot(aim+a,235);}
      }
    }
-   else if(e.kind==='cicada'){e.shotCd=2.8;bossRing(e,14,145,8+game.wave*.16,0,'sonic');flashBanner('🔊 THUNDER CHORUS!',.38)}
+   else if(e.kind==='cicada'){e.shotCd=2.8;bossRing(e,14,145,8+game.wave*.16,0,'sonic');flashBanner('THUNDER CHORUS!',.38)}
    else if(e.kind==='bombardier'){
      e.shotCd=2.15;let back=aim+Math.PI;
      for(let i=-2;i<=2;i++){
@@ -1761,7 +1774,7 @@ function enemyMove(e,dt){
        bossHazard(e.x+Math.cos(a)*dist,e.y+Math.sin(a)*dist,38,2.8,'acid',9+game.wave*.17);
        let f=game.fx[game.fx.length-1];f.sprayAngle=a;f.spraySeed=Math.random()*6.283;
      }
-     flashBanner('🔥 ACID SPRAY!',.3)
+     flashBanner('ACID SPRAY!',.3)
    }
    else if(e.kind==='mothBoss'){
      e.shotCd=2.9;bossHazard(p.x,p.y,115,2.4,'dark',8+game.wave*.14);
@@ -1773,16 +1786,16 @@ function enemyMove(e,dt){
        p.moveX=Math.max(p.r,Math.min(W-p.r,p.moveX+gx/gd*34));
        p.moveY=Math.max(p.r,Math.min(H-p.r,p.moveY+gy/gd*34));
        game.fx.push({x:p.x,y:p.y,vx:gx/gd*80,vy:gy/gd*80,life:.38,r:24,mothGust:true});
-       flashBanner('💨 DUSK GUST!',.25)
-     }else flashBanner('🌘 DUSK VEIL!',.35)
+       flashBanner('DUSK GUST!',.25)
+     }else flashBanner('DUSK VEIL!',.35)
    }
-   else if(e.kind==='waterStrider'){e.shotCd=2.05;let tx=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*180)),ty=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*180));e.state='dash';e.stateT=.55;e.vx=(tx-e.x)/.55;e.vy=(ty-e.y)/.55;bossHazard(tx,ty,58,1.7,'ripple',9+game.wave*.15);flashBanner('💧 RIPPLE SKIM!',.3)}
+   else if(e.kind==='waterStrider'){e.shotCd=2.05;let tx=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*180)),ty=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*180));e.state='dash';e.stateT=.55;e.vx=(tx-e.x)/.55;e.vy=(ty-e.y)/.55;bossHazard(tx,ty,58,1.7,'ripple',9+game.wave*.15);flashBanner(' RIPPLE SKIM!',.3)}
    else if(e.kind==='weevil'){
      e.shotCd=3.05;e.state='weevilWindup';e.stateT=.48;e.weevilAimX=p.x;e.weevilAimY=p.y;
-     burst(e.x,e.y,4,.28,'#d7e88b');beep(185,.11,.028,'sawtooth');flashBanner('⚠️ THORN GARDEN!',.48)
+     burst(e.x,e.y,4,.28,'#d7e88b');beep(185,.11,.028,'sawtooth');flashBanner('⚠ THORN GARDEN!',.48)
    }
-   else if(e.kind==='tarantula'){e.shotCd=2.7;let ang=aim+Math.PI/2;for(let i=-2;i<=2;i++){let dist=i*55;bossHazard(p.x+Math.cos(ang)*dist,p.y+Math.sin(ang)*dist,30,5.6,'webline',8+game.wave*.14)}flashBanner('🕸️ WEB WALL!',.35)}
-   else if(e.kind==='rootBorer'){e.shotCd=3.0;for(let i=0;i<4;i++){let q=(i+1)/4,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,31,1.55+i*.12,'root',11+game.wave*.17)}flashBanner('🌱 ROOT ERUPTION!',.35)}
+   else if(e.kind==='tarantula'){e.shotCd=2.7;let ang=aim+Math.PI/2;for(let i=-2;i<=2;i++){let dist=i*55;bossHazard(p.x+Math.cos(ang)*dist,p.y+Math.sin(ang)*dist,30,5.6,'webline',8+game.wave*.14)}flashBanner(' WEB WALL!',.35)}
+   else if(e.kind==='rootBorer'){e.shotCd=3.0;for(let i=0;i<4;i++){let q=(i+1)/4,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,31,1.55+i*.12,'root',11+game.wave*.17)}flashBanner(' ROOT ERUPTION!',.35)}
    else if(e.kind==='sporeBeetle'){
      e.shotCd=2.55;
      for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,4.8,'spore',10+game.wave*.16)}
@@ -1790,10 +1803,10 @@ function enemyMove(e,dt){
      if(Math.random()<.22){
        const px=Math.max(38,Math.min(W-38,p.x+(Math.random()-.5)*70)),py=Math.max(110,Math.min(H-38,p.y+(Math.random()-.5)*70));
        game.fx.push({x:px,y:py,vx:0,vy:0,life:30,maxLife:30,r:24,toxicScar:true,damage:4+game.wave*.045,tick:.35});
-       flashBanner('☠️ BLIGHT SPORE!',.32)
-     }else flashBanner('🍄 SPORE BLOOM!',.35)
+       flashBanner('☠ BLIGHT SPORE!',.32)
+     }else flashBanner('SPORE BLOOM!',.35)
    }
-   else if(e.kind==='gardenHeart'){e.shotCd=1.55;bossRing(e,12,165,10+game.wave*.18,t*.12,'spore');if(Math.random()<.7){bossHazard(p.x,p.y,86,2.31,'rootFinal',12+game.wave*.18);bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16)}flashBanner('☣️ HEART PULSE!',.28)}
+   else if(e.kind==='gardenHeart'){e.shotCd=1.55;bossRing(e,12,165,10+game.wave*.18,t*.12,'spore');if(Math.random()<.7){bossHazard(p.x,p.y,86,2.31,'rootFinal',12+game.wave*.18);bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16)}flashBanner('☣ HEART PULSE!',.28)}
  }
  if(e.boss&&e.kind!=='gardenHeart'){
    e.addCd-=dt;
@@ -1961,7 +1974,7 @@ function update(dt,now){
 }
 function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
- $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'🦟 SWARM '+g.wave+' CLEARED!':(g.wave%5===0?'👑 BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
+ $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'SWARM '+g.wave+' CLEARED!':(g.wave%5===0?'BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
  $('upgradeSub').textContent=afterWave?(g.mode==='endless'?'Store an ability charge, then get right back into the swarm.':(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.')):'Pick one. Stack effects and discover crazy combinations.';
  if(g.mode==='endless'){
    const endlessUp=[];
@@ -1991,7 +2004,7 @@ function openUpgrade(afterWave=false){
 }
 function showFinalPrep(){
  const g=game;g.paused=true;g.wave=99;g.intermission=true;g.waveActive=false;
- $('finalPrep').classList.remove('hidden');$('finalPrep').style.display='flex';flashBanner('☣️ SOMETHING HUGE IS WAITING...',1.2);upgradePopSound();
+ $('finalPrep').classList.remove('hidden');$('finalPrep').style.display='flex';flashBanner('☣ SOMETHING HUGE IS WAITING...',1.2);upgradePopSound();
 }
 function finishFinalPrep(){
  $('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';game.finalPrepDone=true;game.paused=false;beginWave(100);
@@ -1999,7 +2012,7 @@ function finishFinalPrep(){
 function finalUpgradePick(remaining){
  const pool=UP.filter(u=>u.id!=='clone'&&(u.id!=='triple'||!game.p.tripleShot)),choices=[];
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- $('upgradeTitle').textContent='☣️ FINAL PREPARATION — '+(4-remaining)+' / 3';
+ $('upgradeTitle').textContent='☣ FINAL PREPARATION — '+(4-remaining)+' / 3';
  $('upgradeSub').textContent='Choose one upgrade. '+remaining+' choice'+(remaining===1?'':'s')+' remaining.';
  const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',triple:'≋',gold:'➜'};
  $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
@@ -2081,7 +2094,7 @@ function playEndingCredits(preview=false){
 function completeGameEnding(){
  if(!game||game.over)return;
  game.waveActive=false;game.intermission=true;game.paused=true;
- flashBanner('☣️ THE SPORE BEHEMOTH FALLS...',1.8);
+ flashBanner('☣ THE SPORE BEHEMOTH FALLS...',1.8);
  endingTimers.push(setTimeout(()=>playEndingCredits(false),2200));
 }
 
@@ -2728,7 +2741,7 @@ function draw(now=performance.now()){
  for(const f of game.fx){
    const fr=(f.r||8)*2+18;if(!f.playerShotFx&&!f.tripleShotFx&&!f.scrapFly&&(f.x+fr<0||f.x-fr>W||f.y+fr<0||f.y-fr>H))continue;
    if(f.healHeart){
-     const q=Math.max(0,f.life/(f.maxLife||1.15));X.globalAlpha=Math.min(1,q*1.8);X.textAlign='center';X.textBaseline='middle';X.font='30px serif';X.fillText('❤️',f.x,f.y);X.globalAlpha=1;continue
+     const q=Math.max(0,f.life/(f.maxLife||1.15));X.globalAlpha=Math.min(1,q*1.8);X.textAlign='center';X.textBaseline='middle';X.font='30px serif';X.fillText('❤',f.x,f.y);X.globalAlpha=1;continue
    }
    if(f.mothGust){
      const q=Math.max(0,f.life/.38);X.save();X.translate(f.x,f.y);X.globalAlpha=.18+.38*q;X.strokeStyle='#d7c6dd';X.lineWidth=2;
