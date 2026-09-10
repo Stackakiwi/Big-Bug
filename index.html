@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.85: menu music continuity + dedicated sparkling Gold Leaf Shop music -->
+<!-- Big Bug v17.9.86: menu/help music continuity + quiet story gameplay music; boss themes take priority -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -732,8 +732,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.85</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.85</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.86</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.86</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1092,6 +1092,7 @@ function restoreRecoveredRun(){
   }
   last=performance.now();
   screen('pause');
+  if(game.mode==='story'&&!game.boss)titleMusicStart();
   return true;
  }catch(e){game=null;clearRunRecovery();return false}
 }
@@ -1116,7 +1117,7 @@ function toggleSetting(key){
  save.settings[key]=!save.settings[key];persist();buildSettings();
  if(key==='music'){
   if(save.settings.music){
-   if(isMenuMusicScreen())titleMusicStart();
+   if(shouldTitleMusicPlay())titleMusicStart();
    else if(!$('goldShop').classList.contains('hidden'))shopMusicStart(false);
    else if(game&&game.boss&&!game.boss.dead&&!game.paused)bossMusicStart();
   }else{titleMusicStop();shopMusicStop();bossMusicStop()}
@@ -1127,7 +1128,7 @@ function initAudio(){
  try{
   audio=audio||new(window.AudioContext||window.webkitAudioContext)();
   const resumed=audio.state==='suspended'?audio.resume():Promise.resolve();
-  if(resumed&&resumed.then)resumed.then(()=>{if(isMenuMusicScreen()&&!titleMusicTimer)titleMusicStart();else if($('goldShop')&&!$('goldShop').classList.contains('hidden')&&!shopMusicTimer)shopMusicStart(false)}).catch(()=>{});
+  if(resumed&&resumed.then)resumed.then(()=>{if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart();else if($('goldShop')&&!$('goldShop').classList.contains('hidden')&&!shopMusicTimer)shopMusicStart(false);else if(game&&game.boss&&!game.boss.dead&&!game.paused&&!bossMusicTimer)bossMusicStart()}).catch(()=>{});
   return resumed;
  }catch(e){return Promise.resolve()}
 }
@@ -1136,13 +1137,15 @@ function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setT
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
-function isMenuMusicScreen(){return ['home','bugs','base','settings'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
+function isMenuMusicScreen(){return ['home','bugs','base','settings','help'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
+function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&(!game.boss||game.boss.dead))}
+function shouldTitleMusicPlay(){return isMenuMusicScreen()||isQuietStoryMusic()}
 function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}if(resetStep)titleMusicStep=0}
 function titleMusicStart(){
  if(!audio||save.settings.music===false||titleMusicTimer)return;
- // Soft, playful garden-loop shared seamlessly by Home, Bugs, Power Ups, and Settings.
+ // Soft, playful garden-loop shared by Home/menu/help and reused quietly during normal Story gameplay.
  const notes=[523,659,784,659,587,698,784,698,523,659,880,784,587,659,698,659];
- const tick=()=>{if(!isMenuMusicScreen()){titleMusicStop(false);return}const n=notes[titleMusicStep%notes.length];beep(n,.28,.0065,'sine','music');if(titleMusicStep%4===0)beep(n/2,.34,.0035,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,420)};
+ const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035;const n=notes[titleMusicStep%notes.length];beep(n,.28,gain,'sine','music');if(titleMusicStep%4===0)beep(n/2,.34,bassGain,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,420)};
  tick();
 }
 let shopMusicTimer=null,shopMusicStep=0;
@@ -1177,7 +1180,7 @@ function continueMysteryMusicStart(){
 let bossMusicTimer=null,bossMusicStep=0;
 function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}bossMusicStep=0}
 function bossMusicStart(){
- bossMusicStop();if(!audio||save.settings.music===false)return;
+ titleMusicStop(false);bossMusicStop();if(!audio||save.settings.music===false)return;
  const finalBoss=game?.boss?.kind==='gardenHeart';
  if(finalBoss){
    // Spore Behemoth: slower, lower, dissonant pulse with a breathing fungal feel.
@@ -1242,11 +1245,11 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(startWave=1,testMode=false){
- initAudio();titleMusicStop();shopMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
+ initAudio();titleMusicStop(false);shopMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const w=Math.max(1,Math.min(100,Number(startWave)||1));
  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
- beginWave(w);if(!testMode)saveRunRecovery('run-start');
+ beginWave(w);if(!game.boss)titleMusicStart();if(!testMode)saveRunRecovery('run-start');
  last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 
@@ -1929,7 +1932,7 @@ function update(dt,now){
  if(g.bosses&&g.bosses.length){
    compactInPlace(g.bosses,b=>!b.dead);
    g.boss=g.bosses[0]||null;
-   if(!g.bosses.length){$('bossbar').style.display='none';bossMusicStop()}
+   if(!g.bosses.length){$('bossbar').style.display='none';bossMusicStop();if(g.mode==='story'&&!g.over)titleMusicStart()}
    else{let hp=0,mx=0;for(const b of g.bosses){hp+=Math.max(0,b.hp);mx+=b.max}setBossFill(Math.max(0,100*hp/mx)+'%')}
  }
  if(g.waveActive&&g.spawnLeft<=0&&g.enemies.length===0)completeWave();
@@ -2831,7 +2834,7 @@ document.addEventListener('click',e=>{
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testCredits')playEndingCredits(true)
  if(a==='settings'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
- if(a==='help'){showGameUI(false);screen('help')}
+ if(a==='help'){showGameUI(false);screen('help');titleMusicStart()}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
@@ -2846,7 +2849,7 @@ document.addEventListener('click',e=>{
  if(a==='cancelQuit'){$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden')}
  if(a==='confirmQuit'){quitRun()}
 });
-document.addEventListener('pointerdown',()=>{if(isMenuMusicScreen()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
+document.addEventListener('pointerdown',()=>{if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
 $('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
