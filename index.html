@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.70: Hornet attacks stinger-first; visuals/stats/hitbox unchanged -->
+<!-- Big Bug v17.9.71: Hornet attacks stinger-first; visuals/stats/hitbox unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -433,7 +433,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .goldStoreNote{text-align:center;font-size:12px;line-height:1.35;color:#c8c6a2;margin:14px 4px 0}
 .goldDevTools{display:flex;gap:8px;margin:12px 0 4px;padding:10px;border:1px dashed #d8b64d88;border-radius:14px;background:#3a301255}.goldDevTools .btn{flex:1;min-width:0;margin:0;font-size:12px;padding:10px 8px}.goldDevTools .goldDevClear{background:#7b3930;color:#fff;box-shadow:inset 0 -4px #4e211d,0 4px 0 #0d160c}
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
-/* v17.9.70 — Gold Leaf-only permanent cosmetics. */
+/* v17.9.71 — Gold Leaf-only permanent cosmetics. */
 .cosmeticTitle{margin:18px 0 8px;text-align:center;color:#fff0a4;font:700 23px "Marker Felt","Chalkboard SE","Noteworthy",cursive}
 .cosmeticGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:14px}
 .cosmeticCard{background:linear-gradient(145deg,#24331b,#172511);border:1px solid #5d7134;border-radius:17px;padding:12px 9px;text-align:center}
@@ -584,6 +584,12 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 /* v17.9.68 — Stag King dedicated visual redesign only; gameplay and hitbox unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:30px;line-height:1;letter-spacing:0;padding-left:3px;padding-right:3px}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px;margin-left:6px}
+
+.bugSkinBox{margin-top:12px;padding-top:11px;border-top:1px solid #ffffff1f}
+.bugSkinTitle{font-weight:800;font-size:13px;color:#fff1b2;margin-bottom:7px;letter-spacing:.3px}
+.bugSkinBtns{display:flex;gap:7px;flex-wrap:wrap}
+.bugSkinBtns .btn{margin:0;padding:8px 10px;min-width:0;font-size:12px}
+
 </style>
 </head>
 <body>
@@ -616,8 +622,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.70</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.70</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.71</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.71</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -632,8 +638,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
  <div class="panel">
   <h2><span class="goldLeafIcon" aria-hidden="true"></span> GOLD LEAF SHOP</h2>
   <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
-  <div class="cosmeticTitle">COSMETICS</div>
-  <div id="cosmeticShop" class="cosmeticGrid"></div>
   <div class="cosmeticTitle">GOLD LEAF PACKS</div>
   <div class="goldPackGrid">
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>2</div><div class="bonus">STARTER PACK</div><button class="btn small" data-gold-pack="2">$0.99</button></div>
@@ -737,7 +741,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 </section>
 
 <script>
-// v17.9.70 — Gold Leaf-only permanent cosmetics with unlock/equip persistence and lightweight canvas effects.
+// v17.9.71 — Gold Leaf-only permanent cosmetics with unlock/equip persistence and lightweight canvas effects.
 // v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
@@ -756,6 +760,7 @@ function resize(){
 const $=id=>document.getElementById(id);
 const screens=['home','bugs','base','goldShop','settings','help','upgrade','pause','gameover','finalPrep','ending'];
 function screen(id){
+ setTimeout(()=>{if(document.body.textContent.includes('THE BUG PARADE'))refreshBugCosmetics()},0);
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
 }
@@ -1075,19 +1080,10 @@ function buildBugScreen(){
 }
 
 const COSMETICS=[
- {id:'goldTrim',name:'Golden Trim',desc:'A warm golden shimmer around your bug.',cost:3,icon:'✦'},
- {id:'dewGlow',name:'Dewdrop Glow',desc:'A soft garden-blue glow while you move.',cost:5,icon:'◌'},
- {id:'fireflies',name:'Firefly Friends',desc:'Tiny fireflies orbit you in the garden.',cost:7,icon:'• •'},
- {id:'royalSpark',name:'Royal Sparkles',desc:'Subtle gold sparkles dance around your bug.',cost:10,icon:'✧'}
+ {id:'ladyGold',name:'Golden Ladybug',desc:'A gleaming gold shell for Ladybug.',cost:1,bug:'ladybug'},
+ {id:'ladyPink',name:'Pink Ladybug',desc:'A cute pink shell with a playful girly look.',cost:1,bug:'ladybug'}
 ];
-function buildCosmeticShop(){
- const root=$('cosmeticShop');if(!root)return;
- root.innerHTML=COSMETICS.map(c=>{
-  const owned=(save.cosmetics||[]).includes(c.id),equipped=save.equippedCosmetic===c.id;
-  return `<div class="cosmeticCard ${equipped?'equipped':''}"><div class="cosmeticPreview">${c.icon}</div><b>${c.name}</b><div class="muted">${c.desc}</div><button class="btn small ${owned?'green':'goldUpgradeBtn'}" data-cosmetic="${c.id}">${equipped?'EQUIPPED':owned?'EQUIP':`<span class="goldLeafIcon" aria-hidden="true"></span>${c.cost}`}</button></div>`;
- }).join('')+`<div class="cosmeticCard ${save.equippedCosmetic==='none'?'equipped':''}"><div class="cosmeticPreview">🐞</div><b>Classic</b><div class="muted">The original BIG BUG look.</div><button class="btn small green" data-cosmetic="none">${save.equippedCosmetic==='none'?'EQUIPPED':'EQUIP'}</button></div>`;
- root.querySelectorAll('[data-cosmetic]').forEach(btn=>btn.onclick=()=>buyOrEquipCosmetic(btn.dataset.cosmetic));
-}
+function buildCosmeticShop(){ /* Cosmetics now live in The Bug Parade. */ }
 function buyOrEquipCosmetic(id){
  if(id==='none'){save.equippedCosmetic='none';persist();buildCosmeticShop();beep(650,.08,.02,'triangle');return}
  const c=COSMETICS.find(x=>x.id===id);if(!c)return;
@@ -1096,6 +1092,23 @@ function buyOrEquipCosmetic(id){
   save.goldLeaves-=c.cost;save.cosmetics.push(id);
  }
  save.equippedCosmetic=id;persist();buildCosmeticShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);
+}
+
+
+function ladybugCosmeticControls(){
+ const owned=save.cosmetics||[],eq=save.equippedCosmetic||'none';
+ const one=(id,label)=>{const has=owned.includes(id),on=eq===id;return `<button class="btn small ${has?'green':'goldUpgradeBtn'}" onclick="event.stopPropagation();buyOrEquipCosmetic('${id}');refreshBugCosmetics()">${on?'✓ '+label:has?label:`${label} — 1 GL`}</button>`};
+ return `<div class="bugSkinBox"><div class="bugSkinTitle">LADYBUG COSMETICS</div><div class="bugSkinBtns">${one('ladyGold','GOLD')}${one('ladyPink','PINK')}<button class="btn small green" onclick="event.stopPropagation();save.equippedCosmetic='none';persist();refreshBugCosmetics()">CLASSIC</button></div></div>`;
+}
+function refreshBugCosmetics(){
+ document.querySelectorAll('.bugSkinBox').forEach(x=>x.remove());
+ const parade=document.getElementById('bugSelect')||document.getElementById('bugs')||document.querySelector('[data-screen="bugs"]');
+ if(!parade)return;
+ const cards=parade.querySelectorAll('.bugCard,.bug-card,.card');
+ for(const card of cards){
+  const txt=(card.textContent||'').toLowerCase();
+  if(txt.includes('ladybug')){card.insertAdjacentHTML('beforeend',ladybugCosmeticControls());break}
+ }
 }
 
 function buildShop(){
@@ -2667,11 +2680,16 @@ function draw(now=performance.now()){
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  X.save();X.translate(p.x,p.y+bob);
  const cosmetic=save.equippedCosmetic||'none';
- if(cosmetic==='goldTrim'){X.shadowColor='#ffd84f';X.shadowBlur=13}
- else if(cosmetic==='dewGlow'){X.shadowColor='#bfefff';X.shadowBlur=15}
- X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
- if(cosmetic==='fireflies'){X.save();X.fillStyle='#f6e879';X.shadowColor='#f6e879';X.shadowBlur=7;for(let i=0;i<3;i++){let a=game.time*(1.15+i*.09)+i*2.094,rr=27+(i%2)*5;X.beginPath();X.arc(p.x+Math.cos(a)*rr,p.y+bob+Math.sin(a)*rr,2.1,0,6.283);X.fill()}X.restore()}
- else if(cosmetic==='royalSpark'){X.save();X.fillStyle='#ffe58a';X.shadowColor='#ffd84f';X.shadowBlur=5;for(let i=0;i<4;i++){let a=game.time*.8+i*1.571,rr=25+4*Math.sin(game.time*1.7+i);let sx=p.x+Math.cos(a)*rr,sy=p.y+bob+Math.sin(a)*rr;X.save();X.translate(sx,sy);X.rotate(a);X.fillRect(-1.1,-4,2.2,8);X.fillRect(-4,-1.1,8,2.2);X.restore()}X.restore()}
+ if(cosmetic==='ladyGold'&&save.selected==='ladybug'){X.shadowColor='#ffd84f';X.shadowBlur=10}
+ else if(cosmetic==='ladyPink'&&save.selected==='ladybug'){X.shadowColor='#ff8fcf';X.shadowBlur=10}
+ X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);
+ if(save.selected==='ladybug'&&(cosmetic==='ladyGold'||cosmetic==='ladyPink')){
+   X.save();X.globalAlpha=.72;X.globalCompositeOperation='source-atop';
+   X.fillStyle=cosmetic==='ladyGold'?'#e5b82e':'#f07fbd';
+   X.beginPath();X.ellipse(0,2,p.r*.82,p.r*1.02,0,0,6.283);X.fill();X.restore();
+ }X.restore();
+ if(false){X.save();X.fillStyle='#f6e879';X.shadowColor='#f6e879';X.shadowBlur=7;for(let i=0;i<3;i++){let a=game.time*(1.15+i*.09)+i*2.094,rr=27+(i%2)*5;X.beginPath();X.arc(p.x+Math.cos(a)*rr,p.y+bob+Math.sin(a)*rr,2.1,0,6.283);X.fill()}X.restore()}
+ else if(false){X.save();X.fillStyle='#ffe58a';X.shadowColor='#ffd84f';X.shadowBlur=5;for(let i=0;i<4;i++){let a=game.time*.8+i*1.571,rr=25+4*Math.sin(game.time*1.7+i);let sx=p.x+Math.cos(a)*rr,sy=p.y+bob+Math.sin(a)*rr;X.save();X.translate(sx,sy);X.rotate(a);X.fillRect(-1.1,-4,2.2,8);X.fillRect(-4,-1.1,8,2.2);X.restore()}X.restore()}
 
  // Tiny Helpers orbit while active; expired helpers visibly wander away.
  const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving)activeHCount++;
