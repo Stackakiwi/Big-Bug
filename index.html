@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.76: Tiny Helper curves smoothly into orbit after running in; test build guarantees Helper upgrade -->
+<!-- Big Bug v17.9.77: Tiny Helper normal rarity restored; Triple Shot hidden while already active -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1802,10 +1802,9 @@ function openUpgrade(afterWave=false){
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v17.9.76 TEST ONLY — guarantee Tiny Helper in every Story upgrade screen for entrance testing.
- if(helper&&choices.length)choices[0]=helper;
- // Triple Shot keeps its normal lucky-pull chance during this test build.
- if(triple&&Math.random()<.05&&choices.length>1)choices[1]=triple;
+ // v17.9.77 — restore normal 5% Tiny Helper rarity; do not offer Triple Shot while it is already active.
+ const lucky=[];if(helper&&Math.random()<.05)lucky.push(helper);if(triple&&!g.p.tripleShot&&Math.random()<.05)lucky.push(triple);
+ lucky.forEach((u,i)=>{if(i<choices.length)choices[i]=u});
  const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',triple:'≋',gold:'➜'};
  $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
@@ -1823,7 +1822,7 @@ function finishFinalPrep(){
  $('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';game.finalPrepDone=true;game.paused=false;beginWave(100);
 }
 function finalUpgradePick(remaining){
- const pool=UP.filter(u=>u.id!=='clone'),choices=[];
+ const pool=UP.filter(u=>u.id!=='clone'&&(u.id!=='triple'||!game.p.tripleShot)),choices=[];
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  $('upgradeTitle').textContent='☣️ FINAL PREPARATION — '+(4-remaining)+' / 3';
  $('upgradeSub').textContent='Choose one upgrade. '+remaining+' choice'+(remaining===1?'':'s')+' remaining.';
