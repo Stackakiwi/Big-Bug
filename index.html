@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.55: unified handcrafted button styling + clean transparent gameplay HUD -->
+<!-- Big Bug v17.9.56: unified handcrafted button styling + clean transparent gameplay HUD -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -490,7 +490,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .toggleBtn.off{background:linear-gradient(180deg,#8b9892,#68736e 62%,#515c57);border-color:#aeb8b2;box-shadow:inset 0 2px 0 #fff3,inset 0 -4px 0 #444f49,0 3px 0 #2e3933}
 
 
-/* v17.9.55 — unified handcrafted controls + clean floating gameplay HUD. Visual-only. */
+/* v17.9.56 — unified handcrafted controls + clean floating gameplay HUD. Visual-only. */
 .btn{
   position:relative;overflow:hidden;
   background:linear-gradient(180deg,#f4c454 0%,#df982d 60%,#b96d20 100%);
@@ -539,7 +539,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #hud .pill:nth-child(3),#hud .pill:nth-child(4){font-size:14px}
 
 
-/* v17.9.55 — simplify gameplay HUD: health left, wave centered, leaves right. */
+/* v17.9.56 — simplify gameplay HUD: health left, wave centered, leaves right. */
 #hud{
   display:grid;
   grid-template-columns:1fr auto 1fr;
@@ -560,8 +560,11 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #hud .hudLeaves{justify-self:end;text-align:right;font-size:14px}
 
 
-/* v17.9.55 — sharper Sharper Bite dagger artwork only. */
+/* v17.9.56 — sharper Sharper Bite dagger artwork only. */
 .sharperDagger{width:1.08em!important;height:1.08em!important;filter:drop-shadow(0 2px 1px #0006)}
+
+/* v17.9.56 — remove brown text telegraph popups; attack tells remain in-world. */
+#telegraph{display:none!important}
 </style>
 </head>
 <body>
@@ -594,8 +597,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.55</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.55</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.56</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.56</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1047,7 +1050,7 @@ function buildShop(){
  const s=save.upgrades;
  const rows=[
    ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`+10% Base Health — ${s.hp}/10`,2500+s.hp*2500,'hp'],
-   ['<svg class="bbSwordSvg shopDrawn sharperDagger" viewBox="0 0 48 48" aria-hidden="true"><path d="M39.8 4.2 27.1 28.7l-7.3-7.3z" fill="#f7faf8" stroke="#26312c" stroke-width="1.5" stroke-linejoin="round"/><path d="M39.8 4.2 24.1 25.8l3 2.9z" fill="#c8d0cc"/><path d="M37.2 7.7 27.4 23.9" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" opacity=".9"/><path d="m16.7 20.3 11 11" stroke="#d99a31" stroke-width="5.3" stroke-linecap="round"/><path d="m17.8 26.6 5.1 5.1" stroke="#70411f" stroke-width="4" stroke-linecap="round"/><path d="m15.2 28.4 5.4 5.4" stroke="#8a5225" stroke-width="5" stroke-linecap="round"/><circle cx="13.8" cy="35.2" r="3.4" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% Base Damage — ${s.dmg}/10`,3000+s.dmg*3000,'dmg'],
+   ['<svg class="bbSwordSvg shopDrawn sharperDagger" viewBox="0 0 48 48" aria-hidden="true"><path d="M43.5 3.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% Base Damage — ${s.dmg}/10`,3000+s.dmg*3000,'dmg'],
    ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% Attack Speed — ${s.magnet}/10`,3500+s.magnet*3500,'magnet'],
    ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% Pickup Range & Leaves — ${s.coins}/10`,5000+s.coins*5000,'coins']
  ];
@@ -1700,7 +1703,7 @@ function update(dt,now){
  for(const d of g.drops){
    d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,dist=0,mag2=p.magnet*p.magnet;
    if(d2<mag2){dist=Math.sqrt(d2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt}
-   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+1;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ GOLD LEAF FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.42,r:7,scrapFly:true,tx:W*.72,ty:42});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
+   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+1;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ GOLD LEAF FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;if(game.mode!=='endless'&&!game.testMode){save.scrap=(save.scrap||0)+d.v;persist()}d.dead=true;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.42,r:7,scrapFly:true,tx:W*.72,ty:42});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
  }
  for(const f of g.fx){
    f.life-=dt;
@@ -1851,7 +1854,7 @@ function playEndingCredits(preview=false){
  }
 
  clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
- if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);if(!game.testMode){save.scrap+=earned;save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
+ if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);if(!game.testMode){save.scrap+=Math.floor(game.wave/2);save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
  screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');
  // Restart the CSS scroll every time, including the temporary preview button.
@@ -1871,7 +1874,7 @@ function completeGameEnding(){
 function finish(won){
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0,earned=game.testMode?0:coins+Math.floor(game.wave/2);
- if(!game.testMode&&!game.rewardsBanked){save.scrap+=earned;if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome()}
+ if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?earned:Math.floor(game.wave/2);if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome()}
  $('overTitle').textContent=game.mode==='endless'?'ENDLESS RUN OVER':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!');
  $('overSub').textContent=game.mode==='endless'?'The mosquito swarm finally got you.':(won?'You pushed deep into the garden.':'');
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=coins;$('earnedLeaves').textContent=earned;
