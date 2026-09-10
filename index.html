@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v17.9.83: Tiny Helper normal rarity restored; Triple Shot hidden while already active; Home version stamp corrected -->
+<!-- Big Bug v17.9.84: Tiny Helper normal rarity restored; Triple Shot hidden while already active; Home version stamp corrected -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -575,7 +575,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:30px;line-height:1;letter-spacing:0;padding-left:3px;padding-right:3px}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px;margin-left:6px}
 
-/* v17.9.83 — Mosquito Mode naming + BIG BUG-style hand-drawn mosquito icon polish. */
+/* v17.9.84 — Mosquito Mode naming + BIG BUG-style hand-drawn mosquito icon polish. */
 .mosquitoCounterIcon{
   position:relative;
   display:inline-block;
@@ -612,7 +612,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 }
 
 
-/* v17.9.83 — tighter, more handcrafted BIG BUG Bugs + Power Ups screens. */
+/* v17.9.84 — tighter, more handcrafted BIG BUG Bugs + Power Ups screens. */
 #bugs,#base{padding:12px!important;justify-content:center!important}
 #bugs .panel,#base .panel{
   width:min(500px,100%)!important;
@@ -682,6 +682,24 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   #base .shopRow{min-height:76px!important;padding:8px!important}
 }
 
+
+/* v17.9.84 — Bug Parade readability cleanup, same version. */
+#bugs .panel{width:min(520px,100%)!important}
+#bugs .panel h2{font-size:32px!important;margin-bottom:9px!important}
+#bugs .panel>p{font-size:18px!important;line-height:1.3!important;margin-bottom:12px!important}
+#bugs .card{padding:13px 14px!important}
+#bugs .card .bugPreview{height:68px!important;margin-bottom:7px!important}
+#bugs .card .bugPreview canvas{width:68px!important;height:68px!important}
+#bugs .card b{font-size:22px!important;line-height:1.12!important}
+#bugs .card p,#bugs .card .muted{font-size:15.5px!important;line-height:1.3!important}
+#bugs .card .btn{font-size:17px!important;padding:11px 15px!important}
+@media(max-width:430px){
+ #bugs .panel h2{font-size:30px!important}
+ #bugs .panel>p{font-size:17px!important}
+ #bugs .card b{font-size:21px!important}
+ #bugs .card p,#bugs .card .muted{font-size:15px!important}
+}
+
 </style>
 </head>
 <body>
@@ -714,8 +732,8 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v17.9.83</div>
-  <div class="versionCorner" aria-hidden="true">v17.9.83</div>
+  <div class="versionStamp" aria-hidden="true">v17.9.84</div>
+  <div class="versionCorner" aria-hidden="true">v17.9.84</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1019,7 +1037,7 @@ const UP=[
 
 let game=null, last=0, raf=0, audio=null;
 
-// v17.9.83 — performance-only: coalesce rapid leaf pickup storage writes.
+// v17.9.84 — performance-only: coalesce rapid leaf pickup storage writes.
 let leafPersistTimer=0;
 function persistLeafPickup(){
  if(leafPersistTimer)return;
@@ -1163,7 +1181,7 @@ function buildBugScreen(){
  Object.entries(BUGS).forEach(([id,b])=>{
   const unlocked=save.unlocked.includes(id), selected=save.selected===id, starter=id==='ladybug';
   const el=document.createElement('div');el.className='card'+(selected?' selected':'');
-  const unlockWave=id==='beetle'?50:100;
+  const unlockWave=id==='beetle'?40:50;
   const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>Or unlock early for 1 Gold Leaf.</div>`:'';
   el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'goldUnlockBtn'}">${selected?'SELECTED':unlocked?'SELECT':`<span class="goldLeafIcon" aria-hidden="true"></span> UNLOCK — 1`}</button>`;
   el.querySelector('.bugPreview').appendChild(makeBugPreview(id));
@@ -1918,7 +1936,7 @@ function openUpgrade(afterWave=false){
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v17.9.83 — Tiny Helper uses its normal 5% rarity; Triple Shot is excluded while already active.
+ // v17.9.84 — Tiny Helper uses its normal 5% rarity; Triple Shot is excluded while already active.
  const lucky=[];if(helper&&Math.random()<.05)lucky.push(helper);if(triple&&!g.p.tripleShot&&Math.random()<.05)lucky.push(triple);
  lucky.forEach((u,i)=>{if(i<choices.length)choices[i]=u});
  const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',triple:'≋',gold:'➜'};
