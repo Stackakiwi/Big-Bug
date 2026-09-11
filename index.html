@@ -746,27 +746,53 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #base .shopCurrency:first-child{background-position:86% 22%,9% 74%,center,center!important}
 #base .shopCurrency:nth-child(2){background-position:14% 20%,79% 81%,center,center!important}
 
-/* v18.0.19 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
+/* v18.0.21 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
 /* v18.0.5 — Mosquito Mode power-up controls are gameplay-only; never show on the run-end screen. */
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
-/* v18.0.19 — Garden Book: discovery journal, isolated Home button, and BIG BUG garden styling. */
+/* v18.0.21 — Garden Book: discovery journal, isolated Home button, and BIG BUG garden styling. */
 #gardenBookBtn{
  position:absolute!important;right:16px!important;top:45.2%!important;z-index:55!important;
  width:58px!important;height:58px!important;min-width:0!important;margin:0!important;padding:0!important;
- border:0!important;background:transparent!important;box-shadow:none!important;transform:rotate(1deg)!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;transform:rotate(-2deg)!important;
  display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer;
 }
-#gardenBookBtn .bookGlyph{display:block;position:relative;width:45px;height:38px;margin:0;
- border:3px solid #f4e4a8;border-radius:7px 9px 9px 7px;background:linear-gradient(145deg,#a67b3e,#76542e);
- box-shadow:inset 6px 0 0 #5d4328,inset 0 -4px 0 #4c371f,0 4px 0 #20371f,0 7px 12px #0d271d55}
-#gardenBookBtn .bookGlyph:before{content:"";position:absolute;left:11px;top:5px;width:19px;height:24px;
- border-left:2px solid #f3dfa0;border-right:1px solid #5c4227;transform:skewY(-4deg);opacity:.92}
-#gardenBookBtn .bookGlyph:after{content:"";position:absolute;right:-6px;top:-7px;width:13px;height:8px;
- background:#8db852;border-radius:100% 0 100% 0;transform:rotate(28deg);box-shadow:0 1px 0 #29431f}
-@media(max-width:390px){#gardenBookBtn{right:11px!important;width:54px!important;height:54px!important;top:45.5%!important}#gardenBookBtn .bookGlyph{width:41px;height:35px}}
-
+#gardenBookBtn .bookGlyph{
+ display:block;position:relative;width:45px;height:39px;margin:0;
+ border:3px solid #183b25;border-radius:5px 8px 8px 5px;
+ background:#5f8d42;
+ box-shadow:inset 5px 0 0 #345d34,inset 0 -4px 0 #3c682f,0 4px 0 #17351f;
+}
+#gardenBookBtn .bookGlyph:before{
+ content:"";position:absolute;left:7px;top:3px;bottom:3px;width:2px;
+ background:#d7dfa1;border-left:1px solid #244b2c;opacity:.9
+}
+#gardenBookBtn .bookGlyph:after{
+ content:"";position:absolute;right:4px;top:4px;width:8px;height:5px;
+ background:#f1c24a;border:2px solid #274629;border-radius:50% 0 50% 0;transform:rotate(-12deg)
+}
+#gardenBookBtn .bookBug{
+ position:absolute;left:15px;top:9px;width:18px;height:20px;
+ border:2px solid #1e2920;border-radius:50% 50% 45% 45%;
+ background:#df493f;box-shadow:inset 0 -2px 0 #9f302e;
+}
+#gardenBookBtn .bookBug:before{
+ content:"";position:absolute;left:6px;top:-5px;width:6px;height:6px;
+ border:2px solid #1e2920;border-radius:50%;background:#252a23
+}
+#gardenBookBtn .bookBug:after{
+ content:"";position:absolute;left:8px;top:1px;width:2px;height:15px;background:#252a23
+}
+#gardenBookBtn .bookBug i{position:absolute;width:4px;height:4px;background:#252a23;border-radius:50%}
+#gardenBookBtn .bookBug i:nth-child(1){left:3px;top:4px}
+#gardenBookBtn .bookBug i:nth-child(2){right:2px;top:4px}
+#gardenBookBtn .bookBug i:nth-child(3){left:3px;bottom:3px}
+#gardenBookBtn .bookBug i:nth-child(4){right:2px;bottom:3px}
+@media(max-width:390px){
+ #gardenBookBtn{right:11px!important;width:54px!important;height:54px!important;top:45.5%!important}
+ #gardenBookBtn .bookGlyph{width:43px;height:37px}
+}
 #gardenBook{overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;overscroll-behavior-y:contain;height:100dvh!important;min-height:100vh!important;display:block!important;background:
  radial-gradient(circle at 12% 8%,#dbeebc55,transparent 28%),
  radial-gradient(circle at 88% 70%,#6f8f4755,transparent 30%),
@@ -788,8 +814,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
  letter-spacing:.2px;text-shadow:none;text-align:center
 }
 .gardenBookHeader .bookMini{
- display:inline-block;width:25px;height:22px;border:3px solid #244728;border-radius:4px;
- background:#8a6b3c;vertical-align:-3px;margin-right:7px;box-shadow:inset 5px 0 #5d472e
+ display:inline-block;position:relative;width:25px;height:22px;border:3px solid #244728;border-radius:3px 5px 5px 3px;
+ background:#5f8d42;vertical-align:-3px;margin-right:7px;box-shadow:inset 5px 0 #345d34
 }
 .gardenBookHeader p{
  margin:9px 42px 12px 0;max-width:none;color:#596647;font-weight:700;
@@ -872,7 +898,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button class="homeGoldBalance" data-action="goldShop" aria-label="Open Gold Leaf Shop"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span><small> SHOP</small></button>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
-  <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"></span></button>
+  <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><span class="bookBug"><i></i><i></i><i></i><i></i></span></span></button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
   <div class="logo"><span class="logoMain"><span class="logoBigWord">BIG</span><br><span class="logoBugWord">BUG</span></span><small>SMALL BUG. BIG ADVENTURE.</small></div>
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
@@ -882,8 +908,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.19</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.19</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.21</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.21</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2075,7 +2101,7 @@ function update(dt,now){
  }
  const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),attackDelay=rapid?Math.max(85,p.rate*.18):p.rate;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
- // v18.0.19: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
+ // v18.0.21: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
@@ -2224,7 +2250,7 @@ function openUpgrade(afterWave=false){
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v18.0.19 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
+ // v18.0.21 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
  // Little Buddy = 5%, Triple Shot = 5%, Little Buddy Army = 4% on eligible Story upgrade screens.
  // The Army is NEVER offered immediately before a boss (after waves 4, 9, 14, ...), but can appear right after a boss.
  const nextWave=g.wave+1,armyEligible=!!army&&nextWave%5!==0;
@@ -3111,42 +3137,42 @@ function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;s
 // v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
 // Existing button sounds remain untouched and do not get doubled.
 
-// v18.0.19 — Garden Book discovery journal.
+// v18.0.21 — Garden Book discovery journal.
 // Entries use the game's own live renderers. Enemy portraits are captured from drawEnemy
 // on the hidden arena canvas, so the book always matches the actual in-game artwork.
 const GARDEN_BOOK={
  playable:[
-  {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:"A solid all-rounder. Quick, tough, and easy to use."},
-  {key:'player:beetle',id:'beetle',name:'Beetle',desc:'Tough shell, strong bite, and built to take a hit.'},
-  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Fast attacks, great reach, and a little less damage.'}
+  {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:"The little bug that started it all. Quick, tough, and ready for a big adventure."},
+  {key:'player:beetle',id:'beetle',name:'Beetle',desc:'A tiny tank with a tough shell and a big bite. Not exactly in a hurry.'},
+  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Light, speedy, and hard to catch. Hits fast, just not quite as hard.'}
  ],
  enemy:[
-  {key:'enemy:ant',id:'ant',name:'Garden Ant',desc:'Small and fast. They get annoying when a bunch show up.'},
-  {key:'enemy:mosquito',id:'mosquito',name:'Mosquito',desc:'Fast, annoying, and always chasing you.'},
-  {key:'enemy:beetle',id:'beetle',name:'Armored Beetle',desc:'Slow, tanky, and hard to squish.'},
-  {key:'enemy:wasp',id:'wasp',name:'Garden Wasp',desc:'Quick and aggressive. Likes to stay on you.'},
-  {key:'enemy:stink',id:'stink',name:'Stink Bug',desc:'Slow, tough, and not fun to stand near.'},
-  {key:'enemy:spider',id:'spider',name:'Garden Spider',desc:'Fast legs, sharp fangs, and always on the hunt.'}
+  {key:'enemy:ant',id:'ant',name:'Garden Ant',desc:'Tiny garden workers with zero respect for personal space. Watch out when they swarm.'},
+  {key:'enemy:mosquito',id:'mosquito',name:'Mosquito',desc:'A tiny flying headache that refuses to leave you alone. Warning: they love to stay on your tail.'},
+  {key:'enemy:beetle',id:'beetle',name:'Armored Beetle',desc:'A stubborn little wall with legs. Warning: it takes a lot more squishing than you’d expect.'},
+  {key:'enemy:wasp',id:'wasp',name:'Garden Wasp',desc:'Small, fast, and way too confident. Warning: it loves getting right in your face.'},
+  {key:'enemy:stink',id:'stink',name:'Stink Bug',desc:'A chunky garden stinker with terrible manners. Warning: give it some space.'},
+  {key:'enemy:spider',id:'spider',name:'Garden Spider',desc:'Eight legs, two fangs, and one very bad attitude. Warning: it closes the gap fast.'}
  ],
  boss:[
-  {key:'enemy:hornet',id:'hornet',name:'Hornet',desc:'The first big boss. Fast, mean, and hard to ignore.'},
-  {key:'enemy:stagBeetle',id:'stagBeetle',name:'Stag King',desc:'A huge beetle with a hard shell and a nasty charge.'},
-  {key:'enemy:queenSpider',id:'queenSpider',name:'Venom Queen',desc:'Webs, venom, and a lot of bad space to stand in.'},
-  {key:'enemy:moleCricket',id:'moleCricket',name:'Mole Thing',desc:'Burrows underground and pops up where the dirt cracks.'},
-  {key:'enemy:scarab',id:'scarab',name:'Iron Scarab',desc:'Big armor, big health, and very hard to wear down.'},
-  {key:'enemy:dragonflyBoss',id:'dragonflyBoss',name:'Sky Lancer',desc:'Flies off-screen, then comes rushing back in.'},
-  {key:'enemy:mantisBoss',id:'mantisBoss',name:'Praying Tyrant',desc:'Gets in close and hits hard with its long arms.'},
-  {key:'enemy:centipede',id:'centipede',name:'Red Centipede',desc:'Fast rushes, lots of legs, and not much warning.'},
-  {key:'enemy:earwig',id:'earwig',name:'Pincher',desc:'Big pincers and a painful pinch attack.'},
-  {key:'enemy:cicada',id:'cicada',name:'Thunder Cicada',desc:'Fast, loud, and full of crackling attacks.'},
-  {key:'enemy:bombardier',id:'bombardier',name:'Bombardier',desc:'Spits out fire and nasty gas. Keep moving.'},
-  {key:'enemy:mothBoss',id:'mothBoss',name:'Dusk Moth',desc:'Uses gusts to shove you around the arena.'},
-  {key:'enemy:waterStrider',id:'waterStrider',name:'Pond Skater',desc:'Long legs, quick movement, and hard to pin down.'},
-  {key:'enemy:weevil',id:'weevil',name:'Thorn Weevil',desc:'Throws out thorn attacks that make dodging tricky.'},
-  {key:'enemy:tarantula',id:'tarantula',name:'Old Webber',desc:'A big old spider with webs that stick around.'},
-  {key:'enemy:rootBorer',id:'rootBorer',name:'Root Borer',desc:'A heavy burrower that hits hard and moves slow.'},
-  {key:'enemy:sporeBeetle',id:'sporeBeetle',name:'Sporeback',desc:'A fungus-covered beetle that leaves poison behind.'},
-  {key:'enemy:gardenHeart',id:'gardenHeart',name:'The Spore Behemoth',desc:'The final boss. Huge, fungal, and very dangerous.'}
+  {key:'enemy:hornet',id:'hornet',name:'Hornet',desc:'The garden’s first real bully. Loud, angry, and way too fast. Warning: don’t let it pin you down.'},
+  {key:'enemy:stagBeetle',id:'stagBeetle',name:'Stag King',desc:'The self-crowned king of the garden. Big shell, bigger ego. Warning: that charge hurts.'},
+  {key:'enemy:queenSpider',id:'queenSpider',name:'Venom Queen',desc:'She owns the web, the venom, and apparently the whole garden. Warning: watch where you step.'},
+  {key:'enemy:moleCricket',id:'moleCricket',name:'Mole Thing',desc:'Nobody is quite sure what this thing is. Warning: if the ground starts cracking, move.'},
+  {key:'enemy:scarab',id:'scarab',name:'Iron Scarab',desc:'A shiny walking fortress that refuses to fall over. Warning: this fight can take a while.'},
+  {key:'enemy:dragonflyBoss',id:'dragonflyBoss',name:'Sky Lancer',desc:'Fast, flashy, and convinced the whole sky belongs to it. Warning: it loves surprise fly-bys.'},
+  {key:'enemy:mantisBoss',id:'mantisBoss',name:'Praying Tyrant',desc:'Tall, sharp, and always looking for a fight. Warning: those arms reach farther than they look.'},
+  {key:'enemy:centipede',id:'centipede',name:'Red Centipede',desc:'A red blur with way too many feet. Warning: its rush can come fast.'},
+  {key:'enemy:earwig',id:'earwig',name:'Pincher',desc:'Built like a pair of garden pliers with legs. Warning: stay clear of the big pinch.'},
+  {key:'enemy:cicada',id:'cicada',name:'Thunder Cicada',desc:'A noisy show-off that brings its own thunder. Warning: things get hectic when it starts buzzing.'},
+  {key:'enemy:bombardier',id:'bombardier',name:'Bombardier',desc:'A little chemistry experiment gone very wrong. Warning: fire and gas make standing still a bad idea.'},
+  {key:'enemy:mothBoss',id:'mothBoss',name:'Dusk Moth',desc:'Soft wings, spooky vibes, surprisingly rude. Warning: its gusts can push you into trouble.'},
+  {key:'enemy:waterStrider',id:'waterStrider',name:'Pond Skater',desc:'Looks like it forgot how normal legs work. Warning: it skates around the arena fast.'},
+  {key:'enemy:weevil',id:'weevil',name:'Thorn Weevil',desc:'Small face, huge attitude, way too many thorns. Warning: keep an eye on the ground.'},
+  {key:'enemy:tarantula',id:'tarantula',name:'Old Webber',desc:'Old, grumpy, and very proud of its web collection. Warning: those webs hang around.'},
+  {key:'enemy:rootBorer',id:'rootBorer',name:'Root Borer',desc:'Built like a root with anger issues. Warning: slow doesn’t mean harmless.'},
+  {key:'enemy:sporeBeetle',id:'sporeBeetle',name:'Sporeback',desc:'A beetle that has definitely seen better days. Warning: don’t hang around its poison.'},
+  {key:'enemy:gardenHeart',id:'gardenHeart',name:'The Spore Behemoth',desc:'The biggest bad bug in the whole garden. Huge, fungal, and extremely unhappy to see you. Warning: everything gets dangerous here.'}
  ]
 };
 let gardenBookTab='playable';
