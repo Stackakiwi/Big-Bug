@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.4: menu backgrounds now echo distinct in-game wave biomes; emoji-like silhouettes redrawn as custom BIG BUG art; based on user-provided v17.9.94 branch -->
+<!-- Big Bug v18.0.23: Garden Book cover now uses the exact playable ladybug renderer; based on user-provided v18.0.23 build -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -751,7 +751,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
-/* v18.0.22 — Garden Book icon: clean book cover with ladybug only; removed leaf decoration. */
+/* v18.0.23 — Garden Book icon uses the exact playable ladybug renderer. */
 #gardenBookBtn{
  position:absolute!important;right:16px!important;top:45.2%!important;z-index:55!important;
  width:58px!important;height:58px!important;min-width:0!important;margin:0!important;padding:0!important;
@@ -769,23 +769,10 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
  background:#d7dfa1;border-left:1px solid #244b2c;opacity:.9
 }
 #gardenBookBtn .bookGlyph:after{display:none!important;content:none!important}
-#gardenBookBtn .bookBug{
- position:absolute;left:17px;top:9px;width:18px;height:20px;
- border:2px solid #1e2920;border-radius:50% 50% 45% 45%;
- background:#df493f;box-shadow:inset 0 -2px 0 #9f302e;
+#gardenBookBtn .bookBugCanvas{
+ position:absolute;left:12px;top:4px;width:29px;height:29px;display:block;
+ transform:rotate(2deg);filter:drop-shadow(0 1px 0 #d7dfa166);
 }
-#gardenBookBtn .bookBug:before{
- content:"";position:absolute;left:6px;top:-5px;width:6px;height:6px;
- border:2px solid #1e2920;border-radius:50%;background:#252a23
-}
-#gardenBookBtn .bookBug:after{
- content:"";position:absolute;left:8px;top:1px;width:2px;height:15px;background:#252a23
-}
-#gardenBookBtn .bookBug i{position:absolute;width:4px;height:4px;background:#252a23;border-radius:50%}
-#gardenBookBtn .bookBug i:nth-child(1){left:3px;top:4px}
-#gardenBookBtn .bookBug i:nth-child(2){right:2px;top:4px}
-#gardenBookBtn .bookBug i:nth-child(3){left:3px;bottom:3px}
-#gardenBookBtn .bookBug i:nth-child(4){right:2px;bottom:3px}
 @media(max-width:390px){
  #gardenBookBtn{right:11px!important;width:54px!important;height:54px!important;top:45.5%!important}
  #gardenBookBtn .bookGlyph{width:43px;height:37px}
@@ -895,7 +882,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button class="homeGoldBalance" data-action="goldShop" aria-label="Open Gold Leaf Shop"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span><small> SHOP</small></button>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
-  <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><span class="bookBug"><i></i><i></i><i></i><i></i></span></span></button>
+  <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><canvas id="gardenBookBugCanvas" class="bookBugCanvas" width="58" height="58"></canvas></span></button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
   <div class="logo"><span class="logoMain"><span class="logoBigWord">BIG</span><br><span class="logoBugWord">BUG</span></span><small>SMALL BUG. BIG ADVENTURE.</small></div>
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
@@ -905,8 +892,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.22</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.22</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.23</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.23</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1184,7 +1171,7 @@ function drawPlayableBug(ctx,id,size=28,glow=false){
  }
  ctx.restore();
 }
-function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
+function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}const gb=$('gardenBookBugCanvas');if(gb){const q=gb.getContext('2d');q.clearRect(0,0,gb.width,gb.height);q.save();q.translate(gb.width/2,gb.height/2+1);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
 
 function makeBugPreview(id){
  const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
