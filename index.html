@@ -751,7 +751,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
-/* v18.0.21 — Garden Book: discovery journal, isolated Home button, and BIG BUG garden styling. */
+/* v18.0.22 — Garden Book icon: clean book cover with ladybug only; removed leaf decoration. */
 #gardenBookBtn{
  position:absolute!important;right:16px!important;top:45.2%!important;z-index:55!important;
  width:58px!important;height:58px!important;min-width:0!important;margin:0!important;padding:0!important;
@@ -768,12 +768,9 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
  content:"";position:absolute;left:7px;top:3px;bottom:3px;width:2px;
  background:#d7dfa1;border-left:1px solid #244b2c;opacity:.9
 }
-#gardenBookBtn .bookGlyph:after{
- content:"";position:absolute;right:4px;top:4px;width:8px;height:5px;
- background:#f1c24a;border:2px solid #274629;border-radius:50% 0 50% 0;transform:rotate(-12deg)
-}
+#gardenBookBtn .bookGlyph:after{display:none!important;content:none!important}
 #gardenBookBtn .bookBug{
- position:absolute;left:15px;top:9px;width:18px;height:20px;
+ position:absolute;left:17px;top:9px;width:18px;height:20px;
  border:2px solid #1e2920;border-radius:50% 50% 45% 45%;
  background:#df493f;box-shadow:inset 0 -2px 0 #9f302e;
 }
@@ -908,8 +905,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.21</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.21</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.22</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.22</div>
 </section>
 
 <section id="bugs" class="screen hidden">
