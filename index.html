@@ -746,7 +746,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #base .shopCurrency:first-child{background-position:86% 22%,9% 74%,center,center!important}
 #base .shopCurrency:nth-child(2){background-position:14% 20%,79% 81%,center,center!important}
 
-/* v18.0.14 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
+/* v18.0.15 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
 /* v18.0.5 — Mosquito Mode power-up controls are gameplay-only; never show on the run-end screen. */
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
@@ -782,8 +782,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.14</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.14</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.15</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.15</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1075,13 +1075,13 @@ function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(tr
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
- {id:'heart',icon:'',name:'Clover Heart',desc:'+20 max HP + heal 20 HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
+ {id:'heart',icon:'',name:'Clover Heart',desc:'+20 max HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
  {id:'speed',icon:'',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{p.rate=Math.max(360,p.rate/1.10)}},
- {id:'crit',icon:'',name:'Lucky Ladybug Spots',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
+ {id:'crit',icon:'',name:'Lucky Ladybug',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
  {id:'triple',icon:'',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
- {id:'magnet',icon:'',name:'Pollen Pull',desc:'+65% Leaf range',rarity:'common',apply:p=>p.magnet+=65},
+ {id:'magnet',icon:'',name:'Pollen Pull',desc:'+50% Leaf range',rarity:'rare',apply:p=>p.magnet+=50},
  {id:'greed',icon:'',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
- {id:'clone',icon:'',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];const edge=Math.floor(Math.random()*4),pad=34;let hx=p.x,hy=p.y;if(edge===0){hx=-pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===1){hx=W+pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===2){hx=Math.max(24,Math.min(W-24,p.x));hy=-pad}else{hx=Math.max(24,Math.min(W-24,p.x));hy=H+pad}p.helpers.push({bornWave:game.wave,leaving:false,entering:true,joining:0,x:hx,y:hy})}},
+ {id:'clone',icon:'',name:'Little Buddy',desc:'Little Buddy attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];const edge=Math.floor(Math.random()*4),pad=34;let hx=p.x,hy=p.y;if(edge===0){hx=-pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===1){hx=W+pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===2){hx=Math.max(24,Math.min(W-24,p.x));hy=-pad}else{hx=Math.max(24,Math.min(W-24,p.x));hy=H+pad}p.helpers.push({bornWave:game.wave,leaving:false,entering:true,joining:0,x:hx,y:hy})}},
  {id:'helperArmy',icon:'',name:'Little Buddy Army',desc:'10 Little Buddies one-hit enemies for the entire next wave',rarity:'epic',apply:p=>{const w=game.wave+1;if(w%5===0)return;p.helperArmyWave=w;p.helperArmyReadyAt=0;p.helperArmyFormedAt=0;p.helperArmyHelpers=[];for(let i=0;i<10;i++)p.helperArmyHelpers.push(makeArmyHelper(i))}},
  {id:'gold',icon:'',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
 ];
@@ -1953,7 +1953,7 @@ function update(dt,now){
  }
  const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),attackDelay=rapid?Math.max(85,p.rate*.18):p.rate;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
- // v18.0.14: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
+ // v18.0.15: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
@@ -2000,7 +2000,7 @@ function update(dt,now){
      }
    }else for(const h of p.helperArmyHelpers)h.target=null;
  }
- // Tiny Helpers run in from off-screen, orbit for 5 waves, then visibly wander away.
+ // Little Buddys run in from off-screen, orbit for 5 waves, then visibly wander away.
  p.helpers=p.helpers||[];
  for(const h of p.helpers){
    if(h.entering&&!h.leaving){
@@ -2099,14 +2099,16 @@ function openUpgrade(afterWave=false){
    [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();endlessUp[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1)});
    $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
  }
- const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy');
+ const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v18.0.14 production rarity — Little Buddy Army is slightly rarer than Tiny Helper and Triple Shot.
- // Tiny Helper = 5%, Triple Shot = 5%, Little Buddy Army = 4% on eligible Story upgrade screens.
+ // v18.0.15 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
+ // Little Buddy = 5%, Triple Shot = 5%, Little Buddy Army = 4% on eligible Story upgrade screens.
  // The Army is NEVER offered immediately before a boss (after waves 4, 9, 14, ...), but can appear right after a boss.
  const nextWave=g.wave+1,armyEligible=!!army&&nextWave%5!==0;
  const lucky=[];
+ // Pollen Pull is deliberately less common than the normal upgrade pool.
+ if(pollen&&Math.random()<.25)lucky.push(pollen);
  if(helper&&Math.random()<.05)lucky.push(helper);
  if(triple&&!g.p.tripleShot&&Math.random()<.05)lucky.push(triple);
  if(armyEligible&&Math.random()<.04)lucky.push(army);
@@ -2954,7 +2956,7 @@ function draw(now=performance.now()){
    if(!(p.helperArmyWave===game.wave&&game.wave%5!==0)&&!h.leaving)continue;
    X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);let at=!h.leaving?nearestEnemy(h.x,h.y):null;if(at)X.rotate(Math.atan2(at.y-h.y,at.x-h.x)+Math.PI/2);else if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayableBug(X,save.selected,19,false);X.restore();
  }
- // Tiny Helpers visibly run in, then orbit while active; expired helpers wander away.
+ // Little Buddys visibly run in, then orbit while active; expired helpers wander away.
  const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving&&!h.entering)activeHCount++;
  let activeHIndex=0;for(const h of hs){let hx,hy,orbitA=null;if(h.leaving||h.entering){hx=h.x;hy=h.y}else{orbitA=game.time*1.8+activeHIndex++*6.283/Math.max(1,activeHCount);const ox=p.x+Math.cos(orbitA)*38,oy=p.y+Math.sin(orbitA)*38;if(h.joining>0){const q=1-h.joining/.5,e=q*q*(3-2*q);hx=(Number.isFinite(h.joinX)?h.joinX:h.x)*(1-e)+ox*e;hy=(Number.isFinite(h.joinY)?h.joinY:h.y)*(1-e)+oy*e;h.x=hx;h.y=hy}else{hx=ox;hy=oy;h.x=hx;h.y=hy}}
    X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);
