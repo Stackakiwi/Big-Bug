@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.24: story-mode performance pass from Venom Queen onward; cached leaf rendering + coalesced pickup saves; gameplay/visual balance unchanged -->
+<!-- Big Bug v18.0.25: enemy performance pass; story spatial buckets for overlap + ant swarm checks; gameplay/visual balance unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -892,8 +892,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.24</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.24</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.25</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.25</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1763,6 +1763,29 @@ function nearestEnemy(x=game.p.x,y=game.p.y){
 function countActiveEnemies(nonBossOnly=false){
  let n=0;for(const e of game.enemies)if(!e.dead&&(!nonBossOnly||!e.boss))n++;return n;
 }
+// v18.0.25 — story-mode enemy spatial buckets. Regular enemies keep the same movement,
+// overlap radius, swarm bonus and collision math; we only stop comparing obviously distant enemies.
+function buildStoryEnemyGrid(){
+ const es=game.enemies,n=es.length,cell=128,cols=Math.max(1,Math.ceil(W/cell)+2),rows=Math.max(1,Math.ceil(H/cell)+2),cells=cols*rows;
+ let head=game.storyGridHead,stamp=game.storyGridStamp;
+ if(!head||head.length!==cells){head=game.storyGridHead=new Int32Array(cells);stamp=game.storyGridStamp=new Int32Array(cells);game.storyGridGen=0}
+ let gen=(game.storyGridGen||0)+1;if(gen>=2147483646){stamp.fill(0);gen=1}game.storyGridGen=gen;
+ let next=game.storyGridNext;if(!next||next.length<n)next=game.storyGridNext=new Int32Array(Math.max(n,64));
+ for(let i=0;i<n;i++){
+   const e=es[i];if(e.dead||(e.kind==='moleCricket'&&e.state==='burrowWait')){next[i]=-1;continue}
+   const cx=Math.max(0,Math.min(cols-1,Math.floor(e.x/cell)+1)),cy=Math.max(0,Math.min(rows-1,Math.floor(e.y/cell)+1)),ci=cy*cols+cx;
+   e._sgx=cx;e._sgy=cy;next[i]=stamp[ci]===gen?head[ci]:-1;head[ci]=i;stamp[ci]=gen;
+ }
+ game.storyGridCols=cols;game.storyGridRows=rows;return {head,stamp,next,gen,cols,rows};
+}
+function nearbyAntCount(e){
+ const head=game.storyGridHead,stamp=game.storyGridStamp,next=game.storyGridNext,gen=game.storyGridGen,cols=game.storyGridCols,rows=game.storyGridRows;
+ if(!head||e._sgx==null)return 0;let near=0,cx=e._sgx,cy=e._sgy;
+ for(let oy=-1;oy<=1;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-1;ox<=1;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j]){
+   const o=game.enemies[j];if(o===e||o.dead||o.kind!=='ant')continue;const ax=o.x-e.x,ay=o.y-e.y;if(ax*ax+ay*ay<7225)near++;
+ }}}
+ return near;
+}
 function countFxFlag(flag,limit=Infinity){
  let n=0;for(const f of game.fx)if(f[flag]&&++n>=limit)break;return n;
 }
@@ -1871,7 +1894,7 @@ function enemyMove(e,dt){
  }
  // ants swarm faster when near other ants
  let mult=1;
- if(e.kind==='ant'){let near=0;for(const o of game.enemies)if(o!==e&&!o.dead&&o.kind==='ant'){const ax=o.x-e.x,ay=o.y-e.y;if(ax*ax+ay*ay<7225)near++}mult=1+Math.min(.35,near*.07)}
+ if(e.kind==='ant'){const near=nearbyAntCount(e);mult=1+Math.min(.35,near*.07)}
  // Sky Lancer has its own flight pattern: visibly leave the arena at normal speed, then dash back in.
  if(e.boss&&e.kind==='dragonflyBoss'){
    if(e.state==='skyExit'){
@@ -2015,23 +2038,28 @@ function enemyMove(e,dt){
  e.x+=dx/d*e.speed*slow*mult*dt;e.y+=dy/d*e.speed*slow*mult*dt;
 }
 function separateEnemies(){
- if((game.sepTick=(game.sepTick||0)+1)%2)return;const es=game.enemies;
- for(let i=0;i<es.length;i++){
-   const a=es[i];if(a.dead)continue;
-   for(let j=i+1;j<es.length;j++){
-     const b=es[j];if(b.dead||(b.kind==='moleCricket'&&b.state==='burrowWait'))continue;
-     let dx=b.x-a.x,dy=b.y-a.y;const min=a.r+b.r+3;if(Math.abs(dx)>min||Math.abs(dy)>min)continue;let d=Math.hypot(dx,dy);
-     if(d>=min)continue;
-     if(d<.001){dx=.01;dy=0;d=.01}
-     const overlap=min-d,nx=dx/d,ny=dy/d;
-     // Soft separation keeps swarms readable without creating rigid traffic jams.
-     let push=Math.min(4.5,overlap*.16);
-     let aShare=.5,bShare=.5;
-     if(a.boss&&!b.boss){aShare=0;bShare=1;push*=1.55}
-     else if(b.boss&&!a.boss){aShare=1;bShare=0;push*=1.55}
-     a.x-=nx*push*aShare;a.y-=ny*push*aShare;
-     b.x+=nx*push*bShare;b.y+=ny*push*bShare;
-   }
+ if((game.sepTick=(game.sepTick||0)+1)%2)return;
+ const es=game.enemies,n=es.length,grid=buildStoryEnemyGrid(),{head,stamp,next,gen,cols,rows}=grid;
+ // Reuse one candidate buffer and preserve the original i-then-j pair order, so spacing behavior stays deterministic.
+ const pairs=game.storySepPairs||(game.storySepPairs=[]);pairs.length=0;
+ for(let i=0;i<n;i++){
+   const a=es[i];if(a.dead||(a.kind==='moleCricket'&&a.state==='burrowWait'))continue;const cx=a._sgx,cy=a._sgy;
+   for(let oy=-1;oy<=1;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-1;ox<=1;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j])if(j>i)pairs.push(i*n+j)}}
+ }
+ pairs.sort((a,b)=>a-b);
+ for(let q=0;q<pairs.length;q++){
+   const key=pairs[q],i=Math.floor(key/n),j=key-i*n,a=es[i],b=es[j];if(a.dead||b.dead||(b.kind==='moleCricket'&&b.state==='burrowWait'))continue;
+   let dx=b.x-a.x,dy=b.y-a.y;const min=a.r+b.r+3;if(Math.abs(dx)>min||Math.abs(dy)>min)continue;let d=Math.hypot(dx,dy);
+   if(d>=min)continue;
+   if(d<.001){dx=.01;dy=0;d=.01}
+   const overlap=min-d,nx=dx/d,ny=dy/d;
+   // Soft separation keeps swarms readable without creating rigid traffic jams.
+   let push=Math.min(4.5,overlap*.16);
+   let aShare=.5,bShare=.5;
+   if(a.boss&&!b.boss){aShare=0;bShare=1;push*=1.55}
+   else if(b.boss&&!a.boss){aShare=1;bShare=0;push*=1.55}
+   a.x-=nx*push*aShare;a.y-=ny*push*aShare;
+   b.x+=nx*push*bShare;b.y+=ny*push*bShare;
  }
 }
 function separateMosquitoes(){
@@ -2124,7 +2152,7 @@ function update(dt,now){
        const h=p.helperArmyHelpers[i];if(!h.entered||h.attackCd>0)continue;
        let best=null,bestD=1e9;
        // Army shots can target any live non-boss enemy anywhere on the field.
-       for(const e of live){if(e.dead||claimed.has(e))continue;const d=Math.hypot(e.x-h.x,e.y-h.y);if(d<bestD){best=e;bestD=d}}
+       for(const e of live){if(e.dead||claimed.has(e))continue;const dx=e.x-h.x,dy=e.y-h.y,d2=dx*dx+dy*dy;if(d2<bestD){best=e;bestD=d2}}
        if(best){
          claimed.add(best);h.target=best;h.attackCd=.26+((i%3)*.015);
          const tx=best.x,ty=best.y;
@@ -2158,6 +2186,9 @@ function update(dt,now){
    if(t){damageEnemy(t,p.damage*1.5,'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.18,r:3.4,shot:true,helper:true})}
  }
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
+ // v18.0.25 — build one lightweight story enemy index before AI updates so ant swarm checks
+ // search only nearby buckets instead of rescanning every enemy for every ant.
+ if(g.mode!=='endless')buildStoryEnemyGrid();
  // v17.9.94 — this decay factor is identical for every enemy in a frame, so calculate it once.
  const knockDecay=Math.pow(.05,dt);
  for(const e of g.enemies)if(!e.dead){
