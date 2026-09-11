@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.23: Garden Book cover now uses the exact playable ladybug renderer; based on user-provided v18.0.23 build -->
+<!-- Big Bug v18.0.24: story-mode performance pass from Venom Queen onward; cached leaf rendering + coalesced pickup saves; gameplay/visual balance unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -751,7 +751,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
-/* v18.0.23 — Garden Book icon uses the exact playable ladybug renderer. */
+/* v18.0.24 — Garden Book icon uses the exact playable ladybug renderer. */
 #gardenBookBtn{
  position:absolute!important;right:16px!important;top:45.2%!important;z-index:55!important;
  width:58px!important;height:58px!important;min-width:0!important;margin:0!important;padding:0!important;
@@ -892,8 +892,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.23</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.23</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.24</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.24</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1584,6 +1584,8 @@ function beginWave(w){
 }
 function completeWave(){
  const g=game;if(!g.waveActive||g.intermission)return;
+ // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
+ if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
  if(g.p.helperArmyWave===g.wave&&g.p.helperArmyHelpers&&g.p.helperArmyHelpers.length){
    const army=g.p.helperArmyHelpers;
@@ -2171,7 +2173,7 @@ function update(dt,now){
  for(const d of g.drops){
    d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,dist=0,mag2=p.magnet*p.magnet;
    if(d2<mag2){dist=Math.sqrt(d2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt}
-   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+1;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ GOLD LEAF FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;if(game.mode!=='endless'&&!game.testMode){save.scrap=(save.scrap||0)+d.v;persist()}d.dead=true;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.42,r:7,scrapFly:true,tx:W*.72,ty:42});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
+   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+1;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ GOLD LEAF FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;if(game.mode!=='endless'&&!game.testMode){save.scrap=(save.scrap||0)+d.v;persistLeafPickup()}d.dead=true;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.42,r:7,scrapFly:true,tx:W*.72,ty:42});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
  }
  for(const f of g.fx){
    f.life-=dt;
@@ -2433,54 +2435,32 @@ function drawAreaIdentity(ai,area){
  X.restore();X.globalAlpha=1;
 }
 
+// v18.0.24 — story-mode performance: normal Leaves are rendered once per size and reused.
+// By Venom Queen and later, uncollected Leaves can number in the hundreds; rebuilding
+// their glow + Bezier silhouette every frame was a major GPU/canvas cost on phones.
+const LEAF_SPRITE_CACHE=new Map();
+function leafSprite(r){
+ const key=Math.round(r*10)/10;if(LEAF_SPRITE_CACHE.has(key))return LEAF_SPRITE_CACHE.get(key);
+ const pad=18,size=Math.ceil(r*2.6+pad*2),c=document.createElement('canvas');c.width=size*2;c.height=size*2;
+ const q=c.getContext('2d');q.scale(2,2);q.translate(size/2,size/2);
+ q.shadowColor='#dfff63';q.shadowBlur=13;q.fillStyle='#c9f84f';q.strokeStyle='#fbffe1';q.lineWidth=2;
+ q.beginPath();q.moveTo(0,-r);q.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);q.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);q.closePath();q.fill();q.stroke();
+ q.shadowBlur=0;q.strokeStyle='#3d792d';q.lineWidth=1.6;q.beginPath();q.moveTo(0,-r*.78);q.lineTo(0,r*.82);q.stroke();
+ q.beginPath();q.moveTo(0,-r*.38);q.lineTo(r*.50,-r*.10);q.moveTo(0,-r*.05);q.lineTo(-r*.52,r*.20);q.moveTo(0,r*.25);q.lineTo(r*.45,r*.48);q.stroke();
+ q.strokeStyle='#73963c';q.lineWidth=2.2;q.beginPath();q.moveTo(0,r*.78);q.lineTo(r*.22,r*1.12);q.stroke();
+ const out={c,size};LEAF_SPRITE_CACHE.set(key,out);return out;
+}
 function drawLeaves(d){
- X.save();
- const t=performance.now()/1000;
- const bob=Math.sin(t*5+(d.phase||d.x*.01))*2.2;
- X.translate(d.x,d.y+bob);
- X.rotate(-0.45+Math.sin(t*2.2+(d.phase||0))*.18);
- const r=Math.max(9,(d.r||8)*1.28);
-
- // Gold Leaves deliberately keep the exact normal-leaf silhouette, with a metallic palette and sparkle.
- const gold=!!d.goldLeaf;
- X.shadowColor=gold?'#ffd84d':'#dfff63';
- X.shadowBlur=gold?20:13;
- X.fillStyle=gold?'#f4c62f':'#c9f84f';
- X.strokeStyle=gold?'#fff2a6':'#fbffe1';
- X.lineWidth=2;
-
- X.beginPath();
- X.moveTo(0,-r);
- X.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);
- X.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);
- X.closePath();
- X.fill();
- X.stroke();
-
- X.shadowBlur=0;
- X.strokeStyle=gold?'#956b12':'#3d792d';
- X.lineWidth=1.6;
- X.beginPath();
- X.moveTo(0,-r*.78);
- X.lineTo(0,r*.82);
- X.stroke();
-
- X.beginPath();
- X.moveTo(0,-r*.38); X.lineTo(r*.50,-r*.10);
- X.moveTo(0,-r*.05); X.lineTo(-r*.52,r*.20);
- X.moveTo(0,r*.25); X.lineTo(r*.45,r*.48);
- X.stroke();
-
- // short stem
- X.strokeStyle=gold?'#b88718':'#73963c';
- X.lineWidth=2.2;
- X.beginPath();
- X.moveTo(0,r*.78);
- X.lineTo(r*.22,r*1.12);
- X.stroke();
- if(gold){X.rotate(.45-Math.sin(t*2.2+(d.phase||0))*.18);X.fillStyle='#fff8c9';X.shadowColor='#fff';X.shadowBlur=8;const sp=.55+.45*Math.sin(t*7+(d.phase||0));X.globalAlpha=Math.max(.25,sp);X.font='bold '+Math.round(r*.85)+'px system-ui';X.fillText('✦',r*.45,-r*.45)}
-
- X.restore();
+ const t=FRAME_NOW/1000,bob=Math.sin(t*5+(d.phase||d.x*.01))*2.2,rot=-.45+Math.sin(t*2.2+(d.phase||0))*.18,r=Math.max(9,(d.r||8)*1.28);
+ X.save();X.translate(d.x,d.y+bob);X.rotate(rot);
+ if(!d.goldLeaf){const sp=leafSprite(r);X.drawImage(sp.c,-sp.size/2,-sp.size/2,sp.size,sp.size);X.restore();return}
+ // Gold Leaves are extremely rare, so retain their full live metallic sparkle renderer.
+ X.shadowColor='#ffd84d';X.shadowBlur=20;X.fillStyle='#f4c62f';X.strokeStyle='#fff2a6';X.lineWidth=2;
+ X.beginPath();X.moveTo(0,-r);X.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);X.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);X.closePath();X.fill();X.stroke();
+ X.shadowBlur=0;X.strokeStyle='#956b12';X.lineWidth=1.6;X.beginPath();X.moveTo(0,-r*.78);X.lineTo(0,r*.82);X.stroke();
+ X.beginPath();X.moveTo(0,-r*.38);X.lineTo(r*.50,-r*.10);X.moveTo(0,-r*.05);X.lineTo(-r*.52,r*.20);X.moveTo(0,r*.25);X.lineTo(r*.45,r*.48);X.stroke();
+ X.strokeStyle='#b88718';X.lineWidth=2.2;X.beginPath();X.moveTo(0,r*.78);X.lineTo(r*.22,r*1.12);X.stroke();
+ X.rotate(.45-Math.sin(t*2.2+(d.phase||0))*.18);X.fillStyle='#fff8c9';X.shadowColor='#fff';X.shadowBlur=8;const glow=.55+.45*Math.sin(t*7+(d.phase||0));X.globalAlpha=Math.max(.25,glow);X.font='bold '+Math.round(r*.85)+'px system-ui';X.fillText('✦',r*.45,-r*.45);X.restore();X.globalAlpha=1;
 }
 const MOSQ_WINGS=new Path2D(),MOSQ_BODY=new Path2D(),MOSQ_HEAD=new Path2D(),MOSQ_EYES=new Path2D();
 MOSQ_WINGS.ellipse(-5,-1,6,2.2,-.45,0,6.28);MOSQ_WINGS.ellipse(5,-1,6,2.2,.45,0,6.28);
