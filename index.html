@@ -746,10 +746,68 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #base .shopCurrency:first-child{background-position:86% 22%,9% 74%,center,center!important}
 #base .shopCurrency:nth-child(2){background-position:14% 20%,79% 81%,center,center!important}
 
-/* v18.0.15 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
+/* v18.0.16 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
 /* v18.0.5 — Mosquito Mode power-up controls are gameplay-only; never show on the run-end screen. */
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
+
+/* v18.0.16 — Garden Book: discovery journal, isolated Home button, and BIG BUG garden styling. */
+#gardenBookBtn{
+ position:absolute!important;right:14px!important;top:43.2%!important;z-index:55!important;
+ width:92px!important;height:86px!important;min-width:0!important;margin:0!important;padding:9px 7px 8px!important;
+ border-radius:20px!important;border:2px solid #e7d89a!important;
+ background:linear-gradient(145deg,#6f873b 0%,#506c2d 48%,#334d25 100%)!important;
+ color:#fff8d8!important;box-shadow:inset 0 3px 0 #d8efa274,inset 0 -5px 0 #24391e,0 5px 0 #17301b,0 10px 18px #0c25194d!important;
+ text-shadow:0 2px 0 #21331c;font:950 12px/1.05 ui-rounded,system-ui,-apple-system,sans-serif!important;
+ letter-spacing:.3px;transform:rotate(1.2deg)!important;
+}
+#gardenBookBtn .bookGlyph{display:block;position:relative;width:34px;height:29px;margin:0 auto 5px;
+ border:2px solid #f5e9af;border-radius:5px 7px 7px 5px;background:#b28b49;
+ box-shadow:inset 4px 0 0 #72552f,0 2px 0 #1e321c}
+#gardenBookBtn .bookGlyph:before{content:"";position:absolute;left:8px;top:4px;width:14px;height:18px;
+ border-left:2px solid #f4e3a0;border-right:1px solid #75562e;transform:skewY(-5deg);opacity:.9}
+#gardenBookBtn .bookGlyph:after{content:"";position:absolute;right:-5px;top:-6px;width:12px;height:7px;
+ background:#8db852;border-radius:100% 0 100% 0;transform:rotate(28deg);box-shadow:0 1px 0 #29431f}
+@media(max-width:390px){#gardenBookBtn{right:9px!important;width:82px!important;height:78px!important;font-size:11px!important;top:43.5%!important}}
+
+#gardenBook{overflow:auto;background:
+ radial-gradient(circle at 12% 8%,#dbeebc55,transparent 28%),
+ radial-gradient(circle at 88% 70%,#6f8f4755,transparent 30%),
+ linear-gradient(180deg,#55723c,#263f2c 62%,#172d22);padding:18px 10px 28px}
+#gardenBook .gardenBookPanel{
+ width:min(760px,96vw);max-height:none;margin:max(12px,env(safe-area-inset-top)) auto max(20px,env(safe-area-inset-bottom));
+ padding:18px 14px 22px;border:2px solid #9eb66e;border-radius:26px;
+ background:
+  linear-gradient(90deg,transparent 0 8%,#ffffff08 8% 9%,transparent 9% 91%,#00000008 91% 92%,transparent 92%),
+  linear-gradient(180deg,#e9e1b9 0%,#d9cfa2 100%);
+ box-shadow:inset 0 0 0 5px #5c713b25,inset 0 0 28px #745f3020,0 12px 32px #07180f88;
+ color:#173823;position:relative;overflow:hidden
+}
+#gardenBook .gardenBookPanel:before,#gardenBook .gardenBookPanel:after{content:"";position:absolute;width:88px;height:38px;background:#74954c2e;border-radius:100% 0 100% 0;pointer-events:none}
+#gardenBook .gardenBookPanel:before{left:-30px;top:54px;transform:rotate(18deg)}
+#gardenBook .gardenBookPanel:after{right:-34px;bottom:72px;transform:rotate(205deg)}
+.gardenBookHeader{text-align:center;position:relative;z-index:1}
+.gardenBookHeader h2{font-size:clamp(28px,8vw,42px);margin:0;color:#21482b;letter-spacing:.5px;text-shadow:0 2px #fff7cd}
+.gardenBookHeader .bookMini{display:inline-block;width:28px;height:22px;border:2px solid #244728;border-radius:4px;background:#80683c;vertical-align:-3px;margin-right:7px;box-shadow:inset 5px 0 #4d432b}
+.gardenBookHeader p{margin:7px auto 12px;max-width:520px;color:#526345;font-weight:750}
+.gardenBookProgress{display:inline-block;background:#324f2dcc;color:#fff5cb;border:1px solid #203d27;border-radius:999px;padding:6px 13px;font-size:12px;font-weight:900;box-shadow:inset 0 1px #ffffff35}
+.gardenTabs{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:16px 0 13px;position:relative;z-index:1}
+.gardenTab{border:1px solid #4b673a;border-radius:13px;padding:8px 11px;background:#a9bd72;color:#1e3f25;font:900 12px ui-rounded,system-ui;box-shadow:inset 0 -3px #728d4b,0 3px #52683b;cursor:pointer}
+.gardenTab.active{background:#5f8c43;color:#fff9d9;box-shadow:inset 0 -3px #35582d,0 3px #3d552f}
+.gardenBookGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative;z-index:1}
+@media(min-width:650px){.gardenBookGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.gardenEntry{min-height:208px;border:1.5px solid #76875a;border-radius:18px;padding:10px 9px 11px;text-align:center;
+ background:linear-gradient(155deg,#fff6cf,#d9d09f);box-shadow:inset 0 2px #fffbe5,0 4px 0 #68754855;position:relative;overflow:hidden}
+.gardenEntry:before{content:"";position:absolute;width:46px;height:20px;right:-11px;top:4px;border-radius:100% 0 100% 0;background:#8da85d22;transform:rotate(23deg)}
+.gardenEntry canvas{display:block;width:104px;height:104px;margin:-1px auto 3px;filter:drop-shadow(0 7px 4px #25382138)}
+.gardenEntry h3{margin:2px 0 5px;font-size:16px;line-height:1.05;color:#193c25}
+.gardenEntry p{margin:0;color:#66705a;font-size:11px;line-height:1.28;font-weight:700}
+.gardenEntry .encounterTag{display:inline-block;margin-top:7px;font-size:9px;font-weight:950;letter-spacing:.55px;color:#fff6cf;background:#587a3c;border-radius:999px;padding:4px 7px}
+.gardenEntry.locked{background:linear-gradient(155deg,#b9b69c,#918f7e);border-color:#77796b;box-shadow:inset 0 2px #e0ddc6,0 4px 0 #42483e55}
+.gardenEntry.locked .lockedBug{height:104px;display:flex;align-items:center;justify-content:center;font-size:62px;color:#29382d;filter:drop-shadow(0 6px 4px #0004);opacity:.83}
+.gardenEntry.locked h3{letter-spacing:2px;color:#334237}.gardenEntry.locked p{color:#555e52}
+.gardenBookBack{display:block!important;margin:18px auto 3px!important;position:relative;z-index:1;width:min(90%,330px)}
+
 </style>
 </head>
 <body>
@@ -773,6 +831,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button class="homeGoldBalance" data-action="goldShop" aria-label="Open Gold Leaf Shop"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span><small> SHOP</small></button>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
+  <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book"><span class="bookGlyph" aria-hidden="true"></span>GARDEN<br>BOOK</button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
   <div class="logo"><span class="logoMain"><span class="logoBigWord">BIG</span><br><span class="logoBugWord">BUG</span></span><small>SMALL BUG. BIG ADVENTURE.</small></div>
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
@@ -782,8 +841,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.15</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.15</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.16</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.16</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -792,6 +851,24 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 <section id="base" class="screen hidden">
  <div class="panel"><h2><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> GARDEN MAGIC</h2><p class="muted">Teach the garden’s gifts a few new tricks.</p><div id="shop"></div><button class="btn dark" data-action="home">BACK</button></div>
+</section>
+
+
+<section id="gardenBook" class="screen hidden">
+ <div class="panel gardenBookPanel">
+  <div class="gardenBookHeader">
+   <h2><span class="bookMini" aria-hidden="true"></span>GARDEN BOOK</h2>
+   <p>Every bug leaves a story behind. Meet them in the garden to fill these pages.</p>
+   <div class="gardenBookProgress"><span id="gardenBookFound">0</span> / <span id="gardenBookTotal">0</span> DISCOVERED</div>
+  </div>
+  <div class="gardenTabs">
+   <button class="gardenTab active" data-book-tab="playable">PLAYABLE BUGS</button>
+   <button class="gardenTab" data-book-tab="enemy">GARDEN BUGS</button>
+   <button class="gardenTab" data-book-tab="boss">BOSSES</button>
+  </div>
+  <div id="gardenBookGrid" class="gardenBookGrid"></div>
+  <button class="btn dark gardenBookBack" data-action="home">BACK TO GARDEN</button>
+ </div>
 </section>
 
 <section id="goldShop" class="screen hidden">
@@ -916,7 +993,7 @@ function resize(){
 } addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
-const screens=['home','bugs','base','goldShop','settings','help','upgrade','pause','gameover','finalPrep','ending'];
+const screens=['home','bugs','base','gardenBook','goldShop','settings','help','upgrade','pause','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
@@ -930,6 +1007,7 @@ save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeave
 save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+save.discovered=Array.isArray(save.discovered)?save.discovered:['player:ladybug'];if(!save.discovered.includes('player:ladybug'))save.discovered.push('player:ladybug');
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
 // v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
@@ -1166,7 +1244,7 @@ function resetGameProgress(){
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,settings:keptSettings};
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],settings:keptSettings};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -1200,7 +1278,7 @@ function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setT
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
-function isMenuMusicScreen(){return ['home','bugs','base','settings','help','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
+function isMenuMusicScreen(){return ['home','bugs','base','gardenBook','settings','help','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
 function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&(!game.boss||game.boss.dead))}
 function shouldTitleMusicPlay(){return isMenuMusicScreen()||isQuietStoryMusic()}
 function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}if(resetStep)titleMusicStep=0}
@@ -1272,6 +1350,7 @@ function bossMusicStart(){
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
 
 function buildBugScreen(){
+ for(const id of (save.unlocked||[]))if(BUGS[id])gardenDiscover('player:'+id);
  const grid=$('bugGrid');grid.innerHTML='';
  Object.entries(BUGS).forEach(([id,b])=>{
   const unlocked=save.unlocked.includes(id), selected=save.selected===id, starter=id==='ladybug';
@@ -1560,6 +1639,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(e.sprinter)e.speed*=1.8;
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
  if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
+ gardenDiscover('enemy:'+k);
  game.enemies.push(e);
  if(boss){game.bosses=game.bosses||[];game.bosses.push(e);game.boss=e;$('bossName').textContent=''+bossKindsFor(w).map(q=>BOSS_NAMES[q]).join(' + ');$('bossbar').style.display='block';bossMusicStart()}
  return e;
@@ -1953,7 +2033,7 @@ function update(dt,now){
  }
  const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),attackDelay=rapid?Math.max(85,p.rate*.18):p.rate;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
- // v18.0.15: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
+ // v18.0.16: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
@@ -2102,7 +2182,7 @@ function openUpgrade(afterWave=false){
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v18.0.15 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
+ // v18.0.16 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
  // Little Buddy = 5%, Triple Shot = 5%, Little Buddy Army = 4% on eligible Story upgrade screens.
  // The Army is NEVER offered immediately before a boss (after waves 4, 9, 14, ...), but can appear right after a boss.
  const nextWave=g.wave+1,armyEligible=!!army&&nextWave%5!==0;
@@ -2988,6 +3068,115 @@ function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;s
 
 // v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
 // Existing button sounds remain untouched and do not get doubled.
+
+// v18.0.16 — Garden Book discovery journal.
+// Entries use the game's own live renderers. Enemy portraits are captured from drawEnemy
+// on the hidden arena canvas, so the book always matches the actual in-game artwork.
+const GARDEN_BOOK={
+ playable:[
+  {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:"The garden's brave all-rounder — balanced, dependable, and ready for anything."},
+  {key:'player:beetle',id:'beetle',name:'Beetle',desc:'A sturdy little bruiser with a thick shell, stronger bite, and plenty of staying power.'},
+  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Fast and graceful. Trades a little raw power for rapid attacks and excellent reach.'}
+ ],
+ enemy:[
+  {key:'enemy:ant',id:'ant',name:'Garden Ant',desc:'Tiny, quick, and happiest in a crowd. One ant is manageable — a swarm is another story.'},
+  {key:'enemy:mosquito',id:'mosquito',name:'Mosquito',desc:'A buzzing pursuer that never seems to quit. Mosquito Mode gives them the whole garden.'},
+  {key:'enemy:beetle',id:'beetle',name:'Armored Beetle',desc:'Slow but stubborn, with a shell built to soak up punishment before it finally tumbles.'},
+  {key:'enemy:wasp',id:'wasp',name:'Garden Wasp',desc:'A speedy flier that keeps the pressure on and attacks from uncomfortable angles.'},
+  {key:'enemy:stink',id:'stink',name:'Stink Bug',desc:'A tougher garden pest with an unpleasant surprise for bugs that linger too close.'},
+  {key:'enemy:spider',id:'spider',name:'Garden Spider',desc:'Eight legs, sharp fangs, and no interest in giving up the chase.'}
+ ],
+ boss:[
+  {key:'enemy:hornet',id:'hornet',name:'Hornet',desc:'The first true test of the garden — aggressive, fast, and impossible to ignore.'},
+  {key:'enemy:stagBeetle',id:'stagBeetle',name:'Stag King',desc:'A hulking beetle monarch with a massive shell and a charge worthy of the crown.'},
+  {key:'enemy:queenSpider',id:'queenSpider',name:'Venom Queen',desc:'A royal web-spinner whose venom and traps turn the garden into her hunting ground.'},
+  {key:'enemy:moleCricket',id:'moleCricket',name:'Mole Thing',desc:'Half bug, half burrowing nightmare. Watch the cracking earth and keep moving.'},
+  {key:'enemy:scarab',id:'scarab',name:'Iron Scarab',desc:'A walking fortress. Its plated body makes every opening feel hard-earned.'},
+  {key:'enemy:dragonflyBoss',id:'dragonflyBoss',name:'Sky Lancer',desc:'Aerial speed made dangerous. It leaves the field only to come screaming back through it.'},
+  {key:'enemy:mantisBoss',id:'mantisBoss',name:'Praying Tyrant',desc:'A relentless close-range hunter with long blades and very little patience.'},
+  {key:'enemy:centipede',id:'centipede',name:'Red Centipede',desc:'A crimson blur of legs that turns sudden rushes into a very personal problem.'},
+  {key:'enemy:earwig',id:'earwig',name:'Pincher',desc:'Heavy pincers and heavier attitude. Getting caught between them is a terrible plan.'},
+  {key:'enemy:cicada',id:'cicada',name:'Thunder Cicada',desc:'A booming garden menace that brings speed, noise, and electric-looking fury.'},
+  {key:'enemy:bombardier',id:'bombardier',name:'Bombardier',desc:'A chemical troublemaker that fills safe ground with fire and foul clouds.'},
+  {key:'enemy:mothBoss',id:'mothBoss',name:'Dusk Moth',desc:'Soft wings hide a forceful attack that can shove a tiny bug exactly where it should not be.'},
+  {key:'enemy:waterStrider',id:'waterStrider',name:'Pond Skater',desc:'Long-legged and slippery, gliding across the fight with unnerving speed.'},
+  {key:'enemy:weevil',id:'weevil',name:'Thorn Weevil',desc:'A thorn-covered brute that makes the ground itself part of its attack.'},
+  {key:'enemy:tarantula',id:'tarantula',name:'Old Webber',desc:'An ancient spider that has had a very long time to perfect the art of trapping dinner.'},
+  {key:'enemy:rootBorer',id:'rootBorer',name:'Root Borer',desc:'A heavy underground terror that looks like it crawled straight out of the garden roots.'},
+  {key:'enemy:sporeBeetle',id:'sporeBeetle',name:'Sporeback',desc:'A beetle overtaken by strange fungal growths, leaving poison in its wake.'},
+  {key:'enemy:gardenHeart',id:'gardenHeart',name:'The Spore Behemoth',desc:'The garden’s monstrous fungal heart — enormous, corrupted, and waiting at the very end.'}
+ ]
+};
+let gardenBookTab='playable';
+
+function gardenDiscover(key){
+ if(!key)return;
+ save.discovered=Array.isArray(save.discovered)?save.discovered:[];
+ if(save.discovered.includes(key))return;
+ save.discovered.push(key);persist();
+}
+function syncGardenDiscoveryFromProgress(){
+ save.discovered=Array.isArray(save.discovered)?save.discovered:[];
+ const add=k=>{if(!save.discovered.includes(k))save.discovered.push(k)};
+ add('player:ladybug');
+ for(const id of (save.unlocked||[]))if(BUGS[id])add('player:'+id);
+ const b=Math.max(0,save.best||0);
+ // Backfill encounters for existing saves so the journal respects bugs the player already reached.
+ if(b>=1){add('enemy:ant');add('enemy:mosquito')}
+ if(b>=2)add('enemy:beetle');
+ if(b>=6)add('enemy:wasp');
+ if(b>=11)add('enemy:stink');
+ if(b>=16)add('enemy:spider');
+ for(const [wave,kinds] of Object.entries(BOSS_ROSTER))if(b>=Number(wave))for(const k of kinds)add('enemy:'+k);
+ if((save.endlessBest||0)>0)add('enemy:mosquito');
+ persist();
+}
+function gardenBookBossRadius(k){
+ return k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;
+}
+function renderGardenPlayable(canvas,id){
+ const q=canvas.getContext('2d');q.clearRect(0,0,canvas.width,canvas.height);
+ q.save();q.translate(canvas.width/2,canvas.height/2+4);drawPlayableBug(q,id,68,false);q.restore();
+}
+function renderGardenEnemy(canvas,id,isBoss){
+ const q=canvas.getContext('2d');q.clearRect(0,0,canvas.width,canvas.height);
+ // drawEnemy uses the arena renderer and its helper drawing functions. Render once on the hidden
+ // arena, then copy that exact artwork into the journal thumbnail.
+ const oldGame=game,oldFrame=FRAME_NOW;
+ try{
+  const cx=W/2,cy=H/2,r=isBoss?gardenBookBossRadius(id):16;
+  game={p:{x:cx,y:cy+150},wave:20,enemies:[],mode:'story'};
+  FRAME_NOW=performance.now();
+  X.clearRect(0,0,W,H);
+  drawEnemy({x:cx,y:cy,r,kind:id,boss:!!isBoss,phase:.37,hit:0,state:'chase',invuln:0});
+  const crop=Math.max(74,r+30),sx=(cx-crop)*D,sy=(cy-crop)*D,sw=crop*2*D;
+  q.drawImage(C,sx,sy,sw,sw,0,0,canvas.width,canvas.height);
+  X.clearRect(0,0,W,H);
+ }catch(err){
+  q.fillStyle='#334b31';q.font='900 46px system-ui';q.textAlign='center';q.textBaseline='middle';q.fillText('?',canvas.width/2,canvas.height/2);
+ }finally{game=oldGame;FRAME_NOW=oldFrame}
+}
+function buildGardenBook(tab=gardenBookTab){
+ syncGardenDiscoveryFromProgress();gardenBookTab=tab;
+ const all=[...GARDEN_BOOK.playable,...GARDEN_BOOK.enemy,...GARDEN_BOOK.boss],found=all.filter(e=>save.discovered.includes(e.key)).length;
+ $('gardenBookFound').textContent=found;$('gardenBookTotal').textContent=all.length;
+ document.querySelectorAll('.gardenTab').forEach(b=>b.classList.toggle('active',b.dataset.bookTab===tab));
+ const list=GARDEN_BOOK[tab]||GARDEN_BOOK.playable,grid=$('gardenBookGrid');
+ grid.innerHTML=list.map((e,i)=>{
+  const seen=save.discovered.includes(e.key);
+  return seen?`<article class="gardenEntry"><canvas width="104" height="104" data-book-art="${i}"></canvas><h3>${e.name}</h3><p>${e.desc}</p><span class="encounterTag">DISCOVERED</span></article>`
+             :`<article class="gardenEntry locked"><div class="lockedBug">?</div><h3>???</h3><p>Meet this bug in the garden to reveal its page.</p></article>`;
+ }).join('');
+ [...grid.querySelectorAll('[data-book-art]')].forEach(c=>{
+   const e=list[Number(c.dataset.bookArt)];if(!e||!save.discovered.includes(e.key))return;
+   if(tab==='playable')renderGardenPlayable(c,e.id);else renderGardenEnemy(c,e.id,tab==='boss');
+ });
+}
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-book-tab]');if(!t)return;initAudio();buildGardenBook(t.dataset.bookTab);
+});
+
+
 document.addEventListener('click',e=>{
  const btn=e.target.closest('button');
  window.__bbButtonClickActive=!!btn;
@@ -3012,6 +3201,7 @@ document.addEventListener('click',e=>{
  if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();shopMusicStop();endlessMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
+ if(a==='gardenBook'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildGardenBook('playable');screen('gardenBook');titleMusicStart()}
  if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');shopMusicStart(true)}
  if(a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+10;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +10 GOLD LEAVES',.9)}
  if(a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
