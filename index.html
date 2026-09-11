@@ -746,12 +746,12 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #base .shopCurrency:first-child{background-position:86% 22%,9% 74%,center,center!important}
 #base .shopCurrency:nth-child(2){background-position:14% 20%,79% 81%,center,center!important}
 
-/* v18.0.18 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
+/* v18.0.19 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
 /* v18.0.5 — Mosquito Mode power-up controls are gameplay-only; never show on the run-end screen. */
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
-/* v18.0.18 — Garden Book: discovery journal, isolated Home button, and BIG BUG garden styling. */
+/* v18.0.19 — Garden Book: discovery journal, isolated Home button, and BIG BUG garden styling. */
 #gardenBookBtn{
  position:absolute!important;right:16px!important;top:45.2%!important;z-index:55!important;
  width:58px!important;height:58px!important;min-width:0!important;margin:0!important;padding:0!important;
@@ -774,43 +774,78 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #gardenBook.hidden{display:none!important}
 #gardenBook .gardenBookPanel{
  width:min(760px,96vw);max-height:none;margin:max(12px,env(safe-area-inset-top)) auto max(20px,env(safe-area-inset-bottom));
- padding:18px 14px 22px;border:3px solid #48653b;border-radius:18px;
- background:
-  repeating-linear-gradient(0deg,#e6ddb0 0 31px,#ded3a2 31px 32px),
-  linear-gradient(180deg,#e8dfb5,#d8ce9c);
- box-shadow:inset 0 0 0 4px #8aa05a55,0 7px 0 #203a26,0 12px 22px #07180f66;
+ padding:18px 14px 24px;border:4px solid #2d4f31;border-radius:16px;
+ background:#e7dda9;
+ box-shadow:0 6px 0 #1f3925;
  color:#173823;position:relative;overflow:hidden
 }
-#gardenBook .gardenBookPanel:before,#gardenBook .gardenBookPanel:after{content:"";position:absolute;width:88px;height:38px;background:#74954c2e;border-radius:100% 0 100% 0;pointer-events:none}
-#gardenBook .gardenBookPanel:before{left:-30px;top:54px;transform:rotate(18deg)}
-#gardenBook .gardenBookPanel:after{right:-34px;bottom:72px;transform:rotate(205deg)}
+
+
+
 .gardenBookHeader{text-align:center;position:relative;z-index:1}
-.gardenBookHeader h2{font-size:clamp(28px,8vw,42px);margin:0;color:#21482b;letter-spacing:.2px;text-shadow:none}
-.gardenBookHeader .bookMini{display:inline-block;width:28px;height:22px;border:2px solid #244728;border-radius:4px;background:#80683c;vertical-align:-3px;margin-right:7px;box-shadow:inset 5px 0 #4d432b}
-.gardenBookHeader p{margin:7px auto 12px;max-width:520px;color:#536347;font-weight:700}
-.gardenBookProgress{display:inline-block;background:#385635;color:#fff5cb;border:2px solid #213c27;border-radius:12px;padding:6px 13px;font-size:12px;font-weight:900;box-shadow:0 3px 0 #1c3222}
+.gardenBookHeader h2{
+ font-size:clamp(27px,7.5vw,40px);margin:0 46px 0 0;color:#21482b;
+ letter-spacing:.2px;text-shadow:none;text-align:center
+}
+.gardenBookHeader .bookMini{
+ display:inline-block;width:25px;height:22px;border:3px solid #244728;border-radius:4px;
+ background:#8a6b3c;vertical-align:-3px;margin-right:7px;box-shadow:inset 5px 0 #5d472e
+}
+.gardenBookHeader p{
+ margin:9px 42px 12px 0;max-width:none;color:#596647;font-weight:700;
+ font-size:14px;line-height:1.25;text-align:center
+}
+.gardenBookProgress{
+ display:inline-block;background:#365735;color:#fff3c3;border:3px solid #203c27;
+ border-radius:9px;padding:7px 14px;font-size:12px;font-weight:900;box-shadow:0 3px 0 #203c27
+}
 .gardenTabs{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:16px 0 13px;position:relative;z-index:1}
-.gardenTab{border:2px solid #4b673a;border-radius:10px;padding:8px 11px;background:#a9bd72;color:#1e3f25;font:900 12px ui-rounded,system-ui;box-shadow:0 3px 0 #52683b;cursor:pointer}
-.gardenTab.active{background:#5f8c43;color:#fff9d9;box-shadow:0 3px 0 #3d552f}
+.gardenTab{
+ border:3px solid #426238;border-radius:9px;padding:9px 11px;background:#abc477;color:#1f4025;
+ font:900 12px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 0 #426238;cursor:pointer
+}
+.gardenTab.active{
+ background:#5b8c43;color:#fff5c9;box-shadow:0 3px 0 #35572d
+}
 .gardenBookGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative;z-index:1}
 @media(min-width:650px){.gardenBookGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.gardenEntry{min-height:208px;border:2px solid #697c50;border-radius:14px;padding:10px 9px 11px;text-align:center;
- background:#eee3b7;box-shadow:0 4px 0 #6b7652;position:relative;overflow:hidden}
-.gardenEntry:before{content:"";position:absolute;width:46px;height:20px;right:-11px;top:4px;border-radius:100% 0 100% 0;background:#8da85d22;transform:rotate(23deg)}
-.gardenEntry canvas{display:block;width:104px;height:104px;margin:-1px auto 3px;filter:drop-shadow(0 7px 4px #25382138)}
-.gardenEntry h3{margin:2px 0 5px;font-size:16px;line-height:1.05;color:#193c25}
-.gardenEntry p{margin:0;color:#66705a;font-size:11px;line-height:1.28;font-weight:700}
-.gardenEntry .encounterTag{display:inline-block;margin-top:7px;font-size:9px;font-weight:950;letter-spacing:.55px;color:#fff6cf;background:#587a3c;border-radius:999px;padding:4px 7px}
-.gardenEntry.locked{background:#aaa795;border-color:#717566;box-shadow:0 4px 0 #505548}
+.gardenEntry{
+ min-height:208px;border:3px solid #5b744d;border-radius:12px;padding:10px 9px 12px;text-align:center;
+ background:#f0e5b7;box-shadow:0 4px 0 #5b744d;position:relative;overflow:hidden
+}
+
+.gardenEntry canvas{
+ display:block;width:104px;height:104px;margin:-1px auto 3px;filter:none
+}
+.gardenEntry h3{
+ margin:3px 0 5px;font-size:16px;line-height:1.05;color:#193c25
+}
+.gardenEntry p{
+ margin:0;color:#626a55;font-size:11px;line-height:1.25;font-weight:700
+}
+.gardenEntry .encounterTag{
+ display:inline-block;margin-top:7px;font-size:9px;font-weight:950;letter-spacing:.5px;
+ color:#fff5c8;background:#5b8a43;border:2px solid #3e6434;border-radius:7px;padding:4px 7px
+}
+.gardenEntry.locked{
+ background:#aaa892;border-color:#6b7162;box-shadow:0 4px 0 #6b7162
+}
 .gardenEntry.locked .lockedBug{height:104px;display:flex;align-items:center;justify-content:center;font-size:62px;color:#29382d;filter:drop-shadow(0 6px 4px #0004);opacity:.83}
 .gardenEntry.locked h3{letter-spacing:2px;color:#334237}.gardenEntry.locked p{color:#555e52}
-.gardenBookBack{display:block!important;margin:18px auto max(10px,env(safe-area-inset-bottom))!important;position:sticky!important;bottom:max(10px,env(safe-area-inset-bottom))!important;z-index:80!important;width:min(90%,330px);background:#223827!important;border:2px solid #d9e5b7!important;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d,0 9px 18px #0005!important}
+.gardenBookBack{
+ display:block!important;margin:18px auto max(10px,env(safe-area-inset-bottom))!important;
+ position:sticky!important;bottom:max(10px,env(safe-area-inset-bottom))!important;z-index:80!important;
+ width:min(90%,330px);background:#28482d!important;border:3px solid #1b3420!important;border-radius:12px!important;
+ box-shadow:0 4px 0 #14291a!important;color:#fff3ca!important
+}
 
 
 .gardenBookClose{
- position:sticky!important;float:right;top:max(-2px,env(safe-area-inset-top));right:0;z-index:90;
- width:36px;height:36px;min-width:0;margin:-10px -4px -26px 8px;padding:0;border:2px solid #35512f;border-radius:50%;
- background:#244427;color:#fff4c8;font:1000 24px/29px system-ui;box-shadow:inset 0 -3px #162f1a,0 3px 0 #6b8155;cursor:pointer
+ position:absolute!important;top:14px!important;right:14px!important;z-index:95!important;
+ width:38px;height:38px;min-width:38px;margin:0!important;padding:0!important;
+ border:3px solid #203c25;border-radius:9px;background:#5e8a45;color:#fff5cf;
+ font:1000 27px/29px ui-rounded,system-ui,-apple-system,sans-serif;
+ box-shadow:0 4px 0 #29482d;cursor:pointer
 }
 #gardenBook .gardenBookPanel{padding-bottom:26px!important}
 
@@ -847,8 +882,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.18</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.18</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.19</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.19</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -865,7 +900,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <button class="gardenBookClose" data-action="home" aria-label="Close Garden Book">×</button>
   <div class="gardenBookHeader">
    <h2><span class="bookMini" aria-hidden="true"></span>GARDEN BOOK</h2>
-   <p>Every bug leaves a story behind. Meet them in the garden to fill these pages.</p>
+   <p>Find bugs in the garden to fill up your book.</p>
    <div class="gardenBookProgress"><span id="gardenBookFound">0</span> / <span id="gardenBookTotal">0</span> DISCOVERED</div>
   </div>
   <div class="gardenTabs">
@@ -2040,7 +2075,7 @@ function update(dt,now){
  }
  const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),attackDelay=rapid?Math.max(85,p.rate*.18):p.rate;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
- // v18.0.18: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
+ // v18.0.19: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
@@ -2189,7 +2224,7 @@ function openUpgrade(afterWave=false){
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v18.0.18 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
+ // v18.0.19 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
  // Little Buddy = 5%, Triple Shot = 5%, Little Buddy Army = 4% on eligible Story upgrade screens.
  // The Army is NEVER offered immediately before a boss (after waves 4, 9, 14, ...), but can appear right after a boss.
  const nextWave=g.wave+1,armyEligible=!!army&&nextWave%5!==0;
@@ -3076,7 +3111,7 @@ function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;s
 // v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
 // Existing button sounds remain untouched and do not get doubled.
 
-// v18.0.18 — Garden Book discovery journal.
+// v18.0.19 — Garden Book discovery journal.
 // Entries use the game's own live renderers. Enemy portraits are captured from drawEnemy
 // on the hidden arena canvas, so the book always matches the actual in-game artwork.
 const GARDEN_BOOK={
