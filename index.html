@@ -744,6 +744,10 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #bugs .card:nth-child(6),#base .shopRow:nth-of-type(6){background-position:4% 43%,67% 82%,center,center!important}
 #base .shopCurrency:first-child{background-position:86% 22%,9% 74%,center,center!important}
 #base .shopCurrency:nth-child(2){background-position:14% 20%,79% 81%,center,center!important}
+
+/* v18.0.5 — Mosquito Mode power-up controls are gameplay-only; never show on the run-end screen. */
+body:has(#gameover:not(.hidden)) #endlessTripleBtn,
+body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 </style>
 </head>
 <body>
