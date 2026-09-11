@@ -195,6 +195,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 }
 #upgrade .choice:nth-child(2) .upgradeMark{transform:translateY(-50%) rotate(4deg)}
 #upgrade .choice:nth-child(3) .upgradeMark{transform:translateY(-50%) rotate(-3deg)}
+#upgrade .choice .buddyUpgradeIcon{width:48px;height:48px;display:block;filter:drop-shadow(0 2px 1px #fff7d099);}
 
 
 /* v17.5.3 — cleaner permanent Power Ups screen */
@@ -745,7 +746,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #base .shopCurrency:first-child{background-position:86% 22%,9% 74%,center,center!important}
 #base .shopCurrency:nth-child(2){background-position:14% 20%,79% 81%,center,center!important}
 
-/* v18.0.6 — Little Helper Army test build: guaranteed Story upgrade on eligible non-boss waves; 10 helpers one-hit enemies for one wave. */
+/* v18.0.7 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
 /* v18.0.5 — Mosquito Mode power-up controls are gameplay-only; never show on the run-end screen. */
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
@@ -781,8 +782,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.6</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.6</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.7</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.7</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1081,14 +1082,14 @@ const UP=[
  {id:'magnet',icon:'',name:'Pollen Pull',desc:'+65% Leaf range',rarity:'common',apply:p=>p.magnet+=65},
  {id:'greed',icon:'',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
  {id:'clone',icon:'',name:'Tiny Helper',desc:'Tiny Helper attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];const edge=Math.floor(Math.random()*4),pad=34;let hx=p.x,hy=p.y;if(edge===0){hx=-pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===1){hx=W+pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===2){hx=Math.max(24,Math.min(W-24,p.x));hy=-pad}else{hx=Math.max(24,Math.min(W-24,p.x));hy=H+pad}p.helpers.push({bornWave:game.wave,leaving:false,entering:true,joining:0,x:hx,y:hy})}},
- {id:'helperArmy',icon:'',name:'Little Helper Army',desc:'10 Little Helpers one-hit enemies for the entire next non-boss wave',rarity:'epic',apply:p=>{const w=game.wave+1;if(w%5===0)return;p.helperArmyWave=w;p.helperArmyHelpers=[];for(let i=0;i<10;i++)p.helperArmyHelpers.push(makeArmyHelper(i))}},
+ {id:'helperArmy',icon:'',name:'Little Buddy Army',desc:'10 Little Buddies one-hit enemies for the entire next wave',rarity:'epic',apply:p=>{const w=game.wave+1;if(w%5===0)return;p.helperArmyWave=w;p.helperArmyHelpers=[];for(let i=0;i<10;i++)p.helperArmyHelpers.push(makeArmyHelper(i))}},
  {id:'gold',icon:'',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
 ];
 
 function makeArmyHelper(i=0){
  const side=i%4,pad=34,spread=((i*73)%100)/100;let x,y;
  if(side===0){x=-pad;y=28+spread*Math.max(20,H-56)}else if(side===1){x=W+pad;y=28+spread*Math.max(20,H-56)}else if(side===2){x=28+spread*Math.max(20,W-56);y=-pad}else{x=28+spread*Math.max(20,W-56);y=H+pad}
- return {x,y,vx:0,vy:0,target:null,phase:i*.63,entered:false};
+ return {x,y,vx:0,vy:0,target:null,phase:i*(Math.PI*2/10),entered:false,attackCd:0};
 }
 let game=null, last=0, raf=0, audio=null;
 
@@ -1119,7 +1120,7 @@ function saveRunRecovery(reason='checkpoint'){
     face:p.face,faceTarget:p.faceTarget,helperShot:0,
     helpers:(p.helpers||[]).map(h=>({bornWave:h.bornWave,leaving:!!h.leaving,entering:!!h.entering,joining:h.joining||0,joinX:h.joinX,joinY:h.joinY,x:h.x,y:h.y,vx:h.vx,vy:h.vy})),
     helperArmyWave:p.helperArmyWave||0,
-    helperArmyHelpers:(p.helperArmyHelpers||[]).map(h=>({x:h.x,y:h.y,vx:h.vx||0,vy:h.vy||0,phase:h.phase||0,entered:!!h.entered}))
+    helperArmyHelpers:(p.helperArmyHelpers||[]).map(h=>({x:h.x,y:h.y,vx:h.vx||0,vy:h.vy||0,phase:h.phase||0,entered:!!h.entered,attackCd:h.attackCd||0}))
    }
   };
   localStorage.setItem(RUNSAVEKEY,JSON.stringify(snap));
@@ -1142,7 +1143,7 @@ function restoreRecoveredRun(){
   game.p.moveX=game.p.x;game.p.moveY=game.p.y;
   game.p.helpers=(snap.p.helpers||[]).map(h=>({bornWave:h.bornWave,leaving:!!h.leaving,entering:!!h.entering,joining:h.joining||0,joinX:h.joinX,joinY:h.joinY,x:Number.isFinite(h.x)?h.x:game.p.x,y:Number.isFinite(h.y)?h.y:game.p.y,vx:h.vx,vy:h.vy}));
   game.p.helperArmyWave=snap.p.helperArmyWave||0;
-  game.p.helperArmyHelpers=(snap.p.helperArmyHelpers||[]).map((h,i)=>({x:Number.isFinite(h.x)?h.x:makeArmyHelper(i).x,y:Number.isFinite(h.y)?h.y:makeArmyHelper(i).y,vx:h.vx||0,vy:h.vy||0,target:null,phase:h.phase||i*.63,entered:!!h.entered}));
+  game.p.helperArmyHelpers=(snap.p.helperArmyHelpers||[]).map((h,i)=>({x:Number.isFinite(h.x)?h.x:makeArmyHelper(i).x,y:Number.isFinite(h.y)?h.y:makeArmyHelper(i).y,vx:h.vx||0,vy:h.vy||0,target:null,phase:Number.isFinite(h.phase)?h.phase:i*(Math.PI*2/10),entered:!!h.entered,attackCd:h.attackCd||0}));
   if(snap.intermission){
    game.wave=snap.wave;game.intermission=true;game.waveActive=false;
   }else{
@@ -1928,18 +1929,30 @@ function update(dt,now){
    }
  }
  const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),attackDelay=rapid?Math.max(85,p.rate*.18):p.rate;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
- // Little Helper Army: 10 lightweight hunters rush in and one-hit enemies for exactly one eligible Story wave.
+ // Little Buddy Army: buddies run in, then hold ten evenly spaced slots in a large protective circle.
+ // They stay spread out instead of piling onto one target; enemies that enter the protected area are one-hit.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
+   const ringR=86,ringSpin=g.time*.42,protectR=Math.min(250,Math.max(190,Math.min(W,H)*.42));
    const live=[];for(const e of g.enemies)if(!e.dead&&!e.boss&&e.state!=='burrowWait')live.push(e);
+   // Entry and ring positioning are independent per buddy, so all ten keep their own evenly spaced slot.
    for(let i=0;i<p.helperArmyHelpers.length;i++){
-     const h=p.helperArmyHelpers[i];let t=h.target;
-     if(!t||t.dead||t.boss||t.state==='burrowWait')t=h.target=live.length?live[i%live.length]:null;
-     let tx=t?t.x:(p.x+Math.cos(g.time*2+h.phase)*72),ty=t?t.y:(p.y+Math.sin(g.time*2+h.phase)*72);
-     let dx=tx-h.x,dy=ty-h.y,d=Math.hypot(dx,dy)||1,spd=t?520:360,step=Math.min(d,spd*dt);h.vx=dx/d*spd;h.vy=dy/d*spd;h.x+=dx/d*step;h.y+=dy/d*step;
-     if(h.x>0&&h.x<W&&h.y>0&&h.y<H)h.entered=true;
-     if(t&&!t.dead&&d<t.r+14){damageEnemy(t,Math.max(t.hp,t.max)+1,'helperArmy');h.target=null}
+     const h=p.helperArmyHelpers[i],a=ringSpin+i*(Math.PI*2/10),tx=p.x+Math.cos(a)*ringR,ty=p.y+Math.sin(a)*ringR;
+     const dx=tx-h.x,dy=ty-h.y,d=Math.hypot(dx,dy)||1,spd=h.entered?430:390,step=Math.min(d,spd*dt);
+     h.vx=dx/d*spd;h.vy=dy/d*spd;h.x+=dx/d*step;h.y+=dy/d*step;
+     if(!h.entered&&d<10)h.entered=true;
+     if(h.entered&&d<2){h.x=tx;h.y=ty}
+     h.attackCd=Math.max(0,(h.attackCd||0)-dt);
+   }
+   // Give each buddy at most one unique nearby threat at a time. Buddies do not leave their ring to attack.
+   const claimed=new Set();
+   for(let i=0;i<p.helperArmyHelpers.length;i++){
+     const h=p.helperArmyHelpers[i];if(!h.entered||h.attackCd>0)continue;
+     let best=null,bestD=1e9;
+     for(const e of live){if(e.dead||claimed.has(e))continue;const pd=Math.hypot(e.x-p.x,e.y-p.y);if(pd>protectR)continue;const d=Math.hypot(e.x-h.x,e.y-h.y);if(d<bestD){best=e;bestD=d}}
+     if(best){claimed.add(best);h.target=best;h.attackCd=.12;damageEnemy(best,Math.max(best.hp,best.max)+1,'helperArmy');g.fx.push({x:h.x,y:h.y,vx:(best.x-h.x)*4.2,vy:(best.y-h.y)*4.2,life:.12,r:2.8,shot:true,helper:true});}
+     else h.target=null;
    }
  }
  // Tiny Helpers run in from off-screen, orbit for 5 waves, then visibly wander away.
@@ -2044,7 +2057,8 @@ function openUpgrade(afterWave=false){
  const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy');
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v18.0.6 test rule — Little Helper Army is guaranteed whenever the NEXT Story wave is not a boss wave.
+ // v18.0.7 test rule — Little Buddy Army is guaranteed on every eligible Story upgrade screen for testing.
+ // It is NEVER offered immediately before a boss (after waves 4, 9, 14, ...), but it IS offered right after beating a boss.
  const nextWave=g.wave+1,armyEligible=!!army&&nextWave%5!==0;
  if(armyEligible)choices[0]=army;
  else{
@@ -2052,8 +2066,10 @@ function openUpgrade(afterWave=false){
    const lucky=[];if(helper&&Math.random()<.05)lucky.push(helper);if(triple&&!g.p.tripleShot&&Math.random()<.05)lucky.push(triple);
    lucky.forEach((u,i)=>{if(i<choices.length)choices[i]=u});
  }
- const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',helperArmy:'✦',triple:'≋',gold:'➜'};
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
+ const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',helperArmy:'',triple:'≋',gold:'➜'};
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${u.id==='helperArmy'?'':(marks[u.id]||'✦')}</span><p class="muted">${u.desc}</p></button>`).join('');
+ // Little Buddy Army's card icon is the actual selected Little Buddy rather than a generic symbol.
+ [...$('choices').children].forEach((el,i)=>{if(choices[i].id==='helperArmy'){const mark=el.querySelector('.upgradeMark'),c=document.createElement('canvas');c.width=52;c.height=52;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(26,26);drawPlayableBug(q,save.selected,30,false)}});
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
    if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false;saveRunRecovery('upgrade-picked')}
@@ -2885,7 +2901,7 @@ function draw(now=performance.now()){
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
 
- // Little Helper Army uses the selected bug's Little Helper look and faces its movement direction.
+ // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
  const armyHs=p.helperArmyHelpers||[];if(p.helperArmyWave===game.wave&&game.wave%5!==0)for(const h of armyHs){
    X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayableBug(X,save.selected,19,false);X.restore();
  }
