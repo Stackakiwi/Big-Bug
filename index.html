@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.47: playable ladybug gets lightweight procedural leg motion and livelier movement; Story Boost scaling preserved -->
+<!-- Big Bug v18.0.48: playable ladybug gets lightweight procedural leg motion and livelier movement; Story Boost scaling preserved -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -896,8 +896,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.47</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.47</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.48</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.48</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1837,6 +1837,12 @@ function countFxFlag(flag,limit=Infinity){
 function compactInPlace(arr,keep){
  let w=0;for(let r=0;r<arr.length;r++){const v=arr[r];if(keep(v))arr[w++]=v}arr.length=w;return arr;
 }
+// v18.0.48 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
+function keepLiveEnemy(e){return !e.dead}
+function keepLiveDrop(d){return !d.dead}
+function keepLiveFx(f){return f.life>0}
+function keepLiveBoss(b){return !b.dead}
+function keepVisibleHelper(h){return !h.leaving||h.x>-50&&h.x<W+50&&h.y>-60&&h.y<H+60}
 function fireball(){
  const t=nearestEnemy();if(!t)return;
  let dx=t.x-game.p.x,dy=t.y-game.p.y,dd=Math.hypot(dx,dy)||1;
@@ -1949,7 +1955,7 @@ function enemyMove(e,dt){
        const ax=p.x-e.x,ay=p.y-e.y,ad=Math.hypot(ax,ay)||1;
        e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=1.05;
        burst(e.x,e.y,4,.18,'#b9f3eb');flashBanner('SKY SWEEP!',.32);
-       const a=Math.atan2(e.vy,e.vx);for(let q of [-.08,.08])game.fx.push({x:e.x,y:e.y,vx:Math.cos(a+q)*300,vy:Math.sin(a+q)*300,life:2.7,r:4.5,sting:true,damage:8+game.wave*.16});
+       const a=Math.atan2(e.vy,e.vx),dmg=8+game.wave*.16;game.fx.push({x:e.x,y:e.y,vx:Math.cos(a-.08)*300,vy:Math.sin(a-.08)*300,life:2.7,r:4.5,sting:true,damage:dmg},{x:e.x,y:e.y,vx:Math.cos(a+.08)*300,vy:Math.sin(a+.08)*300,life:2.7,r:4.5,sting:true,damage:dmg});
      }
      return;
    }else if(e.state==='skyDash'){
@@ -2168,7 +2174,7 @@ function update(dt,now){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
    const ringR=88,ringSpin=p.helperArmyFormedAt>0?g.time*1.8:0;
-   const live=[];for(const e of g.enemies)if(!e.dead&&!e.boss&&e.state!=='burrowWait')live.push(e);
+   const live=g.armyLiveScratch||(g.armyLiveScratch=[]);live.length=0;for(const e of g.enemies)if(!e.dead&&!e.boss&&e.state!=='burrowWait')live.push(e);
    let allEntered=true;
    // Use stationary slots during entry so every buddy can actually finish formation.
    // Once all ten have arrived, latch the formation, wait one second, then switch
@@ -2195,14 +2201,14 @@ function update(dt,now){
    }
    const armyFiring=(p.helperArmyReadyAt>0&&g.time>=p.helperArmyReadyAt);
    if(armyFiring){
-     const claimed=new Set();
+     const claimStamp=(g.armyClaimStamp=(g.armyClaimStamp||0)+1);
      for(let i=0;i<p.helperArmyHelpers.length;i++){
        const h=p.helperArmyHelpers[i];if(!h.entered||h.attackCd>0)continue;
        let best=null,bestD=1e9;
        // Army shots can target any live non-boss enemy anywhere on the field.
-       for(const e of live){if(e.dead||claimed.has(e))continue;const dx=e.x-h.x,dy=e.y-h.y,d2=dx*dx+dy*dy;if(d2<bestD){best=e;bestD=d2}}
+       for(const e of live){if(e.dead||e._armyClaimStamp===claimStamp)continue;const dx=e.x-h.x,dy=e.y-h.y,d2=dx*dx+dy*dy;if(d2<bestD){best=e;bestD=d2}}
        if(best){
-         claimed.add(best);h.target=best;h.attackCd=.26+((i%3)*.015);
+         best._armyClaimStamp=claimStamp;h.target=best;h.attackCd=.26+((i%3)*.015);
          const tx=best.x,ty=best.y;
          if(g.fx.length<155)g.fx.push({x:h.x,y:h.y,life:.22,maxLife:.22,r:3.4,helperArmyShotFx:true,ax:tx,ay:ty});
          damageEnemy(best,1000000000,'helperArmy');
@@ -2222,7 +2228,7 @@ function update(dt,now){
    if(!h.leaving&&g.wave>=h.bornWave+5){h.leaving=true;h.entering=false;h.joining=0;if(!Number.isFinite(h.x)||!Number.isFinite(h.y)){h.x=p.x;h.y=p.y}h.vx=(Math.random()<.5?-1:1)*(75+Math.random()*35);h.vy=-45-Math.random()*35}
    if(h.leaving){h.x+=h.vx*dt;h.y+=h.vy*dt}
  }
- compactInPlace(p.helpers,h=>!h.leaving||h.x>-50&&h.x<W+50&&h.y>-60&&h.y<H+60);
+ compactInPlace(p.helpers,keepVisibleHelper);
  let activeHelperCount=0;for(const h of p.helpers)if(!h.leaving&&!h.entering)activeHelperCount++;
  p.clones=activeHelperCount;
  if(activeHelperCount&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,activeHelperCount*.06)))){
@@ -2291,9 +2297,9 @@ function update(dt,now){
    }
    f.vx*=.985;f.vy*=.985;
  }
- compactInPlace(g.enemies,e=>!e.dead);compactInPlace(g.drops,d=>!d.dead);compactInPlace(g.fx,f=>f.life>0);const fxCap=g.enemies.length>32?112:(g.enemies.length>22?132:150);if(g.fx.length>fxCap)g.fx.splice(0,g.fx.length-fxCap);
+ compactInPlace(g.enemies,keepLiveEnemy);compactInPlace(g.drops,keepLiveDrop);compactInPlace(g.fx,keepLiveFx);const fxCap=g.enemies.length>32?112:(g.enemies.length>22?132:150);if(g.fx.length>fxCap)g.fx.splice(0,g.fx.length-fxCap);
  if(g.bosses&&g.bosses.length){
-   compactInPlace(g.bosses,b=>!b.dead);
+   compactInPlace(g.bosses,keepLiveBoss);
    g.boss=g.bosses[0]||null;
    if(!g.bosses.length){$('bossbar').style.display='none';bossMusicStop();if(g.mode==='story'&&!g.over)titleMusicStart()}
    else{let hp=0,mx=0;for(const b of g.bosses){hp+=Math.max(0,b.hp);mx+=b.max}setBossFill(Math.max(0,100*hp/mx)+'%')}
@@ -3147,7 +3153,13 @@ function draw(now=performance.now()){
    if(f.playerShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
    if(f.helperShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=.9*Math.max(0,1-q*.35);X.fillStyle='#c9f4ff';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
    if(f.helperArmyShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.18)),e=1-Math.pow(1-q,2);X.globalAlpha=Math.max(0,1-q*.18);X.fillStyle='#c9f4ff';X.shadowColor='#e8fbff';X.shadowBlur=7;X.beginPath();X.arc(f.x+(f.ax-f.x)*e,f.y+(f.ay-f.y)*e,f.r,0,6.28);X.fill();X.shadowColor='transparent';X.globalAlpha=1;continue}
-   if(f.tripleShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16)),dot=(tx,ty)=>{if(tx==null)return;X.beginPath();X.arc(f.x+(tx-f.x)*q,f.y+(ty-f.y)*q,f.r,0,6.28);X.fill()};X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';dot(f.ax,f.ay);dot(f.bx,f.by);dot(f.cx,f.cy);dot(f.dx,f.dy);dot(f.ex,f.ey);X.globalAlpha=1;continue}
+   if(f.tripleShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';
+     if(f.ax!=null){X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill()}
+     if(f.bx!=null){X.beginPath();X.arc(f.x+(f.bx-f.x)*q,f.y+(f.by-f.y)*q,f.r,0,6.28);X.fill()}
+     if(f.cx!=null){X.beginPath();X.arc(f.x+(f.cx-f.x)*q,f.y+(f.cy-f.y)*q,f.r,0,6.28);X.fill()}
+     if(f.dx!=null){X.beginPath();X.arc(f.x+(f.dx-f.x)*q,f.y+(f.dy-f.y)*q,f.r,0,6.28);X.fill()}
+     if(f.ex!=null){X.beginPath();X.arc(f.x+(f.ex-f.x)*q,f.y+(f.ey-f.y)*q,f.r,0,6.28);X.fill()}
+     X.globalAlpha=1;continue}
    X.globalAlpha=Math.max(0,Math.min(1,f.life));
    if(f.sting){X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30');X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent'}
    else if(f.shot){X.fillStyle=f.helper?'#c9f4ff':'#fff3a6';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
@@ -3160,7 +3172,7 @@ function draw(now=performance.now()){
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  // v18.0.44 — Story combat bonuses remain active, but their player rings were removed.
- const ladyMoving=save.selected==='ladybug'&&Math.hypot((p.moveX??p.x)-p.x,(p.moveY??p.y)-p.y)>3,ladyPhase=game.time*(ladyMoving?13:2.2),ladyAmp=save.selected==='ladybug'?(ladyMoving?1.8:.35):0;X.save();X.translate(p.x,p.y+bob+(ladyMoving?Math.sin(ladyPhase)*.45:0));X.rotate(p.face+(save.selected==='ladybug'?Math.sin(ladyPhase*.5)*(ladyMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false,ladyPhase,ladyAmp);X.restore();
+ const ladyDX=(p.moveX??p.x)-p.x,ladyDY=(p.moveY??p.y)-p.y,ladyMoving=save.selected==='ladybug'&&(ladyDX*ladyDX+ladyDY*ladyDY)>9,ladyPhase=game.time*(ladyMoving?13:2.2),ladyAmp=save.selected==='ladybug'?(ladyMoving?1.8:.35):0;X.save();X.translate(p.x,p.y+bob+(ladyMoving?Math.sin(ladyPhase)*.45:0));X.rotate(p.face+(save.selected==='ladybug'?Math.sin(ladyPhase*.5)*(ladyMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false,ladyPhase,ladyAmp);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
  const armyHs=p.helperArmyHelpers||[];for(const h of armyHs){
@@ -3180,6 +3192,7 @@ function draw(now=performance.now()){
  }
 }
 let gameLoopHeartbeat=0;
+// v18.0.48 — older-device GC pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
 function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
 
 // v18.0.44 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
