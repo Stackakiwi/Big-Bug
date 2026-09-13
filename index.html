@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.26: Home subtitle removed and Garden Magic Harder Shell icon resized; gameplay unchanged -->
+<!-- Big Bug v18.0.27: lower first permanent-upgrade Leaf costs; title buddy second stop moved between Play and Mosquito Mode; gameplay otherwise unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -860,7 +860,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #gardenBook .gardenBookPanel{padding-bottom:26px!important}
 
 
-/* v18.0.26 — requested visual polish only */
+/* v18.0.27 — requested visual polish only */
 #base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
 </style>
 </head>
@@ -895,8 +895,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.26</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.26</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.27</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.27</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1418,13 +1418,19 @@ function buildBugScreen(){
   grid.appendChild(el);
  });
 }
+function permanentUpgradeLeafCost(k,level){
+ const first={hp:500,dmg:750,magnet:1000,coins:1250};
+ if(level<=0)return first[k];
+ const step={hp:2500,dmg:3000,magnet:3500,coins:5000};
+ return step[k]*(level+1);
+}
 function buildShop(){
  const s=save.upgrades;
  const rows=[
-   ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`+10% Base Health — ${s.hp}/10`,2500+s.hp*2500,'hp'],
-   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% Base Damage — ${s.dmg}/10`,3000+s.dmg*3000,'dmg'],
-   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% Attack Speed — ${s.magnet}/10`,3500+s.magnet*3500,'magnet'],
-   ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% Pickup Range & Leaves — ${s.coins}/10`,5000+s.coins*5000,'coins']
+   ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`+10% Base Health — ${s.hp}/10`,permanentUpgradeLeafCost('hp',s.hp),'hp'],
+   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% Base Damage — ${s.dmg}/10`,permanentUpgradeLeafCost('dmg',s.dmg),'dmg'],
+   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% Attack Speed — ${s.magnet}/10`,permanentUpgradeLeafCost('magnet',s.magnet),'magnet'],
+   ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% Pickup Range & Leaves — ${s.coins}/10`,permanentUpgradeLeafCost('coins',s.coins),'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${save.goldLeaves||0}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><div class="shopBuyStack"><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button><button class="btn small goldUpgradeBtn" data-buy-gold="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="goldLeafIcon" aria-hidden="true"></span>1`}</button></div></div>`).join('');
@@ -1432,7 +1438,7 @@ function buildShop(){
  $('shop').querySelectorAll('[data-buy-gold]').forEach(btn=>btn.onclick=()=>buyShopGold(btn.dataset.buyGold));
 }
 function buyShop(k){
- const s=save.upgrades, costs={hp:2500+s.hp*2500,dmg:3000+s.dmg*3000,magnet:3500+s.magnet*3500,coins:5000+s.coins*5000};
+ const s=save.upgrades, costs={hp:permanentUpgradeLeafCost('hp',s.hp),dmg:permanentUpgradeLeafCost('dmg',s.dmg),magnet:permanentUpgradeLeafCost('magnet',s.magnet),coins:permanentUpgradeLeafCost('coins',s.coins)};
  if(s[k]>=10||save.scrap<costs[k])return;
  save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
 }
@@ -3379,7 +3385,8 @@ function titleGardenLoop(now){
    // This keeps the buddy tucked behind the logo even when safe areas/device sizes differ.
    const homeRect=$('home').getBoundingClientRect(),logoMain=$('home').querySelector('.logoMain'),logoRect=logoMain?.getBoundingClientRect();
    const logoTop=logoRect?logoRect.top-homeRect.top:h*.27,logoH=logoRect?logoRect.height:h*.18;
-   const logoHideY=logoTop+logoH*.50,peekY=logoTop+logoH+13;
+   const logoHideY=logoTop+logoH*.50,playRect=$('home').querySelector('[data-action="play"]')?.getBoundingClientRect(),endlessRect=$('endlessBtn')?.getBoundingClientRect();
+   const peekY=(playRect&&endlessRect)?(((playRect.bottom+endlessRect.top)*.5)-homeRect.top):(logoTop+logoH+13);
    let buddyY,lookBack=false;
    // Buddy arrives first, pauses physically behind the logo (the logo itself masks him),
    // peeks out to look back, then bolts as the swarm catches up.
