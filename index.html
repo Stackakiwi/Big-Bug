@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.43: remove Story combat bonus rings; harden iOS interruption recovery so mid-wave screenshots/app interruptions cannot strand an empty wave -->
+<!-- Big Bug v18.0.45: restore boss HUD/music after Gold Leaf Continue; halve special-attack damage for Wave 70/75/80/85 bosses -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -896,8 +896,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.43</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.43</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.45</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.45</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1053,6 +1053,10 @@ const screens=['home','bugs','base','gardenBook','goldShop','settings','help','u
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
+ // v18.0.44 — transient gameplay banners should never bleed over menus/pause/end screens.
+ if(id!=='none'){
+  const t=$('telegraph');if(t){t.classList.add('hidden');clearTimeout(flashBanner._t)}
+ }
 }
 const SAVEKEY='big_bug_save_v1';
 const GOLDKEY='big_bug_gold_v1';
@@ -1329,7 +1333,20 @@ function initAudio(){
   return resumed;
  }catch(e){return Promise.resolve()}
 }
-function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){if(!audio)return;g*=1.2;if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;if(category==='sfx'&&window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
+ if(!audio)return;
+ if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;
+ if(category==='sfx'&&window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;
+ // v18.0.44 — never queue oscillator notes while iOS has the page/audio context suspended.
+ // Music simply skips hidden beats; a user-triggered SFX gets one safe retry after resume.
+ if(document.hidden)return;
+ if(audio.state!=='running'){
+  if(category==='sfx'&&audio.state==='suspended')audio.resume().then(()=>{if(!document.hidden&&audio?.state==='running')beep(f,d,g,type,category)}).catch(()=>{});
+  return;
+ }
+ g*=1.2;
+ let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)
+}
 function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setTimeout(()=>{if(!audio||save.settings.sfx===false)return;beep(720,.020,.0048,'triangle');setTimeout(()=>beep(980,.016,.0032,'sine'),12)},0)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
@@ -1908,7 +1925,7 @@ function enemyMove(e,dt){
      e.state='weevilRecover';e.stateT=.34;
      for(let i=-2;i<=2;i++){
        let px=Math.max(35,Math.min(W-35,e.weevilAimX+i*48)),py=Math.max(105,Math.min(H-40,e.weevilAimY+(i%2)*45));
-       bossHazard(px,py,22.5,2.1,'thorn',10+game.wave*.16);
+       bossHazard(px,py,22.5,2.1,'thorn',(10+game.wave*.16)*.5);
      }
      burst(e.x,e.y,5,.22,'#b8d05b');flashBanner('THORNS ERUPT!',.26);
    }
@@ -2041,15 +2058,15 @@ function enemyMove(e,dt){
      e.shotCd=3.05;e.state='weevilWindup';e.stateT=.48;e.weevilAimX=p.x;e.weevilAimY=p.y;
      burst(e.x,e.y,4,.28,'#d7e88b');beep(185,.11,.028,'sawtooth');flashBanner('⚠ THORN GARDEN!',.48)
    }
-   else if(e.kind==='tarantula'){e.shotCd=2.7;let ang=aim+Math.PI/2;for(let i=-2;i<=2;i++){let dist=i*55;bossHazard(p.x+Math.cos(ang)*dist,p.y+Math.sin(ang)*dist,30,5.6,'webline',8+game.wave*.14)}flashBanner(' WEB WALL!',.35)}
-   else if(e.kind==='rootBorer'){e.shotCd=3.0;for(let i=0;i<4;i++){let q=(i+1)/4,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,31,1.55+i*.12,'root',11+game.wave*.17)}flashBanner(' ROOT ERUPTION!',.35)}
+   else if(e.kind==='tarantula'){e.shotCd=2.7;let ang=aim+Math.PI/2;for(let i=-2;i<=2;i++){let dist=i*55;bossHazard(p.x+Math.cos(ang)*dist,p.y+Math.sin(ang)*dist,30,5.6,'webline',(8+game.wave*.14)*.5)}flashBanner(' WEB WALL!',.35)}
+   else if(e.kind==='rootBorer'){e.shotCd=3.0;for(let i=0;i<4;i++){let q=(i+1)/4,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,31,1.55+i*.12,'root',(11+game.wave*.17)*.5)}flashBanner(' ROOT ERUPTION!',.35)}
    else if(e.kind==='sporeBeetle'){
      e.shotCd=2.55;
-     for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,4.8,'spore',10+game.wave*.16)}
-     bossRing(e,8,105,8+game.wave*.14,t*.2,'spore');
+     for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,4.8,'spore',(10+game.wave*.16)*.5)}
+     bossRing(e,8,105,(8+game.wave*.14)*.5,t*.2,'spore');
      if(Math.random()<.22){
        const px=Math.max(38,Math.min(W-38,p.x+(Math.random()-.5)*70)),py=Math.max(110,Math.min(H-38,p.y+(Math.random()-.5)*70));
-       game.fx.push({x:px,y:py,vx:0,vy:0,life:30,maxLife:30,r:24,toxicScar:true,damage:4+game.wave*.045,tick:.35});
+       game.fx.push({x:px,y:py,vx:0,vy:0,life:30,maxLife:30,r:24,toxicScar:true,damage:(4+game.wave*.045)*.5,tick:.35});
        flashBanner('☠ BLIGHT SPORE!',.32)
      }else flashBanner('SPORE BLOOM!',.35)
    }
@@ -2436,7 +2453,18 @@ function finish(won,quit=false){
  screen('gameover');
  if(save.settings.music)titleMusicStart();
 }
-function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<1)return;save.goldLeaves--;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart();else if(!game.boss||game.boss.dead)titleMusicStart();last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
+function restoreBossFightAfterContinue(){
+ if(!game||game.mode==='endless'){ $('bossbar').style.display='none';return false }
+ const bosses=(game.bosses||[]).filter(b=>b&&!b.dead&&b.hp>0);
+ if(!bosses.length&&game.boss&&!game.boss.dead&&game.boss.hp>0)bosses.push(game.boss);
+ if(!bosses.length){$('bossbar').style.display='none';return false}
+ game.bosses=bosses;game.boss=bosses[0];
+ $('bossName').textContent=bossKindsFor(game.wave).map(q=>BOSS_NAMES[q]).join(' + ');
+ let hp=0,mx=0;for(const b of bosses){hp+=Math.max(0,b.hp);mx+=Math.max(1,b.max)}
+ setBossFill(Math.max(0,Math.min(100,100*hp/mx))+'%');$('bossbar').style.display='block';
+ titleMusicStop();bossMusicStart();return true;
+}
+function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<1)return;save.goldLeaves--;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart();else if(!restoreBossFightAfterContinue())titleMusicStart();updateHud(true);last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
 function quitRun(){if(game&&!game.over)finish(false,true)}
 
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
@@ -3129,7 +3157,7 @@ function draw(now=performance.now()){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- // v18.0.43 — Story combat bonuses remain active, but their player rings were removed.
+ // v18.0.44 — Story combat bonuses remain active, but their player rings were removed.
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
@@ -3152,7 +3180,7 @@ function draw(now=performance.now()){
 let gameLoopHeartbeat=0;
 function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
 
-// v18.0.43 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
+// v18.0.44 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
 // Control Center, or other system overlays without always delivering the same lifecycle event.
 // Repair only live gameplay state; a real user-opened Pause screen stays paused.
 function repairWaveAfterSystemInterruption(){
@@ -3173,7 +3201,15 @@ function resumeGameAfterBackground(){
  last=performance.now();gameLoopHeartbeat=last;
  if(raf)cancelAnimationFrame(raf);
  raf=requestAnimationFrame(loop);
- if(audio&&audio.state==='suspended')audio.resume().then(()=>{if(game&&game.mode==='endless'&&!game.paused&&!game.over&&!endlessMusicTimer)endlessMusicStart(false)}).catch(()=>{});else if(game&&game.mode==='endless'&&!game.paused&&!game.over&&!endlessMusicTimer)endlessMusicStart(false);
+ const restoreAudio=()=>{
+  if(save.settings.music===false)return;
+  if(game&&game.mode==='endless'&&!game.paused&&!game.over){if(!endlessMusicTimer)endlessMusicStart(false);return}
+  if(game&&game.boss&&!game.boss.dead&&!game.paused){if(!bossMusicTimer)bossMusicStart();return}
+  if($('ending')&&!$('ending').classList.contains('hidden')){if(!creditsMusicTimer&&!$('continuePrompt')?.classList.contains('show'))creditsMusicStart();return}
+  if($('goldShop')&&!$('goldShop').classList.contains('hidden')){if(!shopMusicTimer)shopMusicStart(false);return}
+  if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart();
+ };
+ if(audio&&audio.state==='suspended')audio.resume().then(restoreAudio).catch(()=>{});else restoreAudio();
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden){saveRunRecovery('background')}else resumeGameAfterBackground()});
 addEventListener('pageshow',resumeGameAfterBackground);
