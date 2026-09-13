@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.25: enemy performance pass; story spatial buckets for overlap + ant swarm checks; gameplay/visual balance unchanged -->
+<!-- Big Bug v18.0.26: Home subtitle removed and Garden Magic Harder Shell icon resized; gameplay unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -859,6 +859,9 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 #gardenBook .gardenBookPanel{padding-bottom:26px!important}
 
+
+/* v18.0.26 — requested visual polish only */
+#base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
 </style>
 </head>
 <body>
@@ -884,7 +887,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><canvas id="gardenBookBugCanvas" class="bookBugCanvas" width="58" height="58"></canvas></span></button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
-  <div class="logo"><span class="logoMain"><span class="logoBigWord">BIG</span><br><span class="logoBugWord">BUG</span></span><small>SMALL BUG. BIG ADVENTURE.</small></div>
+  <div class="logo"><span class="logoMain"><span class="logoBigWord">BIG</span><br><span class="logoBugWord">BUG</span></span></div>
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
@@ -892,8 +895,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.25</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.25</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.26</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.26</div>
 </section>
 
 <section id="bugs" class="screen hidden">
