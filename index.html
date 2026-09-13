@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.31: permanent upgrade Leaf prices now scale by 1.5x per level from each upgrade’s starting price; gameplay unchanged -->
+<!-- Big Bug v18.0.32: permanent upgrade Leaf prices now scale by 1.5x per level from each upgrade’s starting price; gameplay unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -857,7 +857,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #gardenBook .gardenBookPanel{padding-bottom:26px!important}
 
 
-/* v18.0.31 — requested visual polish only */
+/* v18.0.32 — requested visual polish only */
 #base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
 </style>
 </head>
@@ -892,8 +892,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.31</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.31</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.32</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.32</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1417,8 +1417,8 @@ function buildBugScreen(){
 }
 function permanentUpgradeLeafCost(k,level){
  const first={hp:500,dmg:750,magnet:1000,coins:1250};
- // v18.0.31 — 0/10 uses the reduced starting price; 1/10 and every later level scale directly from that same low price at 1.5x per purchased level.
- return Math.round(first[k]*Math.pow(1.5,Math.max(0,level)));
+ // v18.0.32 — scale from the reduced 0/10 price at 1.5x per level, always rounding upward to the nearest hundredth.
+ return Math.ceil((first[k]*Math.pow(1.5,Math.max(0,level)))*100-1e-9)/100;
 }
 function buildShop(){
  const s=save.upgrades;
@@ -3382,7 +3382,7 @@ function titleGardenLoop(now){
    const homeRect=$('home').getBoundingClientRect(),logoMain=$('home').querySelector('.logoMain'),logoRect=logoMain?.getBoundingClientRect();
    const logoTop=logoRect?logoRect.top-homeRect.top:h*.27,logoH=logoRect?logoRect.height:h*.18;
    const logoHideY=logoTop+logoH*.50,playRect=$('home').querySelector('[data-action="play"]')?.getBoundingClientRect(),endlessRect=$('endlessBtn')?.getBoundingClientRect();
-   // v18.0.31 — on the second stop, line up the buddy's LOOK-BACK EYES with the visible gap
+   // v18.0.32 — on the second stop, line up the buddy's LOOK-BACK EYES with the visible gap
    // between Play and Mosquito Mode. His body can stay tucked behind the buttons while the eyes peek through.
    const buttonGapMid=(playRect&&endlessRect)?(((playRect.bottom+endlessRect.top)*.5)-homeRect.top):(logoTop+logoH+13);
    const buddyLookEyeOffset=12.8; // drawTitleBuddy look-back eye Y (16px) after its .8 canvas scale
