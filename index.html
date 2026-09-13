@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.49: playable ladybug gets lightweight procedural leg motion and livelier movement; Story Boost scaling preserved -->
+<!-- Big Bug v18.0.50: upgrade-screen visual pass; centered prompt, custom BIG BUG icons, green common glow and three purple rare upgrades -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -83,8 +83,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
   justify-content:center
 }
 #upgrade .choice.common{border-left:1px solid #87976d;box-shadow:0 3px 0 #718052,0 0 11px #93bd7460}
-#upgrade .choice.rare{border-left:1px solid #a28a4c;box-shadow:0 3px 0 #786a42,0 0 14px #e2bc526f}
-#upgrade .choice.epic{border-left:1px solid #8067a0;box-shadow:0 3px 0 #66547e,0 0 16px #aa78df78}
+#upgrade .choice.rare{border-left:1px solid #52d96a;box-shadow:0 3px 0 #214d2b,0 0 11px #54ff7060}
+#upgrade .choice.epic{border-left:1px solid #52d96a;box-shadow:0 3px 0 #214d2b,0 0 11px #54ff7060}
 #upgrade .choice .rarity{display:none!important}
 #upgrade .choice .art{display:none!important}
 #upgrade .choice b{
@@ -134,9 +134,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #upgrade h2{color:#f0e6b9;text-shadow:0 2px #000}
 #upgrade #upgradeSub{color:#b8c7a4}
 #upgrade .choice{position:relative;background:linear-gradient(145deg,#f4e7bd,#e4d39f);border:2px solid #718064;color:#19301c}
-#upgrade .choice.common{border-color:#52d96a;box-shadow:0 3px 0 #214d2b,0 0 7px #54ff70,0 0 18px #39dd59a5,inset 0 0 12px #65ff7830}
-#upgrade .choice.rare{border-color:#f0c34c;box-shadow:0 3px 0 #70591f,0 0 7px #ffd34d,0 0 19px #efb719b0,inset 0 0 12px #ffd84c30}
-#upgrade .choice.epic{border-color:#b96ff2;box-shadow:0 3px 0 #583176,0 0 8px #cf77ff,0 0 21px #a33aefba,inset 0 0 13px #c15fff35}
+#upgrade .choice.common,#upgrade .choice.rare,#upgrade .choice.epic{border-color:#52d96a;box-shadow:0 3px 0 #214d2b,0 0 7px #54ff70,0 0 18px #39dd59a5,inset 0 0 12px #65ff7830}
+#upgrade .choice.bbRare{border-color:#b96ff2;box-shadow:0 3px 0 #583176,0 0 8px #cf77ff,0 0 21px #a33aefba,inset 0 0 13px #c15fff35}
 #upgrade .choice b{color:#17311d}
 #upgrade .choice p{color:#59654f}
 #upgrade .choice .upgradeMark{display:block;text-align:center;font-size:17px;line-height:1;margin:7px auto -1px;color:#3e5838;font-style:normal}
@@ -252,6 +251,23 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
 @media(max-width:430px){#settings{padding:12px}#settings .panel{padding:18px 12px 14px}.settingRow{padding:13px 12px}.settingRow b{font-size:18px}.toggleBtn{min-width:78px}}
 
+
+/* v18.0.50 — upgrade-screen cleanup: larger centered prompt + handcrafted BIG BUG icons. */
+#upgrade #upgradeSub{font-size:22px!important;line-height:1.2!important;text-align:center!important;font-style:normal!important;font-weight:700!important;margin:8px auto 18px!important;color:#c8d7b7!important}
+#upgrade .upgradeMark{width:60px!important;height:60px!important;right:18px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#31523a!important;text-shadow:none!important}
+#upgrade .bbUpgradeIcon{display:block;width:58px;height:58px;overflow:visible;filter:drop-shadow(0 2px 0 #fff7d099)}
+#upgrade .bbUpgradeIcon .ink{fill:none;stroke:#31523a;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#upgrade .bbUpgradeIcon .fill{fill:#7eb45a;stroke:#31523a;stroke-width:2.4;stroke-linejoin:round}
+#upgrade .bbUpgradeIcon .cream{fill:#f3e7bb;stroke:#31523a;stroke-width:2.4;stroke-linejoin:round}
+#upgrade .bbUpgradeIcon .dark{fill:#31523a}
+#upgrade .bbUpgradeIcon .accent{fill:#9ccc67;stroke:#31523a;stroke-width:2.2}
+#upgrade .buddyUpgradeIcon{width:58px!important;height:58px!important;filter:drop-shadow(0 2px 0 #fff7d099)}
+#upgrade .buddyArmyWrap{display:flex;align-items:center;justify-content:center;width:64px;height:58px;position:relative}
+#upgrade .buddyArmyWrap canvas{position:absolute;width:34px!important;height:34px!important;filter:drop-shadow(0 1px 0 #fff7d099)}
+#upgrade .buddyArmyWrap canvas:nth-child(1){left:0;top:17px;transform:rotate(-13deg)}
+#upgrade .buddyArmyWrap canvas:nth-child(2){left:15px;top:2px;z-index:2}
+#upgrade .buddyArmyWrap canvas:nth-child(3){right:0;top:17px;transform:rotate(13deg)}
+
 /* v17.5.4 — living title garden */
 #home{position:fixed;isolation:isolate;overflow:hidden}
 #titleGarden{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
@@ -308,7 +324,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-/* v18.0.49 — credits names enter from alternating sides only when they reach view, then stay centered. */
+/* v18.0.50 — credits names enter from alternating sides only when they reach view, then stay centered. */
 #creditsRoll .creditName{opacity:0;will-change:transform,opacity;transition:transform .82s cubic-bezier(.18,.9,.28,1.12),opacity .32s ease}
 #creditsRoll .creditName:nth-of-type(2n){transform:translateX(-72vw) rotate(-2deg)}
 #creditsRoll .creditName:nth-of-type(2n+1){transform:translateX(72vw) rotate(2deg)}
@@ -902,8 +918,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.49</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.49</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.50</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.50</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -988,7 +1004,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
  <div class="storyLeaf"><div class="storyKicker"><span class="leafCurrencyIcon bbLeafIcon"></span> Garden Update</div><div class="storyTitle" id="storyTitle">Whispers in the Leaves</div><div class="storyText" id="storyText"></div><div class="storyTwig"></div><button id="storyContinue">Follow the trail →</button></div>
 </section>
 <section id="upgrade" class="screen hidden">
- <div class="panel"><h2 id="upgradeTitle">A GIFT FROM THE GARDEN</h2><p id="upgradeSub">Pick one little advantage before you scurry onward.</p><div id="choices" class="grid"></div></div>
+ <div class="panel"><h2 id="upgradeTitle">A GIFT FROM THE GARDEN</h2><p id="upgradeSub">Choose one upgrade</p><div id="choices" class="grid"></div></div>
 </section>
 
 <section id="finalPrep" class="screen hidden">
@@ -1843,7 +1859,7 @@ function countFxFlag(flag,limit=Infinity){
 function compactInPlace(arr,keep){
  let w=0;for(let r=0;r<arr.length;r++){const v=arr[r];if(keep(v))arr[w++]=v}arr.length=w;return arr;
 }
-// v18.0.49 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
+// v18.0.50 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
 function keepLiveEnemy(e){return !e.dead}
 function keepLiveDrop(d){return !d.dead}
 function keepLiveFx(f){return f.life>0}
@@ -2314,18 +2330,39 @@ function update(dt,now){
  if(p.hp<=0)finish(false);
  updateHud(false,now);
 }
+function upgradeCardClass(u){return (u&&(['triple','clone','helperArmy'].includes(u.id)))?'bbRare':''}
+function upgradeIconSvg(id){
+ const open='<svg class="bbUpgradeIcon" viewBox="0 0 64 64" aria-hidden="true">',close='</svg>';
+ const icons={
+ sharp:'<path class="cream" d="M15 47 L35 13 L42 18 L27 51 Z"/><path class="fill" d="M11 49 L26 46 L29 54 L14 56 Z"/><path class="ink" d="M39 16 L48 8 M18 49 L11 57"/><path class="ink" d="M27 24 L35 29"/>',
+ heart:'<path class="fill" d="M32 51 C25 44 12 36 12 25 C12 17 22 13 28 20 C34 12 47 16 49 25 C51 36 40 45 32 51 Z"/><path class="ink" d="M31 47 C31 35 32 26 38 19"/><path class="ink" d="M31 33 L22 27 M33 29 L41 25"/>',
+ speed:'<path class="ink" d="M31 19 L31 45"/><ellipse class="accent" cx="31" cy="32" rx="4" ry="11"/><path class="cream" d="M27 27 C16 12 8 15 14 29 C18 35 23 34 28 32 Z"/><path class="cream" d="M35 27 C46 12 54 15 48 29 C44 35 39 34 34 32 Z"/><path class="ink" d="M8 39 H23 M5 46 H19 M42 39 H56"/>',
+ crit:'<ellipse class="fill" cx="29" cy="34" rx="14" ry="17"/><path class="ink" d="M29 18 V50 M19 29 L39 39 M39 29 L19 39"/><circle class="dark" cx="23" cy="27" r="2.2"/><circle class="dark" cx="35" cy="27" r="2.2"/><path class="cream" d="M48 13 L51 20 L58 23 L51 26 L48 33 L45 26 L38 23 L45 20 Z"/>',
+ triple:'<path class="ink" d="M11 19 C21 15 24 17 31 22 M9 32 C20 27 25 29 34 34 M11 45 C21 40 26 42 34 47"/><path class="fill" d="M35 17 L50 22 L43 28 Z"/><path class="fill" d="M38 29 L54 34 L46 40 Z"/><path class="fill" d="M36 41 L51 46 L43 52 Z"/>',
+ magnet:'<path class="ink" d="M13 19 C13 42 20 51 32 51 C44 51 51 42 51 19"/><path class="fill" d="M11 16 H21 V25 H13 Z M43 16 H53 V25 H51 Z"/><path class="cream" d="M31 8 C38 12 39 18 31 23 C23 18 24 12 31 8 Z"/><path class="ink" d="M31 22 V34 M31 27 L25 24 M31 30 L37 27"/>',
+ greed:'<path class="fill" d="M30 8 C43 13 45 26 31 37 C17 27 17 14 30 8 Z"/><path class="fill" d="M17 26 C27 29 30 40 19 49 C8 43 8 32 17 26 Z"/><path class="fill" d="M44 27 C54 31 55 42 45 50 C35 44 35 33 44 27 Z"/><path class="ink" d="M30 12 V48 M17 31 L30 41 M44 32 L31 43"/>',
+ gold:'<path class="fill" d="M42 12 C53 17 53 29 42 37 C31 29 31 17 42 12 Z"/><path class="ink" d="M42 16 V34 M42 23 L48 20 M42 27 L36 24"/><path class="ink" d="M8 21 H26 M5 31 H23 M10 41 H28"/><path class="cream" d="M29 25 L38 31 L29 37 Z"/>',
+ endlessHealth:'<path class="fill" d="M32 52 C23 43 12 36 12 25 C12 17 22 13 28 20 C34 12 47 16 49 25 C51 36 41 44 32 52 Z"/><path class="cream" d="M29 24 H35 V31 H42 V37 H35 V44 H29 V37 H22 V31 H29 Z"/>',
+ endlessTriple:'<path class="ink" d="M10 20 C20 15 25 18 32 22 M10 32 C20 27 26 30 34 34 M10 44 C20 39 26 42 34 46"/><path class="fill" d="M37 18 L53 23 L45 29 Z M39 30 L55 35 L47 41 Z M37 42 L53 47 L45 53 Z"/>',
+ endlessRepel:'<circle class="ink" cx="32" cy="32" r="19"/><path class="ink" d="M19 45 L45 19"/><ellipse class="fill" cx="33" cy="31" rx="5" ry="9"/><path class="ink" d="M28 27 L20 22 M38 27 L46 22 M28 35 L20 40 M38 35 L46 40"/>'
+ };
+ return open+(icons[id]||icons.greed)+close
+}
+function paintUpgradeBuddyIcons(root,choices){
+ [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;if(u.id==='clone'){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,save.selected,34,false)}else if(u.id==='helperArmy'){mark.innerHTML='';const wrap=document.createElement('span');wrap.className='buddyArmyWrap';mark.appendChild(wrap);for(let n=0;n<3;n++){const c=document.createElement('canvas');c.width=40;c.height=40;wrap.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,save.selected,22,false)}}})
+}
+
 function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
  $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'SWARM '+g.wave+' CLEARED!':(g.wave%5===0?'BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
- $('upgradeSub').textContent=afterWave?(g.mode==='endless'?'Store an ability charge, then get right back into the swarm.':(g.wave%5===0?'Choose one upgrade, then venture into a new area.':'Choose one upgrade, then the next wave begins.')):'Pick one. Stack effects and discover crazy combinations.';
+ $('upgradeSub').textContent=g.mode==='endless'?'Choose one ability':'Choose one upgrade';
  if(g.mode==='endless'){
    const endlessUp=[];
    if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:`Store 10 seconds of rapid healing  •  ${(g.endlessHealthCharge||0)}/3 stored`,rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
    if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'2× BOOST',desc:`Store 6 seconds of rapid attack + double damage + 2-shot  •  ${(g.endlessTripleCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
    if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:`Store 5 seconds of swarm slow + pushback  •  ${(g.endlessRepelCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
    if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
-   const emarks={endlessHealth:'♥',endlessTriple:'≋',endlessRepel:'◌'};
-   $('choices').innerHTML=endlessUp.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><b>${u.name}</b><span class="upgradeMark">${emarks[u.id]}</span><p class="muted">${u.desc}</p></button>`).join('');
+   $('choices').innerHTML=endlessUp.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><b>${u.name}</b><span class="upgradeMark">${upgradeIconSvg(u.id)}</span><p class="muted">${u.desc}</p></button>`).join('');
    [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();endlessUp[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1)});
    $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
  }
@@ -2345,10 +2382,8 @@ function openUpgrade(afterWave=false){
  // Shuffle rare hits so no one rare upgrade always steals the first slot when multiple roll together.
  for(let i=lucky.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)),t=lucky[i];lucky[i]=lucky[j];lucky[j]=t}
  lucky.forEach((u,i)=>{if(i<choices.length)choices[i]=u});
- const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',clone:'●',helperArmy:'',triple:'≋',gold:'➜'};
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${u.id==='helperArmy'?'':(marks[u.id]||'✦')}</span><p class="muted">${u.desc}</p></button>`).join('');
- // Little Buddy Army's card icon is the actual selected Little Buddy rather than a generic symbol.
- [...$('choices').children].forEach((el,i)=>{if(choices[i].id==='helperArmy'){const mark=el.querySelector('.upgradeMark'),c=document.createElement('canvas');c.width=52;c.height=52;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(26,26);drawPlayableBug(q,save.selected,30,false)}});
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${(u.id==='clone'||u.id==='helperArmy')?'':upgradeIconSvg(u.id)}</span><p class="muted">${u.desc}</p></button>`).join('');
+ paintUpgradeBuddyIcons($('choices'),choices);
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
    if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false;saveRunRecovery('upgrade-picked')}
@@ -2368,8 +2403,7 @@ function finalUpgradePick(remaining){
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  $('upgradeTitle').textContent='☣ FINAL PREPARATION — '+(4-remaining)+' / 3';
  $('upgradeSub').textContent='Choose one upgrade. '+remaining+' choice'+(remaining===1?'':'s')+' remaining.';
- const marks={sharp:'⚔',heart:'♥',speed:'≈',crit:'✹',magnet:'∪',greed:'☘',triple:'≋',gold:'➜'};
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${marks[u.id]||'✦'}</span><p class="muted">${u.desc}</p></button>`).join('');
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><span class="upgradeMark">${upgradeIconSvg(u.id)}</span><p class="muted">${u.desc}</p></button>`).join('');
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{choices[i].apply(game.p);upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
 }
@@ -3221,7 +3255,7 @@ function draw(now=performance.now()){
  }
 }
 let gameLoopHeartbeat=0;
-// v18.0.49 — older-device GC pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
+// v18.0.50 — older-device GC pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
 function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
 
 // v18.0.44 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
