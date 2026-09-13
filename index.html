@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.50: upgrade-screen visual pass; centered prompt, custom BIG BUG icons, green common glow and three purple rare upgrades -->
+<!-- Big Bug v18.0.52: upgrade-screen visual pass; centered prompt, custom BIG BUG icons, green common glow and three purple rare upgrades -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -252,15 +252,15 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @media(max-width:430px){#settings{padding:12px}#settings .panel{padding:18px 12px 14px}.settingRow{padding:13px 12px}.settingRow b{font-size:18px}.toggleBtn{min-width:78px}}
 
 
-/* v18.0.50 — upgrade-screen cleanup: larger centered prompt + handcrafted BIG BUG icons. */
+/* v18.0.52 — upgrade-screen cleanup: larger centered prompt + handcrafted BIG BUG icons. */
 #upgrade #upgradeSub{font-size:22px!important;line-height:1.2!important;text-align:center!important;font-style:normal!important;font-weight:700!important;margin:8px auto 18px!important;color:#c8d7b7!important}
 #upgrade .upgradeMark{width:60px!important;height:60px!important;right:18px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#31523a!important;text-shadow:none!important}
-#upgrade .bbUpgradeIcon{display:block;width:58px;height:58px;overflow:visible;filter:drop-shadow(0 2px 0 #fff7d099)}
-#upgrade .bbUpgradeIcon .ink{fill:none;stroke:#31523a;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-#upgrade .bbUpgradeIcon .fill{fill:#7eb45a;stroke:#31523a;stroke-width:2.4;stroke-linejoin:round}
-#upgrade .bbUpgradeIcon .cream{fill:#f3e7bb;stroke:#31523a;stroke-width:2.4;stroke-linejoin:round}
-#upgrade .bbUpgradeIcon .dark{fill:#31523a}
-#upgrade .bbUpgradeIcon .accent{fill:#9ccc67;stroke:#31523a;stroke-width:2.2}
+#upgrade .bbUpgradeIcon{display:block;width:58px;height:58px;overflow:visible}
+#upgrade .bbUpgradeIcon .ink{fill:none;stroke:#294b31;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+#upgrade .bbUpgradeIcon .fill{fill:#79ad55;stroke:#294b31;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+#upgrade .bbUpgradeIcon .cream{fill:#efe1ac;stroke:#294b31;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+#upgrade .bbUpgradeIcon .dark{fill:#294b31}
+#upgrade .bbUpgradeIcon .accent{fill:#9ac965;stroke:#294b31;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 #upgrade .buddyUpgradeIcon{width:58px!important;height:58px!important;filter:drop-shadow(0 2px 0 #fff7d099)}
 #upgrade .buddyArmyWrap{display:flex;align-items:center;justify-content:center;width:64px;height:58px;position:relative}
 #upgrade .buddyArmyWrap canvas{position:absolute;width:34px!important;height:34px!important;filter:drop-shadow(0 1px 0 #fff7d099)}
@@ -324,7 +324,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-/* v18.0.50 — credits names enter from alternating sides only when they reach view, then stay centered. */
+/* v18.0.52 — credits names enter from alternating sides only when they reach view, then stay centered. */
 #creditsRoll .creditName{opacity:0;will-change:transform,opacity;transition:transform .82s cubic-bezier(.18,.9,.28,1.12),opacity .32s ease}
 #creditsRoll .creditName:nth-of-type(2n){transform:translateX(-72vw) rotate(-2deg)}
 #creditsRoll .creditName:nth-of-type(2n+1){transform:translateX(72vw) rotate(2deg)}
@@ -918,8 +918,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.50</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.50</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.52</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.52</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1689,7 +1689,7 @@ function completeWave(){
    heal=Math.ceil(g.p.maxHp*.10);
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
  }
- flashBanner(bossClear?'❤ FULLY HEALED! BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.55:1.1);
+ flashBanner(bossClear?'FULLY HEALED! BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.55:1.1);
  // v17.9.65 — boss-clear transition safety:
  // open the garden story immediately after the boss clear instead of leaving the run paused
  // while waiting on a timer. This prevents iOS from getting stranded on "WAVE CLEAR".
@@ -1859,7 +1859,7 @@ function countFxFlag(flag,limit=Infinity){
 function compactInPlace(arr,keep){
  let w=0;for(let r=0;r<arr.length;r++){const v=arr[r];if(keep(v))arr[w++]=v}arr.length=w;return arr;
 }
-// v18.0.50 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
+// v18.0.52 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
 function keepLiveEnemy(e){return !e.dead}
 function keepLiveDrop(d){return !d.dead}
 function keepLiveFx(f){return f.life>0}
@@ -2333,18 +2333,20 @@ function update(dt,now){
 function upgradeCardClass(u){return (u&&(['triple','clone','helperArmy'].includes(u.id)))?'bbRare':''}
 function upgradeIconSvg(id){
  const open='<svg class="bbUpgradeIcon" viewBox="0 0 64 64" aria-hidden="true">',close='</svg>';
+ // v18.0.52 — deliberately simple BIG BUG garden doodles: chunky ink, small asymmetry,
+ // and recognizable silhouettes instead of glossy/generic iconography.
  const icons={
- sharp:'<path class="cream" d="M15 47 L35 13 L42 18 L27 51 Z"/><path class="fill" d="M11 49 L26 46 L29 54 L14 56 Z"/><path class="ink" d="M39 16 L48 8 M18 49 L11 57"/><path class="ink" d="M27 24 L35 29"/>',
- heart:'<path class="fill" d="M32 51 C25 44 12 36 12 25 C12 17 22 13 28 20 C34 12 47 16 49 25 C51 36 40 45 32 51 Z"/><path class="ink" d="M31 47 C31 35 32 26 38 19"/><path class="ink" d="M31 33 L22 27 M33 29 L41 25"/>',
- speed:'<path class="ink" d="M31 19 L31 45"/><ellipse class="accent" cx="31" cy="32" rx="4" ry="11"/><path class="cream" d="M27 27 C16 12 8 15 14 29 C18 35 23 34 28 32 Z"/><path class="cream" d="M35 27 C46 12 54 15 48 29 C44 35 39 34 34 32 Z"/><path class="ink" d="M8 39 H23 M5 46 H19 M42 39 H56"/>',
- crit:'<ellipse class="fill" cx="29" cy="34" rx="14" ry="17"/><path class="ink" d="M29 18 V50 M19 29 L39 39 M39 29 L19 39"/><circle class="dark" cx="23" cy="27" r="2.2"/><circle class="dark" cx="35" cy="27" r="2.2"/><path class="cream" d="M48 13 L51 20 L58 23 L51 26 L48 33 L45 26 L38 23 L45 20 Z"/>',
- triple:'<path class="ink" d="M11 19 C21 15 24 17 31 22 M9 32 C20 27 25 29 34 34 M11 45 C21 40 26 42 34 47"/><path class="fill" d="M35 17 L50 22 L43 28 Z"/><path class="fill" d="M38 29 L54 34 L46 40 Z"/><path class="fill" d="M36 41 L51 46 L43 52 Z"/>',
- magnet:'<path class="ink" d="M13 19 C13 42 20 51 32 51 C44 51 51 42 51 19"/><path class="fill" d="M11 16 H21 V25 H13 Z M43 16 H53 V25 H51 Z"/><path class="cream" d="M31 8 C38 12 39 18 31 23 C23 18 24 12 31 8 Z"/><path class="ink" d="M31 22 V34 M31 27 L25 24 M31 30 L37 27"/>',
- greed:'<path class="fill" d="M30 8 C43 13 45 26 31 37 C17 27 17 14 30 8 Z"/><path class="fill" d="M17 26 C27 29 30 40 19 49 C8 43 8 32 17 26 Z"/><path class="fill" d="M44 27 C54 31 55 42 45 50 C35 44 35 33 44 27 Z"/><path class="ink" d="M30 12 V48 M17 31 L30 41 M44 32 L31 43"/>',
- gold:'<path class="fill" d="M42 12 C53 17 53 29 42 37 C31 29 31 17 42 12 Z"/><path class="ink" d="M42 16 V34 M42 23 L48 20 M42 27 L36 24"/><path class="ink" d="M8 21 H26 M5 31 H23 M10 41 H28"/><path class="cream" d="M29 25 L38 31 L29 37 Z"/>',
- endlessHealth:'<path class="fill" d="M32 52 C23 43 12 36 12 25 C12 17 22 13 28 20 C34 12 47 16 49 25 C51 36 41 44 32 52 Z"/><path class="cream" d="M29 24 H35 V31 H42 V37 H35 V44 H29 V37 H22 V31 H29 Z"/>',
- endlessTriple:'<path class="ink" d="M10 20 C20 15 25 18 32 22 M10 32 C20 27 26 30 34 34 M10 44 C20 39 26 42 34 46"/><path class="fill" d="M37 18 L53 23 L45 29 Z M39 30 L55 35 L47 41 Z M37 42 L53 47 L45 53 Z"/>',
- endlessRepel:'<circle class="ink" cx="32" cy="32" r="19"/><path class="ink" d="M19 45 L45 19"/><ellipse class="fill" cx="33" cy="31" rx="5" ry="9"/><path class="ink" d="M28 27 L20 22 M38 27 L46 22 M28 35 L20 40 M38 35 L46 40"/>'
+  sharp:'<path class="cream" d="M18 49 L35 12 L43 17 L28 52 Z"/><path class="ink" d="M37 15 L47 8 M21 45 L13 55"/><path class="fill" d="M12 48 L27 45 L31 52 L17 56 Z"/><path class="ink" d="M29 24 L36 28"/>',
+  heart:'<path class="fill" d="M32 51 C25 45 13 38 13 27 C13 19 21 15 28 21 C32 14 42 15 48 22 C54 31 45 42 32 51 Z"/><path class="ink" d="M31 46 C31 36 33 27 39 21 M31 34 L23 29 M34 29 L42 26"/>',
+  speed:'<ellipse class="accent" cx="33" cy="33" rx="4.5" ry="11" transform="rotate(5 33 33)"/><path class="cream" d="M29 29 C21 15 10 15 14 27 C16 34 23 35 30 32 Z"/><path class="cream" d="M37 29 C44 16 55 17 50 29 C47 35 41 35 36 32 Z"/><path class="ink" d="M33 21 L33 45 M11 39 L23 38 M7 46 L20 44 M46 40 L56 39"/>',
+  crit:'<path class="fill" d="M16 37 C16 25 23 18 32 18 C42 18 48 26 47 37 C46 47 40 52 31 52 C22 52 16 47 16 37 Z"/><path class="ink" d="M31 20 L31 50 M21 31 L40 42 M41 31 L22 42"/><circle class="dark" cx="24" cy="28" r="2.2"/><circle class="dark" cx="38" cy="28" r="2.2"/><path class="cream" d="M49 9 L52 17 L59 20 L52 23 L49 31 L46 23 L39 20 L46 17 Z"/>',
+  triple:'<path class="ink" d="M9 19 C18 15 24 17 31 21 M8 32 C19 27 25 29 34 33 M10 45 C20 40 26 42 34 46"/><path class="fill" d="M34 16 L51 22 L42 28 Z"/><path class="fill" d="M38 28 L55 34 L46 40 Z"/><path class="fill" d="M35 40 L52 47 L43 53 Z"/>',
+  magnet:'<path class="cream" d="M14 17 L23 17 L23 25 L17 25 C17 39 22 47 32 47 C42 47 47 39 47 25 L41 25 L41 17 L50 17 L50 27 C50 44 43 53 32 53 C20 53 14 44 14 27 Z"/><path class="fill" d="M14 17 L23 17 L23 25 L14 25 Z M41 17 L50 17 L50 25 L41 25 Z"/><path class="ink" d="M31 9 C38 12 39 18 32 23 C25 18 25 12 31 9 Z M32 23 L32 35"/>',
+  greed:'<path class="fill" d="M31 9 C42 13 43 24 32 34 C21 26 20 14 31 9 Z"/><path class="fill" d="M17 28 C26 30 28 40 19 49 C10 43 9 33 17 28 Z"/><path class="fill" d="M45 27 C54 31 55 41 46 50 C37 44 36 34 45 27 Z"/><path class="ink" d="M31 14 L31 49 M18 32 L30 42 M45 32 L32 43"/>',
+  gold:'<path class="fill" d="M43 12 C52 16 53 26 44 34 C35 28 34 17 43 12 Z"/><path class="ink" d="M43 16 L43 34 M43 23 L49 20 M42 27 L37 24 M9 22 L25 21 M6 32 L22 30 M10 43 L27 40"/><path class="cream" d="M27 24 L38 31 L28 38 Z"/>',
+  endlessHealth:'<path class="fill" d="M32 51 C25 45 13 38 13 27 C13 19 21 15 28 21 C32 14 42 15 48 22 C54 31 45 42 32 51 Z"/><path class="cream" d="M29 24 L35 24 L35 31 L42 31 L42 37 L35 37 L35 44 L29 44 L29 37 L22 37 L22 31 L29 31 Z"/>',
+  endlessTriple:'<path class="ink" d="M9 19 C18 15 24 17 31 21 M8 32 C19 27 25 29 34 33 M10 45 C20 40 26 42 34 46"/><path class="fill" d="M34 16 L51 22 L42 28 Z M38 28 L55 34 L46 40 Z M35 40 L52 47 L43 53 Z"/>',
+  endlessRepel:'<path class="ink" d="M18 17 C9 27 11 43 22 50 C34 58 50 50 54 38 C58 25 48 13 36 12 C29 11 23 13 18 17 Z M19 47 L48 18"/><path class="fill" d="M27 29 C30 22 38 22 41 29 C44 37 38 43 32 41 C26 40 24 34 27 29 Z"/><path class="ink" d="M27 29 L19 24 M41 29 L49 24 M27 36 L19 41 M40 36 L48 42"/>'
  };
  return open+(icons[id]||icons.greed)+close
 }
@@ -3093,6 +3095,13 @@ function paintArenaBackgroundFromCache(cacheKey){
  if(arenaBgKey===cacheKey)return;
  BGX.setTransform(1,0,0,1,0,0);BGX.clearRect(0,0,BG.width,BG.height);BGX.drawImage(ARENA_CACHE,0,0,BG.width,BG.height);BGX.setTransform(D,0,0,D,0,0);arenaBgKey=cacheKey;
 }
+function drawBigBugHeartFx(x,y,size=30){
+ // Gameplay-canvas version of BIG BUG's chunky HUD heart; no emoji/font rendering.
+ X.save();X.translate(x,y);const sc=size/30;X.scale(sc,sc);
+ X.fillStyle='#df5149';X.strokeStyle='#742b28';X.lineWidth=2.2;X.lineJoin='round';
+ X.beginPath();X.moveTo(0,13);X.bezierCurveTo(-4,8,-13,2,-13,-6);X.bezierCurveTo(-13,-13,-4,-16,1,-9);X.bezierCurveTo(7,-16,15,-12,15,-5);X.bezierCurveTo(15,3,6,9,0,13);X.closePath();X.fill();X.stroke();
+ X.strokeStyle='#ff8b78';X.lineWidth=2;X.beginPath();X.moveTo(-8,-7);X.quadraticCurveTo(-4,-11,0,-8);X.stroke();X.restore();
+}
 function draw(now=performance.now()){
  FRAME_NOW=now;
  const area=areaFor(),ai=areaIndex(),cacheable=Number.isInteger(ai),cacheKey='arena:'+ai+':'+C.width+'x'+C.height;
@@ -3144,7 +3153,7 @@ function draw(now=performance.now()){
  for(const f of game.fx){
    const fr=(f.r||8)*2+18;if(!f.playerShotFx&&!f.helperShotFx&&!f.tripleShotFx&&!f.scrapFly&&(f.x+fr<0||f.x-fr>W||f.y+fr<0||f.y-fr>H))continue;
    if(f.healHeart){
-     const q=Math.max(0,f.life/(f.maxLife||1.15));X.globalAlpha=Math.min(1,q*1.8);X.textAlign='center';X.textBaseline='middle';X.font='30px serif';X.fillText('❤',f.x,f.y);X.globalAlpha=1;continue
+     const q=Math.max(0,f.life/(f.maxLife||1.15));X.globalAlpha=Math.min(1,q*1.8);drawBigBugHeartFx(f.x,f.y,30);X.globalAlpha=1;continue
    }
    if(f.mothGust){
      const q=Math.max(0,f.life/.38);X.save();X.translate(f.x,f.y);X.globalAlpha=.18+.38*q;X.strokeStyle='#d7c6dd';X.lineWidth=2;
@@ -3255,7 +3264,7 @@ function draw(now=performance.now()){
  }
 }
 let gameLoopHeartbeat=0;
-// v18.0.50 — older-device GC pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
+// v18.0.52 — older-device GC pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
 function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
 
 // v18.0.44 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
