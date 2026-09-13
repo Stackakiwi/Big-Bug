@@ -1416,9 +1416,10 @@ function buildBugScreen(){
  });
 }
 function permanentUpgradeLeafCost(k,level){
- const first={hp:500,dmg:750,magnet:1000,coins:1250};
- // v18.0.33 — scale from the reduced 0/10 price at 1.5x per level, then round to the nearest clean hundred.
- return Math.round((first[k]*Math.pow(1.5,Math.max(0,level)))/100)*100;
+ // v18.0.34 — same simple leaf-price ladder for every permanent upgrade.
+ // level is the current 0–9 level, so index 0 is the first purchase.
+ const costs=[500,1000,2000,3000,5000,6000,7000,8000,9000,12000];
+ return costs[Math.max(0,Math.min(9,level|0))];
 }
 function buildShop(){
  const s=save.upgrades;
