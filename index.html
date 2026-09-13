@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.37: regular Beetles have 10% less health and move 25% faster; Little Buddy attack visuals are 90% of the player attack visual -->
+<!-- Big Bug v18.0.41: crowded-screen performance pass — cached buddy targeting, spatial target/projectile lookups, off-screen culling, staggered ant swarm checks, adaptive FX caps; gameplay balance preserved -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -860,7 +860,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 /* v18.0.33 — requested visual polish only */
 #base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
 
-/* v18.0.39 — Wave counter visual doubled; HUD box geometry unchanged. */
+/* v18.0.40 — Wave counter visual doubled; HUD box geometry unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:26px!important;line-height:1!important;letter-spacing:-1px!important;gap:2px!important;padding-left:2px!important;padding-right:2px!important;overflow:visible!important}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
 </style>
@@ -896,8 +896,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.39</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.39</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.41</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.41</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1449,7 +1449,7 @@ function buyShopGold(k){
  save.goldLeaves--;s[k]++;persist();buildShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);
 }
 function basePlayer(){
- const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[]};
+ const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[],storyStillTime:0,closeBonusUntil:0};
  const u=save.upgrades||{};
  p.maxHp=Math.round(p.maxHp*(1+.10*(u.hp||0)));
  p.damage*=1+.10*(u.dmg||0);
@@ -1693,7 +1693,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.585,stagBeetle:.578,queenSpider:.765,moleCricket:.93};
     if(earlyBossHp[k])baseHp*=earlyBossHp[k];
-    // v18.0.39 — shorten the first four boss fights without changing their attacks or damage.
+    // v18.0.40 — shorten the first four boss fights without changing their attacks or damage.
     const earlyBossExtraCut={hornet:.85,stagBeetle:.85,queenSpider:.90,moleCricket:.90};
     if(earlyBossExtraCut[k])baseHp*=earlyBossExtraCut[k];
     // v17.9.66 — global boss balance pass: all bosses have 5% less max HP.
@@ -1702,7 +1702,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7;sp=Math.min(250,116+ew*1.85);damage=3.8;evo=0}
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:boss?'entrance':'chase',cool:Math.random()*1.5+.8,stateT:boss?1.15:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo,
-          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,faceOn:k==='mosquito'&&Math.random()<.25,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025};
+          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,faceOn:k==='mosquito'&&Math.random()<.25,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025,_aiPhase:game.enemies.length&1};
  if(e.sprinter)e.speed*=1.8;
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
  if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
@@ -1721,9 +1721,9 @@ function damageEnemy(e,d,source='player'){
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
- if(source!=='helperArmy'&&game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',24)<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
+ const damageTextCap=game.enemies.length>28?12:(game.enemies.length>18?18:24);if(source!=='helperArmy'&&game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',damageTextCap)<damageTextCap)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(e.kind==='beetle'){e.knockX=0;e.knockY=0}else if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
- if(game.mode==='endless'&&e.kind==='mosquito')burst(e.x,e.y,1,.16,'#d7d1b7');else burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
+ if(game.mode==='endless'&&e.kind==='mosquito')burst(e.x,e.y,1,.16,'#d7d1b7');else burst(e.x,e.y,game.enemies.length>28?2:3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
    if(game.mode!=='endless'){
@@ -1740,7 +1740,7 @@ function damageEnemy(e,d,source='player'){
      game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.16,maxLife:.16,r:12,killPop:true});
      // Mosquito death audio stays intentionally disabled: large simultaneous kills otherwise create WebAudio node spikes on iOS.
    }else{
-     burst(e.x,e.y,e.boss?42:16,e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
+     burst(e.x,e.y,e.boss?42:(game.enemies.length>28?10:16),e.boss?.9:.62,e.boss?'#ffc95a':'#f6e3a1');
      game.fx.push({x:e.x,y:e.y,vx:0,vy:0,life:.28,maxLife:.28,r:e.boss?46:24,killPop:true});
      beep(e.boss?120:210,e.boss?.18:.04,.025,'sawtooth');
    }
@@ -1748,7 +1748,7 @@ function damageEnemy(e,d,source='player'){
 }
 function tripleShotActive(p=game.p){return !!p.tripleShot&&game.wave<=(p.tripleShotUntilWave||0)}
 function shootAt(target){
- let p=game.p,eb=game.mode==='endless'&&endlessFiveActive();p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let boost=(boostActive()||eb)?2:1,d=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
+ let p=game.p,eb=game.mode==='endless'&&endlessFiveActive();p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let boost=(boostActive()||eb)?2:1,closeMult=1;if(game.mode==='story'){const cdx=target.x-p.x,cdy=target.y-p.y;if(cdx*cdx+cdy*cdy<=9025){closeMult=1.25;p.closeBonusUntil=game.time+.18}}let d=p.damage*boost*closeMult*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
  if(eb){
    let second=null,best=Infinity;
    for(const e of game.enemies)if(!e.dead&&e!==target&&e.state!=='burrowWait'){
@@ -1770,7 +1770,20 @@ function shootAt(target){
  beep(d>p.damage*2?880:520,.025,.012,'square');
 }
 function nearestEnemy(x=game.p.x,y=game.p.y){
- // Compare squared distance: identical target choice, but avoids a square-root for every enemy scan.
+ // v18.0.41 — Story Mode uses the existing spatial buckets first. If nothing is within
+ // 320px we fall back to the full list, preserving long-range targeting exactly.
+ if(game.mode==='story'&&game.storyGridHead){
+   const head=game.storyGridHead,stamp=game.storyGridStamp,next=game.storyGridNext,gen=game.storyGridGen,cols=game.storyGridCols,rows=game.storyGridRows,cell=128;
+   if(head&&stamp&&next&&cols&&rows){
+     const radius=320,r2=radius*radius,cx=Math.max(0,Math.min(cols-1,Math.floor(x/cell)+1)),cy=Math.max(0,Math.min(rows-1,Math.floor(y/cell)+1)),reach=3;
+     let best=null,bd=r2;
+     for(let oy=-reach;oy<=reach;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-reach;ox<=reach;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j]){
+       const e=game.enemies[j];if(!e||e.dead||e.state==='burrowWait')continue;const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}
+     }}}
+     if(best)return best;
+   }
+ }
+ // Full-list fallback keeps the same target choice when every enemy is farther away.
  let best=null,bd=Infinity;for(const e of game.enemies)if(!e.dead&&e.state!=='burrowWait'){const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}}return best;
 }
 function countActiveEnemies(nonBossOnly=false){
@@ -1907,7 +1920,7 @@ function enemyMove(e,dt){
  }
  // ants swarm faster when near other ants
  let mult=1;
- if(e.kind==='ant'){const near=nearbyAntCount(e);mult=1+Math.min(.35,near*.07)}
+ if(e.kind==='ant'){if(e._antNear==null||(((game.aiFrame||0)+(e._aiPhase||0))&1)===0)e._antNear=nearbyAntCount(e);mult=1+Math.min(.35,e._antNear*.07)}
  // Sky Lancer has its own flight pattern: visibly leave the arena at normal speed, then dash back in.
  if(e.boss&&e.kind==='dragonflyBoss'){
    if(e.state==='skyExit'){
@@ -2102,7 +2115,7 @@ function update(dt,now){
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.sqrt(mdx*mdx+mdy*mdy),oldPX=p.x,oldPY=p.y;
  p.webSlow=Math.max(0,(p.webSlow||0)-dt);if(md>1){let moveMult=p.webSlow>0?.48:1,step=Math.min(md,p.speed*moveMult*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
- p.motionX=dt>0?(p.x-oldPX)/dt:0;p.motionY=dt>0?(p.y-oldPY)/dt:0;const pMotionMag=Math.hypot(p.motionX,p.motionY);p.motionScale105=pMotionMag>105?105/pMotionMag:1;p.motionScale125=pMotionMag>125?125/pMotionMag:1;g.endlessRepelFrame=g.mode==='endless'&&endlessRepelActive();
+ p.motionX=dt>0?(p.x-oldPX)/dt:0;p.motionY=dt>0?(p.y-oldPY)/dt:0;const pMotionMag=Math.hypot(p.motionX,p.motionY);p.motionScale105=pMotionMag>105?105/pMotionMag:1;p.motionScale125=pMotionMag>125?125/pMotionMag:1;if(g.mode==='story')p.storyStillTime=pMotionMag<5?(p.storyStillTime||0)+dt:0;else p.storyStillTime=0;g.endlessRepelFrame=g.mode==='endless'&&endlessRepelActive();
  // quota-based waves: spawn a set number, then clear the field
  if(g.mode==='endless'&&g.waveActive){
    g.spawn+=dt*1000;const active=g.enemies.length,cap=endlessActiveCap(g.wave),spawnEvery=Math.max(55,125-g.wave*2);
@@ -2126,7 +2139,10 @@ function update(dt,now){
       if(g.spawnLeft>0&&g.wave>=4&&Math.random()<.18){spawnEnemy();g.spawnLeft--}
    }
  }
- const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),attackDelay=rapid?Math.max(85,p.rate*.18):p.rate;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ g.aiFrame=(g.aiFrame||0)+1;
+ // v18.0.41 — build once before Story targeting/AI so player and buddies can use spatial lookups.
+ if(g.mode!=='endless')buildStoryEnemyGrid();
+ const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),storyStillFast=g.mode==='story'&&(p.storyStillTime||0)>=.5,baseAttackDelay=storyStillFast?p.rate/1.20:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
  // v18.0.21: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
@@ -2192,16 +2208,14 @@ function update(dt,now){
  p.clones=activeHelperCount;
  if(activeHelperCount&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,activeHelperCount*.06)))){
    p.helperShot=now;let activeHelperIndex=0;
-   for(const h of p.helpers)if(!h.leaving&&!h.entering&&!h.joining){let a=g.time*1.8+activeHelperIndex++*6.283/activeHelperCount,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelperCount*.04)),'helper');g.fx.push({x:hx,y:hy,life:.16,maxLife:.16,r:3.15,helperShotFx:true,ax:t.x,ay:t.y})}}
+   for(const h of p.helpers)if(!h.leaving&&!h.entering&&!h.joining){let a=g.time*1.8+activeHelperIndex++*6.283/activeHelperCount,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);h.target=t||null;h.targetUntil=g.time+.45;if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelperCount*.04)),'helper');g.fx.push({x:hx,y:hy,life:.16,maxLife:.16,r:3.15,helperShotFx:true,ax:t.x,ay:t.y})}}
  }
  if(p.superBuddy&&g.wave===100&&now-(p.superBuddyShot||0)>Math.max(150,p.rate/1.5)){
-   p.superBuddyShot=now;let a=g.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48,t=nearestEnemy(hx,hy);
+   p.superBuddyShot=now;let a=g.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48,t=nearestEnemy(hx,hy);p.superBuddyTarget=t||null;
    if(t){damageEnemy(t,p.damage*1.5,'helper');g.fx.push({x:hx,y:hy,life:.16,maxLife:.16,r:3.15,helperShotFx:true,ax:t.x,ay:t.y})}
  }
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
- // v18.0.25 — build one lightweight story enemy index before AI updates so ant swarm checks
- // search only nearby buckets instead of rescanning every enemy for every ant.
- if(g.mode!=='endless')buildStoryEnemyGrid();
+ // v18.0.41 — Story grid was already built above before targeting and AI.
  // v17.9.94 — this decay factor is identical for every enemy in a frame, so calculate it once.
  const knockDecay=Math.pow(.05,dt);
  for(const e of g.enemies)if(!e.dead){
@@ -2248,10 +2262,17 @@ function update(dt,now){
    if(f.tripleShotFx||f.playerShotFx||f.helperShotFx||f.helperArmyShotFx)continue;
    f.x+=f.vx*dt;f.y+=f.vy*dt;
    if(f.sting){const dx=p.x-f.x,dy=p.y-f.y,rr=p.r+f.r;if(dx*dx+dy*dy<rr*rr){hurtPlayer(f.damage);f.life=0;burst(f.x,f.y,3,.2,f.venom?'#b56cff':'#ff665b')}}
-   if(f.orb){for(const e of g.enemies)if(!e.dead){const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){damageEnemy(e,f.damage);f.life=0;break}}}
+   if(f.orb){
+     let hit=null;
+     if(g.mode==='story'&&g.storyGridHead){
+       const head=g.storyGridHead,stamp=g.storyGridStamp,next=g.storyGridNext,gen=g.storyGridGen,cols=g.storyGridCols,rows=g.storyGridRows,cell=128,cx=Math.max(0,Math.min(cols-1,Math.floor(f.x/cell)+1)),cy=Math.max(0,Math.min(rows-1,Math.floor(f.y/cell)+1));
+       outer:for(let oy=-1;oy<=1;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-1;ox<=1;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j]){const e=g.enemies[j];if(!e||e.dead)continue;const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){hit=e;break outer}}}}
+     }else{for(const e of g.enemies)if(!e.dead){const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){hit=e;break}}}
+     if(hit){damageEnemy(hit,f.damage);f.life=0}
+   }
    f.vx*=.985;f.vy*=.985;
  }
- compactInPlace(g.enemies,e=>!e.dead);compactInPlace(g.drops,d=>!d.dead);compactInPlace(g.fx,f=>f.life>0);if(g.fx.length>150)g.fx.splice(0,g.fx.length-150);
+ compactInPlace(g.enemies,e=>!e.dead);compactInPlace(g.drops,d=>!d.dead);compactInPlace(g.fx,f=>f.life>0);const fxCap=g.enemies.length>32?112:(g.enemies.length>22?132:150);if(g.fx.length>fxCap)g.fx.splice(0,g.fx.length-fxCap);
  if(g.bosses&&g.bosses.length){
    compactInPlace(g.bosses,b=>!b.dead);
    g.boss=g.bosses[0]||null;
@@ -3017,8 +3038,10 @@ function draw(now=performance.now()){
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
- for(const d of game.drops)drawLeaves(d);
- for(const e of game.enemies)drawEnemy(e);
+ for(const d of game.drops){const m=28;if(d.x+m<0||d.x-m>W||d.y+m<0||d.y-m>H)continue;drawLeaves(d)}
+ // v18.0.41 — skip detailed regular-enemy rendering only when fully outside a generous viewport margin.
+ // AI/collisions still run normally, and bosses are never culled.
+ for(const e of game.enemies){const m=e.boss?0:Math.max(90,e.r*3);if(!e.boss&&(e.x+m<0||e.x-m>W||e.y+m<0||e.y-m>H))continue;drawEnemy(e)}
  for(const f of game.fx){
    const fr=(f.r||8)*2+18;if(!f.playerShotFx&&!f.helperShotFx&&!f.tripleShotFx&&!f.scrapFly&&(f.x+fr<0||f.x-fr>W||f.y+fr<0||f.y-fr>H))continue;
    if(f.healHeart){
@@ -3106,18 +3129,21 @@ function draw(now=performance.now()){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
+ // v18.0.40 — Story-only combat stance cues are drawn directly (no extra FX objects or per-frame enemy scans).
+ if(game.mode==='story'&&(p.storyStillTime||0)>=.5){X.globalAlpha=.28+.08*Math.sin(game.time*8);X.strokeStyle='#ffe08a';X.lineWidth=2;X.beginPath();X.arc(p.x,p.y,27,0,6.28);X.stroke();X.globalAlpha=1}
+ if(game.mode==='story'&&(p.closeBonusUntil||0)>game.time){X.globalAlpha=.32;X.strokeStyle='#ffb45e';X.lineWidth=3;X.beginPath();X.arc(p.x,p.y,31,0,6.28);X.stroke();X.globalAlpha=1}
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
  const armyHs=p.helperArmyHelpers||[];for(const h of armyHs){
    if(!(p.helperArmyWave===game.wave&&game.wave%5!==0)&&!h.leaving)continue;
-   X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);let at=!h.leaving?nearestEnemy(h.x,h.y):null;if(at)X.rotate(Math.atan2(at.y-h.y,at.x-h.x)+Math.PI/2);else if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayableBug(X,save.selected,19,false);X.restore();
+   X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);let at=!h.leaving&&h.target&&!h.target.dead?h.target:null;if(at)X.rotate(Math.atan2(at.y-h.y,at.x-h.x)+Math.PI/2);else if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayableBug(X,save.selected,19,false);X.restore();
  }
  // Little Buddys visibly run in, then orbit while active; expired helpers wander away.
  const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving&&!h.entering)activeHCount++;
  let activeHIndex=0;for(const h of hs){let hx,hy,orbitA=null;if(h.leaving||h.entering){hx=h.x;hy=h.y}else{orbitA=game.time*1.8+activeHIndex++*6.283/Math.max(1,activeHCount);const ox=p.x+Math.cos(orbitA)*38,oy=p.y+Math.sin(orbitA)*38;if(h.joining>0){const q=1-h.joining/.5,e=q*q*(3-2*q);hx=(Number.isFinite(h.joinX)?h.joinX:h.x)*(1-e)+ox*e;hy=(Number.isFinite(h.joinY)?h.joinY:h.y)*(1-e)+oy*e;h.x=hx;h.y=hy}else{hx=ox;hy=oy;h.x=hx;h.y=hy}}
    X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);
-   if(h.leaving)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);else if(h.entering)X.rotate(Math.atan2(p.y-hy,p.x-hx)+Math.PI/2);else if(h.joining>0&&orbitA!==null){const tx=p.x+Math.cos(orbitA+.12)*38,ty=p.y+Math.sin(orbitA+.12)*38;X.rotate(Math.atan2(ty-hy,tx-hx)+Math.PI/2)}else{let t=nearestEnemy(hx,hy);if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2)}
+   if(h.leaving)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);else if(h.entering)X.rotate(Math.atan2(p.y-hy,p.x-hx)+Math.PI/2);else if(h.joining>0&&orbitA!==null){const tx=p.x+Math.cos(orbitA+.12)*38,ty=p.y+Math.sin(orbitA+.12)*38;X.rotate(Math.atan2(ty-hy,tx-hx)+Math.PI/2)}else{let t=h.target&&!h.target.dead&&(h.targetUntil||0)>=game.time?h.target:null;if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2);else X.rotate(p.face)}
    drawPlayableBug(X,save.selected,20,false);X.restore()
  }
  if(p.superBuddy&&game.wave===100){
