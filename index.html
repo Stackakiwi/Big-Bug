@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.35: permanent upgrade Leaf prices now scale by 1.5x per level from each upgrade’s starting price; gameplay unchanged -->
+<!-- Big Bug v18.0.36: permanent upgrade Leaf prices now scale by 1.5x per level from each upgrade’s starting price; gameplay unchanged -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -892,8 +892,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.35</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.35</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.36</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.36</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1447,7 +1447,7 @@ function buyShopGold(k){
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[]};
  const u=save.upgrades||{};
- p.maxHp*=1+.10*(u.hp||0);
+ p.maxHp=Math.round(p.maxHp*(1+.10*(u.hp||0)));
  p.damage*=1+.10*(u.dmg||0);
  p.rate/=1+.10*(u.magnet||0);
  p.magnet*=1+.10*(u.coins||0);
