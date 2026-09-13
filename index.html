@@ -860,7 +860,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 /* v18.0.33 — requested visual polish only */
 #base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
 
-/* v18.0.38 — Wave counter visual doubled; HUD box geometry unchanged. */
+/* v18.0.39 — Wave counter visual doubled; HUD box geometry unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:26px!important;line-height:1!important;letter-spacing:-1px!important;gap:2px!important;padding-left:2px!important;padding-right:2px!important;overflow:visible!important}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
 </style>
@@ -896,8 +896,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.38</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.38</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.39</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.39</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1329,7 +1329,7 @@ function initAudio(){
   return resumed;
  }catch(e){return Promise.resolve()}
 }
-function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){if(!audio)return;if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;if(category==='sfx'&&window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){if(!audio)return;g*=1.2;if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;if(category==='sfx'&&window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
 function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setTimeout(()=>{if(!audio||save.settings.sfx===false)return;beep(560,.028,.0065,'triangle')},0)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
@@ -1693,7 +1693,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.585,stagBeetle:.578,queenSpider:.765,moleCricket:.93};
     if(earlyBossHp[k])baseHp*=earlyBossHp[k];
-    // v18.0.38 — shorten the first four boss fights without changing their attacks or damage.
+    // v18.0.39 — shorten the first four boss fights without changing their attacks or damage.
     const earlyBossExtraCut={hornet:.85,stagBeetle:.85,queenSpider:.90,moleCricket:.90};
     if(earlyBossExtraCut[k])baseHp*=earlyBossExtraCut[k];
     // v17.9.66 — global boss balance pass: all bosses have 5% less max HP.
