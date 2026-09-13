@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.42: remove Story combat bonus rings; harden iOS interruption recovery so mid-wave screenshots/app interruptions cannot strand an empty wave -->
+<!-- Big Bug v18.0.43: remove Story combat bonus rings; harden iOS interruption recovery so mid-wave screenshots/app interruptions cannot strand an empty wave -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -896,8 +896,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.42</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.42</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.43</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.43</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1330,7 +1330,7 @@ function initAudio(){
  }catch(e){return Promise.resolve()}
 }
 function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){if(!audio)return;g*=1.2;if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;if(category==='sfx'&&window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
-function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setTimeout(()=>{if(!audio||save.settings.sfx===false)return;beep(560,.028,.0065,'triangle')},0)}
+function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setTimeout(()=>{if(!audio||save.settings.sfx===false)return;beep(720,.020,.0048,'triangle');setTimeout(()=>beep(980,.016,.0032,'sine'),12)},0)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
@@ -3129,7 +3129,7 @@ function draw(now=performance.now()){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- // v18.0.42 — Story combat bonuses remain active, but their player rings were removed.
+ // v18.0.43 — Story combat bonuses remain active, but their player rings were removed.
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
@@ -3152,7 +3152,7 @@ function draw(now=performance.now()){
 let gameLoopHeartbeat=0;
 function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
 
-// v18.0.42 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
+// v18.0.43 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
 // Control Center, or other system overlays without always delivering the same lifecycle event.
 // Repair only live gameplay state; a real user-opened Pause screen stays paused.
 function repairWaveAfterSystemInterruption(){
