@@ -859,6 +859,10 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 /* v18.0.33 — requested visual polish only */
 #base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
+
+/* v18.0.38 — Wave counter visual doubled; HUD box geometry unchanged. */
+#hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:26px!important;line-height:1!important;letter-spacing:-1px!important;gap:2px!important;padding-left:2px!important;padding-right:2px!important;overflow:visible!important}
+#hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
 </style>
 </head>
 <body>
@@ -892,8 +896,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.37</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.37</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.38</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.38</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1689,6 +1693,9 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
     // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.585,stagBeetle:.578,queenSpider:.765,moleCricket:.93};
     if(earlyBossHp[k])baseHp*=earlyBossHp[k];
+    // v18.0.38 — shorten the first four boss fights without changing their attacks or damage.
+    const earlyBossExtraCut={hornet:.85,stagBeetle:.85,queenSpider:.90,moleCricket:.90};
+    if(earlyBossExtraCut[k])baseHp*=earlyBossExtraCut[k];
     // v17.9.66 — global boss balance pass: all bosses have 5% less max HP.
     baseHp*=.95;
  }
@@ -1715,7 +1722,7 @@ function damageEnemy(e,d,source='player'){
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
  if(source!=='helperArmy'&&game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',24)<24)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
- let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
+ let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(e.kind==='beetle'){e.knockX=0;e.knockY=0}else if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
  if(game.mode==='endless'&&e.kind==='mosquito')burst(e.x,e.y,1,.16,'#d7d1b7');else burst(e.x,e.y,3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
