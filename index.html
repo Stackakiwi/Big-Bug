@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.36: permanent upgrade Leaf prices now scale by 1.5x per level from each upgrade’s starting price; gameplay unchanged -->
+<!-- Big Bug v18.0.37: regular Beetles have 10% less health and move 25% faster; Little Buddy attack visuals are 90% of the player attack visual -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -892,8 +892,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.36</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.36</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.37</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.37</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1674,7 +1674,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  }
  let evo=evolutionTier(w),baseHp=(24+w*6)*Math.pow(1.32,evo),sp=(38+w*1.15)*(1+evo*.05),r=11+Math.random()*5,damage=(4.5+w*.5)*Math.pow(1.18,evo);
  if(k==='ant'){baseHp*=.72;sp*=1.35;r*=.82;damage*=.72}
- if(k==='beetle'){baseHp*=3.645;sp*=.62;r*=1.18;damage*=1.25} // v17.9.88 — full incoming damage; beetle HP trimmed 10% from v17.9.87
+ if(k==='beetle'){baseHp*=3.2805;sp*=.775;r*=1.18;damage*=1.25} // v18.0.37 — 10% less HP than v18.0.36 and 25% faster walking speed
  if(k==='spider'){baseHp*=1.05;sp*=.92;r*=1.05}
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
@@ -2185,11 +2185,11 @@ function update(dt,now){
  p.clones=activeHelperCount;
  if(activeHelperCount&&now-p.helperShot>Math.max(260,p.rate*(.92-Math.min(.32,activeHelperCount*.06)))){
    p.helperShot=now;let activeHelperIndex=0;
-   for(const h of p.helpers)if(!h.leaving&&!h.entering&&!h.joining){let a=g.time*1.8+activeHelperIndex++*6.283/activeHelperCount,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelperCount*.04)),'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.16,r:2.4,shot:true,helper:true})}}
+   for(const h of p.helpers)if(!h.leaving&&!h.entering&&!h.joining){let a=g.time*1.8+activeHelperIndex++*6.283/activeHelperCount,hx=p.x+Math.cos(a)*38,hy=p.y+Math.sin(a)*38,t=nearestEnemy(hx,hy);if(t){damageEnemy(t,p.damage*(.28+Math.min(.22,activeHelperCount*.04)),'helper');g.fx.push({x:hx,y:hy,life:.16,maxLife:.16,r:3.15,helperShotFx:true,ax:t.x,ay:t.y})}}
  }
  if(p.superBuddy&&g.wave===100&&now-(p.superBuddyShot||0)>Math.max(150,p.rate/1.5)){
    p.superBuddyShot=now;let a=g.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48,t=nearestEnemy(hx,hy);
-   if(t){damageEnemy(t,p.damage*1.5,'helper');g.fx.push({x:hx,y:hy,vx:(t.x-hx)*3.5,vy:(t.y-hy)*3.5,life:.18,r:3.4,shot:true,helper:true})}
+   if(t){damageEnemy(t,p.damage*1.5,'helper');g.fx.push({x:hx,y:hy,life:.16,maxLife:.16,r:3.15,helperShotFx:true,ax:t.x,ay:t.y})}
  }
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
  // v18.0.25 — build one lightweight story enemy index before AI updates so ant swarm checks
@@ -2238,7 +2238,7 @@ function update(dt,now){
      f.x+=f.vx*dt;f.y+=f.vy*dt;
      continue;
    }
-   if(f.tripleShotFx||f.playerShotFx||f.helperArmyShotFx)continue;
+   if(f.tripleShotFx||f.playerShotFx||f.helperShotFx||f.helperArmyShotFx)continue;
    f.x+=f.vx*dt;f.y+=f.vy*dt;
    if(f.sting){const dx=p.x-f.x,dy=p.y-f.y,rr=p.r+f.r;if(dx*dx+dy*dy<rr*rr){hurtPlayer(f.damage);f.life=0;burst(f.x,f.y,3,.2,f.venom?'#b56cff':'#ff665b')}}
    if(f.orb){for(const e of g.enemies)if(!e.dead){const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){damageEnemy(e,f.damage);f.life=0;break}}}
@@ -3013,7 +3013,7 @@ function draw(now=performance.now()){
  for(const d of game.drops)drawLeaves(d);
  for(const e of game.enemies)drawEnemy(e);
  for(const f of game.fx){
-   const fr=(f.r||8)*2+18;if(!f.playerShotFx&&!f.tripleShotFx&&!f.scrapFly&&(f.x+fr<0||f.x-fr>W||f.y+fr<0||f.y-fr>H))continue;
+   const fr=(f.r||8)*2+18;if(!f.playerShotFx&&!f.helperShotFx&&!f.tripleShotFx&&!f.scrapFly&&(f.x+fr<0||f.x-fr>W||f.y+fr<0||f.y-fr>H))continue;
    if(f.healHeart){
      const q=Math.max(0,f.life/(f.maxLife||1.15));X.globalAlpha=Math.min(1,q*1.8);X.textAlign='center';X.textBaseline='middle';X.font='30px serif';X.fillText('❤',f.x,f.y);X.globalAlpha=1;continue
    }
@@ -3085,6 +3085,7 @@ function draw(now=performance.now()){
    if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/.42)),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease;X.globalAlpha=1-q*.35;X.fillStyle='#b9f04d';X.beginPath();X.ellipse(xx,yy,Math.max(2,f.r*(1-q*.55)),Math.max(1.5,f.r*.55*(1-q*.45)),-.5,0,6.28);X.fill();X.strokeStyle='#f5ffd0';X.lineWidth=1;X.stroke();X.globalAlpha=1;continue}
    if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0;i<5;i++){let a=i*1.25+FRAME_NOW/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
    if(f.playerShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
+   if(f.helperShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=.9*Math.max(0,1-q*.35);X.fillStyle='#c9f4ff';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
    if(f.helperArmyShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.18)),e=1-Math.pow(1-q,2);X.globalAlpha=Math.max(0,1-q*.18);X.fillStyle='#c9f4ff';X.shadowColor='#e8fbff';X.shadowBlur=7;X.beginPath();X.arc(f.x+(f.ax-f.x)*e,f.y+(f.ay-f.y)*e,f.r,0,6.28);X.fill();X.shadowColor='transparent';X.globalAlpha=1;continue}
    if(f.tripleShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16)),dot=(tx,ty)=>{if(tx==null)return;X.beginPath();X.arc(f.x+(tx-f.x)*q,f.y+(ty-f.y)*q,f.r,0,6.28);X.fill()};X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';dot(f.ax,f.ay);dot(f.bx,f.by);dot(f.cx,f.cy);dot(f.dx,f.dy);dot(f.ex,f.ey);X.globalAlpha=1;continue}
    X.globalAlpha=Math.max(0,Math.min(1,f.life));
