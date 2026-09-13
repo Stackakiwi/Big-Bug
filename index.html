@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.41: crowded-screen performance pass — cached buddy targeting, spatial target/projectile lookups, off-screen culling, staggered ant swarm checks, adaptive FX caps; gameplay balance preserved -->
+<!-- Big Bug v18.0.42: remove Story combat bonus rings; harden iOS interruption recovery so mid-wave screenshots/app interruptions cannot strand an empty wave -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -896,8 +896,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.41</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.41</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.42</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.42</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3129,9 +3129,7 @@ function draw(now=performance.now()){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- // v18.0.40 — Story-only combat stance cues are drawn directly (no extra FX objects or per-frame enemy scans).
- if(game.mode==='story'&&(p.storyStillTime||0)>=.5){X.globalAlpha=.28+.08*Math.sin(game.time*8);X.strokeStyle='#ffe08a';X.lineWidth=2;X.beginPath();X.arc(p.x,p.y,27,0,6.28);X.stroke();X.globalAlpha=1}
- if(game.mode==='story'&&(p.closeBonusUntil||0)>game.time){X.globalAlpha=.32;X.strokeStyle='#ffb45e';X.lineWidth=3;X.beginPath();X.arc(p.x,p.y,31,0,6.28);X.stroke();X.globalAlpha=1}
+ // v18.0.42 — Story combat bonuses remain active, but their player rings were removed.
  X.save();X.translate(p.x,p.y+bob);X.rotate(p.face);X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
@@ -3151,21 +3149,44 @@ function draw(now=performance.now()){
    X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc433';X.beginPath();X.arc(0,0,13,0,6.28);X.fill();drawPlayableBug(X,save.selected,21,true);X.restore();
  }
 }
-function loop(now){let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
+let gameLoopHeartbeat=0;
+function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
 
-// v17.8.7 — iOS/Safari can stop requestAnimationFrame while the page is backgrounded.
-// On return, restart exactly one game loop and reset the frame clock so suspended time
-// is never simulated as gameplay. Normal wave/boss state is otherwise left untouched.
+// v18.0.42 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
+// Control Center, or other system overlays without always delivering the same lifecycle event.
+// Repair only live gameplay state; a real user-opened Pause screen stays paused.
+function repairWaveAfterSystemInterruption(){
+ if(!game||game.over)return;
+ const pauseVisible=$('pause')&&!$('pause').classList.contains('hidden');
+ if(game.paused&&!pauseVisible&&game.waveActive&&!game.intermission)game.paused=false;
+ if(game.paused||game.intermission||!game.waveActive)return;
+ compactInPlace(game.enemies,e=>e&&!e.dead);
+ if(game.mode==='story'&&game.wave%5!==0&&game.enemies.length===0){
+   if((game.spawnLeft||0)<=0){completeWave();return}
+   // Make the next normal update spawn immediately rather than leaving an empty field.
+   game.spawn=Math.max(Number.isFinite(game.spawn)?game.spawn:0,10000);
+ }else if(game.enemies.length===0&&(game.spawnLeft||0)<=0){completeWave()}
+}
 function resumeGameAfterBackground(){
  if(document.hidden||!game||game.over)return;
- last=performance.now();
+ repairWaveAfterSystemInterruption();
+ last=performance.now();gameLoopHeartbeat=last;
  if(raf)cancelAnimationFrame(raf);
  raf=requestAnimationFrame(loop);
  if(audio&&audio.state==='suspended')audio.resume().then(()=>{if(game&&game.mode==='endless'&&!game.paused&&!game.over&&!endlessMusicTimer)endlessMusicStart(false)}).catch(()=>{});else if(game&&game.mode==='endless'&&!game.paused&&!game.over&&!endlessMusicTimer)endlessMusicStart(false);
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden){saveRunRecovery('background')}else resumeGameAfterBackground()});
 addEventListener('pageshow',resumeGameAfterBackground);
+addEventListener('focus',resumeGameAfterBackground);
 addEventListener('pagehide',()=>saveRunRecovery('pagehide'));
+// One tiny once-per-second watchdog: if iOS stopped rAF without a visibility event, restart it
+// and run the empty-wave repair. This does no enemy AI/render work itself.
+setInterval(()=>{
+ if(document.hidden||!game||game.over||game.paused)return;
+ const now=performance.now();
+ if(!gameLoopHeartbeat||now-gameLoopHeartbeat>900)resumeGameAfterBackground();
+ else repairWaveAfterSystemInterruption();
+},1000);
 
 function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();saveRunRecovery('resume')}}
 
