@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.70: purification renders as one opaque gameplay canvas to prevent iOS compositor flashes. -->
+<!-- Big Bug v18.0.71: reverse Home-style regular-enemy chase added to the credits. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -359,6 +359,11 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 
 /* peaceful garden credits polish */
 #endingGarden{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#creditsChaseCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;pointer-events:none}
+#creditsRoll{z-index:5}
+.endingVignette{z-index:4}
+/* v18.0.71 — the old lone credits watcher is replaced by the reverse Home-style chase. */
+#endingLadybug{display:none!important}
 .endGrass{position:absolute;left:-5%;right:-5%;bottom:-6px;height:92px;opacity:.22;background:repeating-linear-gradient(78deg,transparent 0 18px,#6e8a59 19px 21px,transparent 22px 35px);mask-image:linear-gradient(to top,#000,transparent)}
 .endMoon{position:absolute;width:72px;height:72px;border-radius:50%;right:10%;top:10%;background:#d8d4b6;opacity:.09;box-shadow:0 0 38px #c7c3a288}
 .endSpore{position:absolute;width:4px;height:4px;border-radius:50%;background:#d7c5dc;opacity:.28;box-shadow:0 0 7px #d7c5dc;animation:endFloat 9s ease-in-out infinite}
@@ -967,8 +972,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.70</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.70</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.71</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.71</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1068,7 +1073,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 <section id="ending" class="hidden" aria-label="Ending credits">
  <div id="endingBackdrop"></div>
- <div id="endingGarden"><div class="endMoon"></div><div class="endGrass"></div><i class="endSpore s2"></i><i class="endSpore s3"></i><i class="endSpore s4"></i><i class="endSpore s5"></i><i class="endSpore s6"></i><canvas id="endingLadybug" width="48" height="48" aria-hidden="true"></canvas></div>
+ <div id="endingGarden"><div class="endMoon"></div><div class="endGrass"></div><i class="endSpore s2"></i><i class="endSpore s3"></i><i class="endSpore s4"></i><i class="endSpore s5"></i><i class="endSpore s6"></i><canvas id="creditsChaseCanvas" aria-hidden="true"></canvas><canvas id="endingLadybug" width="48" height="48" aria-hidden="true"></canvas></div>
  <div id="victoryScene" aria-hidden="true">
   <div class="victoryRoots"></div>
   <div id="victorySporeField"></div>
@@ -2549,10 +2554,71 @@ function updateHud(force=true,now=performance.now()){
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
- clearEndingTimers();stopCreditsNameEntrances();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
+ clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
  showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart();
 }
 
+
+// v18.0.71 — lightweight credits-only reverse Home Screen chase.
+let creditsChaseRAF=0,creditsChaseState=null;
+function stopCreditsChase(){
+ if(creditsChaseRAF){cancelAnimationFrame(creditsChaseRAF);creditsChaseRAF=0}
+ creditsChaseState=null;
+ const c=$('creditsChaseCanvas');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height)}
+}
+function creditsChaseResize(){
+ const c=$('creditsChaseCanvas');if(!c)return null;const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);
+ c.width=Math.max(1,Math.floor(r.width*d));c.height=Math.max(1,Math.floor(r.height*d));const q=c.getContext('2d');q.setTransform(d,0,0,d,0,0);return {c,q,w:r.width,h:r.height,d};
+}
+function creditsLine(q,x1,y1,x2,y2,w=2,c='#25301d'){q.strokeStyle=c;q.lineWidth=w;q.lineCap='round';q.beginPath();q.moveTo(x1,y1);q.lineTo(x2,y2);q.stroke()}
+function creditsEye(q,x,y,r=1.7){q.fillStyle='#180b08';q.beginPath();q.arc(x,y,r+1,0,6.28);q.fill();q.fillStyle='#ee4338';q.beginPath();q.arc(x,y,r,0,6.28);q.fill()}
+function drawCreditsEnemy(q,b,now,lookBack=false){
+ const r=b.r,t=now/1000+b.phase,step=Math.sin(t*13)*3,step2=Math.cos(t*12)*3;
+ q.save();q.translate(b.x,b.y);q.rotate((lookBack?Math.PI:0)+b.wobble+Math.sin(t*2.8)*.035);q.shadowColor='#0008';q.shadowBlur=5;q.shadowOffsetY=3;
+ if(b.kind==='ant'){
+  for(const z of [-1,1]){creditsLine(q,z*3,-2,z*12,-8+step,2);creditsLine(q,z*4,3,z*13,5-step,2);creditsLine(q,z*2,8,z*11,14+step2,2)}
+  q.fillStyle='#6d281f';q.beginPath();q.ellipse(0,8,r*.66,r*.72,0,0,6.28);q.fill();q.fillStyle='#9b3328';q.beginPath();q.arc(0,-3,r*.5,0,6.28);q.fill();q.fillStyle='#722018';q.beginPath();q.arc(0,-r*.85,r*.46,0,6.28);q.fill();creditsLine(q,-3,-r*1.15,-8,-r*1.65,1.4);creditsLine(q,3,-r*1.15,8,-r*1.65,1.4);creditsEye(q,-r*.18,-r*.92);creditsEye(q,r*.18,-r*.92);
+ }else if(b.kind==='spider'){
+  for(const z of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);creditsLine(q,z*5,yy,z*(r+8),yy+(i-1.5)*4+w,2.5,'#241c2c');creditsLine(q,z*(r+8),yy+(i-1.5)*4+w,z*(r+13),yy+(i-1.5)*8-w*.5,2,'#241c2c')}
+  q.fillStyle='#30253a';q.beginPath();q.ellipse(0,7,r*.78,r*.92,0,0,6.28);q.fill();q.fillStyle='#49334f';q.beginPath();q.arc(0,-6,r*.62,0,6.28);q.fill();creditsEye(q,-r*.2,-9,2.4);creditsEye(q,r*.2,-9,2.4);
+ }else if(b.kind==='wasp'){
+  q.globalAlpha=.42;q.fillStyle='#eff7ef';q.beginPath();q.ellipse(-r*.65,-2,r*.65,r*.28,-.6,0,6.28);q.ellipse(r*.65,-2,r*.65,r*.28,.6,0,6.28);q.fill();q.globalAlpha=1;
+  for(const z of [-1,1]){creditsLine(q,z*5,1,z*(r+8),8+step,2.1);creditsLine(q,z*4,9,z*(r+6),17-step,2.1)}
+  q.fillStyle='#e0a622';q.beginPath();q.ellipse(0,7,r*.7,r,0,0,6.28);q.fill();q.fillStyle='#30251b';for(let yy=-2;yy<16;yy+=7)q.fillRect(-r*.62,yy,r*1.24,4);q.fillStyle='#5b371d';q.beginPath();q.arc(0,-r*.7,r*.58,0,6.28);q.fill();creditsEye(q,-r*.2,-r*.78,2);creditsEye(q,r*.2,-r*.78,2);
+ }else{
+  for(const z of [-1,1]){creditsLine(q,z*6,-4,z*(r+7),-10+step,2);creditsLine(q,z*7,3,z*(r+9),4-step,2);creditsLine(q,z*5,10,z*(r+7),17+step2,2)}
+  q.fillStyle=b.kind==='beetle'?'#596e39':'#728f3f';q.beginPath();q.moveTo(0,-r);q.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);q.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);q.quadraticCurveTo(-r*.95,-r*.45,0,-r);q.fill();q.strokeStyle='#42572b';q.lineWidth=2;q.stroke();creditsLine(q,0,-r*.7,0,r*.6,1.4,'#a6b96b');creditsEye(q,-r*.22,-r*.55);creditsEye(q,r*.22,-r*.55);
+ }
+ q.restore();
+}
+function drawCreditsChaseLadybug(q,x,y,now){
+ q.save();q.translate(x,y);q.rotate(0);drawPlayableBug(q,'ladybug',36,false);q.restore();
+}
+function startCreditsChase(){
+ if(creditsChaseState||$('ending')?.dataset.phase!=='credits')return;
+ const view=creditsChaseResize();if(!view)return;const {w,h}=view;
+ const kinds=['ant','beetle','spider','wasp','stink','ant'];
+ const xs=[.18,.31,.44,.58,.71,.82];
+ creditsChaseState={start:performance.now(),q:view.q,w,h,bugs:kinds.map((kind,i)=>({kind,r:kind==='spider'?13:12+(i%3),x:w*xs[i],phase:i*.81,wobble:(i%2?1:-1)*.035,midY:h*(.48+(i%3)*.035)}))};
+ const tick=(now)=>{
+  if(!creditsChaseState||$('ending')?.classList.contains('hidden')||$('ending')?.dataset.phase!=='credits'){stopCreditsChase();return}
+  const {q,w,h}=creditsChaseState,t=(now-creditsChaseState.start)/1000;q.clearRect(0,0,w,h);
+  const creep=Math.max(0,Math.min(1,t/3.35)),look=t>=3.35&&t<4.45,chase=Math.max(0,Math.min(1,(t-4.45)/4.4));
+  for(const b of creditsChaseState.bugs){
+    let y;
+    if(t<3.35){const ease=1-Math.pow(1-creep,2);y=h+48+(b.midY-(h+48))*ease}
+    else if(t<4.45){y=b.midY+Math.sin(now/210+b.phase)*2}
+    else{const e=chase*chase*(3-2*chase);y=b.midY-(b.midY+85)*e}
+    b.y=y;drawCreditsEnemy(q,b,now,look);
+  }
+  if(t>=3.75){
+    let ly;if(t<4.45){const p=Math.min(1,(t-3.75)/.7);ly=h+45-p*90}else{const p=Math.max(0,Math.min(1,(t-4.45)/4.65)),e=p*p*(3-2*p);ly=h-45-(h+90)*e}
+    drawCreditsChaseLadybug(q,w*.5,ly,now);
+  }
+  if(t<9.25)creditsChaseRAF=requestAnimationFrame(tick);else{q.clearRect(0,0,w,h);creditsChaseState=null;creditsChaseRAF=0}
+ };
+ creditsChaseRAF=requestAnimationFrame(tick);
+}
 function paintEndingLadybugs(){
  const hero=$('creditsHeroBug'),watcher=$('endingLadybug');
  if(hero){
@@ -2576,7 +2642,7 @@ function paintEndingLadybugs(){
 let creditsNameRAF=0;
 function stopCreditsNameEntrances(){if(creditsNameRAF){cancelAnimationFrame(creditsNameRAF);creditsNameRAF=0}}
 function resetCreditsNameEntrances(){
- stopCreditsNameEntrances();
+ stopCreditsNameEntrances();stopCreditsChase();
  const names=[...document.querySelectorAll('#creditsRoll .creditName')];
  names.forEach(n=>n.classList.remove('creditNameIn'));
  // Force one style pass so replaying temporary credits always starts off-screen cleanly.
@@ -2590,6 +2656,7 @@ function resetCreditsNameEntrances(){
    pending=true;const r=n.getBoundingClientRect();
    if(r.top<trigger&&r.bottom>0)n.classList.add('creditNameIn');
   }
+  if(!creditsChaseState&&names.filter(n=>n.classList.contains('creditNameIn')).length>=2)startCreditsChase();
   if(pending)creditsNameRAF=requestAnimationFrame(tick);else creditsNameRAF=0;
  };
  creditsNameRAF=requestAnimationFrame(tick);
@@ -2617,12 +2684,7 @@ function startVictorySequence(preview=false,purifyOnly=false){
 }
 function playEndingCredits(preview=false,alreadyOpen=false){
  paintEndingLadybugs();
- const watcher=$('endingLadybug');
- if(watcher){
-   watcher.style.animation='none';
-   void watcher.offsetHeight;
-   watcher.style.animation='endingBugWatch 29.5s ease-in-out 0s 1 forwards';
- }
+ stopCreditsChase();
 
  clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0,earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));if(!game.testMode){save.scrap+=Math.floor(game.wave/2);save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
@@ -2641,7 +2703,7 @@ function skipEndingCredits(){
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
  if(!end||end.classList.contains('hidden')||end.dataset.phase!=='credits'||prompt.classList.contains('show'))return;
  if(performance.now()<Number(end.dataset.skipAfter||0))return;
- clearEndingTimers();stopCreditsNameEntrances();creditsMusicStop();
+ clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();creditsMusicStop();
  roll.style.animation='none';roll.style.visibility='hidden';$('endingBackdrop').style.opacity='0';
  end.dataset.phase='mystery';prompt.classList.add('show');continueMysteryMusicStart();
  endingTimers.push(setTimeout(returnHomeAfterEnding,5000));
