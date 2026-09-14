@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.75: purification audio isolation — prevents Story/Home music restarts and cancels delayed boss intro notes during ending previews. -->
+<!-- Big Bug v18.0.76: credits audio isolation — freezes gameplay combat/SFX while credits roll so only credits music is heard. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -972,8 +972,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.75</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.75</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.76</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.76</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2719,6 +2719,9 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  stopCreditsChase();
 
  clearEndingTimers();bossMusicStop();titleMusicStop();purifyMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
+ // v18.0.76 — credits are visual-only. Freeze the real gameplay simulation so the
+ // player cannot auto-attack any lingering game enemy and fire gameplay SFX under the credits music.
+ if(game)game.paused=true;
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0,earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));if(!game.testMode){save.scrap+=Math.floor(game.wave/2);save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt'),scene=$('victoryScene');
  end.dataset.phase='credits';end.dataset.skipAfter=String(performance.now()+700);
