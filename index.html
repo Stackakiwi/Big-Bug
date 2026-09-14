@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.55: upgrade-screen visual pass; centered prompt, custom BIG BUG icons, green common glow and three purple rare upgrades -->
+<!-- Big Bug v18.0.56: upgrade-screen visual pass; centered prompt, custom BIG BUG icons, green common glow and three purple rare upgrades -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -252,7 +252,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @media(max-width:430px){#settings{padding:12px}#settings .panel{padding:18px 12px 14px}.settingRow{padding:13px 12px}.settingRow b{font-size:18px}.toggleBtn{min-width:78px}}
 
 
-/* v18.0.55 — upgrade-screen cleanup: larger centered prompt + handcrafted BIG BUG icons. */
+/* v18.0.56 — upgrade-screen cleanup: larger centered prompt + handcrafted BIG BUG icons. */
 #upgrade #upgradeSub{font-size:22px!important;line-height:1.2!important;text-align:center!important;font-style:normal!important;font-weight:700!important;margin:8px auto 18px!important;color:#c8d7b7!important}
 #upgrade .upgradeMark{width:60px!important;height:60px!important;right:18px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#31523a!important;text-shadow:none!important}
 #upgrade .bbUpgradeIcon{display:block;width:58px;height:58px;overflow:visible}
@@ -324,7 +324,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-/* v18.0.55 — credits names enter from alternating sides only when they reach view, then stay centered. */
+/* v18.0.56 — credits names enter from alternating sides only when they reach view, then stay centered. */
 #creditsRoll .creditName{opacity:0;will-change:transform,opacity;transition:transform .82s cubic-bezier(.18,.9,.28,1.12),opacity .32s ease}
 #creditsRoll .creditName:nth-of-type(2n){transform:translateX(-72vw) rotate(-2deg)}
 #creditsRoll .creditName:nth-of-type(2n+1){transform:translateX(72vw) rotate(2deg)}
@@ -885,7 +885,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:26px!important;line-height:1!important;letter-spacing:-1px!important;gap:2px!important;padding-left:2px!important;padding-right:2px!important;overflow:visible!important}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
 
-/* v18.0.55 — keep temporary wave tester higher and selectable */
+/* v18.0.56 — keep temporary wave tester higher and selectable */
 #home .testJump {
   position: relative !important;
   z-index: 50 !important;
@@ -936,8 +936,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.55</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.55</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.56</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.56</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1877,7 +1877,7 @@ function countFxFlag(flag,limit=Infinity){
 function compactInPlace(arr,keep){
  let w=0;for(let r=0;r<arr.length;r++){const v=arr[r];if(keep(v))arr[w++]=v}arr.length=w;return arr;
 }
-// v18.0.55 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
+// v18.0.56 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
 function keepLiveEnemy(e){return !e.dead}
 function keepLiveDrop(d){return !d.dead}
 function keepLiveFx(f){return f.life>0}
@@ -2106,7 +2106,7 @@ function enemyMove(e,dt){
      e.shotCd=3.05;e.state='weevilWindup';e.stateT=.48;e.weevilAimX=p.x;e.weevilAimY=p.y;
      burst(e.x,e.y,4,.28,'#d7e88b');beep(185,.11,.028,'sawtooth');flashBanner('⚠ THORN GARDEN!',.48)
    }
-   else if(e.kind==='tarantula'){e.shotCd=2.7;let ang=aim+Math.PI/2;for(let i=-2;i<=2;i++){let dist=i*55;bossHazard(p.x+Math.cos(ang)*dist,p.y+Math.sin(ang)*dist,30,5.6,'webline',(8+game.wave*.14)*.5)}flashBanner(' WEB WALL!',.35)}
+   else if(e.kind==='tarantula'){e.shotCd=2.7;let ang=aim+Math.PI/2;for(let i=-2;i<=2;i++){let dist=i*55;bossHazard(p.x+Math.cos(ang)*dist,p.y+Math.sin(ang)*dist,27,5.6,'webline',(8+game.wave*.14)*.5)}flashBanner(' WEB WALL!',.44)}
    else if(e.kind==='rootBorer'){e.shotCd=3.0;for(let i=0;i<4;i++){let q=(i+1)/4,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,31,1.55+i*.12,'root',(11+game.wave*.17)*.5)}flashBanner(' ROOT ERUPTION!',.35)}
    else if(e.kind==='sporeBeetle'){
      e.shotCd=2.55;
@@ -2351,7 +2351,7 @@ function update(dt,now){
 function upgradeCardClass(u){return (u&&(['triple','clone','helperArmy'].includes(u.id)))?'bbRare':''}
 function upgradeIconSvg(id){
  const open='<svg class="bbUpgradeIcon" viewBox="0 0 64 64" aria-hidden="true">',close='</svg>';
- // v18.0.55 — deliberately simple BIG BUG garden doodles: chunky ink, small asymmetry,
+ // v18.0.56 — deliberately simple BIG BUG garden doodles: chunky ink, small asymmetry,
  // and recognizable silhouettes instead of glossy/generic iconography.
  const icons={
   sharp:'<path class="cream" d="M18 49 L35 12 L43 17 L28 52 Z"/><path class="ink" d="M37 15 L47 8 M21 45 L13 55"/><path class="fill" d="M12 48 L27 45 L31 52 L17 56 Z"/><path class="ink" d="M29 24 L36 28"/>',
@@ -3282,7 +3282,7 @@ function draw(now=performance.now()){
  }
 }
 let gameLoopHeartbeat=0;
-// v18.0.55 — older-device GC pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
+// v18.0.56 — older-device GC pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
 function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
 
 // v18.0.44 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
