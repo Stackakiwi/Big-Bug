@@ -10,13 +10,13 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.68: TEMP PURIFY / TEMP ENDING now bypass Wave 100 prep and jump directly into the verified in-arena post-boss sequence. -->
+<!-- Big Bug v18.0.69: anti-flash rendering guard; final boss death remains anchored to the real defeat position. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101b12;color:white;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:none;user-select:none}
 body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-#arenaBg,#game{position:fixed;inset:0;width:100%;height:100%;display:block}#arenaBg{z-index:0;pointer-events:none}#game{z-index:1}.bugPreview canvas{position:static!important;inset:auto!important;width:76px!important;height:76px!important;display:block!important}
+#arenaBg,#game{position:fixed;inset:0;width:100%;height:100%;display:block;background:#101b12}#arenaBg{z-index:0;pointer-events:none}#game{z-index:1}.bugPreview canvas{position:static!important;inset:auto!important;width:76px!important;height:76px!important;display:block!important}
 .hidden{display:none!important}
 .screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .titleScreen{background:linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);color:var(--ink)}
@@ -967,8 +967,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.68</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.68</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.69</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.69</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1833,6 +1833,7 @@ function damageEnemy(e,d,source='player'){
    // drawable and freeze combat so the arena itself can purify before the credits.
    if(e.boss&&e.kind==='gardenHeart'&&game.mode==='story'&&game.wave>=100){
      e.hp=0;e.dying=true;e.invuln=999;game.finalBoss=e;game.p.kills++;game.score++;game.waveKills++;
+     // Keep e.x/e.y untouched: the real death animation begins exactly where the killing hit landed.
      completeGameEnding(false,false);return;
    }
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
@@ -2807,7 +2808,7 @@ function drawEnemy(e){
  const r=e.r,t=FRAME_NOW/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+(e.kind==='hornet'?Math.PI:0)+Math.sin(t*5)*.025);
  if(e.dying&&e.kind==='gardenHeart'){
    const q=Math.max(0,Math.min(1,(game.finalPurify?.elapsed||0)/6.4)),sink=q*q;
-   X.rotate(q*1.30);X.translate(0,44*sink);X.scale(1-q*.20,1-q*.58);X.globalAlpha=Math.max(.025,1-q*.975);X.filter=`saturate(${Math.max(.08,1-q*.92)}) brightness(${1+q*.20})`;
+   X.rotate(q*1.30);X.translate(0,44*sink);X.scale(1-q*.20,1-q*.58);X.globalAlpha=Math.max(.025,1-q*.975);X.filter=`saturate(${Math.max(.08,1-q*.92)}) brightness(${Math.max(.58,1-q*.34)})`;
  }
  if(e.hit>0&&!e.dying){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
@@ -3332,6 +3333,8 @@ function drawFinalSavedText(){
 }
 function draw(now=performance.now()){
  FRAME_NOW=now;
+ // v18.0.69 — anti-flash guard: never let a transient filter/alpha/composite state leak into a full frame.
+ X.globalAlpha=1;X.filter='none';X.globalCompositeOperation='source-over';X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetX=0;X.shadowOffsetY=0;
  const area=areaFor(),ai=areaIndex(),cacheable=Number.isInteger(ai),cacheKey='arena:'+ai+':'+C.width+'x'+C.height;
  X.clearRect(0,0,W,H);
  if(cacheable&&arenaCacheKey===cacheKey){paintArenaBackgroundFromCache(cacheKey)}else{
