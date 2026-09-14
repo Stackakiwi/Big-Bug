@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.78: warning-circle cleanup — red/yellow warning-circle visuals and related help content removed. -->
+<!-- Big Bug v18.0.79: Mosquito Mode standing-still attack-speed boost added on top of existing Mosquito attack-speed scaling. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -988,8 +988,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.78</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.78</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.79</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.79</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1061,7 +1061,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
    <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Tap or drag to move. Attacks are automatic.</div></div>
    <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves. Choose upgrades between waves.</div></div>
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
-   <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">In Story Mode, standing still fires faster. Get close to an enemy to hit harder.</div></div>
+   <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">Standing still fires faster in Story and Mosquito Mode. In Story Mode, get close to an enemy to hit harder.</div></div>
    <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Watch for attacks!</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Permanent upgrades make your runs a little smoother.</div></div>
    <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Endless</b><div class="muted">Beat Wave 20 to unlock Mosquito Mode.</div></div>
@@ -1134,6 +1134,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 <script>
 // v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
+// v18.0.79 — Mosquito Mode also gets the 20% stand-still firing-speed bonus, stacking with its existing faster attack-speed scaling and boosts.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
 
 // v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
@@ -2307,7 +2308,7 @@ function update(dt,now){
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.sqrt(mdx*mdx+mdy*mdy),oldPX=p.x,oldPY=p.y;
  p.webSlow=Math.max(0,(p.webSlow||0)-dt);if(md>1){let moveMult=p.webSlow>0?.48:1,step=Math.min(md,p.speed*moveMult*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
- p.motionX=dt>0?(p.x-oldPX)/dt:0;p.motionY=dt>0?(p.y-oldPY)/dt:0;const pMotionMag=Math.hypot(p.motionX,p.motionY);p.motionScale105=pMotionMag>105?105/pMotionMag:1;p.motionScale125=pMotionMag>125?125/pMotionMag:1;if(g.mode==='story')p.storyStillTime=pMotionMag<5?(p.storyStillTime||0)+dt:0;else p.storyStillTime=0;g.endlessRepelFrame=g.mode==='endless'&&endlessRepelActive();
+ p.motionX=dt>0?(p.x-oldPX)/dt:0;p.motionY=dt>0?(p.y-oldPY)/dt:0;const pMotionMag=Math.hypot(p.motionX,p.motionY);p.motionScale105=pMotionMag>105?105/pMotionMag:1;p.motionScale125=pMotionMag>125?125/pMotionMag:1;if(g.mode==='story'||g.mode==='endless')p.storyStillTime=pMotionMag<5?(p.storyStillTime||0)+dt:0;else p.storyStillTime=0;g.endlessRepelFrame=g.mode==='endless'&&endlessRepelActive();
  // quota-based waves: spawn a set number, then clear the field
  if(g.mode==='endless'&&g.waveActive){
    g.spawn+=dt*1000;const active=g.enemies.length,cap=endlessActiveCap(g.wave),spawnEvery=Math.max(55,125-g.wave*2);
@@ -2334,7 +2335,7 @@ function update(dt,now){
  g.aiFrame=(g.aiFrame||0)+1;
  // v18.0.41 — build once before Story targeting/AI so player and buddies can use spatial lookups.
  if(g.mode!=='endless')buildStoryEnemyGrid();
- const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),storyStillFast=g.mode==='story'&&(p.storyStillTime||0)>=.5,baseAttackDelay=storyStillFast?p.rate/1.20:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),stillFast=(g.mode==='story'||g.mode==='endless')&&(p.storyStillTime||0)>=.5,baseAttackDelay=stillFast?p.rate/1.20:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
  // v18.0.21: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
