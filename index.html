@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.81: Boss max HP no longer scales with player damage or attack speed; boss difficulty now comes from wave/boss progression only. -->
+<!-- Big Bug v18.0.82: Desktop-only canvas resolution cap reduces high-DPI/fullscreen GPU load; touch/mobile rendering (including iPhone) is unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -988,8 +988,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.81</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.81</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.82</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.82</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1143,10 +1143,21 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
+// v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
+// keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
+// while avoiding oversized high-DPI canvas buffers that can overload integrated GPUs.
+const MOBILE_CANVAS_RENDER=!!(navigator.maxTouchPoints>0&&matchMedia('(pointer: coarse)').matches);
+function canvasRenderScale(w,h){
+ const nativeD=Math.min(devicePixelRatio||1,1.5);
+ if(MOBILE_CANVAS_RENDER)return nativeD;
+ const desktopD=Math.min(nativeD,1);
+ const maxDesktopPixels=5000000;
+ return Math.min(desktopD,Math.sqrt(maxDesktopPixels/Math.max(1,w*h)));
+}
 function resize(){
- D=Math.min(devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;
- C.width=W*D;C.height=H*D;X.setTransform(D,0,0,D,0,0);
- BG.width=W*D;BG.height=H*D;BGX.setTransform(D,0,0,D,0,0);arenaBgKey='';
+ W=innerWidth;H=innerHeight;D=canvasRenderScale(W,H);
+ C.width=Math.max(1,Math.floor(W*D));C.height=Math.max(1,Math.floor(H*D));X.setTransform(D,0,0,D,0,0);
+ BG.width=Math.max(1,Math.floor(W*D));BG.height=Math.max(1,Math.floor(H*D));BGX.setTransform(D,0,0,D,0,0);arenaBgKey='';
 } addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
@@ -2617,7 +2628,7 @@ function stopCreditsChase(){
  const c=$('creditsChaseCanvas');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height)}
 }
 function creditsChaseResize(){
- const c=$('creditsChaseCanvas');if(!c)return null;const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);
+ const c=$('creditsChaseCanvas');if(!c)return null;const r=c.getBoundingClientRect(),d=canvasRenderScale(r.width,r.height);
  c.width=Math.max(1,Math.floor(r.width*d));c.height=Math.max(1,Math.floor(r.height*d));const q=c.getContext('2d');q.setTransform(d,0,0,d,0,0);return {c,q,w:r.width,h:r.height,d};
 }
 function creditsLine(q,x1,y1,x2,y2,w=2,c='#25301d'){q.strokeStyle=c;q.lineWidth=w;q.lineCap='round';q.beginPath();q.moveTo(x1,y1);q.lineTo(x2,y2);q.stroke()}
@@ -3842,7 +3853,7 @@ const titleGarden=$('titleGarden'),TG=titleGarden?.getContext('2d');
 let titleBugs=[],titleSpawnAt=0,titleLast=performance.now(),titleRAF=0,titleLeafSeed=[];
 const TITLE_KINDS=['ant','beetle','spider','wasp','stink'];
 function resizeTitleGarden(){
- if(!titleGarden||!TG)return;const r=titleGarden.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);
+ if(!titleGarden||!TG)return;const r=titleGarden.getBoundingClientRect(),d=canvasRenderScale(r.width,r.height);
  titleGarden.width=Math.max(1,Math.floor(r.width*d));titleGarden.height=Math.max(1,Math.floor(r.height*d));TG.setTransform(d,0,0,d,0,0);
  if(!titleLeafSeed.length){for(let i=0;i<30;i++)titleLeafSeed.push({x:(i*83+19)%997/997,y:(i*137+41)%991/991,s:5+(i%5)*2,a:(i*.71)%6.28,c:i%3})}
 }
