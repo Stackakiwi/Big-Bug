@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.67: TEMP PURIFY / TEMP ENDING now bypass Wave 100 prep and jump directly into the verified in-arena post-boss sequence. -->
+<!-- Big Bug v18.0.68: TEMP PURIFY / TEMP ENDING now bypass Wave 100 prep and jump directly into the verified in-arena post-boss sequence. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -333,7 +333,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 930px))}}
 #continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
 #continuePrompt.show{opacity:1}
-/* v18.0.67 — temp ending previews bypass final prep and trigger the real in-arena purification directly. */
+/* v18.0.68 — temp ending previews bypass final prep and trigger the real in-arena purification directly. */
 #victoryScene{position:absolute;inset:0;z-index:4;display:none;overflow:hidden;background:radial-gradient(circle at 50% 43%,#57345c88 0 18%,transparent 44%),linear-gradient(#171020,#090b0d 66%,#08120b);opacity:1}
 #victoryScene.play{display:block}
 #victoryScene.cleaning{animation:victoryWorldClean 9.6s ease-in-out forwards}
@@ -967,8 +967,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.67</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.67</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.68</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.68</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2811,7 +2811,7 @@ function drawEnemy(e){
  }
  if(e.hit>0&&!e.dying){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
- if(e.boss&&(e.invuln||0)>0){X.save();X.globalAlpha=.55+.25*Math.sin(FRAME_NOW/80);X.strokeStyle='#fff1a8';X.lineWidth=3;X.beginPath();X.arc(0,0,r+10,0,6.28);X.stroke();X.restore()}
+ if(e.boss&&(e.invuln||0)>0&&!(e.dying&&e.kind==='gardenHeart')){X.save();X.globalAlpha=.55+.25*Math.sin(FRAME_NOW/80);X.strokeStyle='#fff1a8';X.lineWidth=3;X.beginPath();X.arc(0,0,r+10,0,6.28);X.stroke();X.restore()}
  if(e.state==='telegraph'&&e.kind!=='moleCricket'){X.save();X.globalAlpha=.8;X.strokeStyle=e.boss?'#ffb23d':'#ff5a4f';X.lineWidth=3;X.beginPath();X.arc(0,0,r+8+Math.sin(FRAME_NOW/80)*2,0,6.28);X.stroke();X.restore();}
  if(e.kind==='mosquito'){
   drawMosquitoBody(step,step2);
