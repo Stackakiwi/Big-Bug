@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.84: desktop performance pass; mobile/iPhone rendering unchanged, desktop canvas workload and costly live shadows reduced. -->
+<!-- Big Bug v18.0.87: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -241,6 +241,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #settings .settingsIntro{text-align:center;margin:0 0 16px}
 .settingRow{display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(145deg,#173b25,#12321f);border:1px solid #31563a;border-radius:20px;padding:15px 16px;margin:10px 0;min-height:72px}
 .settingRow .settingText{min-width:0}.settingRow b{display:block;font-size:19px;color:#fff8e7}.settingRow .muted{font-size:14px;line-height:1.3;margin-top:3px}
+.pcControlsChoice{display:flex;gap:6px;flex:0 0 auto}.pcControlBtn{min-width:78px;border:0;border-radius:12px;padding:10px 12px;font-weight:950;font-size:13px;color:#dce8dc;background:#34483a;box-shadow:inset 0 -3px 0 #1b2b20}.pcControlBtn.selected{color:#172018;background:#77c84b;box-shadow:inset 0 -3px 0 #438c2e,0 0 0 1px #a9df81}.pcOnlySetting.hidden{display:none!important}
 .toggleBtn{min-width:84px;border:0;border-radius:999px;padding:11px 14px;font-weight:900;font-size:15px;color:#fff;background:#5a665c;box-shadow:inset 0 -4px 0 #0003}
 .toggleBtn.on{background:#55b83f}.toggleBtn.off{background:#6a6f6b}
 .volumeControl{display:flex;align-items:center;gap:10px;min-width:190px;justify-content:flex-end}.volumeControl input[type="range"]{width:min(180px,34vw);accent-color:#77c84b;cursor:pointer}.volumeValue{min-width:46px;text-align:right;font-weight:950;color:#f8f3df;font-size:15px}
@@ -989,8 +990,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.84</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.84</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.87</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.87</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1044,7 +1045,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <p class="muted settingsIntro">Tweak the garden to your liking.</p>
   <div class="settingRow"><div class="settingText"><b>Music</b><div class="muted">Title and boss music</div></div><button class="toggleBtn" id="musicToggle" data-setting="music">ON</button></div>
   <div class="settingRow"><div class="settingText"><b>Sound Effects</b><div class="muted">Attacks, pickups, upgrades, and hits</div></div><button class="toggleBtn" id="sfxToggle" data-setting="sfx">ON</button></div>
-  <div class="settingRow"><div class="settingText"><b>Volume</b><div class="muted">Adjust all music and sound effects</div></div><div class="volumeControl"><input id="volumeSlider" type="range" min="0" max="100" step="5" value="100" aria-label="Master volume"><span id="volumeValue" class="volumeValue">100%</span></div></div>
+  <div class="settingRow"><div class="settingText"><b>Volume</b><div class="muted">Adjust all music and sound effects</div></div><div class="volumeControl"><input id="volumeSlider" type="range" min="0" max="100" step="5" value="50" aria-label="Master volume"><span id="volumeValue" class="volumeValue">50%</span></div></div>
+  <div id="pcControlsRow" class="settingRow pcOnlySetting"><div class="settingText"><b>PC Controls</b><div class="muted">Choose mouse movement or WASD</div></div><div class="pcControlsChoice" role="group" aria-label="PC controls"><button class="pcControlBtn" id="pcMouseBtn" data-pc-control="mouse">MOUSE</button><button class="pcControlBtn" id="pcWasdBtn" data-pc-control="wasd">WASD</button></div></div>
   <div class="settingRow"><div class="settingText"><b>Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
   <button class="btn dark settingsHelpBtn" data-action="help">HOW TO PLAY</button>
   <div class="settingsDanger">
@@ -1145,6 +1147,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
+// v18.0.87 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
 // v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
@@ -1187,7 +1190,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeaves||0);localStorage.setItem(GOLDKEY,String(save.goldLeaves));
 save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
 save.endlessBest=save.endlessBest||0;
-save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:100},save.settings||{});
+save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{});
 save.discovered=Array.isArray(save.discovered)?save.discovered:['player:ladybug'];if(!save.discovered.includes('player:ladybug'))save.discovered.push('player:ladybug');
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
@@ -1421,7 +1424,7 @@ function restoreRecoveredRun(){
 }
 
 function resetGameProgress(){
- const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:100},save.settings||{});
+ const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{});
   const keptGold=Math.max(0,save.goldLeaves||0);
   const keptGoldUnlocks=[...(save.goldUnlocks||[])];
  if(raf){cancelAnimationFrame(raf);raf=0}
@@ -1434,8 +1437,12 @@ function resetGameProgress(){
 function buildSettings(){
  const map={music:'musicToggle',sfx:'sfxToggle',damageNumbers:'damageToggle'};
  for(const [key,id] of Object.entries(map)){const b=$(id),on=save.settings[key]!==false;b.textContent=on?'ON':'OFF';b.classList.toggle('on',on);b.classList.toggle('off',!on)}
- const vol=Math.max(0,Math.min(100,Number(save.settings.volume??100)));save.settings.volume=vol;
+ const vol=Math.max(0,Math.min(100,Number(save.settings.volume??50)));save.settings.volume=vol;
  if($('volumeSlider'))$('volumeSlider').value=vol;if($('volumeValue'))$('volumeValue').textContent=`${Math.round(vol)}%`;
+ const pcMode=save.settings.pcControls==='wasd'?'wasd':'mouse';save.settings.pcControls=pcMode;
+ const pcRow=$('pcControlsRow');if(pcRow)pcRow.classList.toggle('hidden',!DESKTOP_PERF_RENDER);
+ if($('pcMouseBtn'))$('pcMouseBtn').classList.toggle('selected',pcMode==='mouse');
+ if($('pcWasdBtn'))$('pcWasdBtn').classList.toggle('selected',pcMode==='wasd');
  $('resetConfirm').classList.add('hidden');
 }
 function toggleSetting(key){
@@ -1462,13 +1469,18 @@ let bbAudioVoices=0;
 const BB_AUDIO_VOICE_CAP=28;
 // v18.0.74 — track live music oscillators so song changes cannot leave old notes ringing under the next track.
 const bbMusicVoices=new Set();
-function hardStopMusicVoices(fade=.025){
- if(!audio||!bbMusicVoices.size)return;
+// v18.0.85 — track every live WebAudio voice, not only music. This lets death/menu
+// transitions reliably silence gameplay oscillators that would otherwise leak into Home clicks.
+const bbAllVoices=new Set();
+function stopVoiceSet(set,fade=.025){
+ if(!audio||!set.size)return;
  const now=audio.currentTime;
- for(const v of [...bbMusicVoices]){
+ for(const v of [...set]){
   try{v.gain.gain.cancelScheduledValues(now);v.gain.gain.setValueAtTime(Math.max(.0001,v.gain.gain.value||.001),now);v.gain.gain.exponentialRampToValueAtTime(.001,now+fade);v.osc.stop(now+fade+.008)}catch(e){}
  }
 }
+function hardStopMusicVoices(fade=.025){stopVoiceSet(bbMusicVoices,fade)}
+function hardStopAllAudioVoices(fade=.018){stopVoiceSet(bbAllVoices,fade)}
 function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  if(!audio)return;
  if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;
@@ -1482,10 +1494,10 @@ function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  }
  // v18.0.58 — cap simultaneous oscillator voices. This prevents dense late-wave SFX/music overlap from clipping or creating needless audio work on older phones.
  if(bbAudioVoices>=BB_AUDIO_VOICE_CAP)return;
- g*=1.32*Math.max(0,Math.min(1,Number(save.settings.volume??100)/100));if(g<=0)return;bbAudioVoices++;
- let o=audio.createOscillator(),a=audio.createGain(),voice=null;o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);
- if(category==='music'){voice={osc:o,gain:a};bbMusicVoices.add(voice)}
- o.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1);if(voice)bbMusicVoices.delete(voice)};o.start();o.stop(audio.currentTime+d)
+ g*=1.716*Math.max(0,Math.min(2,Number(save.settings.volume??50)/50));if(g<=0)return;bbAudioVoices++;
+ let o=audio.createOscillator(),a=audio.createGain(),voice={osc:o,gain:a,category};o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);
+ bbAllVoices.add(voice);if(category==='music')bbMusicVoices.add(voice);
+ o.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1);bbAllVoices.delete(voice);bbMusicVoices.delete(voice)};o.start();o.stop(audio.currentTime+d)
 }
 function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setTimeout(()=>{if(!audio||save.settings.sfx===false)return;beep(720,.020,.0048,'triangle');setTimeout(()=>beep(980,.016,.0032,'sine'),12)},0)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
@@ -2329,6 +2341,12 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
+ // v18.0.87 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
+ if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
+   let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
+   if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
+   else{p.moveX=p.x;p.moveY=p.y}
+ }
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.sqrt(mdx*mdx+mdy*mdy),oldPX=p.x,oldPY=p.y;
  p.webSlow=Math.max(0,(p.webSlow||0)-dt);if(md>1){let moveMult=p.webSlow>0?.48:1,step=Math.min(md,p.speed*moveMult*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
@@ -2627,7 +2645,7 @@ let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
  clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
- showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();hardStopMusicVoices(.035);setTimeout(()=>{if(isMenuMusicScreen())titleMusicStart()},90);
+ enterHomeCleanly();
 }
 
 
@@ -2814,7 +2832,7 @@ function previewFinalPurification(purifyOnly=false){
 }
 
 function finish(won,quit=false){
- if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();showGameUI(false);$('bossbar').style.display='none';
+ if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
@@ -3831,9 +3849,24 @@ document.addEventListener('change',e=>{
  const vol=Math.max(0,Math.min(100,Number(e.target.value)||0));save.settings.volume=vol;persist();initAudio();if(vol>0)beep(760,.045,.012,'triangle');
 });
 
+// v18.0.85 — one authoritative Home transition. A death can leave a stale RAF/canvas
+// or short-lived gameplay oscillator behind; rebuild the Home canvas after it is visible and
+// silence old voices before restarting the normal title soundtrack.
+function enterHomeCleanly(){
+ bossMusicStop();shopMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);
+ showGameUI(false);stopTitleGardenLoop();screen('home');$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
+ requestAnimationFrame(()=>{
+  resizeTitleGarden();
+  const w=titleGarden?.getBoundingClientRect().width||innerWidth;
+  resetTitleScene(performance.now(),w);startTitleGardenLoop();
+  if(save.settings.music!==false){initAudio();setTimeout(()=>{if(isMenuMusicScreen())titleMusicStart()},45)}
+ });
+}
+
 document.addEventListener('click',e=>{
  const pack=e.target.closest('[data-gold-pack]');if(pack){initAudio();beep(520,.08,.022,'triangle');alert('Gold Leaf purchasing is ready visually, but real-money checkout is not connected in this web build yet.');return}
  const setting=e.target.closest('[data-setting]')?.dataset.setting;if(setting){initAudio();toggleSetting(setting);return}
+ const pcControl=e.target.closest('[data-pc-control]')?.dataset.pcControl;if(pcControl&&DESKTOP_PERF_RENDER){save.settings.pcControls=pcControl==='wasd'?'wasd':'mouse';persist();pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false;if(game&&game.p){game.p.moveX=game.p.x;game.p.moveY=game.p.y}buildSettings();return}
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
   if(a==='goldContinue')goldContinue();
@@ -3846,7 +3879,7 @@ document.addEventListener('click',e=>{
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}bossMusicStop();shopMusicStop();endlessMusicStop();showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart()}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
  if(a==='gardenBook'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildGardenBook('playable');screen('gardenBook');titleMusicStart()}
@@ -3862,14 +3895,19 @@ document.addEventListener('pointerdown',()=>{if(game&&game.mode==='endless'&&!ga
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
 $('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
+const pcKeys={w:false,a:false,s:false,d:false};
+function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'}
 function pointerPos(e){return e.touches?e.touches[0]:e}
-function movePlayer(e){if(!game||game.paused||game.over)return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
-C.addEventListener('pointerdown',e=>{initAudio();drag=true;movePlayer(e)});
+function movePlayer(e){if(!game||game.paused||game.over||pcUsingWASD())return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
+C.addEventListener('pointerdown',e=>{initAudio();if(pcUsingWASD())return;drag=true;movePlayer(e)});
 addEventListener('pointermove',e=>{if(drag)movePlayer(e)});
 addEventListener('pointerup',()=>drag=false);
 C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
 C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
 C.addEventListener('touchend',()=>drag=false);
+addEventListener('keydown',e=>{if(!pcUsingWASD())return;const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
+addEventListener('keyup',e=>{const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=false;if(pcUsingWASD()&&game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
+addEventListener('blur',()=>{pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false});
 
 
 // v17.5.12 — enemy spawn initialization fixed; title music unlock improved; buddy behavior unchanged.
