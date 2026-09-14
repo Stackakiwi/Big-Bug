@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.91: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
+<!-- Big Bug v18.0.93: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -949,7 +949,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #bugs .card button{font-size:clamp(21px,4vw,28px)!important}
 
 
-/* v18.0.91 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
+/* v18.0.93 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
 #cosmetics{background:rgba(3,17,10,.97);padding:16px}
 #cosmetics .panel{width:min(620px,100%);max-height:94vh;background:linear-gradient(160deg,#10291a,#07180f 72%,#041008);border:2px solid #6c7950;border-radius:22px;padding:20px 16px;box-shadow:0 10px 0 #020906,0 24px 55px #000b,inset 0 0 32px #38502b35}
 .cosmeticHead{text-align:center;margin-bottom:13px}.cosmeticHead h2{margin:0;color:#f2e4b3;font:800 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive;letter-spacing:.5px}.cosmeticHead p{margin:5px 0 0;color:#bfc8a9}
@@ -1010,8 +1010,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.91</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.91</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.93</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.93</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1181,7 +1181,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-// v18.0.91 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
+// v18.0.93 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
 // v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
@@ -2502,7 +2502,7 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- // v18.0.91 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
+ // v18.0.93 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
  if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
@@ -3122,18 +3122,52 @@ function drawMosquitoBody(step,step2){
 
 function drawMedievalEnemyOverlay(ctx,e){
  if(!medievalBundleOwned()||!e||e.boss||e.isBoss)return;
- ctx.save();ctx.translate(e.x,e.y);
- const r=Math.max(8,e.r||12),s=r/14;ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
- // Small flat armor language shared by regular enemies: helmet brow, strap, rivet and banner tab.
- ctx.fillStyle='#666a64';ctx.strokeStyle='#23241f';ctx.lineWidth=1.35;
- ctx.beginPath();ctx.moveTo(-6,-9);ctx.quadraticCurveTo(0,-13.5,6,-9);ctx.lineTo(5,-5);ctx.lineTo(-5,-5);ctx.closePath();ctx.fill();ctx.stroke();
- ctx.strokeStyle='#c89a38';ctx.lineWidth=1.05;ctx.beginPath();ctx.moveTo(-5,-7.5);ctx.lineTo(5,-7.5);ctx.stroke();
+ const r=Math.max(8,e.r||12),s=r/14;
+ ctx.save();ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
 
- ctx.strokeStyle='#65452b';ctx.lineWidth=1.65;ctx.beginPath();ctx.moveTo(-7,-1);ctx.lineTo(6,6);ctx.stroke();
- ctx.fillStyle='#d6ad50';ctx.beginPath();ctx.arc(0,2,1.05,0,6.283);ctx.fill();
+ const metal='#676a64',dark='#24241f',gold='#c99a38',red='#91372f',leather='#69462a',green='#445d35';
+ const rivet=(x,y)=>{ctx.fillStyle='#d9b451';ctx.beginPath();ctx.arc(x,y,.8,0,6.283);ctx.fill()};
+ const band=()=>{ctx.strokeStyle=gold;ctx.lineWidth=1.15;ctx.beginPath();ctx.moveTo(-5,-7.5);ctx.lineTo(5,-7.5);ctx.stroke()};
 
- ctx.fillStyle='#91372f';ctx.strokeStyle='#38231f';ctx.lineWidth=.85;
- ctx.beginPath();ctx.moveTo(5,3);ctx.lineTo(10,5);ctx.lineTo(8,10);ctx.lineTo(5,8);ctx.closePath();ctx.fill();ctx.stroke();
+ if(e.kind==='ant'){
+   // tiny foot-soldier helm + back plate
+   ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.35;
+   ctx.beginPath();ctx.moveTo(-5,-9);ctx.quadraticCurveTo(0,-13,5,-9);ctx.lineTo(4,-5);ctx.lineTo(-4,-5);ctx.closePath();ctx.fill();ctx.stroke();band();
+   ctx.fillStyle=red;ctx.strokeStyle='#38231f';ctx.beginPath();ctx.moveTo(-5,3);ctx.lineTo(0,1);ctx.lineTo(5,3);ctx.lineTo(4,8);ctx.lineTo(-4,8);ctx.closePath();ctx.fill();ctx.stroke();rivet(0,5);
+ }else if(e.kind==='mosquito'){
+   // narrow nasal helm and tiny saddle strap; stays clear of wings
+   ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.2;
+   ctx.beginPath();ctx.moveTo(-4,-8);ctx.lineTo(0,-12);ctx.lineTo(4,-8);ctx.lineTo(3,-5);ctx.lineTo(-3,-5);ctx.closePath();ctx.fill();ctx.stroke();
+   ctx.strokeStyle=gold;ctx.beginPath();ctx.moveTo(-3,-7);ctx.lineTo(3,-7);ctx.stroke();
+   ctx.strokeStyle=leather;ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(5,5);ctx.stroke();rivet(0,2);
+ }else if(e.kind==='spider'){
+   // low crown-like head plate and abdomen cross straps
+   ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.3;
+   ctx.beginPath();ctx.moveTo(-6,-8);ctx.lineTo(-3,-12);ctx.lineTo(0,-9.5);ctx.lineTo(3,-12);ctx.lineTo(6,-8);ctx.lineTo(5,-5);ctx.lineTo(-5,-5);ctx.closePath();ctx.fill();ctx.stroke();
+   ctx.strokeStyle=leather;ctx.lineWidth=1.65;ctx.beginPath();ctx.moveTo(-6,2);ctx.lineTo(6,9);ctx.moveTo(6,2);ctx.lineTo(-6,9);ctx.stroke();rivet(0,5.5);
+ }else if(e.kind==='wasp'){
+   // pointed jousting brow with gold abdomen band
+   ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.25;
+   ctx.beginPath();ctx.moveTo(-5,-9);ctx.lineTo(0,-13);ctx.lineTo(5,-9);ctx.lineTo(4,-5);ctx.lineTo(-4,-5);ctx.closePath();ctx.fill();ctx.stroke();band();
+   ctx.strokeStyle=gold;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-6,4);ctx.lineTo(6,4);ctx.stroke();
+   ctx.fillStyle=red;ctx.beginPath();ctx.moveTo(5,1);ctx.lineTo(9,3);ctx.lineTo(7,7);ctx.lineTo(5,6);ctx.closePath();ctx.fill();
+ }else if(e.kind==='centipede'){
+   // repeated dorsal plates that make it read as segmented mail
+   ctx.strokeStyle=gold;ctx.lineWidth=1.1;
+   for(let y=-7;y<=8;y+=4){ctx.beginPath();ctx.moveTo(-5,y);ctx.quadraticCurveTo(0,y+1.5,5,y);ctx.stroke()}
+   ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.2;
+   ctx.beginPath();ctx.moveTo(-5,-10);ctx.quadraticCurveTo(0,-13,5,-10);ctx.lineTo(4,-7);ctx.lineTo(-4,-7);ctx.closePath();ctx.fill();ctx.stroke();
+ }else if(e.kind==='stink'||e.kind==='scarab'){
+   // shell rim + small visor
+   ctx.strokeStyle=gold;ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(0,2,8.5,10.5,0,0,6.283);ctx.stroke();
+   ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.25;
+   ctx.beginPath();ctx.moveTo(-5,-9);ctx.quadraticCurveTo(0,-13,5,-9);ctx.lineTo(4,-5);ctx.lineTo(-4,-5);ctx.closePath();ctx.fill();ctx.stroke();band();rivet(-5,3);rivet(5,3);
+ }else{
+   // generic regular-bug fallback: compact body-fixed helm and strap
+   ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.25;
+   ctx.beginPath();ctx.moveTo(-5,-9);ctx.quadraticCurveTo(0,-13,5,-9);ctx.lineTo(4,-5);ctx.lineTo(-4,-5);ctx.closePath();ctx.fill();ctx.stroke();band();
+   ctx.strokeStyle=leather;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(-6,-1);ctx.lineTo(5,6);ctx.stroke();rivet(0,2.5);
+ }
  ctx.restore();
 }
 function drawEnemy(e){
@@ -3613,8 +3647,8 @@ function drawEnemy(e){
    
    
  }
- X.restore();
  if(medievalBundleOwned()&&!e.boss&&!e.isBoss)drawMedievalEnemyOverlay(X,e);
+ X.restore();
 }
 const ARENA_CACHE=document.createElement('canvas'),ARENA_CACHE_X=ARENA_CACHE.getContext('2d');
 let arenaCacheKey='',FRAME_NOW=0;
