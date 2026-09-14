@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.82: Desktop-only canvas resolution cap reduces high-DPI/fullscreen GPU load; touch/mobile rendering (including iPhone) is unchanged. -->
+<!-- Big Bug v18.0.84: desktop performance pass; mobile/iPhone rendering unchanged, desktop canvas workload and costly live shadows reduced. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -243,6 +243,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .settingRow .settingText{min-width:0}.settingRow b{display:block;font-size:19px;color:#fff8e7}.settingRow .muted{font-size:14px;line-height:1.3;margin-top:3px}
 .toggleBtn{min-width:84px;border:0;border-radius:999px;padding:11px 14px;font-weight:900;font-size:15px;color:#fff;background:#5a665c;box-shadow:inset 0 -4px 0 #0003}
 .toggleBtn.on{background:#55b83f}.toggleBtn.off{background:#6a6f6b}
+.volumeControl{display:flex;align-items:center;gap:10px;min-width:190px;justify-content:flex-end}.volumeControl input[type="range"]{width:min(180px,34vw);accent-color:#77c84b;cursor:pointer}.volumeValue{min-width:46px;text-align:right;font-weight:950;color:#f8f3df;font-size:15px}
 .settingsDanger{margin-top:18px;padding-top:16px;border-top:1px solid #3b5941}.settingsDanger h3{margin:0 0 5px;color:#ffaaa4;font-size:19px}.settingsDanger p{margin:0 0 12px}
 #resetConfirm{margin-top:12px;background:#351516;border:1px solid #a94e4e;border-radius:20px;padding:16px;text-align:center;box-shadow:inset 0 0 26px #0005}
 #resetConfirm h3{color:#ffd7d3;margin:0 0 7px;font-size:21px}#resetConfirm p{margin:0 0 14px;color:#f1cbc8}
@@ -988,8 +989,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.82</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.82</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.84</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.84</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1043,6 +1044,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <p class="muted settingsIntro">Tweak the garden to your liking.</p>
   <div class="settingRow"><div class="settingText"><b>Music</b><div class="muted">Title and boss music</div></div><button class="toggleBtn" id="musicToggle" data-setting="music">ON</button></div>
   <div class="settingRow"><div class="settingText"><b>Sound Effects</b><div class="muted">Attacks, pickups, upgrades, and hits</div></div><button class="toggleBtn" id="sfxToggle" data-setting="sfx">ON</button></div>
+  <div class="settingRow"><div class="settingText"><b>Volume</b><div class="muted">Adjust all music and sound effects</div></div><div class="volumeControl"><input id="volumeSlider" type="range" min="0" max="100" step="5" value="100" aria-label="Master volume"><span id="volumeValue" class="volumeValue">100%</span></div></div>
   <div class="settingRow"><div class="settingText"><b>Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
   <button class="btn dark settingsHelpBtn" data-action="help">HOW TO PLAY</button>
   <div class="settingsDanger">
@@ -1143,15 +1145,22 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
+// v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
 // while avoiding oversized high-DPI canvas buffers that can overload integrated GPUs.
-const MOBILE_CANVAS_RENDER=!!(navigator.maxTouchPoints>0&&matchMedia('(pointer: coarse)').matches);
+// v18.0.84 — distinguish actual mobile browsers from touch-capable Windows laptops.
+// iPhone/iPad/Android keep the exact existing mobile render path. Desktop/2-in-1 PCs
+// get a lower internal canvas resolution that is CSS-scaled back to the same layout.
+const MOBILE_CANVAS_RENDER=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
+const DESKTOP_PERF_RENDER=!MOBILE_CANVAS_RENDER;
 function canvasRenderScale(w,h){
  const nativeD=Math.min(devicePixelRatio||1,1.5);
  if(MOBILE_CANVAS_RENDER)return nativeD;
- const desktopD=Math.min(nativeD,1);
- const maxDesktopPixels=5000000;
+ // Desktop integrated GPUs were still drawing millions of transparent pixels each frame.
+ // Keep logical coordinates identical, but cap the backing buffer much more aggressively.
+ const desktopD=Math.min(nativeD,.82);
+ const maxDesktopPixels=1600000;
  return Math.min(desktopD,Math.sqrt(maxDesktopPixels/Math.max(1,w*h)));
 }
 function resize(){
@@ -1178,7 +1187,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeaves||0);localStorage.setItem(GOLDKEY,String(save.goldLeaves));
 save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
 save.endlessBest=save.endlessBest||0;
-save.settings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:100},save.settings||{});
 save.discovered=Array.isArray(save.discovered)?save.discovered:['player:ladybug'];if(!save.discovered.includes('player:ladybug'))save.discovered.push('player:ladybug');
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
@@ -1412,7 +1421,7 @@ function restoreRecoveredRun(){
 }
 
 function resetGameProgress(){
- const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true},save.settings||{});
+ const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:100},save.settings||{});
   const keptGold=Math.max(0,save.goldLeaves||0);
   const keptGoldUnlocks=[...(save.goldUnlocks||[])];
  if(raf){cancelAnimationFrame(raf);raf=0}
@@ -1425,6 +1434,8 @@ function resetGameProgress(){
 function buildSettings(){
  const map={music:'musicToggle',sfx:'sfxToggle',damageNumbers:'damageToggle'};
  for(const [key,id] of Object.entries(map)){const b=$(id),on=save.settings[key]!==false;b.textContent=on?'ON':'OFF';b.classList.toggle('on',on);b.classList.toggle('off',!on)}
+ const vol=Math.max(0,Math.min(100,Number(save.settings.volume??100)));save.settings.volume=vol;
+ if($('volumeSlider'))$('volumeSlider').value=vol;if($('volumeValue'))$('volumeValue').textContent=`${Math.round(vol)}%`;
  $('resetConfirm').classList.add('hidden');
 }
 function toggleSetting(key){
@@ -1471,7 +1482,7 @@ function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  }
  // v18.0.58 — cap simultaneous oscillator voices. This prevents dense late-wave SFX/music overlap from clipping or creating needless audio work on older phones.
  if(bbAudioVoices>=BB_AUDIO_VOICE_CAP)return;
- g*=1.2;bbAudioVoices++;
+ g*=1.32*Math.max(0,Math.min(1,Number(save.settings.volume??100)/100));if(g<=0)return;bbAudioVoices++;
  let o=audio.createOscillator(),a=audio.createGain(),voice=null;o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);
  if(category==='music'){voice={osc:o,gain:a};bbMusicVoices.add(voice)}
  o.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1);if(voice)bbMusicVoices.delete(voice)};o.start();o.stop(audio.currentTime+d)
@@ -2478,7 +2489,7 @@ function update(dt,now){
    }
    f.vx*=.985;f.vy*=.985;
  }
- compactInPlace(g.enemies,keepLiveEnemy);compactInPlace(g.drops,keepLiveDrop);compactInPlace(g.fx,keepLiveFx);let fxCap=g.enemies.length>32?108:(g.enemies.length>22?126:146);if(BB_LOW_FX_DEVICE)fxCap-=18;if(g.fx.length>fxCap)g.fx.splice(0,g.fx.length-fxCap);
+ compactInPlace(g.enemies,keepLiveEnemy);compactInPlace(g.drops,keepLiveDrop);compactInPlace(g.fx,keepLiveFx);let fxCap=g.enemies.length>32?108:(g.enemies.length>22?126:146);if(BB_LOW_FX_DEVICE)fxCap-=18;if(DESKTOP_PERF_RENDER)fxCap=Math.min(fxCap,112);if(g.fx.length>fxCap)g.fx.splice(0,g.fx.length-fxCap);
  if(g.bosses&&g.bosses.length){
    compactInPlace(g.bosses,keepLiveBoss);
    g.boss=g.bosses[0]||null;
@@ -2938,7 +2949,11 @@ function drawEnemy(e){
    X.rotate(q*1.30);X.translate(0,44*sink);X.scale(1-q*.20,1-q*.58);X.globalAlpha=Math.max(.025,1-q*.975);X.filter=`saturate(${Math.max(.08,1-q*.92)}) brightness(${Math.max(.58,1-q*.34)})`;
  }
  if(e.hit>0&&!e.dying){X.globalAlpha=.72;X.filter='brightness(1.7)'}
- X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
+ // v18.0.84 — live shadowBlur on every bug is disproportionately expensive on some
+ // desktop/integrated-GPU browsers. Mobile keeps the original look; desktop skips only
+ // this soft blur while retaining the bug artwork, movement, hit flash, and gameplay.
+ if(DESKTOP_PERF_RENDER){X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetY=0}
+ else{X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5}
  if(e.kind==='mosquito'){
   drawMosquitoBody(step,step2);
  }else if(e.kind==='ant'){
@@ -3806,6 +3821,15 @@ document.addEventListener('click',e=>{
  window.__bbButtonSfxPlayed=false;
  if(btn)queueMicrotask(()=>{if(!btn.disabled&&!window.__bbButtonSfxPlayed)quietButtonClick();window.__bbButtonClickActive=false});
 },true);
+
+document.addEventListener('input',e=>{
+ if(e.target?.id!=='volumeSlider')return;
+ const vol=Math.max(0,Math.min(100,Number(e.target.value)||0));save.settings.volume=vol;if($('volumeValue'))$('volumeValue').textContent=`${Math.round(vol)}%`;
+});
+document.addEventListener('change',e=>{
+ if(e.target?.id!=='volumeSlider')return;
+ const vol=Math.max(0,Math.min(100,Number(e.target.value)||0));save.settings.volume=vol;persist();initAudio();if(vol>0)beep(760,.045,.012,'triangle');
+});
 
 document.addEventListener('click',e=>{
  const pack=e.target.closest('[data-gold-pack]');if(pack){initAudio();beep(520,.08,.022,'triangle');alert('Gold Leaf purchasing is ready visually, but real-money checkout is not connected in this web build yet.');return}
