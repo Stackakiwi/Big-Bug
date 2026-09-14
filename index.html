@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.62: final Spore Behemoth arena + death/purification ending sequence and temporary ending preview. -->
+<!-- Big Bug v18.0.64: temporary purification-only preview button for ending animation testing. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -307,7 +307,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #gameover.endlessOver .stats{margin-top:18px}
 
 /* v17.8.34 — lightweight final ending / credits sequence */
-.creditsTestBtn{position:absolute!important;left:62px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;z-index:50;font-size:10px!important;padding:7px 9px!important;opacity:.72;margin:0!important;min-width:0!important;transform:none!important}
+.creditsTestBtn{position:absolute!important;left:62px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;z-index:50;font-size:10px!important;padding:7px 9px!important;opacity:.72;margin:0!important;min-width:0!important;transform:none!important}.purifyTestBtn{position:absolute!important;left:62px!important;bottom:max(42px,calc(env(safe-area-inset-bottom) + 37px))!important;z-index:50;font-size:10px!important;padding:7px 9px!important;opacity:.72;margin:0!important;min-width:0!important;transform:none!important}
 #ending{position:fixed;inset:0;z-index:1000;overflow:hidden;background:#020503;color:#f6f0dc;padding:0;display:block}
 #ending.hidden{display:none}
 #endingBackdrop{position:absolute;inset:0;background:
@@ -333,20 +333,20 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 930px))}}
 #continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
 #continuePrompt.show{opacity:1}
-/* v18.0.62 — final boss purification cutscene before the credits. */
+/* v18.0.63 — longer final purification beat before credits + tap-to-skip credits. */
 #victoryScene{position:absolute;inset:0;z-index:4;display:none;overflow:hidden;background:radial-gradient(circle at 50% 43%,#57345c88 0 18%,transparent 44%),linear-gradient(#171020,#090b0d 66%,#08120b);opacity:1}
 #victoryScene.play{display:block}
-#victoryScene.cleaning{animation:victoryWorldClean 6.4s ease-in-out forwards}
-.victoryRoots{position:absolute;inset:-8%;opacity:.95;background:repeating-radial-gradient(ellipse at 50% 70%,transparent 0 40px,#7d4c8466 43px 46px,transparent 50px 78px),radial-gradient(ellipse at 20% 83%,#9b5b9055 0 4%,transparent 19%),radial-gradient(ellipse at 80% 76%,#73407855 0 5%,transparent 21%);filter:blur(.3px);animation:victoryRootsFade 5.8s 1.0s ease forwards}
-#victorySporeField{position:absolute;inset:0;pointer-events:none;opacity:1;animation:victorySporesFade 5.9s .75s ease forwards}
+#victoryScene.cleaning{animation:victoryWorldClean 9.6s ease-in-out forwards}
+.victoryRoots{position:absolute;inset:-8%;opacity:.95;background:repeating-radial-gradient(ellipse at 50% 70%,transparent 0 40px,#7d4c8466 43px 46px,transparent 50px 78px),radial-gradient(ellipse at 20% 83%,#9b5b9055 0 4%,transparent 19%),radial-gradient(ellipse at 80% 76%,#73407855 0 5%,transparent 21%);filter:blur(.3px);animation:victoryRootsFade 8.7s 1.0s ease forwards}
+#victorySporeField{position:absolute;inset:0;pointer-events:none;opacity:1;animation:victorySporesFade 8.9s .75s ease forwards}
 .victorySpore{position:absolute;width:5px;height:5px;border-radius:50%;background:#d99bd9;box-shadow:0 0 7px #e9b4e5,0 0 15px #a85ba4;opacity:.72;animation:victorySporeFloat 2.8s ease-in-out infinite alternate}
 .victoryBossWrap{position:absolute;left:50%;top:47%;width:min(300px,78vw);height:min(300px,78vw);transform:translate(-50%,-50%);filter:drop-shadow(0 16px 20px #000a)}
 #victoryBossCanvas{width:100%;height:100%;display:block;transform-origin:50% 58%}
-#victoryScene.play #victoryBossCanvas{animation:victoryBossFall 4.7s .25s cubic-bezier(.28,.01,.55,1) forwards}
+#victoryScene.play #victoryBossCanvas{animation:victoryBossFall 5.7s .25s cubic-bezier(.28,.01,.55,1) forwards}
 #victorySavedText{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%) scale(.78) rotate(-2deg);width:min(92vw,680px);text-align:center;opacity:0;font-family:"Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand",cursive;letter-spacing:.6px;text-shadow:0 5px 0 #2b1c13,0 10px 30px #000c;pointer-events:none}
 #victorySavedText span{display:block;color:#f5b02e;font-size:clamp(34px,10vw,68px);line-height:.88;font-weight:900}
 #victorySavedText strong{display:block;color:#78c84c;font-size:clamp(42px,12vw,82px);line-height:.9;margin-top:9px;font-weight:1000}
-#victoryScene.play #victorySavedText{animation:victoryTextPop 3.15s 3.7s cubic-bezier(.2,.9,.25,1) forwards}
+#victoryScene.play #victorySavedText{animation:victoryTextPop 3.8s 6.45s cubic-bezier(.2,.9,.25,1) forwards}
 @keyframes victoryBossFall{0%{transform:translateY(0) scale(1);opacity:1;filter:saturate(1)}18%{transform:translateY(2px) rotate(-2deg) scale(1.025)}34%{transform:translateY(-3px) rotate(2deg) scale(.99);filter:saturate(.9)}53%{transform:translateY(9px) rotate(-3deg) scale(.94);opacity:.92;filter:saturate(.7) brightness(.9)}72%{transform:translateY(27px) rotate(4deg) scale(.79,.68);opacity:.67;filter:saturate(.4) brightness(.72)}100%{transform:translateY(74px) rotate(-5deg) scale(.48,.24);opacity:0;filter:saturate(0) brightness(.5)}}
 @keyframes victorySporesFade{0%,18%{opacity:1}62%{opacity:.35}100%{opacity:0}}
 @keyframes victoryRootsFade{0%,12%{opacity:.95;filter:saturate(1)}65%{opacity:.35;filter:saturate(.45)}100%{opacity:0;filter:saturate(0)}}
@@ -383,6 +383,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 @media(max-width:360px){
  #home .testJump select{width:112px}
  #home .creditsTestBtn{left:52px!important;font-size:9px!important;padding:7px 7px!important}
+ #home .purifyTestBtn{left:52px!important;font-size:9px!important;padding:7px 7px!important}
 }
 
 
@@ -961,12 +962,13 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
+  <button class="btn dark small purifyTestBtn" data-action="testPurify">TEMP PURIFY</button>
   <div class="testJump" aria-label="Temporary wave and boss tester">
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.62</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.62</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.64</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.64</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2529,7 +2531,7 @@ function updateHud(force=true,now=performance.now()){
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
- clearEndingTimers();stopCreditsNameEntrances();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
+ clearEndingTimers();stopCreditsNameEntrances();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
  showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart();
 }
 
@@ -2587,13 +2589,13 @@ function paintVictoryBoss(){
  q.restore();
 }
 function buildVictorySpores(){const f=$('victorySporeField');if(!f)return;f.innerHTML='';for(let i=0;i<34;i++){const p=document.createElement('i');p.className='victorySpore';p.style.left=((i*37+11)%97)+'%';p.style.top=((i*61+17)%91)+'%';p.style.animationDelay=(-((i%9)*.27))+'s';p.style.animationDuration=(2.2+(i%6)*.31)+'s';p.style.transform='scale('+(0.65+(i%4)*.18)+')';f.appendChild(p)}}
-function startVictorySequence(preview=false){
+function startVictorySequence(preview=false,purifyOnly=false){
  clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
- const end=$('ending'),scene=$('victoryScene'),roll=$('creditsRoll'),prompt=$('continuePrompt');screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');$('endingBackdrop').style.opacity='1';
+ const end=$('ending'),scene=$('victoryScene'),roll=$('creditsRoll'),prompt=$('continuePrompt');end.dataset.phase='victory';screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');$('endingBackdrop').style.opacity='1';
  roll.style.animation='none';roll.style.visibility='hidden';scene.style.display='';scene.classList.remove('play','cleaning');void scene.offsetHeight;buildVictorySpores();paintVictoryBoss();scene.classList.add('play','cleaning');
  // A low, fading final pulse while the corruption dies out.
  beep(92,.65,.025,'sawtooth');endingTimers.push(setTimeout(()=>beep(69,.9,.016,'sine'),800));endingTimers.push(setTimeout(()=>beep(138,.75,.012,'triangle'),2450));
- endingTimers.push(setTimeout(()=>{scene.classList.remove('play','cleaning');scene.style.display='none';roll.style.visibility='';playEndingCredits(preview,true)},7350));
+ endingTimers.push(setTimeout(()=>{scene.classList.remove('play','cleaning');scene.style.display='none';if(purifyOnly){returnHomeAfterEnding();return}roll.style.visibility='';playEndingCredits(preview,true)},10850));
 }
 function playEndingCredits(preview=false,alreadyOpen=false){
  paintEndingLadybugs();
@@ -2607,6 +2609,7 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0,earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));if(!game.testMode){save.scrap+=Math.floor(game.wave/2);save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt'),scene=$('victoryScene');
+ end.dataset.phase='credits';end.dataset.skipAfter=String(performance.now()+700);
  screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');if(scene){scene.classList.remove('play','cleaning');scene.style.display='none'}roll.style.visibility='';
  // Restart the CSS scroll every time, including the temporary preview button.
  roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 36s linear forwards';
@@ -2616,6 +2619,17 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  endingTimers.push(setTimeout(()=>{prompt.classList.add('show');continueMysteryMusicStart()},39500));
  endingTimers.push(setTimeout(returnHomeAfterEnding,44500));
 }
+function skipEndingCredits(){
+ const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
+ if(!end||end.classList.contains('hidden')||end.dataset.phase!=='credits'||prompt.classList.contains('show'))return;
+ if(performance.now()<Number(end.dataset.skipAfter||0))return;
+ clearEndingTimers();stopCreditsNameEntrances();creditsMusicStop();
+ roll.style.animation='none';roll.style.visibility='hidden';$('endingBackdrop').style.opacity='0';
+ end.dataset.phase='mystery';prompt.classList.add('show');continueMysteryMusicStart();
+ endingTimers.push(setTimeout(returnHomeAfterEnding,5000));
+}
+$('ending').addEventListener('pointerup',skipEndingCredits);
+
 function completeGameEnding(){
  if(!game||game.over)return;
  game.waveActive=false;game.intermission=true;game.paused=true;
@@ -3584,6 +3598,7 @@ document.addEventListener('click',e=>{
  if(a==='endless')startEndless();
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testEnding')startVictorySequence(true)
+ if(a==='testPurify')startVictorySequence(true,true)
  if(a==='settings'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
  if(a==='help'){showGameUI(false);screen('help');titleMusicStart()}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
