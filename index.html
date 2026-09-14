@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.88: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
+<!-- Big Bug v18.0.89: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -948,6 +948,21 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #bugs .bugCard button,
 #bugs .card button{font-size:clamp(21px,4vw,28px)!important}
 
+
+/* v18.0.89 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
+#cosmetics{background:rgba(3,17,10,.97);padding:16px}
+#cosmetics .panel{width:min(620px,100%);max-height:94vh;background:linear-gradient(160deg,#10291a,#07180f 72%,#041008);border:2px solid #6c7950;border-radius:22px;padding:20px 16px;box-shadow:0 10px 0 #020906,0 24px 55px #000b,inset 0 0 32px #38502b35}
+.cosmeticHead{text-align:center;margin-bottom:13px}.cosmeticHead h2{margin:0;color:#f2e4b3;font:800 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive;letter-spacing:.5px}.cosmeticHead p{margin:5px 0 0;color:#bfc8a9}
+.cosmeticBalance{display:flex;justify-content:center;align-items:center;gap:5px;margin:8px auto 14px;width:max-content;background:#2d2814;border:1px solid #92752c;border-radius:999px;padding:7px 14px;color:#ffe17a;font-weight:950}
+.medievalGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.medievalCard{position:relative;background:linear-gradient(150deg,#183722,#10291a);border:1px solid #486143;border-radius:12px;padding:12px 9px 10px;text-align:center;box-shadow:0 4px 0 #07120b}
+.medievalCard.equipped{border-color:#e2b84e;box-shadow:0 4px 0 #70531b,0 0 14px #e6bd4b55}
+.medievalPreview{width:94px;height:94px;margin:0 auto 5px;display:block}.medievalCard b{display:block;color:#fff0c5;font-size:18px}.medievalCard .muted{min-height:34px;margin:4px 0 8px;line-height:1.25}
+.medievalCard .btn{min-width:0;width:100%;margin:2px 0 0;padding:10px 6px;font-size:13px}
+.cosmeticNote{text-align:center;font-size:12px;color:#9faa91;margin:12px 8px 2px}
+#home .homeLowerLift.cosmeticHomeRow{margin-top:-4px}
+@media(max-width:520px){.medievalGrid{grid-template-columns:1fr}.medievalCard{display:grid;grid-template-columns:94px 1fr;grid-template-rows:auto auto auto;column-gap:10px;text-align:left;align-items:center}.medievalPreview{grid-row:1/4}.medievalCard .muted{min-height:0}.medievalCard .btn{width:auto;min-width:150px}.cosmeticHead h2{font-size:28px}}
+
 </style>
 </head>
 <body>
@@ -981,7 +996,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
-  <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
+  <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
@@ -990,12 +1005,22 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.88</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.88</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.89</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.89</div>
 </section>
 
 <section id="bugs" class="screen hidden">
  <div class="panel"><h2><canvas id="bugParadeIcon" width="52" height="52" aria-hidden="true" style="width:1.18em;height:1.18em;vertical-align:-.23em;margin-right:.08em"></canvas> THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
+</section>
+
+<section id="cosmetics" class="screen hidden">
+ <div class="panel">
+  <div class="cosmeticHead"><h2>MEDIEVAL COLLECTION</h2><p>Same bugs. A little more armor.</p></div>
+  <div class="cosmeticBalance"><span class="goldLeafIcon" aria-hidden="true"></span><span id="cosmeticGold">0</span> GOLD LEAVES</div>
+  <div id="medievalGrid" class="medievalGrid"></div>
+  <p class="cosmeticNote">Cosmetics only — stats and gameplay stay exactly the same.</p>
+  <button class="btn dark" data-action="home">BACK</button>
+ </div>
 </section>
 
 <section id="base" class="screen hidden">
@@ -1147,7 +1172,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-// v18.0.88 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
+// v18.0.89 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
 // v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
@@ -1173,7 +1198,7 @@ function resize(){
 } addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
-const screens=['home','bugs','base','gardenBook','goldShop','settings','help','upgrade','pause','gameover','finalPrep','ending'];
+const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','settings','help','upgrade','pause','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
@@ -1190,7 +1215,7 @@ if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeaves||0);localStorage.setItem(GOLDKEY,String(save.goldLeaves));
 save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
 save.endlessBest=save.endlessBest||0;
-save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{});
+save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{}); save.cosmetics=Object.assign({owned:[],equipped:{}},save.cosmetics||{});if(!Array.isArray(save.cosmetics.owned))save.cosmetics.owned=[];if(!save.cosmetics.equipped||typeof save.cosmetics.equipped!=='object')save.cosmetics.equipped={};
 save.discovered=Array.isArray(save.discovered)?save.discovered:['player:ladybug'];if(!save.discovered.includes('player:ladybug'))save.discovered.push('player:ladybug');
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
@@ -1304,6 +1329,54 @@ function drawPlayableBug(ctx,id,size=28,glow=false,legPhase=0,legAmp=0){
  }
  ctx.restore();
 }
+
+const MEDIEVAL_COST=2;
+function medievalKey(id){return 'medieval:'+id}
+function medievalOwned(id){return !!save.cosmetics?.owned?.includes(medievalKey(id))}
+function medievalEquipped(id){return save.cosmetics?.equipped?.[id]==='medieval'}
+function drawMedievalArmor(ctx,id,size=28){
+ ctx.save();const s=size/28;ctx.scale(s,s);ctx.lineCap='round';ctx.lineJoin='round';
+ // Small, flat, hand-inked armor pieces deliberately match BIG BUG's existing canvas linework.
+ if(id==='ladybug'){
+  ctx.fillStyle='#77766d';ctx.strokeStyle='#292923';ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(-7,-13);ctx.quadraticCurveTo(0,-19,7,-13);ctx.lineTo(6,-7);ctx.quadraticCurveTo(0,-10,-6,-7);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.strokeStyle='#c99b36';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-6,-10);ctx.lineTo(6,-10);ctx.stroke();
+  ctx.fillStyle='#9d3b32';ctx.strokeStyle='#39251d';ctx.beginPath();ctx.moveTo(7,-1);ctx.lineTo(13,1);ctx.lineTo(12,10);ctx.lineTo(7,12);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#d2a63e';ctx.fillRect(9,2,1.5,7);
+ }else if(id==='beetle'){
+  ctx.fillStyle='#666b63';ctx.strokeStyle='#24251f';ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(-8,-12);ctx.quadraticCurveTo(0,-18,8,-12);ctx.lineTo(7,-6);ctx.lineTo(-7,-6);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.strokeStyle='#c29432';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-6,-9);ctx.lineTo(6,-9);ctx.stroke();
+  ctx.fillStyle='#3e5b31';ctx.strokeStyle='#20291e';ctx.beginPath();ctx.moveTo(-10,-1);ctx.lineTo(-4,-4);ctx.lineTo(-3,8);ctx.lineTo(-9,10);ctx.closePath();ctx.fill();ctx.stroke();
+ }else{
+  ctx.fillStyle='#77766f';ctx.strokeStyle='#292923';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(-5,-13);ctx.quadraticCurveTo(0,-18,5,-13);ctx.lineTo(4,-8);ctx.lineTo(-4,-8);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.strokeStyle='#b78b34';ctx.beginPath();ctx.moveTo(-4,-11);ctx.lineTo(4,-11);ctx.stroke();
+  // light leather breast strap across the butterfly body, leaving wings unobscured
+  ctx.strokeStyle='#684527';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(-4,-2);ctx.lineTo(4,6);ctx.stroke();
+  ctx.fillStyle='#c29b42';ctx.beginPath();ctx.arc(0,2,1.5,0,6.283);ctx.fill();
+ }
+ ctx.restore();
+}
+function drawPlayerStyled(ctx,id,size=28,glow=false,legPhase=0,legAmp=0){
+ drawPlayableBug(ctx,id,size,glow,legPhase,legAmp);
+ if(medievalEquipped(id))drawMedievalArmor(ctx,id,size);
+}
+function makeMedievalPreview(id){
+ const c=document.createElement('canvas');c.width=94;c.height=94;c.className='medievalPreview';
+ const q=c.getContext('2d');q.translate(47,48);drawPlayableBug(q,id,54,false);drawMedievalArmor(q,id,54);return c;
+}
+function buildCosmetics(){
+ if(!save.cosmetics)save.cosmetics={owned:[],equipped:{}};
+ const g=$('medievalGrid');if(!g)return;g.innerHTML='';if($('cosmeticGold'))$('cosmeticGold').textContent=save.goldLeaves||0;
+ const flavor={ladybug:'Garden Knight',beetle:'Iron Guard',butterfly:'Winged Herald'};
+ Object.entries(BUGS).forEach(([id,b])=>{
+  const owned=medievalOwned(id),equipped=medievalEquipped(id),card=document.createElement('div');card.className='medievalCard'+(equipped?' equipped':'');
+  card.appendChild(makeMedievalPreview(id));
+  const info=document.createElement('div');info.innerHTML=`<b>${b.name}</b><div class="muted">${flavor[id]} — Medieval Edition</div>`;card.appendChild(info);
+  const btn=document.createElement('button');btn.className='btn small '+(equipped?'dark':owned?'green':'');
+  btn.innerHTML=equipped?'EQUIPPED':owned?'EQUIP':`<span class="goldLeafIcon" aria-hidden="true"></span> BUY — ${MEDIEVAL_COST}`;
+  btn.onclick=()=>{initAudio();if(!medievalOwned(id)){if((save.goldLeaves||0)<MEDIEVAL_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_COST;save.cosmetics.owned.push(medievalKey(id));}
+   save.cosmetics.equipped[id]=medievalEquipped(id)?'':'medieval';persist();buildCosmetics();buildBugScreen();beep(880,.11,.025,'triangle');};
+  card.appendChild(btn);g.appendChild(card);
+ });
+}
 function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}const gb=$('gardenBookBugCanvas');if(gb){const q=gb.getContext('2d');q.clearRect(0,0,gb.width,gb.height);q.save();q.translate(gb.width/2,gb.height/2+1);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
 
 function makeBugPreview(id){
@@ -1364,7 +1437,7 @@ function persistLeafPickup(){
  leafPersistTimer=setTimeout(()=>{leafPersistTimer=0;persist()},300);
 }
 function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save));localStorage.setItem(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));localStorage.setItem(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]));refreshGoldUI()}
-function refreshGoldUI(){const n=Math.max(0,save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n}
+function refreshGoldUI(){const n=Math.max(0,save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n;if($('cosmeticGold'))$('cosmeticGold').textContent=n}
 
 const RUNSAVEKEY='big_bug_run_recovery_v1';
 function clearRunRecovery(){try{localStorage.removeItem(RUNSAVEKEY)}catch(e){}}
@@ -1427,10 +1500,11 @@ function resetGameProgress(){
  const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{});
   const keptGold=Math.max(0,save.goldLeaves||0);
   const keptGoldUnlocks=[...(save.goldUnlocks||[])];
+ const keptCosmetics=JSON.parse(JSON.stringify(save.cosmetics||{owned:[],equipped:{}}));
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],settings:keptSettings};
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],settings:keptSettings,cosmetics:keptCosmetics};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -2341,7 +2415,7 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- // v18.0.88 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
+ // v18.0.89 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
  if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
@@ -3652,23 +3726,23 @@ function draw(now=performance.now()){
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  // v18.0.44 — Story combat bonuses remain active, but their player rings were removed.
- const ladyDX=(p.moveX??p.x)-p.x,ladyDY=(p.moveY??p.y)-p.y,ladyMoving=save.selected==='ladybug'&&(ladyDX*ladyDX+ladyDY*ladyDY)>9,ladyPhase=game.time*(ladyMoving?13:2.2),ladyAmp=save.selected==='ladybug'?(ladyMoving?1.8:.35):0;X.save();X.translate(p.x,p.y+bob+(ladyMoving?Math.sin(ladyPhase)*.45:0));X.rotate(p.face+(save.selected==='ladybug'?Math.sin(ladyPhase*.5)*(ladyMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayableBug(X,save.selected,p.r*2.05,false,ladyPhase,ladyAmp);X.restore();
+ const ladyDX=(p.moveX??p.x)-p.x,ladyDY=(p.moveY??p.y)-p.y,ladyMoving=save.selected==='ladybug'&&(ladyDX*ladyDX+ladyDY*ladyDY)>9,ladyPhase=game.time*(ladyMoving?13:2.2),ladyAmp=save.selected==='ladybug'?(ladyMoving?1.8:.35):0;X.save();X.translate(p.x,p.y+bob+(ladyMoving?Math.sin(ladyPhase)*.45:0));X.rotate(p.face+(save.selected==='ladybug'?Math.sin(ladyPhase*.5)*(ladyMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayerStyled(X,save.selected,p.r*2.05,false,ladyPhase,ladyAmp);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
  const armyHs=p.helperArmyHelpers||[];for(const h of armyHs){
    if(!(p.helperArmyWave===game.wave&&game.wave%5!==0)&&!h.leaving)continue;
-   X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);let at=!h.leaving&&h.target&&!h.target.dead?h.target:null;if(at)X.rotate(Math.atan2(at.y-h.y,at.x-h.x)+Math.PI/2);else if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayableBug(X,save.selected,19,false);X.restore();
+   X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);let at=!h.leaving&&h.target&&!h.target.dead?h.target:null;if(at)X.rotate(Math.atan2(at.y-h.y,at.x-h.x)+Math.PI/2);else if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayerStyled(X,save.selected,19,false);X.restore();
  }
  // Little Buddys visibly run in, then orbit while active; expired helpers wander away.
  const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving&&!h.entering)activeHCount++;
  let activeHIndex=0;for(const h of hs){let hx,hy,orbitA=null;if(h.leaving||h.entering){hx=h.x;hy=h.y}else{orbitA=game.time*1.8+activeHIndex++*6.283/Math.max(1,activeHCount);const ox=p.x+Math.cos(orbitA)*38,oy=p.y+Math.sin(orbitA)*38;if(h.joining>0){const q=1-h.joining/.5,e=q*q*(3-2*q);hx=(Number.isFinite(h.joinX)?h.joinX:h.x)*(1-e)+ox*e;hy=(Number.isFinite(h.joinY)?h.joinY:h.y)*(1-e)+oy*e;h.x=hx;h.y=hy}else{hx=ox;hy=oy;h.x=hx;h.y=hy}}
    X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);
    if(h.leaving)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);else if(h.entering)X.rotate(Math.atan2(p.y-hy,p.x-hx)+Math.PI/2);else if(h.joining>0&&orbitA!==null){const tx=p.x+Math.cos(orbitA+.12)*38,ty=p.y+Math.sin(orbitA+.12)*38;X.rotate(Math.atan2(ty-hy,tx-hx)+Math.PI/2)}else{let t=h.target&&!h.target.dead&&(h.targetUntil||0)>=game.time?h.target:null;if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2);else X.rotate(p.face)}
-   drawPlayableBug(X,save.selected,20,false);X.restore()
+   drawPlayerStyled(X,save.selected,20,false);X.restore()
  }
  if(p.superBuddy&&game.wave===100){
    let a=game.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48;X.save();X.translate(hx,hy);
-   X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc433';X.beginPath();X.arc(0,0,13,0,6.28);X.fill();drawPlayableBug(X,save.selected,21,true);X.restore();
+   X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc433';X.beginPath();X.arc(0,0,13,0,6.28);X.fill();drawPlayerStyled(X,save.selected,21,true);X.restore();
  }
  drawFinalSavedText();
 }
@@ -3881,6 +3955,7 @@ document.addEventListener('click',e=>{
  if(a==='confirmReset')resetGameProgress();
  if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
+ if(a==='cosmetics'){stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
  if(a==='gardenBook'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildGardenBook('playable');screen('gardenBook');titleMusicStart()}
  if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');shopMusicStart(true)}
