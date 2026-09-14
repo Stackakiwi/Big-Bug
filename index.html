@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.77: credits audio isolation — freezes gameplay combat/SFX while credits roll so only credits music is heard. -->
+<!-- Big Bug v18.0.78: warning-circle cleanup — red/yellow warning-circle visuals and related help content removed. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -210,7 +210,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #base .shopRow .muted{font-size:15px;line-height:1.3;color:#d2d8cd;opacity:.82;margin-top:4px}
 #base .shopRow .btn{min-width:118px;margin:0 0 0 8px;border-radius:18px;padding:13px 12px;font-size:17px}
 #base>.panel>.btn[data-action="home"]{display:block;width:100%;margin:16px 0 2px;min-height:58px}
-#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
+#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
 @media(max-width:430px){#base{padding:12px}#base .panel{padding:18px 12px 14px}#base .panel h2{font-size:29px}#base .shopRow{padding:12px 10px;min-height:96px}#base .shopIcon{font-size:33px;width:40px}#base .shopRow b{font-size:18px}#base .shopRow .muted{font-size:14px}#base .shopRow .btn{min-width:105px;font-size:16px;padding:12px 9px}}
 
 
@@ -248,7 +248,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #resetConfirm h3{color:#ffd7d3;margin:0 0 7px;font-size:21px}#resetConfirm p{margin:0 0 14px;color:#f1cbc8}
 #resetConfirm .btn{margin:5px 4px;min-width:135px}
 #settings>.panel>.btn[data-action="home"]{display:block;width:100%;margin:16px 0 2px;min-height:58px}
-#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
+#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
 @media(max-width:430px){#settings{padding:12px}#settings .panel{padding:18px 12px 14px}.settingRow{padding:13px 12px}.settingRow b{font-size:18px}.toggleBtn{min-width:78px}}
 
 
@@ -353,7 +353,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @keyframes victorySporeFloat{from{transform:translate(-5px,11px) scale(.75)}to{transform:translate(8px,-16px) scale(1.15)}}
 @keyframes victoryWorldClean{0%,44%{background-color:#090b0d}100%{background:radial-gradient(circle at 50% 48%,#cde8af33,transparent 38%),linear-gradient(#7ea765,#42623c 70%,#263c29)}}
 @keyframes victoryTextPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotate(-3deg)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.09) rotate(1deg)}30%,75%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-1deg)}100%{opacity:0;transform:translate(-50%,-53%) scale(1.03) rotate(0)}}
-#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
+#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
 @media(max-width:430px){#creditsRoll h1{font-size:38px}#creditsRoll .creditName{font-size:26px}}
 
 
@@ -467,7 +467,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #base .shopBuyStack .btn{width:100%;min-width:0!important;margin:0!important}
 #base .shopBuyStack .goldUpgradeBtn{background:linear-gradient(#f1c642,#c98e16)!important;color:#2a210b!important;border:1px solid #ffe889;box-shadow:inset 0 -4px #8d6110,0 4px 0 #132214,0 0 10px #ffd84f44!important}
 #base .shopBuyStack .goldUpgradeBtn .goldLeafIcon{width:20px;height:20px;vertical-align:-5px;margin-right:3px}
-#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
+#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
 @media(max-width:430px){#base .shopBuyStack{flex-basis:105px;gap:6px}}
 #goldShop{background:rgba(3,17,10,.97);padding:18px}
 #goldShop .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#2c2610,#171708 72%,#0b1107);border:2px solid #9b7622;border-radius:28px;padding:22px 18px 18px;box-shadow:0 10px 0 #090704,0 24px 55px #000b,inset 0 0 38px #d6a72b22}
@@ -488,18 +488,18 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #help h2{text-align:center;margin:0 0 4px;font:700 30px "Marker Felt","Chalkboard SE","Noteworthy",cursive;color:#f8f3df}
-#help .helpIntro{text-align:center;margin:0 0 12px}.helpGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.helpCard{background:#153923;border:1px solid #3c6242;border-radius:15px;padding:11px 12px}.helpCard b{display:block;color:#fff8e7;font-size:16px;margin-bottom:3px}.helpCard .muted{font-size:13px;line-height:1.25}.bugSenseCard{grid-column:1/-1;display:flex;align-items:center;gap:14px}.sensePic{position:relative;flex:0 0 76px;height:76px;display:flex;align-items:center;justify-content:center}.sensePic .senseRing{position:absolute;width:68px;height:68px;border:3px solid #ff5a4f;border-radius:50%;box-shadow:0 0 9px #ff5a4f88}.sensePic .bbBugIcon{font-size:32px}.helpBack{display:block;width:100%;margin:14px 0 0!important}.settingsHelpBtn{display:block;width:100%;margin:12px 0 4px!important}
+#help .helpIntro{text-align:center;margin:0 0 12px}.helpGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.helpCard{background:#153923;border:1px solid #3c6242;border-radius:15px;padding:11px 12px}.helpCard b{display:block;color:#fff8e7;font-size:16px;margin-bottom:3px}.helpCard .muted{font-size:13px;line-height:1.25}.helpBack{display:block;width:100%;margin:14px 0 0!important}.settingsHelpBtn{display:block;width:100%;margin:12px 0 4px!important}
 #help .helpCard b{display:flex;align-items:center;gap:7px}
 #help .helpCard b .bbIcon{font-size:18px}
 #help .helpLeafIcon{width:20px;height:20px;display:inline-block;vertical-align:middle;margin:0;flex:0 0 20px}
 #help .helpMosquitoIcon{display:inline-block;width:22px;height:18px;position:relative;vertical-align:middle;flex:0 0 22px;transform:scale(.8);transform-origin:center}
 #help .helpGameBugIcon{width:28px;height:28px;display:block;flex:0 0 28px}#help .helpMosquitoIcon{width:28px;height:28px;transform:none}
-#help .sensePic .bbBugIcon{transform:translateY(4px)}
+
 #help h2 .bbBugIcon{font-size:25px;margin-right:7px;vertical-align:-.12em}
 .settingsHelpBtn .bbBugIcon{font-size:16px;margin-right:5px}
 
-#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
-@media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}.sensePic{flex-basis:68px}.sensePic .senseRing{width:61px;height:61px}}
+#help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
+@media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}}
 /* v17.9.52 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
 #help .panel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 12% 8%,#21472b55 0 14%,transparent 15%),radial-gradient(ellipse at 92% 20%,#173e2655 0 12%,transparent 13%),linear-gradient(165deg,#102f1d,#071b10 72%,#04130b)}
 #help .panel:before,#help .panel:after{content:"";position:absolute;width:90px;height:34px;border-radius:70% 30% 70% 30%;background:#315c3570;pointer-events:none;z-index:0}
@@ -509,7 +509,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #help .helpCard{border-radius:18px 12px 20px 14px;background:linear-gradient(145deg,#173d25,#11321f);border:1px solid #426b48;box-shadow:inset 0 1px 0 #6e8b6530,0 3px 0 #04150c;padding:12px 13px}
 #help .helpCard:nth-child(2n){border-radius:12px 20px 14px 18px;transform:translateY(3px)}
 #help .helpCard:nth-child(3){transform:translateX(3px)}#help .helpCard:nth-child(4){transform:translate(-2px,2px)}
-#help .bugSenseCard{transform:none!important;margin:2px 7px;border-radius:22px 15px 20px 14px;background:linear-gradient(100deg,#123820,#18432a)}
+
 #help .helpCard b{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:17px;letter-spacing:.1px}
 #help .helpCard .muted{font-size:13.5px;line-height:1.28;color:#c4cec4}
 #help .helpBack{border-radius:20px 15px 22px 17px}
@@ -931,6 +931,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #upgrade .choice .upgradeMark{display:none!important}
 #upgrade .choice b,#upgrade .choice p{max-width:100%!important}
 
+/* v18.0.78 — warning-circle cleanup: red/yellow warning-circle visuals and related help content removed. */
 /* v18.0.77 — BUGS screen readability pass */
 #bugs .panel{font-size:1.08em}
 #bugs .bugCard h3,
@@ -987,8 +988,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.77</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.77</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.78</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.78</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1062,7 +1063,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">In Story Mode, standing still fires faster. Get close to an enemy to hit harder.</div></div>
    <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Watch for attacks!</div></div>
-   <div class="helpCard bugSenseCard"><div class="sensePic" aria-hidden="true"><span class="senseRing"></span><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg></div><div><b>BUG SENSE</b><div class="muted">A red or yellow circle means an attack is coming.</div></div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Permanent upgrades make your runs a little smoother.</div></div>
    <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Endless</b><div class="muted">Beat Wave 20 to unlock Mosquito Mode.</div></div>
   </div>
@@ -2925,8 +2925,6 @@ function drawEnemy(e){
  }
  if(e.hit>0&&!e.dying){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
- if(e.boss&&(e.invuln||0)>0&&!(e.dying&&e.kind==='gardenHeart')){X.save();X.globalAlpha=.55+.25*Math.sin(FRAME_NOW/80);X.strokeStyle='#fff1a8';X.lineWidth=3;X.beginPath();X.arc(0,0,r+10,0,6.28);X.stroke();X.restore()}
- if(e.state==='telegraph'&&e.kind!=='moleCricket'){X.save();X.globalAlpha=.8;X.strokeStyle=e.boss?'#ffb23d':'#ff5a4f';X.lineWidth=3;X.beginPath();X.arc(0,0,r+8+Math.sin(FRAME_NOW/80)*2,0,6.28);X.stroke();X.restore();}
  if(e.kind==='mosquito'){
   drawMosquitoBody(step,step2);
  }else if(e.kind==='ant'){
@@ -3558,7 +3556,7 @@ function draw(now=performance.now()){
      }
      else if(f.style==='root'){for(let i=0;i<5;i++){let a=i*1.25+.4;X.beginPath();X.moveTo(0,0);X.quadraticCurveTo(Math.cos(a+.5)*f.r*.55,Math.sin(a+.5)*f.r*.55,Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}}
      else if(f.style==='webline'){for(let i=-2;i<=2;i++){X.beginPath();X.moveTo(-f.r,i*6);X.lineTo(f.r,-i*6);X.stroke()}}
-     else{X.beginPath();X.arc(0,0,f.r*pulse,0,6.28);X.stroke();if(f.style==='dark'){X.globalAlpha=.09+.13*q;X.fill()}if(f.style==='spore')for(let i=0;i<6;i++){let a=i*1.047+game.time;X.beginPath();X.arc(Math.cos(a)*f.r*.55,Math.sin(a)*f.r*.55,5,0,6.28);X.fill()}}
+     else if(f.style!=='clamp'){X.beginPath();X.arc(0,0,f.r*pulse,0,6.28);X.stroke();if(f.style==='dark'){X.globalAlpha=.09+.13*q;X.fill()}if(f.style==='spore')for(let i=0;i<6;i++){let a=i*1.047+game.time;X.beginPath();X.arc(Math.cos(a)*f.r*.55,Math.sin(a)*f.r*.55,5,0,6.28);X.fill()}}
      X.restore();X.globalAlpha=1;continue
    }
    if(f.web){
@@ -3582,7 +3580,7 @@ function draw(now=performance.now()){
      X.lineWidth=f.heavy?4:3;X.strokeStyle='#182016';X.strokeText((f.heavy?'✦ ':'')+f.damageText,0,0);
      X.fillStyle=f.heavy?'#ffd45e':(f.source==='helper'?'#bcecff':'#fff7df');X.fillText((f.heavy?'✦ ':'')+f.damageText,0,0);X.restore();X.globalAlpha=1;continue
    }
-   if(f.killPop){let q=Math.max(0,f.life/(f.maxLife||.28));X.globalAlpha=.55*q;X.strokeStyle='#ffe49a';X.lineWidth=3;X.beginPath();X.arc(f.x,f.y,f.r*(1-q*.55),0,6.28);X.stroke();X.globalAlpha=1;continue}
+   if(f.killPop){continue}
    if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/.42)),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease;X.globalAlpha=1-q*.35;X.fillStyle='#b9f04d';X.beginPath();X.ellipse(xx,yy,Math.max(2,f.r*(1-q*.55)),Math.max(1.5,f.r*.55*(1-q*.45)),-.5,0,6.28);X.fill();X.strokeStyle='#f5ffd0';X.lineWidth=1;X.stroke();X.globalAlpha=1;continue}
    if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0,n=BB_LOW_FX_DEVICE?3:5;i<n;i++){let a=i*(6.283/n)+FRAME_NOW/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
    if(f.playerShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
