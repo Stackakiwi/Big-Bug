@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.76: credits audio isolation — freezes gameplay combat/SFX while credits roll so only credits music is heard. -->
+<!-- Big Bug v18.0.77: credits audio isolation — freezes gameplay combat/SFX while credits roll so only credits music is heard. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -930,6 +930,21 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #upgrade .choice{padding:18px 18px!important;min-height:126px!important}
 #upgrade .choice .upgradeMark{display:none!important}
 #upgrade .choice b,#upgrade .choice p{max-width:100%!important}
+
+/* v18.0.77 — BUGS screen readability pass */
+#bugs .panel{font-size:1.08em}
+#bugs .bugCard h3,
+#bugs .bugCard .bugName,
+#bugs .card h3{font-size:clamp(28px,4.9vw,38px)!important;line-height:1.08!important}
+#bugs .bugCard p,
+#bugs .bugCard .muted,
+#bugs .bugCard .bugDesc,
+#bugs .bugCard .unlockText,
+#bugs .card p,
+#bugs .card .muted{font-size:clamp(20px,3.8vw,27px)!important;line-height:1.34!important}
+#bugs .bugCard button,
+#bugs .card button{font-size:clamp(21px,4vw,28px)!important}
+
 </style>
 </head>
 <body>
@@ -972,8 +987,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.76</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.76</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.77</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.77</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2719,7 +2734,7 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  stopCreditsChase();
 
  clearEndingTimers();bossMusicStop();titleMusicStop();purifyMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
- // v18.0.76 — credits are visual-only. Freeze the real gameplay simulation so the
+ // v18.0.77 — credits are visual-only. Freeze the real gameplay simulation so the
  // player cannot auto-attack any lingering game enemy and fire gameplay SFX under the credits music.
  if(game)game.paused=true;
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0,earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));if(!game.testMode){save.scrap+=Math.floor(game.wave/2);save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
