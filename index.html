@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.72: restore Story Mode arena background while keeping purification anti-flash rendering and credits chase. -->
+<!-- Big Bug v18.0.74: happy Home-theme reprise begins on Spore Behemoth defeat and hands off cleanly to unchanged credits music. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -972,8 +972,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.72</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.72</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.74</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.74</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1421,6 +1421,15 @@ function initAudio(){
 }
 let bbAudioVoices=0;
 const BB_AUDIO_VOICE_CAP=28;
+// v18.0.74 — track live music oscillators so song changes cannot leave old notes ringing under the next track.
+const bbMusicVoices=new Set();
+function hardStopMusicVoices(fade=.025){
+ if(!audio||!bbMusicVoices.size)return;
+ const now=audio.currentTime;
+ for(const v of [...bbMusicVoices]){
+  try{v.gain.gain.cancelScheduledValues(now);v.gain.gain.setValueAtTime(Math.max(.0001,v.gain.gain.value||.001),now);v.gain.gain.exponentialRampToValueAtTime(.001,now+fade);v.osc.stop(now+fade+.008)}catch(e){}
+ }
+}
 function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  if(!audio)return;
  if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;
@@ -1435,7 +1444,9 @@ function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  // v18.0.58 — cap simultaneous oscillator voices. This prevents dense late-wave SFX/music overlap from clipping or creating needless audio work on older phones.
  if(bbAudioVoices>=BB_AUDIO_VOICE_CAP)return;
  g*=1.2;bbAudioVoices++;
- let o=audio.createOscillator(),a=audio.createGain();o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);o.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1)};o.start();o.stop(audio.currentTime+d)
+ let o=audio.createOscillator(),a=audio.createGain(),voice=null;o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);
+ if(category==='music'){voice={osc:o,gain:a};bbMusicVoices.add(voice)}
+ o.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1);if(voice)bbMusicVoices.delete(voice)};o.start();o.stop(audio.currentTime+d)
 }
 function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setTimeout(()=>{if(!audio||save.settings.sfx===false)return;beep(720,.020,.0048,'triangle');setTimeout(()=>beep(980,.016,.0032,'sine'),12)},0)}
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
@@ -1444,7 +1455,7 @@ let titleMusicTimer=null,titleMusicStep=0;
 function isMenuMusicScreen(){return ['home','bugs','base','gardenBook','settings','help','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
 function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&(!game.boss||game.boss.dead))}
 function shouldTitleMusicPlay(){return isMenuMusicScreen()||isQuietStoryMusic()}
-function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}if(resetStep)titleMusicStep=0}
+function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}hardStopMusicVoices();if(resetStep)titleMusicStep=0}
 function titleMusicStart(){
  if(!audio||save.settings.music===false||titleMusicTimer)return;
  // Soft, playful garden-loop shared by Home/menu/help and reused quietly during normal Story gameplay.
@@ -1452,9 +1463,29 @@ function titleMusicStart(){
  const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035;const n=notes[titleMusicStep%notes.length];beep(n,.28,gain,'sine','music');if(titleMusicStep%4===0)beep(n/2,.34,bassGain,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,420)};
  tick();
 }
+// v18.0.74 — bright final-garden reprise: the Home melody returns in a happier form while the garden purifies.
+let purifyMusicTimer=null,purifyMusicStep=0;
+function purifyMusicStop(resetStep=true){if(purifyMusicTimer){clearTimeout(purifyMusicTimer);purifyMusicTimer=null}hardStopMusicVoices();if(resetStep)purifyMusicStep=0}
+function purifyMusicStart(resetStep=true){
+ if(resetStep)purifyMusicStop();else if(purifyMusicTimer)return;
+ if(!audio||save.settings.music===false||!game||!game.finalPurify)return;
+ // Same recognizable Home-theme contour, lifted and harmonized so the ending feels relieved and celebratory.
+ const melody=[659,831,988,831,740,880,988,880,659,831,1109,988,740,831,880,831];
+ const harmony=[330,415,494,415,370,440,494,440];
+ const sparkle=[1319,1480,1661,1480];
+ const tick=()=>{
+   if(!game||!game.finalPurify){purifyMusicStop(false);return}
+   const n=melody[purifyMusicStep%melody.length],h=harmony[Math.floor(purifyMusicStep/2)%harmony.length];
+   beep(n,.30,.0072,'sine','music');
+   if(purifyMusicStep%2===0)beep(h,.38,.0034,'triangle','music');
+   if(purifyMusicStep%4===3)beep(sparkle[Math.floor(purifyMusicStep/4)%sparkle.length],.12,.0022,'sine','music');
+   purifyMusicStep++;purifyMusicTimer=setTimeout(tick,390);
+ };
+ tick();
+}
 // v17.9.92 — faster, lightweight Mosquito Mode-only swarm theme.
 let endlessMusicTimer=null,endlessMusicStep=0;
-function endlessMusicStop(resetStep=true){if(endlessMusicTimer){clearTimeout(endlessMusicTimer);endlessMusicTimer=null}if(resetStep)endlessMusicStep=0}
+function endlessMusicStop(resetStep=true){if(endlessMusicTimer){clearTimeout(endlessMusicTimer);endlessMusicTimer=null}hardStopMusicVoices();if(resetStep)endlessMusicStep=0}
 function endlessMusicStart(resetStep=true){
  if(resetStep)endlessMusicStop();else if(endlessMusicTimer)return;
  if(!audio||save.settings.music===false||!game||game.mode!=='endless'||game.over||game.paused)return;
@@ -1464,7 +1495,7 @@ function endlessMusicStart(resetStep=true){
  tick();
 }
 let shopMusicTimer=null,shopMusicStep=0;
-function shopMusicStop(){if(shopMusicTimer){clearTimeout(shopMusicTimer);shopMusicTimer=null}shopMusicStep=0}
+function shopMusicStop(){if(shopMusicTimer){clearTimeout(shopMusicTimer);shopMusicTimer=null}hardStopMusicVoices();shopMusicStep=0}
 function shopSparkle(){if(!audio||save.settings.sfx===false)return;beep(1047,.10,.012,'sine');setTimeout(()=>beep(1319,.12,.010,'triangle'),55);setTimeout(()=>beep(1568,.16,.008,'sine'),115)}
 function shopMusicStart(withSparkle=true){
  shopMusicStop();if(!audio||save.settings.music===false)return;
@@ -1475,7 +1506,7 @@ function shopMusicStart(withSparkle=true){
  if(withSparkle)shopSparkle();tick();
 }
 let creditsMusicTimer=null,creditsMusicStep=0;
-function creditsMusicStop(){if(creditsMusicTimer){clearTimeout(creditsMusicTimer);creditsMusicTimer=null}creditsMusicStep=0}
+function creditsMusicStop(){if(creditsMusicTimer){clearTimeout(creditsMusicTimer);creditsMusicTimer=null}hardStopMusicVoices();creditsMusicStep=0}
 function creditsMusicStart(){
  creditsMusicStop();if(!audio||save.settings.music===false)return;
  const melody=[392,440,523,440,349,392,440,330,349,392,523,494,440,392,349,330],harmony=[196,220,262,220,175,196,220,165];
@@ -1493,7 +1524,7 @@ function continueMysteryMusicStart(){
  },delays[i])));
 }
 let bossMusicTimer=null,bossMusicStep=0;
-function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}bossMusicStep=0}
+function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}hardStopMusicVoices();bossMusicStep=0}
 function bossMusicStart(){
  titleMusicStop(false);bossMusicStop();if(!audio||save.settings.music===false)return;
  const finalBoss=game?.boss?.kind==='gardenHeart';
@@ -2247,7 +2278,7 @@ function update(dt,now){
    g.finalPurify.elapsed=Math.max(0,(now-g.finalPurify.start)/1000);g.time+=dt;
    if(g.finalPurify.elapsed>=14.6&&!g.finalPurify.finished){
      g.finalPurify.finished=true;const preview=!!g.finalPurify.preview,purifyOnly=!!g.finalPurify.purifyOnly;
-     g.finalPurify=null;if(purifyOnly){g.over=true;clearRunRecovery();returnHomeAfterEnding()}else playEndingCredits(preview);
+     g.finalPurify=null;purifyMusicStop();if(purifyOnly){g.over=true;clearRunRecovery();returnHomeAfterEnding()}else playEndingCredits(preview);
    }
    return;
  }
@@ -2554,8 +2585,8 @@ function updateHud(force=true,now=performance.now()){
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
- clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
- showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart();
+ clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
+ showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();hardStopMusicVoices(.035);setTimeout(()=>{if(isMenuMusicScreen())titleMusicStart()},90);
 }
 
 
@@ -2686,7 +2717,7 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  paintEndingLadybugs();
  stopCreditsChase();
 
- clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
+ clearEndingTimers();bossMusicStop();titleMusicStop();purifyMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0,earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));if(!game.testMode){save.scrap+=Math.floor(game.wave/2);save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt'),scene=$('victoryScene');
  end.dataset.phase='credits';end.dataset.skipAfter=String(performance.now()+700);
@@ -2703,7 +2734,7 @@ function skipEndingCredits(){
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
  if(!end||end.classList.contains('hidden')||end.dataset.phase!=='credits'||prompt.classList.contains('show'))return;
  if(performance.now()<Number(end.dataset.skipAfter||0))return;
- clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();creditsMusicStop();
+ clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();
  roll.style.animation='none';roll.style.visibility='hidden';$('endingBackdrop').style.opacity='0';
  end.dataset.phase='mystery';prompt.classList.add('show');continueMysteryMusicStart();
  endingTimers.push(setTimeout(returnHomeAfterEnding,5000));
@@ -2712,13 +2743,14 @@ $('ending').addEventListener('pointerup',skipEndingCredits);
 
 function completeGameEnding(preview=false,purifyOnly=false){
  if(!game||game.over||game.finalPurify)return;
- clearEndingTimers();bossMusicStop();creditsMusicStop();game.waveActive=false;game.intermission=true;game.paused=false;game.spawnLeft=0;
+ clearEndingTimers();bossMusicStop();titleMusicStop(false);purifyMusicStop();creditsMusicStop();game.waveActive=false;game.intermission=true;game.paused=false;game.spawnLeft=0;
  game.enemies=game.enemies.filter(e=>e===game.finalBoss||(!e.dead&&e.kind==='gardenHeart'));
  const boss=game.finalBoss||game.boss;if(boss){boss.hp=0;boss.dying=true;boss.invuln=999;boss.state='chase';boss.vx=0;boss.vy=0}
  game.finalBoss=boss;game.finalPurify={start:performance.now(),elapsed:0,preview:!!preview,purifyOnly:!!purifyOnly,finished:false};
+ purifyMusicStart(true);
  arenaBgKey='';arenaCacheKey='';
  $('bossbar').style.display='none';showGameUI(false);screen('none');flashBanner('THE SPORE BEHEMOTH FALLS...',1.05);
- beep(108,.48,.024,'sawtooth');endingTimers.push(setTimeout(()=>beep(76,.72,.014,'sine'),720));endingTimers.push(setTimeout(()=>beep(156,.48,.009,'triangle'),3100));
+ // v18.0.74 — removed the low ominous death-tone stack so it cannot clash with the happy purification reprise.
 }
 function previewFinalPurification(purifyOnly=false){
  // TEMP preview must bypass the normal Wave 100 preparation screen. Set up the real
