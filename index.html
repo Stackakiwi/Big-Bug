@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.69: anti-flash rendering guard; final boss death remains anchored to the real defeat position. -->
+<!-- Big Bug v18.0.70: purification renders as one opaque gameplay canvas to prevent iOS compositor flashes. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -967,8 +967,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.69</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.69</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.70</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.70</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3333,11 +3333,18 @@ function drawFinalSavedText(){
 }
 function draw(now=performance.now()){
  FRAME_NOW=now;
- // v18.0.69 — anti-flash guard: never let a transient filter/alpha/composite state leak into a full frame.
+ // v18.0.70 — anti-flash guard: reset transient draw state before every frame.
  X.globalAlpha=1;X.filter='none';X.globalCompositeOperation='source-over';X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetX=0;X.shadowOffsetY=0;
  const area=areaFor(),ai=areaIndex(),cacheable=Number.isInteger(ai),cacheKey='arena:'+ai+':'+C.width+'x'+C.height;
  X.clearRect(0,0,W,H);
- if(cacheable&&arenaCacheKey===cacheKey){paintArenaBackgroundFromCache(cacheKey)}else{
+ // v18.0.70 — while the final garden purifies, render the cached Wave 100 arena
+ // directly into the gameplay canvas as a fully opaque base. This avoids iOS briefly
+ // recompositing the transparent gameplay layer over the separate background canvas.
+ const finalPurifyOpaque=!!(game?.finalPurify&&ai===19&&cacheable&&arenaCacheKey===cacheKey);
+ if(finalPurifyOpaque){
+   X.save();X.globalAlpha=1;X.globalCompositeOperation='source-over';X.fillStyle=area.bot||'#17251a';X.fillRect(0,0,W,H);
+   X.drawImage(ARENA_CACHE,0,0,ARENA_CACHE.width,ARENA_CACHE.height,0,0,W,H);X.restore();
+ }else if(cacheable&&arenaCacheKey===cacheKey){paintArenaBackgroundFromCache(cacheKey)}else{
  // layered garden floor: same Big Bug palette, with more depth and hand-drawn detail
  let bg=X.createLinearGradient(0,0,0,H);bg.addColorStop(0,area.top);bg.addColorStop(.55,area.mid);bg.addColorStop(1,area.bot);X.fillStyle=bg;X.fillRect(0,0,W,H);
  // full-screen garden floor: the whole visible field is playable
