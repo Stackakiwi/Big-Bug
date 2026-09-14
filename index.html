@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.79: Mosquito Mode standing-still attack-speed boost added on top of existing Mosquito attack-speed scaling. -->
+<!-- Big Bug v18.0.80: Mosquito Mode stationary detection fixed; stand-still firing bonus is a true 25% and stacks with existing Mosquito attack-speed scaling. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -988,8 +988,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.79</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.79</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.80</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.80</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1134,7 +1134,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 <script>
 // v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
-// v18.0.79 — Mosquito Mode also gets the 20% stand-still firing-speed bonus, stacking with its existing faster attack-speed scaling and boosts.
+// v18.0.80 — Mosquito Mode stationary detection is more tolerant of tiny movement jitter; stand-still firing bonus is a true 25% and stacks with existing faster attack-speed scaling and boosts.
+// v18.0.80 — Mosquito Mode also gets the stand-still firing-speed bonus, stacking with its existing faster attack-speed scaling and boosts.
 // v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
 
 // v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
@@ -2308,7 +2309,7 @@ function update(dt,now){
  // speed-limited movement: taps set a destination instead of instantly teleporting the bug
  let mdx=p.moveX-p.x,mdy=p.moveY-p.y,md=Math.sqrt(mdx*mdx+mdy*mdy),oldPX=p.x,oldPY=p.y;
  p.webSlow=Math.max(0,(p.webSlow||0)-dt);if(md>1){let moveMult=p.webSlow>0?.48:1,step=Math.min(md,p.speed*moveMult*dt);p.x+=mdx/md*step;p.y+=mdy/md*step;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y))}
- p.motionX=dt>0?(p.x-oldPX)/dt:0;p.motionY=dt>0?(p.y-oldPY)/dt:0;const pMotionMag=Math.hypot(p.motionX,p.motionY);p.motionScale105=pMotionMag>105?105/pMotionMag:1;p.motionScale125=pMotionMag>125?125/pMotionMag:1;if(g.mode==='story'||g.mode==='endless')p.storyStillTime=pMotionMag<5?(p.storyStillTime||0)+dt:0;else p.storyStillTime=0;g.endlessRepelFrame=g.mode==='endless'&&endlessRepelActive();
+ p.motionX=dt>0?(p.x-oldPX)/dt:0;p.motionY=dt>0?(p.y-oldPY)/dt:0;const pMotionMag=Math.hypot(p.motionX,p.motionY);p.motionScale105=pMotionMag>105?105/pMotionMag:1;p.motionScale125=pMotionMag>125?125/pMotionMag:1;const effectivelyStill=pMotionMag<18||md<=1.5;if(g.mode==='story'||g.mode==='endless')p.storyStillTime=effectivelyStill?(p.storyStillTime||0)+dt:0;else p.storyStillTime=0;g.endlessRepelFrame=g.mode==='endless'&&endlessRepelActive();
  // quota-based waves: spawn a set number, then clear the field
  if(g.mode==='endless'&&g.waveActive){
    g.spawn+=dt*1000;const active=g.enemies.length,cap=endlessActiveCap(g.wave),spawnEvery=Math.max(55,125-g.wave*2);
@@ -2335,7 +2336,7 @@ function update(dt,now){
  g.aiFrame=(g.aiFrame||0)+1;
  // v18.0.41 — build once before Story targeting/AI so player and buddies can use spatial lookups.
  if(g.mode!=='endless')buildStoryEnemyGrid();
- const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),stillFast=(g.mode==='story'||g.mode==='endless')&&(p.storyStillTime||0)>=.5,baseAttackDelay=stillFast?p.rate/1.20:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),stillFast=(g.mode==='story'||g.mode==='endless')&&(p.storyStillTime||0)>=.35,baseAttackDelay=stillFast?p.rate/1.25:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
  // v18.0.21: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
