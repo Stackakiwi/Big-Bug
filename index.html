@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.60: separate labeled health bars for double-boss waves 90 and 95. -->
+<!-- Big Bug v18.0.61: separate labeled health bars for double-boss waves 90 and 95. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -899,7 +899,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   pointer-events: auto !important;
 }
 
-/* v18.0.59 — Help layout + cleaner in-run upgrades. */
+/* v18.0.61 — Help layout + cleaner in-run upgrades. */
 #help .helpBossCard{grid-column:1/-1;min-height:112px;display:flex;flex-direction:column;justify-content:center}
 #upgrade .choice{padding:18px 18px!important;min-height:126px!important}
 #upgrade .choice .upgradeMark{display:none!important}
@@ -945,8 +945,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.60</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.60</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.61</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.61</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1556,7 +1556,7 @@ function endlessWaveQuota(w){if(w===1)return 12;if(w===2)return 20;if(w===3)retu
 
 function buildTestWaveSelector(){
  const sel=$('testWave');if(!sel)return;let html='';
- for(let w=1;w<=100;w++){const boss=w%5===0, label=boss?`Wave ${w} — ${bossKindsFor(w).map(k=>BOSS_NAMES[k]).join(' + ')}`:`Wave ${w}`;html+=`<option value="${w}"${w===20?' selected':''}>${label}</option>`}
+ for(let w=1;w<=100;w++){const boss=w%5===0, label=boss?`Wave ${w} — ${bossKindsFor(w).map(k=>bossDisplayName(k,w)).join(' + ')}`:`Wave ${w}`;html+=`<option value="${w}"${w===20?' selected':''}>${label}</option>`}
  sel.innerHTML=html;
 }
 function hideAll(){screens.forEach(s=>$(s).classList.add('hidden'))}
@@ -1599,6 +1599,7 @@ const BOSS_ROSTER={
 };
 const BOSS_NAMES={hornet:'HORNET',stagBeetle:'STAG KING',queenSpider:'VENOM QUEEN',moleCricket:'MOLE THING',scarab:'IRON SCARAB',dragonflyBoss:'SKY LANCER',mantisBoss:'PRAYING TYRANT',centipede:'RED CENTIPEDE',earwig:'PINCHER',cicada:'THUNDER CICADA',bombardier:'BOMBARDIER',mothBoss:'DUSK MOTH',waterStrider:'POND SKATER',weevil:'THORN WEEVIL',tarantula:'OLD WEBBER',rootBorer:'ROOT BORER',sporeBeetle:'SPOREBACK',gardenHeart:'THE SPORE BEHEMOTH'};
 function bossKindsFor(w=game?.wave||5){return BOSS_ROSTER[w]||['sporeBeetle']}
+function bossDisplayName(k,w=game?.wave||5){const base=BOSS_NAMES[k]||'BIG BUG';return (w===90||w===95)?'SPORED '+base:base}
 function bossKindFor(w=game?.wave||5){return bossKindsFor(w)[0]}
 function bossSecondFight(w=game?.wave||5){return false}
 function evolutionTier(w=game?.wave||1){return Math.floor(Math.max(0,w-1)/10)}
@@ -2469,7 +2470,7 @@ function configureBossHud(w){
  for(let i=0;i<2;i++){
   const row=$('bossRow'+i),name=$('bossName'+i);if(!row||!name)continue;
   const kind=kinds[i];row.classList.toggle('hidden',!kind);
-  if(kind)name.textContent=BOSS_NAMES[kind]||'BIG BUG';
+  if(kind)name.textContent=bossDisplayName(kind,w);
   setBossBarFill(i,kind?'100%':'0%');
  }
  $('bossbar').style.width=dual?'min(330px,72vw)':'min(290px,62vw)';
@@ -3134,6 +3135,29 @@ function drawEnemy(e){
 
  if(e.boss){
    const rr=r;
+   // v18.0.61 — Waves 90 and 95 are visibly Spored variants.
+   // Lightweight static fungal marks only: no extra particles, hitboxes, or gameplay changes.
+   if(game.wave===90||game.wave===95){
+     X.save();
+     X.globalAlpha=.86;
+     // Purple infection patches attached to the shell/body.
+     const sporePatches=[[-.44,-.18,.14],[.34,.20,.11],[-.10,.48,.09]];
+     for(const q of sporePatches){
+       X.fillStyle='#8f5a93';X.strokeStyle='#4e3157';X.lineWidth=1.3;
+       X.beginPath();X.arc(q[0]*rr,q[1]*rr,Math.max(3,q[2]*rr),0,6.28);X.fill();X.stroke();
+       X.fillStyle='#d498d0';X.beginPath();X.arc(q[0]*rr-1.2,q[1]*rr-1.5,Math.max(1.5,q[2]*rr*.34),0,6.28);X.fill();
+     }
+     // Two tiny mushroom growths keep the corruption readable without hiding the original boss art.
+     for(const m of [[-.58,-.48,.12],[.48,-.34,.10]]){
+       const mx=m[0]*rr,my=m[1]*rr,sz=Math.max(4,m[2]*rr);
+       X.strokeStyle='#c7b695';X.lineWidth=Math.max(1.5,sz*.24);X.beginPath();X.moveTo(mx,my+sz*.25);X.lineTo(mx,my-sz*.42);X.stroke();
+       X.fillStyle='#9a6399';X.beginPath();X.ellipse(mx,my-sz*.48,sz*.72,sz*.34,0,0,6.28);X.fill();
+       X.strokeStyle='#5d3d62';X.lineWidth=1;X.stroke();
+     }
+     // Very faint infected rim so both duo bosses read as part of the same spore event.
+     X.globalAlpha=.22+.08*Math.sin(t*3.2);X.strokeStyle='#c879d1';X.lineWidth=2.2;X.beginPath();X.arc(0,0,rr*1.18,0,6.28);X.stroke();
+     X.restore();
+   }
    
    
    
