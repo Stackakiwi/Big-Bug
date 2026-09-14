@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.61: separate labeled health bars for double-boss waves 90 and 95. -->
+<!-- Big Bug v18.0.62: final Spore Behemoth arena + death/purification ending sequence and temporary ending preview. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -333,6 +333,26 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 930px))}}
 #continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
 #continuePrompt.show{opacity:1}
+/* v18.0.62 — final boss purification cutscene before the credits. */
+#victoryScene{position:absolute;inset:0;z-index:4;display:none;overflow:hidden;background:radial-gradient(circle at 50% 43%,#57345c88 0 18%,transparent 44%),linear-gradient(#171020,#090b0d 66%,#08120b);opacity:1}
+#victoryScene.play{display:block}
+#victoryScene.cleaning{animation:victoryWorldClean 6.4s ease-in-out forwards}
+.victoryRoots{position:absolute;inset:-8%;opacity:.95;background:repeating-radial-gradient(ellipse at 50% 70%,transparent 0 40px,#7d4c8466 43px 46px,transparent 50px 78px),radial-gradient(ellipse at 20% 83%,#9b5b9055 0 4%,transparent 19%),radial-gradient(ellipse at 80% 76%,#73407855 0 5%,transparent 21%);filter:blur(.3px);animation:victoryRootsFade 5.8s 1.0s ease forwards}
+#victorySporeField{position:absolute;inset:0;pointer-events:none;opacity:1;animation:victorySporesFade 5.9s .75s ease forwards}
+.victorySpore{position:absolute;width:5px;height:5px;border-radius:50%;background:#d99bd9;box-shadow:0 0 7px #e9b4e5,0 0 15px #a85ba4;opacity:.72;animation:victorySporeFloat 2.8s ease-in-out infinite alternate}
+.victoryBossWrap{position:absolute;left:50%;top:47%;width:min(300px,78vw);height:min(300px,78vw);transform:translate(-50%,-50%);filter:drop-shadow(0 16px 20px #000a)}
+#victoryBossCanvas{width:100%;height:100%;display:block;transform-origin:50% 58%}
+#victoryScene.play #victoryBossCanvas{animation:victoryBossFall 4.7s .25s cubic-bezier(.28,.01,.55,1) forwards}
+#victorySavedText{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%) scale(.78) rotate(-2deg);width:min(92vw,680px);text-align:center;opacity:0;font-family:"Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand",cursive;letter-spacing:.6px;text-shadow:0 5px 0 #2b1c13,0 10px 30px #000c;pointer-events:none}
+#victorySavedText span{display:block;color:#f5b02e;font-size:clamp(34px,10vw,68px);line-height:.88;font-weight:900}
+#victorySavedText strong{display:block;color:#78c84c;font-size:clamp(42px,12vw,82px);line-height:.9;margin-top:9px;font-weight:1000}
+#victoryScene.play #victorySavedText{animation:victoryTextPop 3.15s 3.7s cubic-bezier(.2,.9,.25,1) forwards}
+@keyframes victoryBossFall{0%{transform:translateY(0) scale(1);opacity:1;filter:saturate(1)}18%{transform:translateY(2px) rotate(-2deg) scale(1.025)}34%{transform:translateY(-3px) rotate(2deg) scale(.99);filter:saturate(.9)}53%{transform:translateY(9px) rotate(-3deg) scale(.94);opacity:.92;filter:saturate(.7) brightness(.9)}72%{transform:translateY(27px) rotate(4deg) scale(.79,.68);opacity:.67;filter:saturate(.4) brightness(.72)}100%{transform:translateY(74px) rotate(-5deg) scale(.48,.24);opacity:0;filter:saturate(0) brightness(.5)}}
+@keyframes victorySporesFade{0%,18%{opacity:1}62%{opacity:.35}100%{opacity:0}}
+@keyframes victoryRootsFade{0%,12%{opacity:.95;filter:saturate(1)}65%{opacity:.35;filter:saturate(.45)}100%{opacity:0;filter:saturate(0)}}
+@keyframes victorySporeFloat{from{transform:translate(-5px,11px) scale(.75)}to{transform:translate(8px,-16px) scale(1.15)}}
+@keyframes victoryWorldClean{0%,44%{background-color:#090b0d}100%{background:radial-gradient(circle at 50% 48%,#cde8af33,transparent 38%),linear-gradient(#7ea765,#42623c 70%,#263c29)}}
+@keyframes victoryTextPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotate(-3deg)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.09) rotate(1deg)}30%,75%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-1deg)}100%{opacity:0;transform:translate(-50%,-53%) scale(1.03) rotate(0)}}
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}.sensePic .helpBugSvg{position:relative;width:48px;height:54px;z-index:2}.sensePic .senseRing{left:50%;top:50%;transform:translate(-50%,-50%)}
 @media(max-width:430px){#creditsRoll h1{font-size:38px}#creditsRoll .creditName{font-size:26px}}
 
@@ -940,13 +960,13 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <button class="btn dark small creditsTestBtn" data-action="testCredits">TEMP CREDITS</button>
+  <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
   <div class="testJump" aria-label="Temporary wave and boss tester">
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.61</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.61</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.62</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.62</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1047,6 +1067,12 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 <section id="ending" class="hidden" aria-label="Ending credits">
  <div id="endingBackdrop"></div>
  <div id="endingGarden"><div class="endMoon"></div><div class="endGrass"></div><i class="endSpore s2"></i><i class="endSpore s3"></i><i class="endSpore s4"></i><i class="endSpore s5"></i><i class="endSpore s6"></i><canvas id="endingLadybug" width="48" height="48" aria-hidden="true"></canvas></div>
+ <div id="victoryScene" aria-hidden="true">
+  <div class="victoryRoots"></div>
+  <div id="victorySporeField"></div>
+  <div class="victoryBossWrap"><canvas id="victoryBossCanvas" width="300" height="300"></canvas></div>
+  <div id="victorySavedText"><span>YOU SAVED</span><strong>THE GARDEN!</strong></div>
+ </div>
  <div class="endingVignette"></div>
  <div id="creditsRoll">
   <canvas class="endBug" id="creditsHeroBug" width="76" height="76" aria-hidden="true"></canvas>
@@ -2503,7 +2529,7 @@ function updateHud(force=true,now=performance.now()){
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
- clearEndingTimers();stopCreditsNameEntrances();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';
+ clearEndingTimers();stopCreditsNameEntrances();creditsMusicStop();$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
  showGameUI(false);screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();titleMusicStart();
 }
 
@@ -2549,7 +2575,27 @@ function resetCreditsNameEntrances(){
  creditsNameRAF=requestAnimationFrame(tick);
 }
 
-function playEndingCredits(preview=false){
+function paintVictoryBoss(){
+ const c=$('victoryBossCanvas');if(!c)return;const q=c.getContext('2d'),w=c.width,h=c.height,rr=92,t=performance.now()/1000;q.clearRect(0,0,w,h);q.save();q.translate(w/2,h/2+8);
+ // A cutscene-sized version of the in-game Spore Behemoth silhouette.
+ q.lineCap='round';for(const side of [-1,1])for(let i=0;i<3;i++){const sy=-rr*.18+i*rr*.42;q.strokeStyle=i===1?'#6d416f':'#51334f';q.lineWidth=10-i*1.3;q.beginPath();q.moveTo(side*rr*.34,sy);q.quadraticCurveTo(side*rr*(.9+i*.12),sy+rr*.16,side*rr*(1.34+i*.08),sy+rr*(.30+i*.08));q.stroke()}
+ q.fillStyle='#3d293c';q.strokeStyle='#241a27';q.lineWidth=4;q.beginPath();q.ellipse(0,rr*.12,rr*.90,rr*.96,0,0,Math.PI*2);q.fill();q.stroke();
+ const lobes=[[-.50,-.52,.42],[.05,-.72,.52],[.52,-.45,.38],[-.55,.05,.34],[.50,.12,.31]];for(const m of lobes){q.fillStyle=m[0]>0?'#684169':'#593858';q.beginPath();q.ellipse(m[0]*rr,m[1]*rr,m[2]*rr,m[2]*rr*.58,0,0,Math.PI*2);q.fill();q.strokeStyle='#8e5c87';q.lineWidth=1.7;q.stroke()}
+ q.fillStyle='#171319';q.beginPath();q.ellipse(0,rr*.16,rr*.44,rr*.50,0,0,Math.PI*2);q.fill();q.fillStyle='#d4b88f';for(let i=0;i<8;i++){const a=i*Math.PI*2/8+.38,cx=Math.cos(a)*rr*.34,cy=rr*.16+Math.sin(a)*rr*.39;q.save();q.translate(cx,cy);q.rotate(a+1.57);q.beginPath();q.moveTo(-4,0);q.lineTo(0,rr*.17);q.lineTo(4,0);q.fill();q.restore()}
+ for(const p of [[-.38,-.22,.09],[.36,-.27,.10],[-.18,-.53,.07],[.22,-.55,.065]]){q.fillStyle='#d27acb';q.beginPath();q.arc(p[0]*rr,p[1]*rr,p[2]*rr,0,Math.PI*2);q.fill();q.fillStyle='#f2b4e9';q.beginPath();q.arc(p[0]*rr-2,p[1]*rr-2,p[2]*rr*.35,0,Math.PI*2);q.fill()}
+ for(const m of [[-.72,-.18,.22],[.67,-.05,.25],[-.38,-.72,.18],[.42,-.75,.17]]){const mx=m[0]*rr,my=m[1]*rr,sz=m[2]*rr;q.strokeStyle='#b79a8a';q.lineWidth=5;q.beginPath();q.moveTo(mx,my+sz*.35);q.lineTo(mx,my-sz*.35);q.stroke();q.fillStyle='#815078';q.beginPath();q.ellipse(mx,my-sz*.42,sz*.72,sz*.34,0,0,Math.PI*2);q.fill()}
+ q.restore();
+}
+function buildVictorySpores(){const f=$('victorySporeField');if(!f)return;f.innerHTML='';for(let i=0;i<34;i++){const p=document.createElement('i');p.className='victorySpore';p.style.left=((i*37+11)%97)+'%';p.style.top=((i*61+17)%91)+'%';p.style.animationDelay=(-((i%9)*.27))+'s';p.style.animationDuration=(2.2+(i%6)*.31)+'s';p.style.transform='scale('+(0.65+(i%4)*.18)+')';f.appendChild(p)}}
+function startVictorySequence(preview=false){
+ clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
+ const end=$('ending'),scene=$('victoryScene'),roll=$('creditsRoll'),prompt=$('continuePrompt');screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');$('endingBackdrop').style.opacity='1';
+ roll.style.animation='none';roll.style.visibility='hidden';scene.style.display='';scene.classList.remove('play','cleaning');void scene.offsetHeight;buildVictorySpores();paintVictoryBoss();scene.classList.add('play','cleaning');
+ // A low, fading final pulse while the corruption dies out.
+ beep(92,.65,.025,'sawtooth');endingTimers.push(setTimeout(()=>beep(69,.9,.016,'sine'),800));endingTimers.push(setTimeout(()=>beep(138,.75,.012,'triangle'),2450));
+ endingTimers.push(setTimeout(()=>{scene.classList.remove('play','cleaning');scene.style.display='none';roll.style.visibility='';playEndingCredits(preview,true)},7350));
+}
+function playEndingCredits(preview=false,alreadyOpen=false){
  paintEndingLadybugs();
  const watcher=$('endingLadybug');
  if(watcher){
@@ -2560,8 +2606,8 @@ function playEndingCredits(preview=false){
 
  clearEndingTimers();bossMusicStop();titleMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0,endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0,earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));if(!game.testMode){save.scrap+=Math.floor(game.wave/2);save.best=Math.max(save.best,100);save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+1;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +1 GOLD LEAF ✦',1.8),350)}}
- const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
- screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');
+ const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt'),scene=$('victoryScene');
+ screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');if(scene){scene.classList.remove('play','cleaning');scene.style.display='none'}roll.style.visibility='';
  // Restart the CSS scroll every time, including the temporary preview button.
  roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 36s linear forwards';
  resetCreditsNameEntrances();
@@ -2573,8 +2619,8 @@ function playEndingCredits(preview=false){
 function completeGameEnding(){
  if(!game||game.over)return;
  game.waveActive=false;game.intermission=true;game.paused=true;
- flashBanner('☣ THE SPORE BEHEMOTH FALLS...',1.8);
- endingTimers.push(setTimeout(()=>playEndingCredits(false),2200));
+ flashBanner('THE SPORE BEHEMOTH FALLS...',1.0);
+ endingTimers.push(setTimeout(()=>startVictorySequence(false),700));
 }
 
 function finish(won,quit=false){
@@ -3213,6 +3259,15 @@ function draw(now=performance.now()){
  // v17 late-game area accents: lightweight so Wave 100 stays smooth.
  if(ai>=8){for(let i=0;i<Math.min(14,6+Math.floor(ai/2));i++){let x=(i*117+ai*29)%W,y=(i*163+ai*41)%H;X.globalAlpha=.22;if(ai>=16){X.fillStyle=ai>=18?'#a45b91':'#9a78a8';X.beginPath();X.arc(x,y,3+(i%3),0,6.28);X.fill()}else if(ai===13){X.fillStyle='#76a98a';X.beginPath();X.ellipse(x,y,15,6,i,0,6.28);X.fill()}else{X.strokeStyle=area.edge2;X.lineWidth=2;X.beginPath();X.moveTo(x,y+12);X.quadraticCurveTo(x+8,y,x,y-12);X.stroke()}}X.globalAlpha=1}
 
+ // v18.0.62 — Wave 100 is visibly overrun by the Spore Behemoth. These are cached/static, so the extra detail is cheap.
+ if(ai===19){
+   X.save();X.globalAlpha=.62;X.strokeStyle='#875183';X.lineWidth=4;X.lineCap='round';
+   for(let i=0;i<11;i++){const x=(i*139+37)%W,y=(i*181+66)%H;X.beginPath();X.moveTo(x-38,y+24);X.bezierCurveTo(x-12,y-18,x+24,y+35,x+52,y-20);X.stroke()}
+   X.globalAlpha=.34;for(let i=0;i<13;i++){const x=(i*101+71)%W,y=(i*151+91)%H,r=18+(i%4)*8;X.fillStyle=i%2?'#7c4779':'#94558c';X.beginPath();X.ellipse(x,y,r,r*.42,i*.43,0,6.28);X.fill()}
+   X.globalAlpha=.82;for(let i=0;i<8;i++){const x=(i*157+55)%W,y=(i*113+120)%H;X.strokeStyle='#ad8a94';X.lineWidth=3;X.beginPath();X.moveTo(x,y+7);X.lineTo(x,y-5);X.stroke();X.fillStyle='#8b5182';X.beginPath();X.ellipse(x,y-8,9+(i%3)*2,4.5,0,0,6.28);X.fill()}
+   X.restore();
+ }
+
  // area-aware leaf litter: quantity and placement now change with each map
  const leafCounts=[28,24,12,10,18,10,8,14,26,18,16,6,8,5,4,14,8,12,4,2];
  const leafCount=leafCounts[ai]??12;
@@ -3232,6 +3287,8 @@ function draw(now=performance.now()){
  // v17.8.59 — all arena bases above are cached; only these intentionally animated accents stay live.
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
+ // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
+ if(ai===19){for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
  for(const d of game.drops){const m=28;if(d.x+m<0||d.x-m>W||d.y+m<0||d.y-m>H)continue;drawLeaves(d)}
  // v18.0.41 — skip detailed regular-enemy rendering only when fully outside a generous viewport margin.
@@ -3526,7 +3583,7 @@ document.addEventListener('click',e=>{
   if(a==='goldContinue')goldContinue();
  if(a==='endless')startEndless();
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
- if(a==='testCredits')playEndingCredits(true)
+ if(a==='testEnding')startVictorySequence(true)
  if(a==='settings'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
  if(a==='help'){showGameUI(false);screen('help');titleMusicStart()}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
