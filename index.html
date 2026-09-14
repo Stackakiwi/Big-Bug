@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.87: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
+<!-- Big Bug v18.0.88: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -990,8 +990,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.87</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.87</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.88</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.88</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1147,7 +1147,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-// v18.0.87 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
+// v18.0.88 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
 // v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
@@ -1494,8 +1494,8 @@ function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  }
  // v18.0.58 — cap simultaneous oscillator voices. This prevents dense late-wave SFX/music overlap from clipping or creating needless audio work on older phones.
  if(bbAudioVoices>=BB_AUDIO_VOICE_CAP)return;
- g*=1.716*Math.max(0,Math.min(2,Number(save.settings.volume??50)/50));if(g<=0)return;bbAudioVoices++;
- let o=audio.createOscillator(),a=audio.createGain(),voice={osc:o,gain:a,category};o.type=type;o.frequency.value=f;a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);
+ g*=3.432*Math.max(0,Math.min(2,Number(save.settings.volume??50)/50));if(g<=0)return;bbAudioVoices++;
+ let o=audio.createOscillator(),a=audio.createGain(),voice={osc:o,gain:a,category};o.type=type;o.frequency.value=f;g=Math.min(g,.92);a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);
  bbAllVoices.add(voice);if(category==='music')bbMusicVoices.add(voice);
  o.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1);bbAllVoices.delete(voice);bbMusicVoices.delete(voice)};o.start();o.stop(audio.currentTime+d)
 }
@@ -2341,7 +2341,7 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- // v18.0.87 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
+ // v18.0.88 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
  if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
