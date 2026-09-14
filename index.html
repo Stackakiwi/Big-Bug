@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.74: happy Home-theme reprise begins on Spore Behemoth defeat and hands off cleanly to unchanged credits music. -->
+<!-- Big Bug v18.0.75: purification audio isolation — prevents Story/Home music restarts and cancels delayed boss intro notes during ending previews. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -972,8 +972,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.74</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.74</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.75</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.75</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1453,8 +1453,9 @@ function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
 function isMenuMusicScreen(){return ['home','bugs','base','gardenBook','settings','help','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
-function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&(!game.boss||game.boss.dead))}
-function shouldTitleMusicPlay(){return isMenuMusicScreen()||isQuietStoryMusic()}
+// v18.0.75 — purification owns the soundtrack; normal Story/Home music must stay silent until it ends.
+function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&!game.finalPurify&&(!game.boss||game.boss.dead))}
+function shouldTitleMusicPlay(){if(game&&game.finalPurify)return false;const end=$('ending');if(end&&!end.classList.contains('hidden'))return false;return isMenuMusicScreen()||isQuietStoryMusic()}
 function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}hardStopMusicVoices();if(resetStep)titleMusicStep=0}
 function titleMusicStart(){
  if(!audio||save.settings.music===false||titleMusicTimer)return;
@@ -1523,22 +1524,22 @@ function continueMysteryMusicStart(){
    if(i===0||i===4||i===8)beep(n/2,.72,.0028,'triangle','music');
  },delays[i])));
 }
-let bossMusicTimer=null,bossMusicStep=0;
-function bossMusicStop(){if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}hardStopMusicVoices();bossMusicStep=0}
+let bossMusicTimer=null,bossMusicStep=0,bossMusicEpoch=0;
+function bossMusicStop(){bossMusicEpoch++;if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}hardStopMusicVoices();bossMusicStep=0}
 function bossMusicStart(){
- titleMusicStop(false);bossMusicStop();if(!audio||save.settings.music===false)return;
+ titleMusicStop(false);bossMusicStop();if(!audio||save.settings.music===false)return;const musicEpoch=bossMusicEpoch;
  const finalBoss=game?.boss?.kind==='gardenHeart';
  if(finalBoss){
    // Spore Behemoth: slower, lower, dissonant pulse with a breathing fungal feel.
-   beep(73,.42,.040,'sawtooth','music');setTimeout(()=>beep(109,.34,.025,'triangle','music'),170);setTimeout(()=>beep(82,.52,.022,'sine','music'),330);
+   beep(73,.42,.040,'sawtooth','music');setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(109,.34,.025,'triangle','music')},170);setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(82,.52,.022,'sine','music')},330);
    const notes=[73,87,82,110,73,98,77,116,69,87,104,82,73,110,92,77];
-   const tick=()=>{if(!game||game.over||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.23,.019,'sawtooth','music');if(bossMusicStep%2===0)beep(n*1.5,.16,.008,'triangle','music');if(bossMusicStep%4===3)beep(55,.28,.013,'square','music');if(bossMusicStep%8===6)beep(147,.5,.006,'sine','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,235)};
+   const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.23,.019,'sawtooth','music');if(bossMusicStep%2===0)beep(n*1.5,.16,.008,'triangle','music');if(bossMusicStep%4===3)beep(55,.28,.013,'square','music');if(bossMusicStep%8===6)beep(147,.5,.006,'sine','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,235)};
    bossMusicTimer=setTimeout(tick,520);return;
  }
  // Standard boss theme.
- beep(115,.20,.038,'sawtooth','music');setTimeout(()=>beep(172,.18,.030,'square','music'),110);setTimeout(()=>beep(230,.22,.024,'sawtooth','music'),210);
+ beep(115,.20,.038,'sawtooth','music');setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(172,.18,.030,'square','music')},110);setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(230,.22,.024,'sawtooth','music')},210);
  const notes=[146,174,196,174,130,174,220,196,146,196,233,174,130,164,196,220];
- const tick=()=>{if(!game||game.over||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
+ const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
  bossMusicTimer=setTimeout(tick,380);
 }
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
@@ -2750,7 +2751,7 @@ function completeGameEnding(preview=false,purifyOnly=false){
  purifyMusicStart(true);
  arenaBgKey='';arenaCacheKey='';
  $('bossbar').style.display='none';showGameUI(false);screen('none');flashBanner('THE SPORE BEHEMOTH FALLS...',1.05);
- // v18.0.74 — removed the low ominous death-tone stack so it cannot clash with the happy purification reprise.
+ // v18.0.75 — purification keeps the low death-tone stack disabled; boss intro callbacks are also invalidated on defeat.
 }
 function previewFinalPurification(purifyOnly=false){
  // TEMP preview must bypass the normal Wave 100 preparation screen. Set up the real
