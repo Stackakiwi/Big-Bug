@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.65: final boss now dies and purifies the actual Wave 100 gameplay arena before credits. -->
+<!-- Big Bug v18.0.66: verified in-arena Spore Behemoth death + physical Wave 100 garden purification before credits. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -333,7 +333,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 930px))}}
 #continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
 #continuePrompt.show{opacity:1}
-/* v18.0.63 — longer final purification beat before credits + tap-to-skip credits. */
+/* v18.0.66 — verified longer in-arena purification + tap-to-skip credits. */
 #victoryScene{position:absolute;inset:0;z-index:4;display:none;overflow:hidden;background:radial-gradient(circle at 50% 43%,#57345c88 0 18%,transparent 44%),linear-gradient(#171020,#090b0d 66%,#08120b);opacity:1}
 #victoryScene.play{display:block}
 #victoryScene.cleaning{animation:victoryWorldClean 9.6s ease-in-out forwards}
@@ -967,8 +967,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.64</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.64</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.66</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.66</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2239,7 +2239,7 @@ function update(dt,now){
  // all combat/AI is frozen. Only the purification clock advances.
  if(g.finalPurify){
    g.finalPurify.elapsed=Math.max(0,(now-g.finalPurify.start)/1000);g.time+=dt;
-   if(g.finalPurify.elapsed>=12.8&&!g.finalPurify.finished){
+   if(g.finalPurify.elapsed>=14.6&&!g.finalPurify.finished){
      g.finalPurify.finished=true;const preview=!!g.finalPurify.preview,purifyOnly=!!g.finalPurify.purifyOnly;
      g.finalPurify=null;if(purifyOnly){g.over=true;clearRunRecovery();returnHomeAfterEnding()}else playEndingCredits(preview);
    }
@@ -2653,6 +2653,7 @@ function completeGameEnding(preview=false,purifyOnly=false){
  game.enemies=game.enemies.filter(e=>e===game.finalBoss||(!e.dead&&e.kind==='gardenHeart'));
  const boss=game.finalBoss||game.boss;if(boss){boss.hp=0;boss.dying=true;boss.invuln=999;boss.state='chase';boss.vx=0;boss.vy=0}
  game.finalBoss=boss;game.finalPurify={start:performance.now(),elapsed:0,preview:!!preview,purifyOnly:!!purifyOnly,finished:false};
+ arenaBgKey='';arenaCacheKey='';
  $('bossbar').style.display='none';showGameUI(false);screen('none');flashBanner('THE SPORE BEHEMOTH FALLS...',1.05);
  beep(108,.48,.024,'sawtooth');endingTimers.push(setTimeout(()=>beep(76,.72,.014,'sine'),720));endingTimers.push(setTimeout(()=>beep(156,.48,.009,'triangle'),3100));
 }
@@ -2794,8 +2795,8 @@ function drawEnemy(e){
  const margin=e.r*2.7+24;if(e.x+margin<0||e.x-margin>W||e.y+margin<0||e.y-margin>H)return;
  const r=e.r,t=FRAME_NOW/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+(e.kind==='hornet'?Math.PI:0)+Math.sin(t*5)*.025);
  if(e.dying&&e.kind==='gardenHeart'){
-   const q=Math.max(0,Math.min(1,(game.finalPurify?.elapsed||0)/5.4)),sink=q*q;
-   X.rotate(q*1.18);X.translate(0,34*sink);X.scale(1-q*.16,1-q*.48);X.globalAlpha=Math.max(.04,1-q*.96);X.filter=`saturate(${Math.max(.12,1-q*.88)}) brightness(${1+q*.18})`;
+   const q=Math.max(0,Math.min(1,(game.finalPurify?.elapsed||0)/6.4)),sink=q*q;
+   X.rotate(q*1.30);X.translate(0,44*sink);X.scale(1-q*.20,1-q*.58);X.globalAlpha=Math.max(.025,1-q*.975);X.filter=`saturate(${Math.max(.08,1-q*.92)}) brightness(${1+q*.20})`;
  }
  if(e.hit>0&&!e.dying){X.globalAlpha=.72;X.filter='brightness(1.7)'}
  X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5;
@@ -3282,29 +3283,38 @@ function drawBigBugHeartFx(x,y,size=30){
 function drawFinalArenaPurification(){
  const fp=game?.finalPurify;if(!fp)return;const t=fp.elapsed||0;
  const smooth=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
- const clean=smooth((t-1.15)/8.25),infection=1-smooth((t-.8)/8.7);
- // A clean garden is painted directly over the same Wave 100 floor. The crossfade is
- // deliberately gradual so roots, fungal patches and mushrooms appear to drain away.
+ // The actual cached Wave 100 arena stays underneath this entire sequence.
+ // We progressively neutralize its purple infection on the gameplay canvas so the
+ // player watches the same battlefield recover instead of cutting to a new scene.
+ const clean=smooth((t-1.15)/10.0),infection=1-smooth((t-.55)/10.25);
  if(clean>0){
-   X.save();X.globalAlpha=.96*clean;
-   const g=X.createLinearGradient(0,0,0,H);g.addColorStop(0,'#73945f');g.addColorStop(.52,'#496d43');g.addColorStop(1,'#294a31');X.fillStyle=g;X.fillRect(0,0,W,H);
-   for(let i=0;i<16;i++){const x=(i*149+43)%W,y=(i*211+97)%H,rr=24+(i%5)*8;X.globalAlpha=clean*(.10+(i%3)*.018);X.fillStyle=i%2?'#73945b':'#365d3d';X.beginPath();X.ellipse(x,y,rr,rr*.54,i*.37,0,6.28);X.fill()}
-   X.globalAlpha=clean*.66;for(let i=0;i<18;i++){const x=(i*101+31)%W,y=(i*67+72)%H,sz=14+(i%4)*4;X.save();X.translate(x,y);X.rotate(Math.sin(i*2.1)*1.4);X.fillStyle=i%3===0?'#819d58':i%3===1?'#64864d':'#a48e54';X.beginPath();X.ellipse(0,0,sz,sz*.4,0,0,6.28);X.fill();X.restore()}
-   X.globalAlpha=clean*.74;for(let i=0;i<10;i++){const left=i%2===0,x=left?4:W-4,y=H*(.12+(i*.083)% .78),sz=24+(i%3)*7;X.save();X.translate(x,y);X.rotate((left?-.35:.35)+Math.sin(i)*.18);X.fillStyle=i%3===0?'#557b47':'#3f683f';X.beginPath();X.ellipse(left?sz*.35:-sz*.35,0,sz,sz*.38,0,0,6.28);X.fill();X.restore()}
+   X.save();
+   // Healthy garden color gradually washes back into the exact gameplay field.
+   X.globalAlpha=.93*clean;
+   const g=X.createLinearGradient(0,0,0,H);g.addColorStop(0,'#789d63');g.addColorStop(.50,'#4f7547');g.addColorStop(1,'#2c5135');X.fillStyle=g;X.fillRect(0,0,W,H);
+   // Familiar BIG BUG ground patches/leaves return gradually instead of appearing at once.
+   for(let i=0;i<18;i++){const x=(i*149+43)%W,y=(i*211+97)%H,rr=23+(i%5)*8;X.globalAlpha=clean*(.08+(i%3)*.02);X.fillStyle=i%2?'#7c9d61':'#396442';X.beginPath();X.ellipse(x,y,rr,rr*.54,i*.37,0,6.28);X.fill()}
+   X.globalAlpha=clean*.62;for(let i=0;i<20;i++){const x=(i*101+31)%W,y=(i*67+72)%H,sz=13+(i%4)*4;X.save();X.translate(x,y);X.rotate(Math.sin(i*2.1)*1.4);X.fillStyle=i%3===0?'#86a35c':i%3===1?'#668a4f':'#a99359';X.beginPath();X.ellipse(0,0,sz,sz*.4,0,0,6.28);X.fill();X.restore()}
    X.restore();
  }
- // Residual infected growths remain above the recovering floor, then physically shrink/fade.
  if(infection>0){
-   X.save();X.globalAlpha=.72*infection;X.strokeStyle='#875183';X.lineWidth=Math.max(.8,4*infection);X.lineCap='round';
-   for(let i=0;i<11;i++){const x=(i*139+37)%W,y=(i*181+66)%H;X.beginPath();X.moveTo(x-38,y+24);X.bezierCurveTo(x-12,y-18,x+24,y+35,x+52,y-20);X.stroke()}
-   for(let i=0;i<8;i++){const x=(i*157+55)%W,y=(i*113+120)%H,sh=Math.max(.08,infection);X.save();X.translate(x,y);X.scale(sh,sh);X.globalAlpha=.9*infection;X.strokeStyle='#ad8a94';X.lineWidth=3;X.beginPath();X.moveTo(0,7);X.lineTo(0,-5);X.stroke();X.fillStyle='#8b5182';X.beginPath();X.ellipse(0,-8,9+(i%3)*2,4.5,0,0,6.28);X.fill();X.restore()}
+   X.save();
+   // Purple haze visibly drains from the SAME arena.
+   X.globalAlpha=.16*infection;X.fillStyle='#6f356f';X.fillRect(0,0,W,H);
+   // Infected roots retract/fade.
+   X.globalAlpha=.78*infection;X.strokeStyle='#8f578e';X.lineWidth=Math.max(.7,4.4*infection);X.lineCap='round';
+   for(let i=0;i<13;i++){const x=(i*139+37)%W,y=(i*181+66)%H;const sh=.35+.65*infection;X.beginPath();X.moveTo(x-42*sh,y+25*sh);X.bezierCurveTo(x-13*sh,y-20*sh,x+25*sh,y+37*sh,x+56*sh,y-22*sh);X.stroke()}
+   // Mushrooms physically shrink into the soil as the infection dies.
+   for(let i=0;i<10;i++){const x=(i*157+55)%W,y=(i*113+120)%H,sh=Math.max(.02,infection);X.save();X.translate(x,y+11*(1-sh));X.scale(sh,sh);X.globalAlpha=.95*infection;X.strokeStyle='#b3919d';X.lineWidth=3;X.beginPath();X.moveTo(0,8);X.lineTo(0,-5);X.stroke();X.fillStyle='#90588a';X.beginPath();X.ellipse(0,-8,10+(i%3)*2.2,5,0,0,6.28);X.fill();X.restore()}
+   // A few fungal bulbs collapse separately so the fade doesn't feel like a flat crossfade.
+   for(let i=0;i<7;i++){const x=(i*193+88)%W,y=(i*149+165)%H,sh=Math.max(.02,infection*(.92+(i%2)*.08));X.save();X.translate(x,y);X.scale(sh,sh);X.globalAlpha=.55*infection;X.fillStyle='#9b6399';X.beginPath();X.arc(0,0,7+(i%3)*2,0,6.28);X.fill();X.restore()}
    X.restore();
  }
 }
 function drawFinalSavedText(){
- const fp=game?.finalPurify;if(!fp)return;const t=fp.elapsed||0;if(t<8.45)return;
- const q=Math.max(0,Math.min(1,(t-8.45)/1.05)),hold=Math.max(0,Math.min(1,(12.8-t)/.75)),a=Math.min(q,hold);
- const ease=1-Math.pow(1-q,3),sc=.78+.22*ease;
+ const fp=game?.finalPurify;if(!fp)return;const t=fp.elapsed||0;if(t<10.75)return;
+ const q=Math.max(0,Math.min(1,(t-10.75)/1.0)),hold=Math.max(0,Math.min(1,(14.6-t)/.8)),a=Math.min(q,hold);
+ const ease=1-Math.pow(1-q,3),sc=.76+.24*ease;
  X.save();X.translate(W/2,H*.45);X.scale(sc,sc);X.rotate(-.025);X.globalAlpha=a;X.textAlign='center';X.textBaseline='middle';X.lineJoin='round';
  X.font='900 '+Math.round(Math.min(68,W*.13))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=8;X.strokeStyle='#2b1c13';X.strokeText('YOU SAVED',0,-22);X.fillStyle='#f5b02e';X.fillText('YOU SAVED',0,-22);
  X.font='1000 '+Math.round(Math.min(82,W*.16))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=9;X.strokeStyle='#2b1c13';X.strokeText('THE GARDEN!',0,42);X.fillStyle='#78c84c';X.fillText('THE GARDEN!',0,42);X.restore();
@@ -3362,7 +3372,7 @@ function draw(now=performance.now()){
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
- if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-1.0))/8.2):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
+ if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
  drawFinalArenaPurification();
  for(const d of game.drops){const m=28;if(d.x+m<0||d.x-m>W||d.y+m<0||d.y-m>H)continue;drawLeaves(d)}
