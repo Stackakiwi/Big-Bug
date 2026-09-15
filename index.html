@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.128: built from the known-good v18.0.125 baseline; PC Spacebar activates the existing boost action. Mobile gameplay/input unchanged. -->
+<!-- Big Bug v18.0.129: built from the known-good v18.0.125 baseline; PC Spacebar activates the existing boost action. Mobile gameplay/input unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1401,6 +1401,7 @@ save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{}); save.cosmetics=Object.assign({owned:[],equipped:{},medievalBundle:false,enabled:true},save.cosmetics||{});if(!Array.isArray(save.cosmetics.owned))save.cosmetics.owned=[];if(!save.cosmetics.equipped||typeof save.cosmetics.equipped!=='object')save.cosmetics.equipped={};
 save.legendaryGolden=Object.assign({revealed:false,owned:false,noticeSeen:false},save.legendaryGolden||{});
 save.discovered=Array.isArray(save.discovered)?save.discovered:['player:ladybug'];if(!save.discovered.includes('player:ladybug'))save.discovered.push('player:ladybug');
+if(save.legendaryGolden?.owned&&!save.discovered.includes('player:golden'))save.discovered.push('player:golden');
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
 // v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
@@ -1441,6 +1442,8 @@ save.unlocked=['ladybug'];
 if(save.best>=40||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
 if(save.best>=50||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
 if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
+// v18.0.129 — Legendary Golden Ladybug ownership must survive every reload/resume.
+if(save.legendaryGolden&&save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // v17.9.52 — Shifted the regular spider's flipped original head slightly farther forward.
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
@@ -1726,7 +1729,7 @@ function saveRunRecovery(reason='checkpoint'){
  try{
   const p=game.p;
   const snap={
-   v:1,reason,wave:game.wave,coins:game.coins||0,time:game.time||0,
+   v:2,reason,wave:game.wave,coins:game.coins||0,time:game.time||0,bugId:game.bugId||save.selected||'ladybug',
    intermission:!!game.intermission,waveActive:!!game.waveActive,
    p:{
     x:p.x,y:p.y,hp:p.hp,maxHp:p.maxHp,damage:p.damage,rate:p.rate,crit:p.crit,
@@ -1752,7 +1755,7 @@ function restoreRecoveredRun(){
  if(!snap||!snap.p||!snap.wave)return false;
  try{
   initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(false);
-  game={p:basePlayer(),enemies:[],drops:[],fx:[],time:snap.time||0,wave:snap.wave,spawn:0,paused:true,over:false,boss:null,shake:0,score:0,
+  game={p:basePlayer(),bugId:(snap.bugId&&BUGS[snap.bugId])?snap.bugId:(save.selected||'ladybug'),enemies:[],drops:[],fx:[],time:snap.time||0,wave:snap.wave,spawn:0,paused:true,over:false,boss:null,shake:0,score:0,
         waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:snap.coins||0,boostUntil:0};
   Object.assign(game.p,snap.p);
   if(game.p.tripleShot&&!game.p.tripleShotUntilWave)game.p.tripleShotUntilWave=snap.wave+5;
@@ -2001,7 +2004,7 @@ function basePlayer(){
 function startRun(startWave=1,testMode=false){
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const w=Math.max(1,Math.min(100,Number(startWave)||1));
- game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
+ game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
  beginWave(w);if(!game.boss)titleMusicStart();if(!testMode)saveRunRecovery('run-start');
  last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
@@ -2010,7 +2013,7 @@ function startRun(startWave=1,testMode=false){
 function startEndless(){
  if(!save.endlessUnlocked)return;
  initAudio();titleMusicStop();shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
- game={p:basePlayer(),enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
+ game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
  // Endless starts 50% faster than the same selected bug in Story Mode.
  game.p.speed*=1.75;game.p.rate/=1.75;
@@ -2304,14 +2307,14 @@ function shootAt(target){
      const dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<best){best=ds;second=e}
    }
    if(second){const dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd)}
-   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:save.selected==='golden',ax:target.x,ay:target.y,bx:second?second.x:null,by:second?second.y:null,cx:null,cy:null});
+   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:(game.bugId||save.selected)==='golden',ax:target.x,ay:target.y,bx:second?second.x:null,by:second?second.y:null,cx:null,cy:null});
  }else if(tripleShotActive(p)){
    let first=null,second=null,d1=Infinity,d2=Infinity;
    for(const e of game.enemies)if(!e.dead&&e!==target&&e.state!=='burrowWait'){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<d1){second=first;d2=d1;first=e;d1=ds}else if(ds<d2){second=e;d2=ds}}
    if(first){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(first,dd)}
    if(second){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd)}
-   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:save.selected==='golden',ax:target.x,ay:target.y,bx:first?first.x:null,by:first?first.y:null,cx:second?second.x:null,cy:second?second.y:null});
- }else game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,playerShotFx:true,goldenShot:save.selected==='golden',ax:target.x,ay:target.y});
+   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:(game.bugId||save.selected)==='golden',ax:target.x,ay:target.y,bx:first?first.x:null,by:first?first.y:null,cx:second?second.x:null,cy:second?second.y:null});
+ }else game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,playerShotFx:true,goldenShot:(game.bugId||save.selected)==='golden',ax:target.x,ay:target.y});
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
  if(p.frost)target.slow=2;
@@ -2898,7 +2901,7 @@ function upgradeCardIconMarkup(u){
 }
 function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${u.desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`}
 function paintUpgradeBuddyIcons(root,choices){
- [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;if(u.id==='clone'||u.id==='crit'){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,save.selected,34,false)}else if(u.id==='helperArmy'){mark.innerHTML='';const wrap=document.createElement('span');wrap.className='buddyArmyWrap';mark.appendChild(wrap);for(let n=0;n<3;n++){const c=document.createElement('canvas');c.width=40;c.height=40;wrap.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,save.selected,22,false)}}})
+ [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;if(u.id==='clone'||u.id==='crit'){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,(game?.bugId||save.selected),34,false)}else if(u.id==='helperArmy'){mark.innerHTML='';const wrap=document.createElement('span');wrap.className='buddyArmyWrap';mark.appendChild(wrap);for(let n=0;n<3;n++){const c=document.createElement('canvas');c.width=40;c.height=40;wrap.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,(game?.bugId||save.selected),22,false)}}})
 }
 
 function openUpgrade(afterWave=false){
@@ -4083,23 +4086,23 @@ function draw(now=performance.now()){
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
  // v18.0.44 — Story combat bonuses remain active, but their player rings were removed.
- const moveDX=(p.moveX??p.x)-p.x,moveDY=(p.moveY??p.y)-p.y,playerMoving=(moveDX*moveDX+moveDY*moveDY)>9,movePhase=game.time*(playerMoving?13:2.2),moveAmp=playerMoving?1.8:.35;X.save();X.translate(p.x,p.y+bob+(save.selected==='ladybug'&&playerMoving?Math.sin(movePhase)*.45:0));X.rotate(p.face+(save.selected==='ladybug'?Math.sin(movePhase*.5)*(playerMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayerStyled(X,save.selected,p.r*2.05,false,movePhase,moveAmp);X.restore();
+ const moveDX=(p.moveX??p.x)-p.x,moveDY=(p.moveY??p.y)-p.y,playerMoving=(moveDX*moveDX+moveDY*moveDY)>9,movePhase=game.time*(playerMoving?13:2.2),moveAmp=playerMoving?1.8:.35;X.save();X.translate(p.x,p.y+bob+((game.bugId||save.selected)==='ladybug'&&playerMoving?Math.sin(movePhase)*.45:0));X.rotate(p.face+((game.bugId||save.selected)==='ladybug'?Math.sin(movePhase*.5)*(playerMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayerStyled(X,(game.bugId||save.selected),p.r*2.05,false,movePhase,moveAmp);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
  const armyHs=p.helperArmyHelpers||[];for(const h of armyHs){
    if(!(p.helperArmyWave===game.wave&&game.wave%5!==0)&&!h.leaving)continue;
-   X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);let at=!h.leaving&&h.target&&!h.target.dead?h.target:null;if(at)X.rotate(Math.atan2(at.y-h.y,at.x-h.x)+Math.PI/2);else if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayerStyled(X,save.selected,19,false);X.restore();
+   X.fillStyle='#10241455';X.beginPath();X.ellipse(h.x,h.y+7,9,3.5,0,0,6.28);X.fill();X.save();X.translate(h.x,h.y);let at=!h.leaving&&h.target&&!h.target.dead?h.target:null;if(at)X.rotate(Math.atan2(at.y-h.y,at.x-h.x)+Math.PI/2);else if(h.vx||h.vy)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);drawPlayerStyled(X,(game.bugId||save.selected),19,false);X.restore();
  }
  // Little Buddys visibly run in, then orbit while active; expired helpers wander away.
  const hs=p.helpers||[];let activeHCount=0;for(const h of hs)if(!h.leaving&&!h.entering)activeHCount++;
  let activeHIndex=0;for(const h of hs){let hx,hy,orbitA=null;if(h.leaving||h.entering){hx=h.x;hy=h.y}else{orbitA=game.time*1.8+activeHIndex++*6.283/Math.max(1,activeHCount);const ox=p.x+Math.cos(orbitA)*38,oy=p.y+Math.sin(orbitA)*38;if(h.joining>0){const q=1-h.joining/.5,e=q*q*(3-2*q);hx=(Number.isFinite(h.joinX)?h.joinX:h.x)*(1-e)+ox*e;hy=(Number.isFinite(h.joinY)?h.joinY:h.y)*(1-e)+oy*e;h.x=hx;h.y=hy}else{hx=ox;hy=oy;h.x=hx;h.y=hy}}
    X.fillStyle='#10241455';X.beginPath();X.ellipse(hx,hy+7,10,4,0,0,6.28);X.fill();X.save();X.translate(hx,hy);
    if(h.leaving)X.rotate(Math.atan2(h.vy,h.vx)+Math.PI/2);else if(h.entering)X.rotate(Math.atan2(p.y-hy,p.x-hx)+Math.PI/2);else if(h.joining>0&&orbitA!==null){const tx=p.x+Math.cos(orbitA+.12)*38,ty=p.y+Math.sin(orbitA+.12)*38;X.rotate(Math.atan2(ty-hy,tx-hx)+Math.PI/2)}else{let t=h.target&&!h.target.dead&&(h.targetUntil||0)>=game.time?h.target:null;if(t)X.rotate(Math.atan2(t.y-hy,t.x-hx)+Math.PI/2);else X.rotate(p.face)}
-   drawPlayerStyled(X,save.selected,20,false);X.restore()
+   drawPlayerStyled(X,(game.bugId||save.selected),20,false);X.restore()
  }
  if(p.superBuddy&&game.wave===100){
    let a=game.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48;X.save();X.translate(hx,hy);
-   X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc433';X.beginPath();X.arc(0,0,13,0,6.28);X.fill();drawPlayerStyled(X,save.selected,21,true);X.restore();
+   X.shadowColor='#e9b7ff';X.shadowBlur=14;X.fillStyle='#a86cc433';X.beginPath();X.arc(0,0,13,0,6.28);X.fill();drawPlayerStyled(X,(game.bugId||save.selected),21,true);X.restore();
  }
  drawFinalSavedText();
 }
@@ -4151,7 +4154,7 @@ setInterval(()=>{
  else repairWaveAfterSystemInterruption();
 },1000);
 
-function startOrResume(){if(!game||game.over)startRun();else{game.paused=false;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();saveRunRecovery('resume')}}
+function startOrResume(){if(!game||game.over){startRun();return}if(game.mode==='story'&&game.intermission&&!game.waveActive){screen('none');showGameUI(true);if(game.wave%5===0){showGardenUpdate(game.wave)}else{openUpgrade(true)}return}game.paused=false;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();saveRunRecovery('resume')}
 
 // v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
 // Existing button sounds remain untouched and do not get doubled.
@@ -4163,7 +4166,8 @@ const GARDEN_BOOK={
  playable:[
   {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:"Small, sturdy, and ready to scurry."},
   {key:'player:beetle',id:'beetle',name:'Beetle',desc:'Tough shell, strong bite, slow feet.'},
-  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Quick and light, with fast little hits.'}
+  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Quick and light, with fast little hits.'},
+  {key:'player:golden',id:'golden',name:'Legendary Golden Ladybug',desc:'A legendary garden champion with golden attacks.'}
  ],
  enemy:[
   {key:'enemy:ant',id:'ant',name:'Garden Ant',desc:'Small workers that get troublesome in groups.'},
@@ -4530,8 +4534,9 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
+// v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.128';
+const BB_BUILD_VERSION='18.0.129';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
