@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.139: isolated final-boss build tester added; normal game flow unchanged. -->
+<!-- Big Bug v18.0.140: isolated final-boss build tester added; normal game flow unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1181,8 +1181,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <button id="finalBuildTestBtn" type="button" style="position:absolute;left:50%;bottom:max(58px,calc(env(safe-area-inset-bottom) + 52px));transform:translateX(-50%);z-index:80;min-width:150px;border:1px solid #ffffff2a;border-radius:12px;padding:9px 12px;background:#17231bf2;color:#fff;font:900 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005;cursor:pointer">TEST FINAL BOSS</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.139</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.139</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.140</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.140</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2627,7 +2627,7 @@ function enemyMove(e,dt){
        flashBanner('BLIGHT SPORE!',.32)
      }else flashBanner('SPORE BLOOM!',.35)
    }
-   else if(e.kind==='gardenHeart'){e.shotCd=1.55;/* v18.0.139 — final brown spiral only: 15% slower projectiles and slightly wider lanes. */bossRing(e,10,140.25,10+game.wave*.18,t*.12,'spore');if(Math.random()<.7){bossHazard(p.x,p.y,86,2.31,'rootFinal',12+game.wave*.18);bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16)}flashBanner('HEART PULSE!',.34)}
+   else if(e.kind==='gardenHeart'){e.shotCd=1.55;bossRing(e,12,140.25,10+game.wave*.18,t*.12,'spore');if(Math.random()<.7){bossHazard(p.x,p.y,86,2.31,'rootFinal',12+game.wave*.18);bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16)}flashBanner('HEART PULSE!',.34)}
  }
  if(e.boss&&e.kind!=='gardenHeart'){
    e.addCd-=dt;
@@ -4267,7 +4267,7 @@ function buildGardenBook(tab=gardenBookTab){
    if(tab==='playable')renderGardenPlayable(c,e.id);else renderGardenEnemy(c,e.id,tab==='boss');
  });
 }
-// v18.0.139 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
+// v18.0.140 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
 function finishFinalBuildTestPrep(){
  const d=$('testFinalPrep');if(d)d.remove();const u=$('testFinalUpgrade');if(u)u.remove();
  if(!game)return;game.finalPrepDone=true;game.paused=false;game.intermission=false;game.waveActive=false;
