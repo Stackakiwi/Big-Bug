@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.105: Steam-ready presentation polish pass; menus/help/settings cleaned up, development controls removed, gameplay unchanged. -->
+<!-- Big Bug v18.0.108: Steam-ready presentation polish pass; menus/help/settings cleaned up, development controls removed, gameplay unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -950,7 +950,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #bugs .card button{font-size:clamp(21px,4vw,28px)!important}
 
 
-/* v18.0.105 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
+/* v18.0.108 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
 #cosmetics{background:rgba(3,17,10,.97);padding:16px}
 #cosmetics .panel{width:min(620px,100%);max-height:94vh;background:linear-gradient(160deg,#10291a,#07180f 72%,#041008);border:2px solid #6c7950;border-radius:22px;padding:20px 16px;box-shadow:0 10px 0 #020906,0 24px 55px #000b,inset 0 0 32px #38502b35}
 .cosmeticHead{text-align:center;margin-bottom:13px}.cosmeticHead h2{margin:0;color:#f2e4b3;font:800 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive;letter-spacing:.5px}.cosmeticHead p{margin:5px 0 0;color:#bfc8a9}
@@ -974,7 +974,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-width:520px){.medievalGrid{grid-template-columns:1fr}.medievalCard{display:grid;grid-template-columns:94px 1fr;grid-template-rows:auto auto auto;column-gap:10px;text-align:left;align-items:center}.medievalPreview{grid-row:1/4}.medievalCard .muted{min-height:0}.medievalCard .btn{width:auto;min-width:150px}.cosmeticHead h2{font-size:28px}}
 
 
-/* v18.0.105 — keep BUGS / POWER UPS / COSMETICS on one row on mobile, matching desktop placement. */
+/* v18.0.108 — keep BUGS / POWER UPS / COSMETICS on one row on mobile, matching desktop placement. */
 .homeMenuRow{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:nowrap}
 @media(max-width:560px){
  #home .homeMenuRow{width:calc(100vw - 28px);gap:5px}
@@ -984,7 +984,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.105 — on wider/desktop screens, keep the Garden Book beside the main Home controls
+/* v18.0.108 — on wider/desktop screens, keep the Garden Book beside the main Home controls
    at the same relative spot it occupies on iPhone instead of pinning it to the far-right edge. */
 @media(min-width:561px){
  #home #gardenBookBtn{
@@ -995,7 +995,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.105 — Steam-ready presentation polish. Visual/copy cleanup only; gameplay untouched. */
+/* v18.0.108 — Steam-ready presentation polish. Visual/copy cleanup only; gameplay untouched. */
 .testJump,.creditsTestBtn,.purifyTestBtn{display:none!important}
 #help,#settings,#bugs,#base,#shop,#cosmetics{background:radial-gradient(ellipse at 50% 0%,#23482d55 0 22%,transparent 48%),linear-gradient(180deg,#081b10 0%,#041109 100%)}
 #help .panel,#settings .panel{width:min(760px,96vw);max-height:min(92vh,820px);border:1px solid #6f966f;border-radius:18px;background:linear-gradient(165deg,#12341f 0%,#0b2617 58%,#071b10 100%);box-shadow:0 8px 0 #031008,0 22px 60px #000b,inset 0 1px 0 #b9d6a322;padding:24px}
@@ -1019,7 +1019,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(min-width:900px){#help .panel{width:min(820px,92vw)}#help .helpCard{min-height:120px}#help .helpCard b{font-size:21px}#help .helpCard .muted{font-size:16px}}
 
 
-/* v18.0.105 — mobile How To Play scroll/exit fix. */
+/* v18.0.108 — mobile How To Play scroll/exit fix. */
 #help{overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;justify-content:flex-start!important;}
 #help .panel{overflow:visible!important;max-height:none!important;flex:0 0 auto!important;margin:auto 0!important;}
 #help .helpBack{position:sticky!important;bottom:0!important;z-index:20!important;margin-top:16px!important;}
@@ -1030,7 +1030,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.105 — release readability + fuller menu cards; gameplay unchanged. */
+/* v18.0.108 — release readability + fuller menu cards; gameplay unchanged. */
 #settings .panel,#help .panel,#bugs .panel,#base .panel,#cosmetics .panel{font-size:1.08em}
 #settings .settingsIntro,#bugs .panel>p,#base .panel>p,.cosmeticHead p{font-size:18px!important;line-height:1.4!important}
 #settings .settingRow{min-height:88px!important;padding:18px 20px!important;margin:12px 0!important}
@@ -1075,6 +1075,44 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
  .medievalCard b{font-size:20px!important}.medievalCard .muted{font-size:16px!important}.cosmeticNote{font-size:15px!important}
 }
 
+
+/* v18.0.108 — release-quality upgrade choice layout + familiar BIG BUG category icons. */
+#upgrade{padding:22px!important}
+#upgrade .panel{width:min(1120px,96vw)!important;max-width:1120px!important;padding:28px 30px 30px!important;border-radius:20px!important}
+#upgrade .panel h2{text-align:center!important;font-size:clamp(34px,4vw,48px)!important;line-height:1!important;margin:0 0 8px!important}
+#upgrade #upgradeSub{font-size:clamp(21px,2.1vw,28px)!important;margin:4px auto 24px!important}
+#upgrade #choices{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important;align-items:stretch!important}
+#upgrade #choices:has(> .choice:nth-child(4):last-child){grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:820px;margin-left:auto;margin-right:auto}
+#upgrade .choice{min-height:230px!important;padding:22px 22px 20px!important;border-radius:14px!important;display:grid!important;grid-template-columns:1fr 82px!important;grid-template-rows:auto 1fr!important;column-gap:16px!important;align-items:center!important;text-align:left!important;overflow:hidden!important;transition:transform .09s ease,filter .09s ease!important}
+#upgrade .choice:hover{filter:brightness(1.035)}
+#upgrade .choice:active{transform:translateY(2px) scale(.99)!important}
+#upgrade .choice b{grid-column:1;grid-row:1;font-size:clamp(25px,2.35vw,34px)!important;line-height:1.06!important;margin:0 0 12px!important;align-self:end!important}
+#upgrade .choice p{grid-column:1;grid-row:2;font-size:clamp(18px,1.55vw,23px)!important;line-height:1.3!important;margin:0!important;align-self:start!important}
+#upgrade .choice .rarity,#upgrade .choice .art{display:none!important}
+#upgrade .choice .upgradeMark{grid-column:2!important;grid-row:1/3!important;position:static!important;transform:none!important;width:82px!important;height:82px!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:center!important;align-self:center!important;justify-self:center!important;opacity:1!important}
+#upgrade .choice .upgradeMark .bbSwordSvg{width:76px!important;height:76px!important;filter:drop-shadow(0 3px 1px #0004)!important}
+#upgrade .choice .upgradeMark .bbHeartIcon{font-size:54px!important;width:1.12em!important;height:1em!important;filter:drop-shadow(0 3px 1px #0003)}
+#upgrade .choice .upgradeMark .leafCurrencyIcon.bbLeafIcon{width:72px!important;height:72px!important;margin:0!important;filter:drop-shadow(0 2px 1px #0004) drop-shadow(0 0 5px #b8e85c88)!important}
+#upgrade .choice .upgradeMark .bbUpgradeIcon{width:76px!important;height:76px!important}
+#upgrade .choice .buddyUpgradeIcon{width:76px!important;height:76px!important;filter:drop-shadow(0 3px 1px #0004)!important}
+#upgrade .choice .buddyArmyWrap{width:82px!important;height:76px!important}
+#upgrade .choice .buddyArmyWrap canvas{width:44px!important;height:44px!important}
+#upgrade .choice .buddyArmyWrap canvas:nth-child(1){left:0!important;top:24px!important}#upgrade .choice .buddyArmyWrap canvas:nth-child(2){left:19px!important;top:2px!important}#upgrade .choice .buddyArmyWrap canvas:nth-child(3){right:0!important;top:24px!important}
+@media(max-width:760px){
+ #upgrade{padding:12px!important;overflow:auto!important;touch-action:pan-y!important}
+ #upgrade .panel{width:min(540px,100%)!important;padding:20px 14px 18px!important;max-height:none!important;overflow:visible!important;margin:auto!important}
+ #upgrade #choices,#upgrade #choices:has(> .choice:nth-child(4):last-child){grid-template-columns:1fr!important;gap:12px!important;max-width:none!important}
+ #upgrade .choice{min-height:142px!important;grid-template-columns:1fr 68px!important;padding:17px 16px!important;column-gap:10px!important}
+ #upgrade .choice b{font-size:25px!important;margin-bottom:7px!important}
+ #upgrade .choice p{font-size:17px!important}
+ #upgrade .choice .upgradeMark{width:66px!important;height:66px!important}
+ #upgrade .choice .upgradeMark .bbSwordSvg{width:60px!important;height:60px!important}
+ #upgrade .choice .upgradeMark .bbHeartIcon{font-size:44px!important}
+ #upgrade .choice .upgradeMark .leafCurrencyIcon.bbLeafIcon{width:58px!important;height:58px!important}
+ #upgrade .choice .upgradeMark .bbUpgradeIcon{width:60px!important;height:60px!important}
+ #upgrade .choice .buddyUpgradeIcon{width:60px!important;height:60px!important}
+}
+
 </style>
 </head>
 <body>
@@ -1117,8 +1155,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.105</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.105</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.108</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.108</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1292,7 +1330,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-// v18.0.105 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
+// v18.0.108 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
 // v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
@@ -1588,26 +1626,26 @@ function makeBugPreview(id){
 }
 
 const GARDEN_STORY={
-5:{title:'First Big Fight',text:'The Hornet finally buzzes off. The garden feels a little quieter now.'},
-10:{title:'Through the Thicket',text:'The Stag King disappears beneath the leaves. A narrow path opens ahead.'},
-15:{title:'Sticky Situation',text:'The Venom Queen retreats into her web. Best not to follow her.'},
-20:{title:'A Way Through',text:'The Mole Thing leaves behind a maze of tunnels. One of them leads onward.'},
-25:{title:'Something Strange',text:'A faint purple dust clings to the Iron Scarab’s shell. You have not seen that before.'},
-30:{title:'A Purple Trail',text:'More of the strange dust lies beyond the creek. It seems to form a trail.'},
-35:{title:'The Tyrant’s Ground',text:'The Praying Tyrant was guarding a patch of twisted roots. They do not look healthy.'},
-40:{title:'Beyond the Roses',text:'The trail continues past the garden wall. Whatever left it came from somewhere deeper.'},
-45:{title:'Tracks in the Grass',text:'The purple trail is easier to follow now. Some of the grass nearby has begun to curl away from it.'},
-50:{title:'Threads in the Wood',text:'Thin purple strands run through the rotten wood. They look almost like tiny roots.'},
-55:{title:'The Bramble Moves',text:'The thorns shift even when there is no wind. Something is spreading through the garden.'},
-60:{title:'Under the Stones',text:'Something large moves far beneath the stone garden. For a moment, the purple strands pulse with it.'},
-65:{title:'Spores in the Rain',text:'The rain should wash the purple dust away. Instead, tiny spores rise from the puddles.'},
-70:{title:'The Far Bank',text:'The Pond Skater was keeping other bugs away from this side of the water. Maybe it had a reason.'},
-75:{title:'Empty Webs',text:'The old webs are abandoned. Even the spiders have left this part of the garden behind.'},
-80:{title:'The Old Roots',text:'The oldest roots in the garden are covered in the same purple growth. Something beneath them is awake.'},
-85:{title:'Sporeback',text:'The beetle was not attacking on its own. Fungal growth covers its shell and moves even after it falls.'},
-90:{title:'Not Themselves',text:'The Hornet and Praying Tyrant return together. Purple growth twists across them both. Something is controlling the garden’s creatures.'},
-95:{title:'The Last Guardians',text:'The final corrupted guardians fall. Every infected root leads toward one place beneath the garden.'},
-100:{title:'The Garden Is Quiet',text:'The Spore Behemoth is gone. The purple glow fades from the roots, the spores settle, and the bugs slowly return. The garden belongs to the bugs again.'}
+5:{title:'First Big Fight',text:'The Hornet buzzes off. The garden grows quiet.'},
+10:{title:'Through the Thicket',text:'The Stag King falls. A path opens ahead.'},
+15:{title:'Sticky Situation',text:'The Venom Queen retreats. Best not to follow.'},
+20:{title:'A Way Through',text:'The Mole Thing retreats. One tunnel leads onward.'},
+25:{title:'Something Strange',text:'Purple dust clings to the Iron Scarab. Strange.'},
+30:{title:'A Purple Trail',text:'Purple dust continues beyond the creek. A trail.'},
+35:{title:'The Tyrant’s Ground',text:'Twisted roots lie beneath the Praying Tyrant.'},
+40:{title:'Beyond the Roses',text:'The purple trail continues past the garden wall.'},
+45:{title:'Tracks in the Grass',text:'The trail grows stronger. Nearby grass curls away.'},
+50:{title:'Threads in the Wood',text:'Purple strands twist through the rotten wood.'},
+55:{title:'The Bramble Moves',text:'The thorns move on their own. Something is spreading.'},
+60:{title:'Under the Stones',text:'Something large moves beneath the stones. The strands pulse.'},
+65:{title:'Spores in the Rain',text:'The rain cannot stop it. Spores rise from the puddles.'},
+70:{title:'The Far Bank',text:'The Pond Skater guarded this side of the water. Why?'},
+75:{title:'Empty Webs',text:'The old webs are empty. Even the spiders are gone.'},
+80:{title:'The Old Roots',text:'Purple growth covers the oldest roots. Something is awake.'},
+85:{title:'Sporeback',text:'Fungal growth covers the beetle. It was being controlled.'},
+90:{title:'Not Themselves',text:'The Hornet and Tyrant return corrupted. Something controls them.'},
+95:{title:'The Last Guardians',text:'The last guardians fall. Every infected root leads below.'},
+100:{title:'The Garden Is Quiet',text:'The Spore Behemoth is gone. The spores fade. The garden is safe again.'}
 };
 let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
@@ -2433,7 +2471,7 @@ function enemyMove(e,dt){
      const out=e.skyExitDir<0?e.x<-e.r-28:e.x>W+e.r+28;
      if(out){
        const ax=p.x-e.x,ay=p.y-e.y,ad=Math.hypot(ax,ay)||1;
-       e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=1.05;
+       e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=Math.min(2.35,Math.max(1.05,ad/560+.22));
        burst(e.x,e.y,4,.18,'#b9f3eb');flashBanner('SKY SWEEP!',.32);
        const a=Math.atan2(e.vy,e.vx),dmg=8+game.wave*.16;game.fx.push({x:e.x,y:e.y,vx:Math.cos(a-.08)*300,vy:Math.sin(a-.08)*300,life:2.7,r:4.5,sting:true,damage:dmg},{x:e.x,y:e.y,vx:Math.cos(a+.08)*300,vy:Math.sin(a+.08)*300,life:2.7,r:4.5,sting:true,damage:dmg});
      }
@@ -2628,7 +2666,7 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- // v18.0.105 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
+ // v18.0.108 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
  if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
@@ -2825,6 +2863,16 @@ function upgradeIconSvg(id){
  };
  return open+(icons[id]||icons.greed)+close
 }
+function upgradeCardIconMarkup(u){
+ const sword='<svg class="bbSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>';
+ if(!u)return '';
+ if(u.id==='clone'||u.id==='helperArmy')return '';
+ if(['sharp','speed','triple','endlessTriple'].includes(u.id))return sword;
+ if(['heart','endlessHealth'].includes(u.id))return '<span class="bbIcon bbHeartIcon"></span>';
+ if(['magnet','greed','gold'].includes(u.id))return '<span class="leafCurrencyIcon bbLeafIcon"></span>';
+ return upgradeIconSvg(u.id);
+}
+function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${u.desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`}
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;if(u.id==='clone'){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,save.selected,34,false)}else if(u.id==='helperArmy'){mark.innerHTML='';const wrap=document.createElement('span');wrap.className='buddyArmyWrap';mark.appendChild(wrap);for(let n=0;n<3;n++){const c=document.createElement('canvas');c.width=40;c.height=40;wrap.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,save.selected,22,false)}}})
 }
@@ -2839,7 +2887,7 @@ function openUpgrade(afterWave=false){
    if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'2× BOOST',desc:`Store 6 seconds of rapid attack + double damage + 2-shot  •  ${(g.endlessTripleCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
    if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:`Store 5 seconds of swarm slow + pushback  •  ${(g.endlessRepelCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
    if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
-   $('choices').innerHTML=endlessUp.map(u=>`<button class="choice ${u.rarity}"><div class="rarity">${u.rarity}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+   $('choices').innerHTML=endlessUp.map(u=>upgradeChoiceHtml(u)).join('');
    [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();endlessUp[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1)});
    $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
  }
@@ -2859,7 +2907,7 @@ function openUpgrade(afterWave=false){
  // Shuffle rare hits so no one rare upgrade always steals the first slot when multiple roll together.
  for(let i=lucky.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)),t=lucky[i];lucky[i]=lucky[j];lucky[j]=t}
  lucky.forEach((u,i)=>{if(i<choices.length)choices[i]=u});
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+ $('choices').innerHTML=choices.map(u=>upgradeChoiceHtml(u)).join('');
  paintUpgradeBuddyIcons($('choices'),choices);
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
    initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
@@ -2880,7 +2928,8 @@ function finalUpgradePick(remaining){
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  $('upgradeTitle').textContent='FINAL PREPARATION — '+(4-remaining)+' / 3';
  $('upgradeSub').textContent='Choose one upgrade. '+remaining+' choice'+(remaining===1?'':'s')+' remaining.';
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+ $('choices').innerHTML=choices.map(u=>upgradeChoiceHtml(u)).join('');
+ paintUpgradeBuddyIcons($('choices'),choices);
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{choices[i].apply(game.p);upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
 }
@@ -2897,7 +2946,7 @@ function wave50BonusPick(){
  const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)),choices=[];
  while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  $('upgradeTitle').textContent='WAVE 50 CLEARED!';$('upgradeSub').textContent='Choose 3 upgrades — '+remaining+' remaining';
- $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+ $('choices').innerHTML=choices.map(u=>upgradeChoiceHtml(u)).join('');
  paintUpgradeBuddyIcons($('choices'),choices);
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();choices[i].apply(g.p);upgradePickSound(choices[i].rarity);g.wave50BonusRemaining--;if(g.wave50BonusRemaining>0)wave50BonusPick();else{closeUpgrade();g.paused=false;beginWave(51)}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
