@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.136: isolated final-boss build tester added; normal game flow unchanged. -->
+<!-- Big Bug v18.0.137: isolated final-boss build tester added; normal game flow unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1181,8 +1181,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <button id="finalBuildTestBtn" type="button" style="position:absolute;left:50%;bottom:max(58px,calc(env(safe-area-inset-bottom) + 52px));transform:translateX(-50%);z-index:80;min-width:150px;border:1px solid #ffffff2a;border-radius:12px;padding:9px 12px;background:#17231bf2;color:#fff;font:900 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005;cursor:pointer">TEST FINAL BOSS</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.136</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.136</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.137</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.137</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4267,7 +4267,7 @@ function buildGardenBook(tab=gardenBookTab){
    if(tab==='playable')renderGardenPlayable(c,e.id);else renderGardenEnemy(c,e.id,tab==='boss');
  });
 }
-// v18.0.136 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
+// v18.0.137 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
 function startFinalBuildTest(){
  // Use the existing test-run path so this cannot write Story progress/rewards/recovery.
  startRun(100,true);
@@ -4277,7 +4277,7 @@ function startFinalBuildTest(){
  // Build a plausible late-game loadout from persistent in-run upgrades only.
  // Counts vary each press, roughly matching the spread a full run tends to accumulate.
  const p=game.p;
- // v18.0.136 — tester-only Leaves: simulate the 100,000-Leaf final-prep choice without touching the saved balance.
+ // v18.0.137 — tester-only Leaves: simulate the 100,000-Leaf final-prep choice without touching the saved balance.
  game.coins=100000;
  const byId=id=>UP.find(u=>u.id===id);
  const ids=['sharp','heart','speed','crit','magnet','greed','gold'];
@@ -4289,9 +4289,10 @@ function startFinalBuildTest(){
   for(let i=0;i<count;i++)u.apply(p);
  }
  p.hp=p.maxHp;
- // Spawn Wave 100 only after the test build exists. This bypasses final prep for this tester only.
- beginWave(100);
- flashBanner('FINAL BOSS TEST — SIMULATED FULL-RUN BUILD',1.8);
+ // v18.0.137 — tester enters the normal final-preparation screen before Wave 100.
+ game.finalPrepDone=false;
+ showFinalPrep();
+ flashBanner('FINAL BOSS TEST — CHOOSE YOUR FINAL PREP',1.8);
  updateHud(true);
 }
 const finalBuildTestBtn=$('finalBuildTestBtn');
