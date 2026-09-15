@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.129: built from the known-good v18.0.125 baseline; PC Spacebar activates the existing boost action. Mobile gameplay/input unchanged. -->
+<!-- Big Bug v18.0.130: built from the known-good v18.0.125 baseline; PC Spacebar activates the existing boost action. Mobile gameplay/input unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1180,8 +1180,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.129</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.129</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.130</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.130</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4154,7 +4154,7 @@ setInterval(()=>{
  else repairWaveAfterSystemInterruption();
 },1000);
 
-function startOrResume(){if(!game||game.over){startRun();return}if(game.mode==='story'&&game.intermission&&!game.waveActive){screen('none');showGameUI(true);if(game.wave%5===0){showGardenUpdate(game.wave)}else{openUpgrade(true)}return}game.paused=false;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();saveRunRecovery('resume')}
+function startOrResume(){if(!game||game.over){startRun();return}if(game.mode==='story'&&game.intermission&&!game.waveActive){screen('none');showGameUI(true);if(game.wave%5===0){showGardenUpdate(game.wave)}else{openUpgrade(true)}return}game.paused=false;repairWaveAfterSystemInterruption();screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();saveRunRecovery('resume')}
 
 // v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
 // Existing button sounds remain untouched and do not get doubled.
@@ -4534,13 +4534,15 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
+// v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.129';
+const BB_BUILD_VERSION='18.0.130';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
-  if(game&&!game.over&&!game.paused)return false;
+  // A paused run is still a live run. Never reload/update until the run is over or the player is back home.
+  if(game&&!game.over)return false;
   return true;
 }
 async function bbCheckForUpdate(force=false){
@@ -4562,7 +4564,7 @@ addEventListener('load',async()=>{
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)bbApplyDeferredUpdate()});
 addEventListener('pageshow',()=>bbApplyDeferredUpdate());
 // Five-minute idle check only. No per-frame/network work is added to gameplay.
-setInterval(()=>{if(!document.hidden&&(!game||game.over||game.paused))bbCheckForUpdate()},300000);
+setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300000);
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
 </body>
