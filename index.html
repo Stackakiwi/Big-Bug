@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.130: built from the known-good v18.0.125 baseline; PC Spacebar activates the existing boost action. Mobile gameplay/input unchanged. -->
+<!-- Big Bug v18.0.131: reset-data stability fix; fresh saves fully initialize Legendary Golden Ladybug state so BUGS and related menus remain usable after reset. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1180,8 +1180,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.130</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.130</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.131</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.131</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1787,7 +1787,7 @@ function resetGameProgress(){
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],settings:keptSettings,cosmetics:keptCosmetics};
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],legendaryGolden:{revealed:false,owned:false},settings:keptSettings,cosmetics:keptCosmetics};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -1953,6 +1953,7 @@ function bossMusicStart(){
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
 
 function buildBugScreen(){
+ if(!save.legendaryGolden||typeof save.legendaryGolden!=='object')save.legendaryGolden={revealed:false,owned:false};
  syncLegendaryGolden(false);
  for(const id of (save.unlocked||[]))if(BUGS[id])gardenDiscover('player:'+id);
  const grid=$('bugGrid');grid.innerHTML='';
@@ -4537,7 +4538,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.130';
+const BB_BUILD_VERSION='18.0.131';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
