@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.133: temporary final-boss build tester simulates a varied full Story run upgrade loadout; normal gameplay unchanged. -->
+<!-- Big Bug v18.0.133: isolated final-boss test button; normal game paths unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -999,6 +999,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 /* v18.0.108 — Steam-ready presentation polish. Visual/copy cleanup only; gameplay untouched. */
 .testJump,.creditsTestBtn,.purifyTestBtn{display:none!important}
+#finalBossBuildTestBtn{position:absolute!important;left:62px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;z-index:70!important;display:block!important;min-width:0!important;margin:0!important;padding:8px 10px!important;font-size:10px!important;opacity:.86!important}
 #help,#settings,#bugs,#base,#shop,#cosmetics{background:radial-gradient(ellipse at 50% 0%,#23482d55 0 22%,transparent 48%),linear-gradient(180deg,#081b10 0%,#041109 100%)}
 #help .panel,#settings .panel{width:min(760px,96vw);max-height:min(92vh,820px);border:1px solid #6f966f;border-radius:18px;background:linear-gradient(165deg,#12341f 0%,#0b2617 58%,#071b10 100%);box-shadow:0 8px 0 #031008,0 22px 60px #000b,inset 0 1px 0 #b9d6a322;padding:24px}
 #help .panel:before,#help .panel:after{display:none!important}
@@ -1174,12 +1175,12 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
+  <button id="finalBossBuildTestBtn" class="btn dark small" data-action="testFinalBuild">FINAL BOSS TEST</button>
   <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
   <button class="btn dark small purifyTestBtn" data-action="testPurify">TEMP PURIFY</button>
   <div class="testJump" aria-label="Temporary wave and boss tester">
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
-    <button class="btn dark small" data-action="testFinalBuild">FINAL BUILD</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v18.0.133</div>
   <div class="versionCorner" aria-hidden="true">v18.0.133</div>
@@ -2012,43 +2013,23 @@ function startRun(startWave=1,testMode=false){
  last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 
-// v18.0.133 — temporary balance tester: jump to the final boss with a varied,
-// full-run-like Story upgrade history. Uses the currently selected bug and current
-// permanent Power Ups, never writes progress, and does not alter normal Story runs.
-function startFinalBuildTest(){
- startRun(100,true);
- if(!game||game.mode!=='story')return;
+// v18.0.133 — isolated tester only. It creates a disposable test run and applies a representative
+// late-game upgrade loadout to that run's player. It never writes save data or changes normal startRun logic.
+function startFinalBossBuildTest(){
+ initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
+ game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:100,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:true,mode:'story',
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,finalPrepDone:true};
  const p=game.p;
- // A normal trip to Wave 100 produces many upgrade picks. Build a plausible mix rather
- // than maxing one stat: common combat upgrades dominate, with some utility/rare picks.
- const picks=[];
- const add=(id,n)=>{for(let i=0;i<n;i++)picks.push(id)};
- // 99-ish progression choices, including the extra Wave 50 choices, distributed with
- // small random variation so repeated tests exercise different believable builds.
- const jitter=()=>Math.floor(Math.random()*5)-2;
- add('sharp',Math.max(16,24+jitter()));
- add('heart',Math.max(14,21+jitter()));
- add('speed',Math.max(13,19+jitter()));
- add('crit',Math.max(5,8+jitter()));
- add('magnet',Math.max(4,7+jitter()));
- add('greed',Math.max(5,9+jitter()));
- add('gold',Math.max(4,7+jitter()));
- // Shuffle, then trim/fill to 99 permanent-effect picks. Temporary 5-wave powers are
- // intentionally omitted unless they could realistically still be active at Wave 100.
- for(let i=picks.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[picks[i],picks[j]]=[picks[j],picks[i]]}
- while(picks.length<99)picks.push(['sharp','heart','speed','greed','gold'][Math.floor(Math.random()*5)]);
- picks.length=99;
- for(const id of picks){const u=UP.find(x=>x.id===id);if(u)u.apply(p)}
- // Small chance that a late rare pick is still helping at the final boss, matching the
- // actual rarity window without guaranteeing a powerful temporary every test.
- const rareRoll=Math.random();
- if(rareRoll<.12){p.tripleShot=true;p.tripleShotUntilWave=104}
- else if(rareRoll<.22){
-   const u=UP.find(x=>x.id==='clone');if(u)u.apply(p);
- }
+ // Representative full-run build: 20 ordinary picks, spread across combat/survival/economy.
+ // Kept deterministic so repeated boss tests are comparable and no upgrade UI/state is touched.
+ for(let i=0;i<6;i++)p.damage*=1.10;
+ for(let i=0;i<5;i++){p.maxHp+=20;p.hp=p.maxHp}
+ for(let i=0;i<5;i++)p.rate=Math.max(360,p.rate/1.10);
+ for(let i=0;i<2;i++)p.crit=Math.min(.35,p.crit+.05);
+ p.speed*=1.10;p.greed*=1.10;
+ p.magnet+=65;
  p.hp=p.maxHp;
- updateHud();
- flashBanner('FINAL BUILD TEST — VARIED FULL-RUN UPGRADES',1.5);
+ beginWave(100);last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 
 function startEndless(){
@@ -2274,7 +2255,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v18.0.133 — final boss durability only: Spore Behemoth has 25% more max HP.
+   // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart')baseHp*=1.25;
    // v17.8.34 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
@@ -4353,7 +4334,7 @@ document.addEventListener('click',e=>{
   if(a==='goldContinue')goldContinue();
  if(a==='endless')startEndless();
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
- if(a==='testFinalBuild')startFinalBuildTest()
+ if(a==='testFinalBuild')startFinalBossBuildTest()
  if(a==='testEnding')previewFinalPurification(false)
  if(a==='testPurify')previewFinalPurification(true)
  if(a==='settings'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
