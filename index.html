@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.102: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
+<!-- Big Bug v18.0.103: Steam-ready presentation polish pass; menus/help/settings cleaned up, development controls removed, gameplay unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -950,7 +950,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #bugs .card button{font-size:clamp(21px,4vw,28px)!important}
 
 
-/* v18.0.102 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
+/* v18.0.103 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
 #cosmetics{background:rgba(3,17,10,.97);padding:16px}
 #cosmetics .panel{width:min(620px,100%);max-height:94vh;background:linear-gradient(160deg,#10291a,#07180f 72%,#041008);border:2px solid #6c7950;border-radius:22px;padding:20px 16px;box-shadow:0 10px 0 #020906,0 24px 55px #000b,inset 0 0 32px #38502b35}
 .cosmeticHead{text-align:center;margin-bottom:13px}.cosmeticHead h2{margin:0;color:#f2e4b3;font:800 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive;letter-spacing:.5px}.cosmeticHead p{margin:5px 0 0;color:#bfc8a9}
@@ -974,7 +974,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-width:520px){.medievalGrid{grid-template-columns:1fr}.medievalCard{display:grid;grid-template-columns:94px 1fr;grid-template-rows:auto auto auto;column-gap:10px;text-align:left;align-items:center}.medievalPreview{grid-row:1/4}.medievalCard .muted{min-height:0}.medievalCard .btn{width:auto;min-width:150px}.cosmeticHead h2{font-size:28px}}
 
 
-/* v18.0.102 — keep BUGS / POWER UPS / COSMETICS on one row on mobile, matching desktop placement. */
+/* v18.0.103 — keep BUGS / POWER UPS / COSMETICS on one row on mobile, matching desktop placement. */
 .homeMenuRow{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:nowrap}
 @media(max-width:560px){
  #home .homeMenuRow{width:calc(100vw - 28px);gap:5px}
@@ -984,7 +984,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.102 — on wider/desktop screens, keep the Garden Book beside the main Home controls
+/* v18.0.103 — on wider/desktop screens, keep the Garden Book beside the main Home controls
    at the same relative spot it occupies on iPhone instead of pinning it to the far-right edge. */
 @media(min-width:561px){
  #home #gardenBookBtn{
@@ -993,6 +993,30 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   top:45.2%!important;
  }
 }
+
+
+/* v18.0.103 — Steam-ready presentation polish. Visual/copy cleanup only; gameplay untouched. */
+.testJump,.creditsTestBtn,.purifyTestBtn{display:none!important}
+#help,#settings,#bugs,#base,#shop,#cosmetics{background:radial-gradient(ellipse at 50% 0%,#23482d55 0 22%,transparent 48%),linear-gradient(180deg,#081b10 0%,#041109 100%)}
+#help .panel,#settings .panel{width:min(760px,96vw);max-height:min(92vh,820px);border:1px solid #6f966f;border-radius:18px;background:linear-gradient(165deg,#12341f 0%,#0b2617 58%,#071b10 100%);box-shadow:0 8px 0 #031008,0 22px 60px #000b,inset 0 1px 0 #b9d6a322;padding:24px}
+#help .panel:before,#help .panel:after{display:none!important}
+#help h2,#settings .panel h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand",system-ui,sans-serif;font-size:clamp(30px,4vw,42px);letter-spacing:.6px;line-height:1;margin:0 0 20px;color:#fff7df;text-shadow:0 3px 0 #06140b}
+#help .helpGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+#help .helpCard,#help .helpCard:nth-child(n){min-height:112px;transform:none!important;border-radius:13px;background:linear-gradient(180deg,#1b4a2d,#143a24);border:1px solid #56805a;box-shadow:inset 0 1px 0 #d9f2c51c,0 3px 0 #061a0e;padding:15px 16px;display:flex;flex-direction:column;justify-content:center}
+#help .helpBossCard{grid-column:1/-1;min-height:100px!important}
+#help .helpCard b{font-size:20px;line-height:1.1;margin-bottom:8px;color:#fff8e7;gap:9px}
+#help .helpCard .muted{font-size:15px;line-height:1.35;color:#d7e1d4;opacity:.9}
+#help .helpBugSvg{width:27px;height:30px}#help .helpGameBugIcon{width:30px;height:30px;flex-basis:30px}#help .helpLeafIcon{width:24px;height:24px;flex-basis:24px}#help .helpSwordSvg{width:25px;height:25px}
+#help .helpBack,#settings>.panel>.btn[data-action="home"]{width:100%;min-height:58px;margin:18px 0 0!important;border-radius:14px;font-size:18px;letter-spacing:.25px}
+#settings .settingsIntro{font-size:15px;color:#cbd8c8;opacity:.9;margin:-8px 0 18px}
+#settings .settingRow{border-radius:13px;border-color:#466b4b;background:linear-gradient(180deg,#183f27,#12351f);box-shadow:0 2px 0 #06170d;padding:14px 16px}
+#settings .settingRow b{font-size:18px}#settings .settingRow .muted{color:#c7d3c5;opacity:.82}
+#settings .settingsDanger{border-top-color:#527057;margin-top:20px}
+#settings #resetConfirm{border-radius:13px}
+.btn{transition:transform .08s ease,filter .12s ease}.btn:hover:not(:disabled){filter:brightness(1.06)}.btn:active:not(:disabled){transform:translateY(2px)}
+.panel{scrollbar-width:thin;scrollbar-color:#5f8d60 #0b2013}
+@media(max-width:600px){#help .panel,#settings .panel{width:100%;padding:18px 14px;border-radius:16px}#help .helpGrid{grid-template-columns:1fr;gap:9px}#help .helpBossCard{grid-column:auto}#help .helpCard,#help .helpCard:nth-child(n){min-height:92px;padding:12px 13px}#help .helpCard b{font-size:18px;margin-bottom:5px}#help .helpCard .muted{font-size:14px}#help h2,#settings .panel h2{font-size:31px;margin-bottom:15px}}
+@media(min-width:900px){#help .panel{width:min(820px,92vw)}#help .helpCard{min-height:120px}#help .helpCard b{font-size:21px}#help .helpCard .muted{font-size:16px}}
 
 </style>
 </head>
@@ -1036,8 +1060,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.102</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.102</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.103</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.103</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1127,12 +1151,12 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <h2>HOW TO PLAY</h2>
   <div class="helpGrid">
    <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Tap or drag to move. Attacks are automatic.</div></div>
-   <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves. Choose upgrades between waves.</div></div>
+   <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves and choose upgrades between waves.</div></div>
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">Standing still fires faster in Story and Mosquito Mode. In Story Mode, get close to an enemy to hit harder.</div></div>
-   <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Watch for attacks!</div></div>
-   <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Permanent upgrades make your runs a little smoother.</div></div>
-   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Endless</b><div class="muted">Beat Wave 20 to unlock Mosquito Mode.</div></div>
+   <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Learn its attacks and keep moving.</div></div>
+   <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Spend Leaves on permanent upgrades between runs.</div></div>
+   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 20 to unlock. Survive the swarm and earn Leaves.</div></div>
   </div>
   <button class="btn dark helpBack" data-action="settings">BACK TO SETTINGS</button>
  </div>
@@ -1211,7 +1235,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-// v18.0.102 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
+// v18.0.103 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
 // v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
@@ -2541,7 +2565,7 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- // v18.0.102 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
+ // v18.0.103 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
  if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
