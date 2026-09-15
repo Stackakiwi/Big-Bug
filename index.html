@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.142: final boss brown spiral fires less often; projectile pattern unchanged. -->
+<!-- Big Bug v18.0.143: final boss brown spiral fires less often; projectile pattern unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1139,6 +1139,12 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 </style>
+
+<style id="finalWaveVisualStyle">
+.hudWave{position:relative}
+#finalWaveVisual{display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:inherit;border-radius:inherit;font:inherit;letter-spacing:inherit;white-space:nowrap;z-index:2}
+#finalWaveVisual.show{display:flex}
+</style>
 </head>
 <body>
 <canvas id="arenaBg" aria-hidden="true"></canvas>
@@ -1146,7 +1152,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 <div id="hud" class="hidden">
   <div class="pill hudHealth"><span class="bbIcon bbHeartIcon" aria-hidden="true"></span> <span id="hp">100</span>/<span id="maxhp">100</span></div>
-  <div class="pill hudWave">WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
+  <div class="pill hudWave">WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span><span id="finalWaveVisual" aria-hidden="true">FINAL WAVE</span></div>
   <div class="pill hudLeaves"><span id="hudCurrencyIcon" class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="coins">0</span></div>
   <span id="dmg" class="hidden" aria-hidden="true">10</span>
 </div>
@@ -1181,8 +1187,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <button id="finalBuildTestBtn" type="button" style="position:absolute;left:50%;bottom:max(58px,calc(env(safe-area-inset-bottom) + 52px));transform:translateX(-50%);z-index:80;min-width:150px;border:1px solid #ffffff2a;border-radius:12px;padding:9px 12px;background:#17231bf2;color:#fff;font:900 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005;cursor:pointer">TEST FINAL BOSS</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.142</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.142</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.143</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.143</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3018,13 +3024,8 @@ function updateHud(force=true,now=performance.now()){
  // This avoids needless DOM/class/style work on every animation frame while preserving the same displayed values.
  if(!force&&now-(HUD_CACHE.lastPaint||0)<40)return;HUD_CACHE.lastPaint=now;
  const p=game.p,g=game,active=boostActive();
- setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));
- const wavePill=hudNode('wave').parentElement;
- if(g.mode==='story'&&g.wave===100){
-  if(HUD_CACHE.finalWaveLabel!==true){HUD_CACHE.finalWaveLabel=true;wavePill.childNodes[0].nodeValue='FINAL WAVE';hudNode('wave').style.display='none';}
- }else if(HUD_CACHE.finalWaveLabel!==false){HUD_CACHE.finalWaveLabel=false;wavePill.childNodes[0].nodeValue='WAVE ';hudNode('wave').style.display='';}
- if(!(g.mode==='story'&&g.wave===100))setHudText('wave',g.wave);
- const waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);
+ const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
  const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis='';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
  setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):''));
@@ -4272,7 +4273,7 @@ function buildGardenBook(tab=gardenBookTab){
    if(tab==='playable')renderGardenPlayable(c,e.id);else renderGardenEnemy(c,e.id,tab==='boss');
  });
 }
-// v18.0.142 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
+// v18.0.143 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
 function finishFinalBuildTestPrep(){
  const d=$('testFinalPrep');if(d)d.remove();const u=$('testFinalUpgrade');if(u)u.remove();
  if(!game)return;game.finalPrepDone=true;game.paused=false;game.intermission=false;game.waveActive=false;
@@ -4610,6 +4611,16 @@ addEventListener('pageshow',()=>bbApplyDeferredUpdate());
 // Five-minute idle check only. No per-frame/network work is added to gameplay.
 setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300000);
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
+</script>
+
+<script id="finalWaveVisualOnly">
+(()=>{
+ const wave=document.getElementById('wave'),overlay=document.getElementById('finalWaveVisual');
+ if(!wave||!overlay)return;
+ const sync=()=>overlay.classList.toggle('show',wave.textContent.trim()==='100');
+ new MutationObserver(sync).observe(wave,{childList:true,characterData:true,subtree:true});
+ sync();
+})();
 </script>
 </body>
 </html>
