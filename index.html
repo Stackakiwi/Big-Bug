@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.101: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
+<!-- Big Bug v18.0.102: PC control selector added; desktop players can choose Mouse or WASD while mobile controls remain unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -407,6 +407,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .bbBugIcon{width:1.02em;height:1.18em;border-radius:48% 48% 46% 46%;border:2px solid #24211e;background:radial-gradient(circle at 29% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 29% 68%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 68%,#24211e 0 8%,transparent 9%),linear-gradient(90deg,transparent 47%,#24211e 47% 53%,transparent 53%),#d9473f;box-shadow:inset 0 0 0 1px #ed6a60,0 1px 0 #111}.bbBugIcon:before{content:"";position:absolute;left:16%;top:-28%;width:68%;height:38%;border-radius:50% 50% 42% 42%;background:#24211e;border:1px solid #171714;box-sizing:border-box}.bbBugIcon:after{content:"••";position:absolute;left:20%;top:-31%;width:60%;color:#f8f3df;font:bold .36em/1 system-ui,sans-serif;letter-spacing:.35em;text-align:center;text-shadow:0 0 0 #fff}
 .bbSwordSvg{width:1.28em;height:1.28em;display:block;flex:0 0 auto;overflow:visible;filter:drop-shadow(0 1px 1px #0008)}
 #pause .panel h2{display:block;text-align:center;width:100%;margin-left:auto;margin-right:auto}
+.pauseStats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px auto 18px;max-width:330px;text-align:left}.pauseStat{background:#17301f;border:1px solid #ffffff22;border-radius:10px;padding:9px 11px;box-shadow:inset 0 -2px #0b1b10}.pauseStat small{display:block;font-size:10px;opacity:.7;letter-spacing:.6px}.pauseStat b{display:block;font-size:18px;margin-top:2px}
 .leafCurrencyIcon.bbLeafIcon{width:24px;height:24px;font-size:0;background:none;border:0;box-shadow:none;filter:drop-shadow(0 0 5px #dfff63);transform:none}.leafCurrencyIcon.bbLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23c9f84f' stroke='%23fbffe1' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%233d792d' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%2373963c' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}.leafCurrencyIcon.bbLeafIcon:after{display:none}
 .goldLeafIcon{display:inline-block;position:relative;width:24px;height:24px;vertical-align:-6px;margin-right:4px;filter:drop-shadow(0 0 5px #ffd84f) drop-shadow(0 0 10px #fff0a055)}
 .goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%23b88718' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
@@ -949,7 +950,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #bugs .card button{font-size:clamp(21px,4vw,28px)!important}
 
 
-/* v18.0.101 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
+/* v18.0.102 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
 #cosmetics{background:rgba(3,17,10,.97);padding:16px}
 #cosmetics .panel{width:min(620px,100%);max-height:94vh;background:linear-gradient(160deg,#10291a,#07180f 72%,#041008);border:2px solid #6c7950;border-radius:22px;padding:20px 16px;box-shadow:0 10px 0 #020906,0 24px 55px #000b,inset 0 0 32px #38502b35}
 .cosmeticHead{text-align:center;margin-bottom:13px}.cosmeticHead h2{margin:0;color:#f2e4b3;font:800 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive;letter-spacing:.5px}.cosmeticHead p{margin:5px 0 0;color:#bfc8a9}
@@ -973,7 +974,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-width:520px){.medievalGrid{grid-template-columns:1fr}.medievalCard{display:grid;grid-template-columns:94px 1fr;grid-template-rows:auto auto auto;column-gap:10px;text-align:left;align-items:center}.medievalPreview{grid-row:1/4}.medievalCard .muted{min-height:0}.medievalCard .btn{width:auto;min-width:150px}.cosmeticHead h2{font-size:28px}}
 
 
-/* v18.0.101 — keep BUGS / POWER UPS / COSMETICS on one row on mobile, matching desktop placement. */
+/* v18.0.102 — keep BUGS / POWER UPS / COSMETICS on one row on mobile, matching desktop placement. */
 .homeMenuRow{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:nowrap}
 @media(max-width:560px){
  #home .homeMenuRow{width:calc(100vw - 28px);gap:5px}
@@ -983,7 +984,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.101 — on wider/desktop screens, keep the Garden Book beside the main Home controls
+/* v18.0.102 — on wider/desktop screens, keep the Garden Book beside the main Home controls
    at the same relative spot it occupies on iPhone instead of pinning it to the far-right edge. */
 @media(min-width:561px){
  #home #gardenBookBtn{
@@ -1035,8 +1036,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.101</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.101</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.102</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.102</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1183,7 +1184,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 <section id="pause" class="screen hidden">
  <div class="panel" style="text-align:center">
-  <div id="pauseMain"><h2>PAUSED</h2><p>Take a breather little bug.</p><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn red" data-action="showQuitConfirm">QUIT RUN</button></div>
+  <div id="pauseMain"><h2>PAUSED</h2><p>Take a breather little bug.</p><div id="pauseStats" class="pauseStats"></div><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn red" data-action="showQuitConfirm">QUIT RUN</button></div>
   <div id="quitConfirm" class="hidden"><h2>QUIT THIS RUN?</h2><p>Your current run will end.</p><button class="btn red" data-action="confirmQuit">QUIT RUN</button><button class="btn green" data-action="cancelQuit">KEEP GOING</button></div>
  </div>
 </section>
@@ -1210,7 +1211,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-// v18.0.101 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
+// v18.0.102 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
 // v18.0.84 — +10% global audio output and persistent master-volume slider.
 // v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
 // keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
@@ -1528,8 +1529,8 @@ const GARDEN_STORY={
 100:{title:'The Garden Is Quiet',text:'The Spore Behemoth is gone. The purple glow fades from the roots, the spores settle, and the bugs slowly return. The garden belongs to the bugs again.'}
 };
 let pendingBossUpgrade=false;
-function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
-$('storyContinue').onclick=()=>{initAudio();const story=$('story');story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;openUpgrade(true)}};
+function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
+$('storyContinue').onclick=()=>{initAudio();const story=$('story');story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
  {id:'heart',icon:'',name:'Clover Heart',desc:'+20 max HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
@@ -2540,7 +2541,7 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- // v18.0.101 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
+ // v18.0.102 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
  if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
@@ -2800,6 +2801,25 @@ $('prepLeaves').onclick=()=>{initAudio();game.coins=(game.coins||0)+100000;finis
 $('prepUpgrades').onclick=()=>{initAudio();$('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';finalUpgradePick(3)};
 $('prepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalPrep()};
 
+function openWave50BonusUpgrades(){
+ const g=game;g.paused=true;g.wave50BonusRemaining=3;
+ wave50BonusPick();
+}
+function wave50BonusPick(){
+ const g=game,remaining=g.wave50BonusRemaining||0;if(remaining<=0){closeUpgrade();g.paused=false;beginWave(51);return}
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)),choices=[];
+ while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
+ $('upgradeTitle').textContent='WAVE 50 CLEARED!';$('upgradeSub').textContent='Choose 3 upgrades — '+remaining+' remaining';
+ $('choices').innerHTML=choices.map(u=>`<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon}</div><b>${u.name}</b><p class="muted">${u.desc}</p></button>`).join('');
+ paintUpgradeBuddyIcons($('choices'),choices);
+ [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();choices[i].apply(g.p);upgradePickSound(choices[i].rarity);g.wave50BonusRemaining--;if(g.wave50BonusRemaining>0)wave50BonusPick();else{closeUpgrade();g.paused=false;beginWave(51)}});
+ $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
+}
+function refreshPauseStats(){
+ if(!game||!game.p||!$('pauseStats'))return;const p=game.p;
+ const atk=Math.round(p.damage*10)/10, hp=Math.ceil(p.hp)+' / '+Math.ceil(p.maxHp), move=Math.round(p.speed), attacks=(1000/p.rate).toFixed(2)+'/sec';
+ $('pauseStats').innerHTML=`<div class="pauseStat"><small>ATTACK</small><b>${atk}</b></div><div class="pauseStat"><small>HEALTH</small><b>${hp}</b></div><div class="pauseStat"><small>MOVEMENT</small><b>${move}</b></div><div class="pauseStat"><small>ATTACK SPEED</small><b>${attacks}</b></div>`;
+}
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
 const HUD_CACHE={},HUD_NODES={};
 function hudNode(id){return HUD_NODES[id]||(HUD_NODES[id]=$(id))}
@@ -4145,7 +4165,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('pointerdown',()=>{if(game&&game.mode==='endless'&&!game.over&&!game.paused){initAudio();if(!endlessMusicTimer)endlessMusicStart(false)}else if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
-$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
+$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
 const pcKeys={w:false,a:false,s:false,d:false};
 function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'}
