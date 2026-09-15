@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.131: reset-data stability fix; fresh saves fully initialize Legendary Golden Ladybug state so BUGS and related menus remain usable after reset. -->
+<!-- Big Bug v18.0.132: Spore Behemoth max health increased by 25%; all other behavior unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1180,8 +1180,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.131</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.131</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.132</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.132</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2234,6 +2234,8 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
+   // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
+   if(k==='gardenHeart')baseHp*=1.25;
    // v17.8.34 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
@@ -4538,7 +4540,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.131';
+const BB_BUILD_VERSION='18.0.132';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
