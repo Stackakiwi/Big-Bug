@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.117: Steam-ready presentation polish pass; menus/help/settings cleaned up, development controls removed, gameplay unchanged. -->
+<!-- Big Bug v18.0.126: PC Spacebar activates the main boost button; mobile controls unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1180,8 +1180,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.127</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.127</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.125</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.126</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1784,7 +1784,7 @@ function resetGameProgress(){
  if(raf){cancelAnimationFrame(raf);raf=0}
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],settings:keptSettings,cosmetics:keptCosmetics,legendaryGolden:{revealed:false,owned:false,noticeSeen:false}};
+ save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],settings:keptSettings,cosmetics:keptCosmetics};
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -4163,8 +4163,7 @@ const GARDEN_BOOK={
  playable:[
   {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:"Small, sturdy, and ready to scurry."},
   {key:'player:beetle',id:'beetle',name:'Beetle',desc:'Tough shell, strong bite, slow feet.'},
-  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Quick and light, with fast little hits.'},
-  {key:'player:golden',id:'golden',name:'The Legendary Golden Ladybug',desc:'A golden garden legend. Stronger, faster, and very hard to earn.'}
+  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Quick and light, with fast little hits.'}
  ],
  enemy:[
   {key:'enemy:ant',id:'ant',name:'Garden Ant',desc:'Small workers that get troublesome in groups.'},
@@ -4208,7 +4207,6 @@ function syncGardenDiscoveryFromProgress(){
  const add=k=>{if(!save.discovered.includes(k))save.discovered.push(k)};
  add('player:ladybug');
  for(const id of (save.unlocked||[]))if(BUGS[id])add('player:'+id);
- if(save.legendaryGolden&&save.legendaryGolden.owned)add('player:golden');
  const b=Math.max(0,save.best||0);
  // Backfill encounters for existing saves so the journal respects bugs the player already reached.
  if(b>=1){add('enemy:ant');add('enemy:mosquito')}
@@ -4342,7 +4340,10 @@ addEventListener('pointerup',()=>drag=false);
 C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
 C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
 C.addEventListener('touchend',()=>drag=false);
-addEventListener('keydown',e=>{if(!pcUsingWASD())return;const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
+addEventListener('keydown',e=>{
+ // v18.0.126 — PC-only Spacebar shortcut for the main boost button. Ignore key repeat so one press triggers once.
+ if(DESKTOP_PERF_RENDER&&(e.code==='Space'||e.key===' ')&&!e.repeat){if(game&&!game.paused&&!game.over){e.preventDefault();useBoost()}return}
+ if(!pcUsingWASD())return;const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
 addEventListener('keyup',e=>{const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=false;if(pcUsingWASD()&&game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
 addEventListener('blur',()=>{pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false});
 
@@ -4525,8 +4526,8 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
-// v18.0.127 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.127';
+// v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
+const BB_BUILD_VERSION='18.0.125';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
