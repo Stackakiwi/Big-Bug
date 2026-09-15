@@ -1132,7 +1132,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-height:620px){#story .storyLeaf{min-height:0;max-height:94vh;overflow:auto}#story .storyTitle{font-size:34px;margin-bottom:14px}#story .storyText{font-size:22px}#story .storyTwig{margin:20px 0 16px}}
 
 
-/* v18.0.121 — GitHub Pages/PWA cache reliability fix; legacy service worker retired. */
+/* v18.0.122 — GitHub Pages/PWA cache reliability fix; legacy service worker retired. */
 /* v18.0.119 — Legendary Golden Ladybug legs changed to metallic gold; visual-only, no added particles or animation work. */
 .legendaryBugCard{position:relative;overflow:hidden;border:2px solid #f2c94c!important;background:radial-gradient(circle at 50% 25%,#6b541f,#24361e 64%,#122419)!important;box-shadow:0 4px 0 #72510d,0 0 18px #ffd84f77,inset 0 0 24px #f4c62f22!important}.legendaryBugCard:after{content:"";position:absolute;inset:-80% -30%;background:linear-gradient(105deg,transparent 42%,#fff6b855 49%,transparent 56%);animation:legendSweep 3.6s linear infinite;pointer-events:none}.legendaryKicker{font-size:12px;font-weight:1000;letter-spacing:1.5px;color:#ffe88b;margin-bottom:2px}.legendaryBugCard b{color:#fff0a2!important;text-shadow:0 2px #513500;font-size:20px}.legendaryBugCard .bugPreview{height:92px}.legendaryPrice{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.legendaryPrice .btn{min-width:112px;margin:3px;padding:9px 8px}.legendaryPrice>span{font-size:11px;font-weight:1000;color:#ffe9a0}.legendaryLeafBuy{background:#78c84b!important}.legendaryGoldBuy,.legendarySelect{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}@keyframes legendSweep{to{transform:translateX(80%)}}
 #legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
@@ -1181,7 +1181,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v18.0.118</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.121</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.122</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2304,14 +2304,14 @@ function shootAt(target){
      const dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<best){best=ds;second=e}
    }
    if(second){const dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd)}
-   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,ax:target.x,ay:target.y,bx:second?second.x:null,by:second?second.y:null,cx:null,cy:null});
+   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:save.selected==='golden',ax:target.x,ay:target.y,bx:second?second.x:null,by:second?second.y:null,cx:null,cy:null});
  }else if(tripleShotActive(p)){
    let first=null,second=null,d1=Infinity,d2=Infinity;
    for(const e of game.enemies)if(!e.dead&&e!==target&&e.state!=='burrowWait'){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<d1){second=first;d2=d1;first=e;d1=ds}else if(ds<d2){second=e;d2=ds}}
    if(first){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(first,dd)}
    if(second){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd)}
-   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,ax:target.x,ay:target.y,bx:first?first.x:null,by:first?first.y:null,cx:second?second.x:null,cy:second?second.y:null});
- }else game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,playerShotFx:true,ax:target.x,ay:target.y});
+   game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:save.selected==='golden',ax:target.x,ay:target.y,bx:first?first.x:null,by:first?first.y:null,cx:second?second.x:null,cy:second?second.y:null});
+ }else game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,playerShotFx:true,goldenShot:save.selected==='golden',ax:target.x,ay:target.y});
  if(p.fireballs&&p.attackCount%4===0)fireball();
  if(p.fireflies)for(let i=0;i<p.fireflies;i++){let n=nearestEnemy(target.x+Math.random()*70-35,target.y+Math.random()*70-35);if(n)damageEnemy(n,p.damage*.35)}
  if(p.frost)target.slow=2;
@@ -4061,10 +4061,10 @@ function draw(now=performance.now()){
    if(f.killPop){continue}
    if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/(f.maxLife||.52))),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease,rr=Math.max(4,f.r*(1-q*.42));X.globalAlpha=1-q*.22;const sp=leafSprite(rr);X.save();X.translate(xx,yy);X.rotate(-.42+q*.7);X.drawImage(sp.c,-sp.size/2,-sp.size/2,sp.size,sp.size);X.restore();X.globalAlpha=1;continue}
    if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0,n=BB_LOW_FX_DEVICE?3:5;i<n;i++){let a=i*(6.283/n)+FRAME_NOW/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
-   if(f.playerShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
+   if(f.playerShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle=f.goldenShot?'#ffd43b':'#fff3a6';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
    if(f.helperShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=.9*Math.max(0,1-q*.35);X.fillStyle='#c9f4ff';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
    if(f.helperArmyShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.18)),e=1-Math.pow(1-q,2);X.globalAlpha=Math.max(0,1-q*.18);X.fillStyle='#c9f4ff';X.shadowColor='#e8fbff';X.shadowBlur=7;X.beginPath();X.arc(f.x+(f.ax-f.x)*e,f.y+(f.ay-f.y)*e,f.r,0,6.28);X.fill();X.shadowColor='transparent';X.globalAlpha=1;continue}
-   if(f.tripleShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle='#fff3a6';
+   if(f.tripleShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle=f.goldenShot?'#ffd43b':'#fff3a6';
      if(f.ax!=null){X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill()}
      if(f.bx!=null){X.beginPath();X.arc(f.x+(f.bx-f.x)*q,f.y+(f.by-f.y)*q,f.r,0,6.28);X.fill()}
      if(f.cx!=null){X.beginPath();X.arc(f.x+(f.cx-f.x)*q,f.y+(f.cy-f.y)*q,f.r,0,6.28);X.fill()}
@@ -4523,7 +4523,7 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
-// v18.0.121 — GitHub Pages update reliability: retire the legacy cache-first service worker.
+// v18.0.122 — GitHub Pages update reliability: retire the legacy cache-first service worker.
 // BIG BUG is shipped as a self-contained index.html, so stale SW caches could keep serving old builds.
 if('serviceWorker' in navigator){addEventListener('load',async()=>{try{const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()));if('caches' in window){const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)))} }catch(e){}})}
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
