@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.144: final boss brown spiral fires less often; projectile pattern unchanged. -->
+<!-- Big Bug v18.0.145: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1138,6 +1138,19 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
+
+/* v18.0.145 — final preparation uses the same handcrafted upgrade-card language. */
+#finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
+#finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
+#finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
+#finalPrep h2{position:relative;z-index:1;text-align:center;margin:0 0 8px;color:#f0e6b9;text-shadow:0 2px #000;font-family:"Chalkboard SE","Marker Felt","Noteworthy","Bradley Hand","Comic Sans MS",cursive;font-size:31px}
+#finalPrep .panel>p{position:relative;z-index:1;text-align:center;font-family:"Noteworthy","Bradley Hand","Chalkboard SE","Marker Felt",cursive;font-size:17px;color:#b8c7a4;opacity:1;margin:0 0 18px}
+#finalPrep .grid{position:relative;z-index:1;gap:9px}
+#finalPrep .choice{min-height:132px;padding:18px 16px;background:linear-gradient(145deg,#f4e7bd,#e4d39f);color:#19301c;border:2px solid #52d96a;border-radius:7px;box-shadow:0 3px 0 #214d2b,0 0 7px #54ff70,0 0 18px #39dd59a5,inset 0 0 12px #65ff7830;display:flex;flex-direction:column;justify-content:center}
+#finalPrep .choice b{font-family:"Chalkboard SE","Marker Felt","Noteworthy","Bradley Hand","Comic Sans MS",cursive;font-size:24px;line-height:1.08;color:#17311d;margin:0 0 9px}
+#finalPrep .choice p{font-family:"Noteworthy","Bradley Hand","Chalkboard SE","Marker Felt",cursive;font-size:17px;line-height:1.3;font-style:italic;color:#59654f;opacity:1;margin:0}
+#finalPrep .choice .art{display:none!important}
+
 </style>
 </head>
 <body>
@@ -1146,7 +1159,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 <div id="hud" class="hidden">
   <div class="pill hudHealth"><span class="bbIcon bbHeartIcon" aria-hidden="true"></span> <span id="hp">100</span>/<span id="maxhp">100</span></div>
-  <div class="pill hudWave">WAVE <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
+  <div class="pill hudWave"><span id="waveLabel">WAVE</span> <span id="wave">1</span><span id="waveProgress" class="waveProg">0/0</span></div>
   <div class="pill hudLeaves"><span id="hudCurrencyIcon" class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="coins">0</span></div>
   <span id="dmg" class="hidden" aria-hidden="true">10</span>
 </div>
@@ -1180,9 +1193,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <button id="finalBuildTestBtn" type="button" style="position:absolute;left:50%;bottom:max(58px,calc(env(safe-area-inset-bottom) + 52px));transform:translateX(-50%);z-index:80;min-width:150px;border:1px solid #ffffff2a;border-radius:12px;padding:9px 12px;background:#17231bf2;color:#fff;font:900 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005;cursor:pointer">TEST FINAL BOSS</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.144</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.144</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.145</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.145</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3018,11 +3030,11 @@ function updateHud(force=true,now=performance.now()){
  // This avoids needless DOM/class/style work on every animation frame while preserving the same displayed values.
  if(!force&&now-(HUD_CACHE.lastPaint||0)<40)return;HUD_CACHE.lastPaint=now;
  const p=game.p,g=game,active=boostActive();
- setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('wave',g.wave);
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',g.wave===100?'FINAL WAVE':'WAVE');setHudText('wave',g.wave===100?'':g.wave);
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
  const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis='';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
- setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):''));
+ setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',g.wave===100?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
  const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
  const et=hudNode('endlessTripleBtn');if(et){const ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`2× BOOST<small>${left.toFixed(1)}s</small>`:`2× BOOST<small>x${charges} / 3</small>`;setHudClass(et,'tripleHidden','hidden',!endless);setHudClass(et,'tripleActive','active',ta);setHudDisabled(et,'tripleDisabled',!ta&&charges<=0);if(HUD_CACHE.tripleHtml!==html){HUD_CACHE.tripleHtml=html;et.innerHTML=html}}
  const er=hudNode('endlessRepelBtn');if(er){const ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charges=g.endlessRepelCharge||0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>x${charges} / 3</small>`;setHudClass(er,'repelHidden','hidden',!endless);setHudClass(er,'repelActive','active',ra);setHudDisabled(er,'repelDisabled',!ra&&charges<=0);if(HUD_CACHE.repelHtml!==html){HUD_CACHE.repelHtml=html;er.innerHTML=html}}
@@ -4267,41 +4279,6 @@ function buildGardenBook(tab=gardenBookTab){
    if(tab==='playable')renderGardenPlayable(c,e.id);else renderGardenEnemy(c,e.id,tab==='boss');
  });
 }
-// v18.0.144 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
-function finishFinalBuildTestPrep(){
- const d=$('testFinalPrep');if(d)d.remove();const u=$('testFinalUpgrade');if(u)u.remove();
- if(!game)return;game.finalPrepDone=true;game.paused=false;game.intermission=false;game.waveActive=false;
- beginWave(100);flashBanner('FINAL BOSS TEST — SIMULATED FULL-RUN BUILD',1.8);updateHud(true);
-}
-function testFinalUpgradePick(remaining){
- let d=$('testFinalUpgrade');if(d)d.remove();
- d=document.createElement('div');d.id='testFinalUpgrade';d.className='screen';d.style.cssText='display:flex;z-index:10050';
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!game.p.tripleShot)),choices=[];
- while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- d.innerHTML=`<div class="panel"><h2>FINAL PREPARATION — ${4-remaining} / 3</h2><p>Choose one upgrade. ${remaining} choice${remaining===1?'':'s'} remaining.</p><div class="grid" id="testFinalChoices">${choices.map(u=>upgradeChoiceHtml(u)).join('')}</div></div>`;
- document.body.appendChild(d);const grid=d.querySelector('#testFinalChoices');paintUpgradeBuddyIcons(grid,choices);
- [...grid.children].forEach((el,i)=>el.onclick=()=>{initAudio();choices[i].apply(game.p);upgradePickSound(choices[i].rarity);d.remove();if(remaining>1)testFinalUpgradePick(remaining-1);else finishFinalBuildTestPrep()});
-}
-function showTestFinalPrep(){
- let d=$('testFinalPrep');if(d)d.remove();
- d=document.createElement('div');d.id='testFinalPrep';d.className='screen';d.style.cssText='display:flex;z-index:10040';
- d.innerHTML=`<div class="panel"><h2>FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p><div class="grid"><button class="choice rare" id="testPrepLeaves"><div class="art"><span class="leafCurrencyIcon bbLeafIcon"></span></div><b>100,000 LEAVES</b><p class="muted">Take 100,000 more Leaves into the final fight.</p></button><button class="choice epic" id="testPrepUpgrades"><div class="art"><span class="bbUiIcon bbBurst"></span></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p></button><button class="choice epic" id="testPrepBuddy"><div class="art"><span class="bbIcon bbBugIcon"></span></div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p></button></div></div>`;
- document.body.appendChild(d);
- d.querySelector('#testPrepLeaves').onclick=()=>{initAudio();game.coins=(game.coins||0)+100000;finishFinalBuildTestPrep()};
- d.querySelector('#testPrepUpgrades').onclick=()=>{initAudio();d.remove();testFinalUpgradePick(3)};
- d.querySelector('#testPrepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalBuildTestPrep()};upgradePopSound();
-}
-function startFinalBuildTest(){
- startRun(100,true);if(!game)return;
- const prep=$('finalPrep');if(prep){prep.classList.add('hidden');prep.style.display='none'}
- game.finalPrepDone=true;game.paused=true;game.intermission=true;game.waveActive=false;
- const p=game.p;game.coins=100000;const byId=id=>UP.find(u=>u.id===id);const ids=['sharp','heart','speed','crit','magnet','greed','gold'];
- for(const id of ids){const u=byId(id);if(!u)continue;const count=id==='sharp'?(20+Math.floor(Math.random()*6)):(7+Math.floor(Math.random()*7));for(let i=0;i<count;i++)u.apply(p)}
- p.hp=p.maxHp;showTestFinalPrep();updateHud(true);
-}
-const finalBuildTestBtn=$('finalBuildTestBtn');
-if(finalBuildTestBtn)finalBuildTestBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();initAudio();startFinalBuildTest()});
-
 document.addEventListener('click',e=>{
  const t=e.target.closest('[data-book-tab]');if(!t)return;initAudio();buildGardenBook(t.dataset.bookTab);
 });
@@ -4576,7 +4553,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.141';
+const BB_BUILD_VERSION='18.0.145';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
