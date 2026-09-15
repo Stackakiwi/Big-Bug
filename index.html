@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.137: isolated final-boss build tester added; normal game flow unchanged. -->
+<!-- Big Bug v18.0.138: isolated final-boss build tester added; normal game flow unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1181,8 +1181,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <button id="finalBuildTestBtn" type="button" style="position:absolute;left:50%;bottom:max(58px,calc(env(safe-area-inset-bottom) + 52px));transform:translateX(-50%);z-index:80;min-width:150px;border:1px solid #ffffff2a;border-radius:12px;padding:9px 12px;background:#17231bf2;color:#fff;font:900 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005;cursor:pointer">TEST FINAL BOSS</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.137</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.137</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.138</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.138</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4267,33 +4267,37 @@ function buildGardenBook(tab=gardenBookTab){
    if(tab==='playable')renderGardenPlayable(c,e.id);else renderGardenEnemy(c,e.id,tab==='boss');
  });
 }
-// v18.0.137 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
+// v18.0.138 — isolated final-boss tester. It only runs when its dedicated Home button is pressed.
+function finishFinalBuildTestPrep(){
+ const d=$('testFinalPrep');if(d)d.remove();const u=$('testFinalUpgrade');if(u)u.remove();
+ if(!game)return;game.finalPrepDone=true;game.paused=false;game.intermission=false;game.waveActive=false;
+ beginWave(100);flashBanner('FINAL BOSS TEST — SIMULATED FULL-RUN BUILD',1.8);updateHud(true);
+}
+function testFinalUpgradePick(remaining){
+ let d=$('testFinalUpgrade');if(d)d.remove();
+ d=document.createElement('div');d.id='testFinalUpgrade';d.className='screen';d.style.cssText='display:flex;z-index:10050';
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!game.p.tripleShot)),choices=[];
+ while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
+ d.innerHTML=`<div class="panel"><h2>FINAL PREPARATION — ${4-remaining} / 3</h2><p>Choose one upgrade. ${remaining} choice${remaining===1?'':'s'} remaining.</p><div class="grid" id="testFinalChoices">${choices.map(u=>upgradeChoiceHtml(u)).join('')}</div></div>`;
+ document.body.appendChild(d);const grid=d.querySelector('#testFinalChoices');paintUpgradeBuddyIcons(grid,choices);
+ [...grid.children].forEach((el,i)=>el.onclick=()=>{initAudio();choices[i].apply(game.p);upgradePickSound(choices[i].rarity);d.remove();if(remaining>1)testFinalUpgradePick(remaining-1);else finishFinalBuildTestPrep()});
+}
+function showTestFinalPrep(){
+ let d=$('testFinalPrep');if(d)d.remove();
+ d=document.createElement('div');d.id='testFinalPrep';d.className='screen';d.style.cssText='display:flex;z-index:10040';
+ d.innerHTML=`<div class="panel"><h2>FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p><div class="grid"><button class="choice rare" id="testPrepLeaves"><div class="art"><span class="leafCurrencyIcon bbLeafIcon"></span></div><b>100,000 LEAVES</b><p class="muted">Take 100,000 more Leaves into the final fight.</p></button><button class="choice epic" id="testPrepUpgrades"><div class="art"><span class="bbUiIcon bbBurst"></span></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p></button><button class="choice epic" id="testPrepBuddy"><div class="art"><span class="bbIcon bbBugIcon"></span></div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p></button></div></div>`;
+ document.body.appendChild(d);
+ d.querySelector('#testPrepLeaves').onclick=()=>{initAudio();game.coins=(game.coins||0)+100000;finishFinalBuildTestPrep()};
+ d.querySelector('#testPrepUpgrades').onclick=()=>{initAudio();d.remove();testFinalUpgradePick(3)};
+ d.querySelector('#testPrepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalBuildTestPrep()};upgradePopSound();
+}
 function startFinalBuildTest(){
- // Use the existing test-run path so this cannot write Story progress/rewards/recovery.
- startRun(100,true);
- if(!game)return;
+ startRun(100,true);if(!game)return;
  const prep=$('finalPrep');if(prep){prep.classList.add('hidden');prep.style.display='none'}
- game.finalPrepDone=true;game.paused=false;game.intermission=false;game.waveActive=false;
- // Build a plausible late-game loadout from persistent in-run upgrades only.
- // Counts vary each press, roughly matching the spread a full run tends to accumulate.
- const p=game.p;
- // v18.0.137 — tester-only Leaves: simulate the 100,000-Leaf final-prep choice without touching the saved balance.
- game.coins=100000;
- const byId=id=>UP.find(u=>u.id===id);
- const ids=['sharp','heart','speed','crit','magnet','greed','gold'];
- for(const id of ids){
-  const u=byId(id);if(!u)continue;
-  // Tester-only balance: damage is modeled as 20–25 Freshly Sharpened picks.
-  // All other simulated persistent in-run upgrades retain the existing 7–13 range.
-  const count=id==='sharp'?(20+Math.floor(Math.random()*6)):(7+Math.floor(Math.random()*7));
-  for(let i=0;i<count;i++)u.apply(p);
- }
- p.hp=p.maxHp;
- // v18.0.137 — tester enters the normal final-preparation screen before Wave 100.
- game.finalPrepDone=false;
- showFinalPrep();
- flashBanner('FINAL BOSS TEST — CHOOSE YOUR FINAL PREP',1.8);
- updateHud(true);
+ game.finalPrepDone=true;game.paused=true;game.intermission=true;game.waveActive=false;
+ const p=game.p;game.coins=100000;const byId=id=>UP.find(u=>u.id===id);const ids=['sharp','heart','speed','crit','magnet','greed','gold'];
+ for(const id of ids){const u=byId(id);if(!u)continue;const count=id==='sharp'?(20+Math.floor(Math.random()*6)):(7+Math.floor(Math.random()*7));for(let i=0;i<count;i++)u.apply(p)}
+ p.hp=p.maxHp;showTestFinalPrep();updateHud(true);
 }
 const finalBuildTestBtn=$('finalBuildTestBtn');
 if(finalBuildTestBtn)finalBuildTestBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();initAudio();startFinalBuildTest()});
@@ -4572,7 +4576,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.136';
+const BB_BUILD_VERSION='18.0.138';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
