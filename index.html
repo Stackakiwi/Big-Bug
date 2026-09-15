@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.114: Steam-ready presentation polish pass; menus/help/settings cleaned up, development controls removed, gameplay unchanged. -->
+<!-- Big Bug v18.0.115: Steam-ready presentation polish pass; menus/help/settings cleaned up, development controls removed, gameplay unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -912,7 +912,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 /* v18.0.40 — Wave counter visual doubled; HUD box geometry unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:26px!important;line-height:1!important;letter-spacing:-1px!important;gap:2px!important;padding-left:2px!important;padding-right:2px!important;overflow:visible!important}
-/* v18.0.114 — clearer WAVE 5 spacing in the HUD. */
+/* v18.0.115 — clearer WAVE 5 spacing in the HUD. */
 #hud .hudWave #wave{margin-left:5px!important}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
 
@@ -1116,7 +1116,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.114 — boss Garden Update presentation pass: larger, cleaner, more BIG BUG, responsive. */
+/* v18.0.115 — boss Garden Update presentation pass: larger, cleaner, more BIG BUG, responsive. */
 #story{padding:clamp(14px,3vw,30px);background:rgba(4,22,12,.88);backdrop-filter:blur(4px)}
 #story .storyLeaf{width:min(610px,94vw);min-height:clamp(420px,58vh,560px);padding:clamp(30px,5vw,48px) clamp(28px,5vw,48px) clamp(26px,4vw,38px);border-radius:24px;background:linear-gradient(155deg,#f5e9b9 0%,#eadba3 58%,#d8c787 100%);border:3px solid #7f9d57;box-shadow:0 10px 0 #1c3820,0 24px 55px #000a,inset 0 0 0 4px #fff4c966;display:flex;flex-direction:column;justify-content:flex-start}
 #story .storyLeaf:before{inset:12px;border:2px dashed #78925770;border-radius:14px}
@@ -1131,6 +1131,10 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-width:560px){#story{align-items:center;justify-content:center;padding:16px 12px}#story .storyLeaf{width:min(94vw,460px);min-height:min(560px,72vh);padding:34px 27px 27px;border-radius:22px}#story .storyKicker{font-size:17px;letter-spacing:1.7px;margin-bottom:9px}#story .storyTitle{font-size:clamp(35px,10vw,43px);margin:5px 0 20px}#story .storyText{font-size:clamp(23px,6.2vw,28px);line-height:1.3}#story .storyTwig{margin:auto 0 18px}#story #storyContinue{min-height:66px;font-size:clamp(22px,6vw,26px)}}
 @media(max-height:620px){#story .storyLeaf{min-height:0;max-height:94vh;overflow:auto}#story .storyTitle{font-size:34px;margin-bottom:14px}#story .storyText{font-size:22px}#story .storyTwig{margin:20px 0 16px}}
 
+
+/* v18.0.115 — Legendary Golden Ladybug + medieval bundle soundtrack */
+.legendaryBugCard{position:relative;overflow:hidden;border:2px solid #f2c94c!important;background:radial-gradient(circle at 50% 25%,#6b541f,#24361e 64%,#122419)!important;box-shadow:0 4px 0 #72510d,0 0 18px #ffd84f77,inset 0 0 24px #f4c62f22!important}.legendaryBugCard:after{content:"";position:absolute;inset:-80% -30%;background:linear-gradient(105deg,transparent 42%,#fff6b855 49%,transparent 56%);animation:legendSweep 3.6s linear infinite;pointer-events:none}.legendaryKicker{font-size:12px;font-weight:1000;letter-spacing:1.5px;color:#ffe88b;margin-bottom:2px}.legendaryBugCard b{color:#fff0a2!important;text-shadow:0 2px #513500;font-size:20px}.legendaryBugCard .bugPreview{height:92px}.legendaryPrice{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.legendaryPrice .btn{min-width:112px;margin:3px;padding:9px 8px}.legendaryPrice>span{font-size:11px;font-weight:1000;color:#ffe9a0}.legendaryLeafBuy{background:#78c84b!important}.legendaryGoldBuy,.legendarySelect{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}@keyframes legendSweep{to{transform:translateX(80%)}}
+#legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
 </style>
 </head>
 <body>
@@ -1173,8 +1177,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.114</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.114</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.115</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.115</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1392,6 +1396,7 @@ save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeave
 save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
 save.endlessBest=save.endlessBest||0;
 save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{}); save.cosmetics=Object.assign({owned:[],equipped:{},medievalBundle:false,enabled:true},save.cosmetics||{});if(!Array.isArray(save.cosmetics.owned))save.cosmetics.owned=[];if(!save.cosmetics.equipped||typeof save.cosmetics.equipped!=='object')save.cosmetics.equipped={};
+save.legendaryGolden=Object.assign({revealed:false,owned:false,noticeSeen:false},save.legendaryGolden||{});
 save.discovered=Array.isArray(save.discovered)?save.discovered:['player:ladybug'];if(!save.discovered.includes('player:ladybug'))save.discovered.push('player:ladybug');
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
@@ -1450,8 +1455,13 @@ if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','c
 const BUGS={
  ladybug:{name:'Ladybug',art:'ladybug',desc:'Balanced starter. +10% crit chance.',bonus:p=>p.crit+=.10},
  beetle:{name:'Beetle',art:'beetle',desc:'+35 max HP, +20% damage, slower attack.',bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.damage*=1.20;p.rate*=1.12}},
- butterfly:{name:'Butterfly',art:'butterfly',desc:'+35% attack speed, +10% movement speed, -5% damage.',bonus:p=>{p.damage*=.95;p.rate*=.65;p.speed*=1.10}}
+ butterfly:{name:'Butterfly',art:'butterfly',desc:'+35% attack speed, +10% movement speed, -5% damage.',bonus:p=>{p.damage*=.95;p.rate*=.65;p.speed*=1.10}},
+ golden:{name:'The Legendary Golden Ladybug',art:'golden',desc:'+25% Health, Damage, Movement & Attack Speed. 20% crit chance.',bonus:p=>{p.maxHp=Math.round(p.maxHp*1.25);p.hp=p.maxHp;p.damage*=1.25;p.rate/=1.25;p.speed*=1.25;p.crit+=.20}}
 };
+function allPermanentMaxed(){const u=save.upgrades||{};return ['hp','dmg','magnet','coins'].every(k=>(u[k]||0)>=10)}
+function syncLegendaryGolden(showNotice=false){if(!allPermanentMaxed())return false;const newly=!save.legendaryGolden.revealed;save.legendaryGolden.revealed=true;if(save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');if((newly||showNotice)&&!save.legendaryGolden.noticeSeen){save.legendaryGolden.noticeSeen=true;persist();setTimeout(showLegendaryReveal,80)}return newly}
+function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.createElement('div');d.id='legendaryReveal';d.innerHTML='<div class="legendaryRevealCard"><div class="legendaryStars">✦ &nbsp; ✦ &nbsp; ✦</div><canvas id="legendaryRevealBug" width="150" height="150"></canvas><small>THE GARDEN HAS REVEALED A LEGEND</small><h2>THE LEGENDARY<br>GOLDEN LADYBUG</h2><p>You maxed every permanent Power Up. A legendary bug is now waiting in The Bug Parade.</p><button class="btn legendaryRevealBtn">SEE THE LEGEND</button></div>';document.body.appendChild(d);d.querySelector('button').onclick=()=>{d.remove();screen('bugs');buildBugScreen()};const c=d.querySelector('canvas'),q=c.getContext('2d');q.translate(75,75);drawPlayableBug(q,'golden',82,true)}d.classList.remove('hidden')}
+
 
 
 // v17.8.57 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
@@ -1471,7 +1481,13 @@ function drawPlayableBug(ctx,id,size=28,glow=false,legPhase=0,legAmp=0){
  ctx.lineCap='round';ctx.lineJoin='round';
  if(glow){ctx.shadowColor='#e9b7ff';ctx.shadowBlur=14/s}
  const leg=(x1,y1,x2,y2)=>{ctx.strokeStyle='#171714';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()};
- if(id==='beetle'){
+ if(id==='golden'){
+   let li=0;for(const sy of [-7,0,7]){const step=legAmp?Math.sin(legPhase+li*2.15)*legAmp:0;leg(-9,sy,-16,sy+(sy===0?0:(sy<0?-4:4))+step);leg(9,sy,16,sy+(sy===0?0:(sy<0?-4:4))-step);li++}
+   ctx.shadowColor='#ffd84f';ctx.shadowBlur=glow?18:7;ctx.fillStyle='#342713';ctx.beginPath();ctx.ellipse(0,-10,7.8,6,0,0,6.283);ctx.fill();
+   ctx.fillStyle='#fff6cf';for(const ex of [-2.8,2.8]){ctx.beginPath();ctx.arc(ex,-11.2,1.6,0,6.283);ctx.fill()}ctx.fillStyle='#241b0c';for(const ex of [-2.8,2.8]){ctx.beginPath();ctx.arc(ex,-11.5,.65,0,6.283);ctx.fill()}
+   const g=ctx.createLinearGradient(-10,-8,10,14);g.addColorStop(0,'#fff09a');g.addColorStop(.35,'#f5c52f');g.addColorStop(.7,'#d99612');g.addColorStop(1,'#8f5a09');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,2,10.8,13.3,0,0,6.283);ctx.fill();ctx.strokeStyle='#5a3a0b';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,14);ctx.stroke();
+   ctx.fillStyle='#5a3a0b';for(const q of [[-5,-2],[5,-2],[-5,6],[5,6]]){ctx.beginPath();ctx.arc(q[0],q[1],1.8,0,6.283);ctx.fill()}ctx.strokeStyle='#f8df72';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-7,-5);ctx.quadraticCurveTo(0,-1,7,-5);ctx.stroke();ctx.beginPath();ctx.moveTo(-6,10);ctx.quadraticCurveTo(0,6,6,10);ctx.stroke();ctx.fillStyle='#fff1a0';for(const q of [[-10,-8],[11,0],[-11,9]]){ctx.save();ctx.translate(q[0],q[1]);ctx.rotate(Math.PI/4);ctx.fillRect(-1.2,-4,2.4,8);ctx.fillRect(-4,-1.2,8,2.4);ctx.restore()}
+ }else if(id==='beetle'){
    // Sturdy rounded beetle with clear horn/mandibles and hard shell.
    let bi=0;for(const sy of [-8,0,8]){const step=legAmp?Math.sin(legPhase+bi*2.05)*legAmp:0;leg(-8,sy,-15,sy+(sy===0?0:(sy<0?-4:4))+step);leg(8,sy,15,sy+(sy===0?0:(sy<0?-4:4))-step);bi++}
    ctx.fillStyle='#20201d';ctx.beginPath();ctx.ellipse(0,1,10.5,13,0,0,6.283);ctx.fill();
@@ -1547,6 +1563,12 @@ function drawMedievalArmor(ctx,id,size=28){
   ctx.strokeStyle='#d2a64a';ctx.lineWidth=1.15;ctx.beginPath();ctx.moveTo(9.9,1.5);ctx.lineTo(9.9,9);ctx.stroke();
   ctx.beginPath();ctx.arc(9.9,5,1.65,0,6.283);ctx.stroke();
 
+ }else if(id==='golden'){
+   let li=0;for(const sy of [-7,0,7]){const step=legAmp?Math.sin(legPhase+li*2.15)*legAmp:0;leg(-9,sy,-16,sy+(sy===0?0:(sy<0?-4:4))+step);leg(9,sy,16,sy+(sy===0?0:(sy<0?-4:4))-step);li++}
+   ctx.shadowColor='#ffd84f';ctx.shadowBlur=glow?18:7;ctx.fillStyle='#342713';ctx.beginPath();ctx.ellipse(0,-10,7.8,6,0,0,6.283);ctx.fill();
+   ctx.fillStyle='#fff6cf';for(const ex of [-2.8,2.8]){ctx.beginPath();ctx.arc(ex,-11.2,1.6,0,6.283);ctx.fill()}ctx.fillStyle='#241b0c';for(const ex of [-2.8,2.8]){ctx.beginPath();ctx.arc(ex,-11.5,.65,0,6.283);ctx.fill()}
+   const g=ctx.createLinearGradient(-10,-8,10,14);g.addColorStop(0,'#fff09a');g.addColorStop(.35,'#f5c52f');g.addColorStop(.7,'#d99612');g.addColorStop(1,'#8f5a09');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,2,10.8,13.3,0,0,6.283);ctx.fill();ctx.strokeStyle='#5a3a0b';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,14);ctx.stroke();
+   ctx.fillStyle='#5a3a0b';for(const q of [[-5,-2],[5,-2],[-5,6],[5,6]]){ctx.beginPath();ctx.arc(q[0],q[1],1.8,0,6.283);ctx.fill()}ctx.strokeStyle='#f8df72';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-7,-5);ctx.quadraticCurveTo(0,-1,7,-5);ctx.stroke();ctx.beginPath();ctx.moveTo(-6,10);ctx.quadraticCurveTo(0,6,6,10);ctx.stroke();ctx.fillStyle='#fff1a0';for(const q of [[-10,-8],[11,0],[-11,9]]){ctx.save();ctx.translate(q[0],q[1]);ctx.rotate(Math.PI/4);ctx.fillRect(-1.2,-4,2.4,8);ctx.fillRect(-4,-1.2,8,2.4);ctx.restore()}
  }else if(id==='beetle'){
   // Iron Guard: more massive carapace, reinforced horn, shoulder plates and shield-like side guards.
   ctx.fillStyle='#62675f';ctx.strokeStyle='#22231e';ctx.lineWidth=1.8;
@@ -1844,8 +1866,8 @@ function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMu
 function titleMusicStart(){
  if(!audio||save.settings.music===false||titleMusicTimer)return;
  // Soft, playful garden-loop shared by Home/menu/help and reused quietly during normal Story gameplay.
- const notes=[523,659,784,659,587,698,784,698,523,659,880,784,587,659,698,659];
- const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035;const n=notes[titleMusicStep%notes.length];beep(n,.28,gain,'sine','music');if(titleMusicStep%4===0)beep(n/2,.34,bassGain,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,420)};
+ const regular=[523,659,784,659,587,698,784,698,523,659,880,784,587,659,698,659],medieval=[440,523,587,659,587,523,494,440,392,440,523,587,659,698,659,587];
+ const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),med=medievalBundleOwned(),notes=med?medieval:regular,gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035,n=notes[titleMusicStep%notes.length];beep(n,med?.34:.28,gain,med?'triangle':'sine','music');if(titleMusicStep%4===0)beep(n/2,med?.46:.34,bassGain,med?'sine':'triangle','music');if(med&&titleMusicStep%8===6)beep(n*1.5,.13,quiet?.0011:.0025,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,med?455:420)};
  tick();
 }
 // v18.0.74 — bright final-garden reprise: the Home melody returns in a happier form while the garden purifies.
@@ -1929,29 +1951,14 @@ function bossMusicStart(){
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
 
 function buildBugScreen(){
+ syncLegendaryGolden(false);
  for(const id of (save.unlocked||[]))if(BUGS[id])gardenDiscover('player:'+id);
  const grid=$('bugGrid');grid.innerHTML='';
- Object.entries(BUGS).forEach(([id,b])=>{
-  const unlocked=save.unlocked.includes(id), selected=save.selected===id, starter=id==='ladybug';
-  const el=document.createElement('div');el.className='card'+(selected?' selected':'');
-  const unlockWave=id==='beetle'?40:50;
-  const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>Or unlock early for 1 Gold Leaf.</div>`:'';
-  el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'goldUnlockBtn'}">${selected?'SELECTED':unlocked?'SELECT':`<span class="goldLeafIcon" aria-hidden="true"></span> UNLOCK — 1`}</button>`;
-  {
-   const pv=document.createElement('canvas');pv.width=76;pv.height=76;pv.style.width='76px';pv.style.height='76px';pv.setAttribute('aria-hidden','true');
-   const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);
-   el.querySelector('.bugPreview').appendChild(pv);
-  }
-  el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen();}else if(save.goldLeaves>=1){save.goldLeaves--;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id);if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}else{beep(155,.10,.022,'triangle')}};
-  grid.appendChild(el);
- });
- // Fourth playable slot — intentionally unrevealed for now.
- const mystery=document.createElement('div');
- mystery.className='card mysteryBugCard locked';
- mystery.setAttribute('aria-label','Unknown bug — not unlocked yet');
- mystery.innerHTML=`<div class="mysteryBugMark" aria-hidden="true">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;
- grid.appendChild(mystery);
+ const normalIds=['ladybug','beetle','butterfly'];
+ normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?40:50;const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>Or unlock early for 1 Gold Leaf.</div>`:'';el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'goldUnlockBtn'}">${selected?'SELECTED':unlocked?'SELECT':`<span class="goldLeafIcon" aria-hidden="true"></span> UNLOCK — 1`}</button>`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen()}else if(save.goldLeaves>=1){save.goldLeaves--;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id);if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}else beep(155,.10,.022,'triangle')};grid.appendChild(el)});
+ if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>1,000,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=92;pv.height=92;const q=pv.getContext('2d');q.translate(46,46);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
 }
+function buyLegendary(kind){if(save.legendaryGolden.owned)return;const ok=kind==='leaf'?save.scrap>=1000000:save.goldLeaves>=100;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf')save.scrap-=1000000;else save.goldLeaves-=100;save.legendaryGolden.owned=true;if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210)}
 function permanentUpgradeLeafCost(k,level){
  // v18.0.34 — same simple leaf-price ladder for every permanent upgrade.
  // level is the current 0–9 level, so index 0 is the first purchase.
@@ -1974,12 +1981,12 @@ function buildShop(){
 function buyShop(k){
  const s=save.upgrades, costs={hp:permanentUpgradeLeafCost('hp',s.hp),dmg:permanentUpgradeLeafCost('dmg',s.dmg),magnet:permanentUpgradeLeafCost('magnet',s.magnet),coins:permanentUpgradeLeafCost('coins',s.coins)};
  if(s[k]>=10||save.scrap<costs[k])return;
- save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');
+ save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');syncLegendaryGolden(true);
 }
 function buyShopGold(k){
  const s=save.upgrades;
  if(s[k]>=10||save.goldLeaves<1){beep(155,.10,.022,'triangle');return;}
- save.goldLeaves--;s[k]++;persist();buildShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);
+ save.goldLeaves--;s[k]++;persist();buildShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);
 }
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[],storyStillTime:0,closeBonusUntil:0};
