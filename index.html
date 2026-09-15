@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.126: PC Spacebar activates the main boost button; mobile controls unchanged. -->
+<!-- Big Bug v18.0.127: PC Spacebar boost shortcut added conservatively on top of the last working build; gameplay/mobile controls unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1181,7 +1181,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v18.0.125</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.126</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.127</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4340,12 +4340,19 @@ addEventListener('pointerup',()=>drag=false);
 C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
 C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
 C.addEventListener('touchend',()=>drag=false);
-addEventListener('keydown',e=>{
- // v18.0.126 — PC-only Spacebar shortcut for the main boost button. Ignore key repeat so one press triggers once.
- if(DESKTOP_PERF_RENDER&&(e.code==='Space'||e.key===' ')&&!e.repeat){if(game&&!game.paused&&!game.over){e.preventDefault();useBoost()}return}
- if(!pcUsingWASD())return;const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
+addEventListener('keydown',e=>{if(!pcUsingWASD())return;const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
 addEventListener('keyup',e=>{const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=false;if(pcUsingWASD()&&game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
 addEventListener('blur',()=>{pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false});
+
+// v18.0.127 — isolated PC Spacebar shortcut. This does not modify the existing movement key handler.
+document.addEventListener('keydown',function(e){
+ if(e.code!=='Space'||e.repeat)return;
+ if(!game||game.paused||game.over)return;
+ const b=$('boostBtn');
+ if(!b||b.classList.contains('hidden')||b.disabled)return;
+ e.preventDefault();
+ useBoost();
+},{passive:false});
 
 
 // v17.5.12 — enemy spawn initialization fixed; title music unlock improved; buddy behavior unchanged.
