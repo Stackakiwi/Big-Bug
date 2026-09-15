@@ -1180,8 +1180,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.118</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.124</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.125</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.125</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4313,7 +4313,7 @@ document.addEventListener('click',e=>{
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly()}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly();setTimeout(bbApplyDeferredUpdate,120)}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
  if(a==='cosmetics'){stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
@@ -4523,9 +4523,34 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
-// v18.0.124 — GitHub Pages update reliability: retire the legacy cache-first service worker.
-// BIG BUG is shipped as a self-contained index.html, so stale SW caches could keep serving old builds.
-if('serviceWorker' in navigator){addEventListener('load',async()=>{try{const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()));if('caches' in window){const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)))} }catch(e){}})}
+// v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
+const BB_BUILD_VERSION='18.0.125';
+let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
+function bbCanApplyUpdate(){
+  if(document.hidden)return false;
+  if(game&&!game.over&&!game.paused)return false;
+  return true;
+}
+async function bbCheckForUpdate(force=false){
+  const now=Date.now();if(bbUpdateChecking||(!force&&now-bbLastUpdateCheck<60000))return;
+  bbUpdateChecking=true;bbLastUpdateCheck=now;
+  try{
+    const u=new URL(location.href);u.searchParams.set('_bb_update',String(now));
+    const r=await fetch(u.href,{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+    if(!r.ok)return;
+    const html=await r.text(),m=html.match(/class=\"versionCorner\"[^>]*>v([0-9.]+)/);
+    if(m&&m[1]!==BB_BUILD_VERSION){bbUpdateReady=true;if(bbCanApplyUpdate())location.reload()}
+  }catch(e){}finally{bbUpdateChecking=false}
+}
+function bbApplyDeferredUpdate(){if(bbUpdateReady&&bbCanApplyUpdate())location.reload();else bbCheckForUpdate(true)}
+addEventListener('load',async()=>{
+  try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()))}if('caches' in window){const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)))}}catch(e){}
+  setTimeout(()=>bbCheckForUpdate(true),1200);
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)bbApplyDeferredUpdate()});
+addEventListener('pageshow',()=>bbApplyDeferredUpdate());
+// Five-minute idle check only. No per-frame/network work is added to gameplay.
+setInterval(()=>{if(!document.hidden&&(!game||game.over||game.paused))bbCheckForUpdate()},300000);
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
 </body>
