@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.117: Steam-ready presentation polish pass; menus/help/settings cleaned up, development controls removed, gameplay unchanged. -->
+<!-- Big Bug v18.0.128: built from the known-good v18.0.125 baseline; PC Spacebar activates the existing boost action. Mobile gameplay/input unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1180,8 +1180,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.125</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.125</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.128</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.128</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4340,7 +4340,14 @@ addEventListener('pointerup',()=>drag=false);
 C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
 C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
 C.addEventListener('touchend',()=>drag=false);
-addEventListener('keydown',e=>{if(!pcUsingWASD())return;const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
+// v18.0.128 — PC-only Spacebar boost shortcut. Uses the existing boost action and is
+// explicitly gated out of the iPhone/iPad/Android input path. WASD behavior is unchanged.
+addEventListener('keydown',e=>{
+ const k=(e.key||'').toLowerCase();
+ if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&game&&!game.paused&&!game.over){e.preventDefault();useBoost();return}
+ if(!pcUsingWASD())return;
+ if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}
+},{passive:false});
 addEventListener('keyup',e=>{const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=false;if(pcUsingWASD()&&game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
 addEventListener('blur',()=>{pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false});
 
@@ -4524,7 +4531,7 @@ function paintHelpGameIcons(){
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.125';
+const BB_BUILD_VERSION='18.0.128';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
