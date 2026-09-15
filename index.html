@@ -1132,6 +1132,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-height:620px){#story .storyLeaf{min-height:0;max-height:94vh;overflow:auto}#story .storyTitle{font-size:34px;margin-bottom:14px}#story .storyText{font-size:22px}#story .storyTwig{margin:20px 0 16px}}
 
 
+/* v18.0.120 — GitHub Pages/PWA cache reliability fix; legacy service worker retired. */
 /* v18.0.119 — Legendary Golden Ladybug legs changed to metallic gold; visual-only, no added particles or animation work. */
 .legendaryBugCard{position:relative;overflow:hidden;border:2px solid #f2c94c!important;background:radial-gradient(circle at 50% 25%,#6b541f,#24361e 64%,#122419)!important;box-shadow:0 4px 0 #72510d,0 0 18px #ffd84f77,inset 0 0 24px #f4c62f22!important}.legendaryBugCard:after{content:"";position:absolute;inset:-80% -30%;background:linear-gradient(105deg,transparent 42%,#fff6b855 49%,transparent 56%);animation:legendSweep 3.6s linear infinite;pointer-events:none}.legendaryKicker{font-size:12px;font-weight:1000;letter-spacing:1.5px;color:#ffe88b;margin-bottom:2px}.legendaryBugCard b{color:#fff0a2!important;text-shadow:0 2px #513500;font-size:20px}.legendaryBugCard .bugPreview{height:92px}.legendaryPrice{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.legendaryPrice .btn{min-width:112px;margin:3px;padding:9px 8px}.legendaryPrice>span{font-size:11px;font-weight:1000;color:#ffe9a0}.legendaryLeafBuy{background:#78c84b!important}.legendaryGoldBuy,.legendarySelect{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}@keyframes legendSweep{to{transform:translateX(80%)}}
 #legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
@@ -1180,7 +1181,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v18.0.118</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.117</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.120</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4528,7 +4529,9 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
-if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+// v18.0.120 — GitHub Pages update reliability: retire the legacy cache-first service worker.
+// BIG BUG is shipped as a self-contained index.html, so stale SW caches could keep serving old builds.
+if('serviceWorker' in navigator){addEventListener('load',async()=>{try{const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()));if('caches' in window){const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)))} }catch(e){}})}
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
 </body>
