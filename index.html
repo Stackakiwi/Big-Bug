@@ -1132,7 +1132,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-height:620px){#story .storyLeaf{min-height:0;max-height:94vh;overflow:auto}#story .storyTitle{font-size:34px;margin-bottom:14px}#story .storyText{font-size:22px}#story .storyTwig{margin:20px 0 16px}}
 
 
-/* v18.0.120 — GitHub Pages/PWA cache reliability fix; legacy service worker retired. */
+/* v18.0.121 — GitHub Pages/PWA cache reliability fix; legacy service worker retired. */
 /* v18.0.119 — Legendary Golden Ladybug legs changed to metallic gold; visual-only, no added particles or animation work. */
 .legendaryBugCard{position:relative;overflow:hidden;border:2px solid #f2c94c!important;background:radial-gradient(circle at 50% 25%,#6b541f,#24361e 64%,#122419)!important;box-shadow:0 4px 0 #72510d,0 0 18px #ffd84f77,inset 0 0 24px #f4c62f22!important}.legendaryBugCard:after{content:"";position:absolute;inset:-80% -30%;background:linear-gradient(105deg,transparent 42%,#fff6b855 49%,transparent 56%);animation:legendSweep 3.6s linear infinite;pointer-events:none}.legendaryKicker{font-size:12px;font-weight:1000;letter-spacing:1.5px;color:#ffe88b;margin-bottom:2px}.legendaryBugCard b{color:#fff0a2!important;text-shadow:0 2px #513500;font-size:20px}.legendaryBugCard .bugPreview{height:92px}.legendaryPrice{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.legendaryPrice .btn{min-width:112px;margin:3px;padding:9px 8px}.legendaryPrice>span{font-size:11px;font-weight:1000;color:#ffe9a0}.legendaryLeafBuy{background:#78c84b!important}.legendaryGoldBuy,.legendarySelect{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}@keyframes legendSweep{to{transform:translateX(80%)}}
 #legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
@@ -1181,7 +1181,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v18.0.118</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.120</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.121</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1567,13 +1567,6 @@ function drawMedievalArmor(ctx,id,size=28){
   ctx.strokeStyle='#d2a64a';ctx.lineWidth=1.15;ctx.beginPath();ctx.moveTo(9.9,1.5);ctx.lineTo(9.9,9);ctx.stroke();
   ctx.beginPath();ctx.arc(9.9,5,1.65,0,6.283);ctx.stroke();
 
- }else if(id==='golden'){
-   const goldLeg=(x1,y1,x2,y2)=>{ctx.strokeStyle='#b77a16';ctx.lineWidth=2.35;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()};
-   let li=0;for(const sy of [-7,0,7]){const step=legAmp?Math.sin(legPhase+li*2.15)*legAmp:0;goldLeg(-9,sy,-16,sy+(sy===0?0:(sy<0?-4:4))+step);goldLeg(9,sy,16,sy+(sy===0?0:(sy<0?-4:4))-step);li++}
-   ctx.shadowColor='#ffd84f';ctx.shadowBlur=glow?24:11;ctx.fillStyle='#342713';ctx.beginPath();ctx.ellipse(0,-10,7.8,6,0,0,6.283);ctx.fill();
-   ctx.fillStyle='#fff6cf';for(const ex of [-2.8,2.8]){ctx.beginPath();ctx.arc(ex,-11.2,1.6,0,6.283);ctx.fill()}ctx.fillStyle='#241b0c';for(const ex of [-2.8,2.8]){ctx.beginPath();ctx.arc(ex,-11.5,.65,0,6.283);ctx.fill()}
-   const g=ctx.createLinearGradient(-10,-8,10,14);g.addColorStop(0,'#fff09a');g.addColorStop(.35,'#f5c52f');g.addColorStop(.7,'#d99612');g.addColorStop(1,'#8f5a09');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(0,2,10.8,13.3,0,0,6.283);ctx.fill();ctx.strokeStyle='#5a3a0b';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(0,14);ctx.stroke();
-   ctx.fillStyle='#5a3a0b';for(const q of [[-5,-2],[5,-2],[-5,6],[5,6]]){ctx.beginPath();ctx.arc(q[0],q[1],1.8,0,6.283);ctx.fill()}ctx.strokeStyle='#f8df72';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-7,-5);ctx.quadraticCurveTo(0,-1,7,-5);ctx.stroke();ctx.beginPath();ctx.moveTo(-6,10);ctx.quadraticCurveTo(0,6,6,10);ctx.stroke();ctx.shadowColor='#ffe77a';ctx.shadowBlur=9;ctx.strokeStyle='#fff0a0';ctx.lineWidth=.75;ctx.globalAlpha=.72;ctx.beginPath();ctx.ellipse(0,2,12.1,14.5,0,0,6.283);ctx.stroke();ctx.globalAlpha=1
  }else if(id==='beetle'){
   // Iron Guard: more massive carapace, reinforced horn, shoulder plates and shield-like side guards.
   ctx.fillStyle='#62675f';ctx.strokeStyle='#22231e';ctx.lineWidth=1.8;
@@ -1647,7 +1640,8 @@ function buildCosmetics(){
   toggle.onclick=()=>{initAudio();save.cosmetics.enabled=save.cosmetics.enabled===false;persist();buildCosmetics();buildBugScreen();beep(save.cosmetics.enabled?760:260,.07,.018,'triangle')};
  }
  const flavor={ladybug:'Royal Garden Knight — plated shell, mantle & shield',beetle:'Iron Guard — reinforced horn & shell',butterfly:'Winged Herald — surcoat & banner wings'};
- Object.entries(BUGS).forEach(([id,b])=>{
+ ['ladybug','beetle','butterfly'].forEach(id=>{
+  const b=BUGS[id];
   const owned=medievalOwned(id),equipped=medievalEquipped(id),card=document.createElement('div');card.className='medievalCard'+(equipped?' equipped':'');
   card.appendChild(makeMedievalPreview(id));
   const info=document.createElement('div');info.innerHTML=`<b>${b.name}</b><div class="muted">${flavor[id]}</div>`;card.appendChild(info);
@@ -4529,7 +4523,7 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
-// v18.0.120 — GitHub Pages update reliability: retire the legacy cache-first service worker.
+// v18.0.121 — GitHub Pages update reliability: retire the legacy cache-first service worker.
 // BIG BUG is shipped as a self-contained index.html, so stale SW caches could keep serving old builds.
 if('serviceWorker' in navigator){addEventListener('load',async()=>{try{const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()));if('caches' in window){const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)))} }catch(e){}})}
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
