@@ -1132,9 +1132,11 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-height:620px){#story .storyLeaf{min-height:0;max-height:94vh;overflow:auto}#story .storyTitle{font-size:34px;margin-bottom:14px}#story .storyText{font-size:22px}#story .storyTwig{margin:20px 0 16px}}
 
 
-/* v18.0.117 — Legendary Golden Ladybug stats raised to a 50% core-stat boost; crit remains 20%. */
+/* v18.0.118 — fix Home Cosmetics button hit target/navigation; include Cosmetics in menu-music state. Legendary stats unchanged. */
 .legendaryBugCard{position:relative;overflow:hidden;border:2px solid #f2c94c!important;background:radial-gradient(circle at 50% 25%,#6b541f,#24361e 64%,#122419)!important;box-shadow:0 4px 0 #72510d,0 0 18px #ffd84f77,inset 0 0 24px #f4c62f22!important}.legendaryBugCard:after{content:"";position:absolute;inset:-80% -30%;background:linear-gradient(105deg,transparent 42%,#fff6b855 49%,transparent 56%);animation:legendSweep 3.6s linear infinite;pointer-events:none}.legendaryKicker{font-size:12px;font-weight:1000;letter-spacing:1.5px;color:#ffe88b;margin-bottom:2px}.legendaryBugCard b{color:#fff0a2!important;text-shadow:0 2px #513500;font-size:20px}.legendaryBugCard .bugPreview{height:92px}.legendaryPrice{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.legendaryPrice .btn{min-width:112px;margin:3px;padding:9px 8px}.legendaryPrice>span{font-size:11px;font-weight:1000;color:#ffe9a0}.legendaryLeafBuy{background:#78c84b!important}.legendaryGoldBuy,.legendarySelect{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}@keyframes legendSweep{to{transform:translateX(80%)}}
 #legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
+
+#homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -1168,7 +1170,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
-  <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
+  <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
@@ -1177,7 +1179,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.117</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.118</div>
   <div class="versionCorner" aria-hidden="true">v18.0.117</div>
 </section>
 
@@ -1858,7 +1860,7 @@ function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setT
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
-function isMenuMusicScreen(){return ['home','bugs','base','gardenBook','settings','help','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
+function isMenuMusicScreen(){return ['home','bugs','cosmetics','base','gardenBook','settings','help','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
 // v18.0.75 — purification owns the soundtrack; normal Story/Home music must stay silent until it ends.
 function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&!game.finalPurify&&(!game.boss||game.boss.dead))}
 function shouldTitleMusicPlay(){if(game&&game.finalPurify)return false;const end=$('ending');if(end&&!end.classList.contains('hidden'))return false;return isMenuMusicScreen()||isQuietStoryMusic()}
@@ -4294,6 +4296,9 @@ function enterHomeCleanly(){
   if(save.settings.music!==false){initAudio();setTimeout(()=>{if(isMenuMusicScreen())titleMusicStart()},45)}
  });
 }
+
+const homeCosmeticsBtn=$('homeCosmeticsBtn');
+if(homeCosmeticsBtn)homeCosmeticsBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();initAudio();stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()});
 
 document.addEventListener('click',e=>{
  const pack=e.target.closest('[data-gold-pack]');if(pack){initAudio();beep(520,.08,.022,'triangle');alert('Gold Leaf purchasing is ready visually, but real-money checkout is not connected in this web build yet.');return}
