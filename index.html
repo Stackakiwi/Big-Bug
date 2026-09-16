@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.170: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.172: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1144,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.170 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.172 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1157,7 +1157,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #finalPrep .choice .art{display:none!important}
 
 
-/* v18.0.170 GOLD WAVES ONLY */
+/* v18.0.172 GOLD WAVES ONLY */
 body.gold157 .hudWave{
  background:transparent!important;border:0!important;box-shadow:none!important;
  outline:0!important;filter:none!important;
@@ -1173,7 +1173,7 @@ body.gold157 #waveProgress,body.gold157 #boostBtn{display:none!important}
  to{filter:brightness(1.24);text-shadow:0 0 7px #fffbd5,0 0 14px #ffd13e,0 0 21px #b96c00,0 2px #4b2a02}
 }
 
-/* v18.0.170 GOLD WAVES ONLY */
+/* v18.0.172 GOLD WAVES ONLY */
 body.g159 .hudWave{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
 body.g159 .hudWave::before,body.g159 .hudWave::after{display:none!important}
 body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
@@ -1182,7 +1182,7 @@ body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
 body.g159 #waveProgress,body.g159 #boostBtn{display:none!important}
 @keyframes g159wave{to{filter:brightness(1.28);text-shadow:0 0 7px #fffbd1,0 0 15px #ffd23d,0 0 23px #a85e00,0 2px #4b2902}}
 
-/* v18.0.170 — Gold Waves boss health color only */
+/* v18.0.172 — Gold Waves boss health color only */
 body.g159 #bossBarFill,
 body.g159 #bossHealthFill,
 body.g159 .bossHpFill,
@@ -1196,7 +1196,7 @@ body.g159 #bossFill0,body.g159 #bossFill1{
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
 }
 
-/* v18.0.170 — GOLD WAVES boss HUD only */
+/* v18.0.172 — GOLD WAVES boss HUD only */
 body.g159 #bossFill0,body.g159 #bossFill1{
  background:linear-gradient(90deg,#9b6108 0%,#e3a91c 42%,#ffe16a 72%,#fff1a6 100%)!important;
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
@@ -1206,17 +1206,17 @@ body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
  padding:0!important;
 }
 
-/* v18.0.170 Gold Waves boss identity */
+/* v18.0.172 Gold Waves boss identity */
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.170 — Gold Waves fluid wave presentation only */
+/* v18.0.172 — Gold Waves fluid wave presentation only */
 body.g159 .hudWave,body.g159 #waveLabel,body.g159 #wave{
  transition:opacity .18s ease,transform .18s ease,filter .18s ease!important;
  will-change:opacity,transform;
 }
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.170 — Gold Waves environment */
+/* v18.0.172 — Gold Waves environment */
 body.g159 #game,body.g159 canvas{
  background:
    radial-gradient(ellipse at 50% 42%,rgba(255,225,105,.15) 0%,rgba(191,123,10,.08) 30%,transparent 57%),
@@ -1266,8 +1266,8 @@ body.g159 #game,body.g159 canvas{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.170</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.170</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.172</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.172</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3395,7 +3395,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.170 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.172 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4739,7 +4739,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.170';
+const BB_BUILD_VERSION='18.0.172';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
@@ -4771,10 +4771,26 @@ setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300
 </script>
 
 <script>
-/* BIG BUG v18.0.170 — isolated Gold Waves visual/combat correction */
+/* BIG BUG v18.0.172 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
+
+function drawGoldEnvironment(){
+ if(!G()||!window.X)return;
+ const c=X.canvas,w=c.width,h=c.height,t=(window.FRAME_NOW||performance.now())*.001;
+ X.save();X.setTransform(1,0,0,1,0,0);
+ const g=X.createLinearGradient(0,0,w,h);
+ g.addColorStop(0,'#211303');g.addColorStop(.28,'#5b3505');g.addColorStop(.55,'#8b5709');g.addColorStop(.78,'#4a2a04');g.addColorStop(1,'#180e02');
+ X.fillStyle=g;X.fillRect(0,0,w,h);
+ X.globalAlpha=.13;X.fillStyle='#ffd85a';
+ for(let i=-2;i<8;i++){const x=((i*190+t*22)%(w+380))-190;X.beginPath();X.moveTo(x,0);X.lineTo(x+90,0);X.lineTo(x-130,h);X.lineTo(x-220,h);X.closePath();X.fill()}
+ X.globalAlpha=.20;X.strokeStyle='#f0b82c';X.lineWidth=1.2;
+ for(let i=0;i<12;i++){const x=(i*137+53)%w,y=(i*83+97)%h,r=8+(i%4)*4;X.beginPath();X.moveTo(x,y-r);X.lineTo(x+r*.65,y);X.lineTo(x,y+r);X.lineTo(x-r*.65,y);X.closePath();X.stroke()}
+ const rg=X.createRadialGradient(w*.5,h*.46,0,w*.5,h*.46,Math.max(w,h)*.52);
+ rg.addColorStop(0,'rgba(255,225,105,.12)');rg.addColorStop(.55,'rgba(185,113,8,.05)');rg.addColorStop(1,'rgba(0,0,0,.18)');
+ X.fillStyle=rg;X.globalAlpha=1;X.fillRect(0,0,w,h);X.restore();
+}
 function role(e){if(!e||e.boss)return'';if(!e._g159){const a=(game.wave||1)<2?['hunter','charger','prism']:['hunter','charger','prism','blink','arc','guard'];e._g159=a[(seq++)%a.length];e._gc=.7+(seq%3)*.15}return e._g159}
 function fire(e,a,v,d,r=4.5){if(game.fx&&game.fx.length<52)game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:2.05,r,sting:true,damage:d,goldShot:true})}
 function tick(e,dt){
@@ -5002,9 +5018,19 @@ const D=window.drawEnemy;if(typeof D==='function')window.drawEnemy=function(e){
 const S=window.show;if(typeof S==='function')window.show=function(){const o=S.apply(this,arguments);sync();return o};
 })();
 </script>
+(()=>{
+ const GD=window.drawGarden;
+ if(typeof GD==='function'){
+   window.drawGarden=function(){
+     if(G()){drawGoldEnvironment();return}
+     return GD.apply(this,arguments);
+   };
+ }
+})();
+
 
 <script>
-/* v18.0.170 Gold HUD continuity — presentation only */
+/* v18.0.172 Gold HUD continuity — presentation only */
 (()=>{
  let lastWave='';
  function keepGoldHudFluid(){
@@ -5023,7 +5049,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.170 Gold Waves background replacement only */
+/* v18.0.172 Gold Waves background replacement only */
 (()=>{
  const O=window.drawGarden;
  if(typeof O!=='function')return;
@@ -5049,6 +5075,60 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
    }
    return out;
  };
+})();
+</script>
+
+<script>
+/* v18.0.172 Gold-state containment */
+(()=>{
+ function clearGoldPresentation(){
+   if(!(window.game&&game.mode==='gold'))document.body.classList.remove('g159');
+ }
+ const H=window.show;
+ if(typeof H==='function')window.show=function(){const r=H.apply(this,arguments);clearGoldPresentation();return r};
+ requestAnimationFrame(function c(){clearGoldPresentation();requestAnimationFrame(c)});
+})();
+</script>
+
+<script>
+/* v18.0.172 — Gold Waves isolated music */
+(()=>{
+ let gt=null,step=0,wasGold=false;
+ const melody=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
+ const bass=[220,247,196,220,174,196,220,165];
+ const alien=[311,466,349,523,277,415,330,494];
+ function stopGoldMusic(){
+   if(gt){clearTimeout(gt);gt=null} step=0;
+ }
+ function goldNote(){
+   if(!(window.game&&game.mode==='gold')||!window.audio||!window.save||save.settings.music===false){stopGoldMusic();return}
+   // Familiar bright shop pulse.
+   const n=melody[step%melody.length];
+   beep(n,.13,.0038,'triangle','music');
+   if(step%2===0)beep(bass[Math.floor(step/2)%bass.length],.19,.0028,'sine','music');
+   // Strange alien layer: detuned-feeling tritone-ish pulse and occasional high shimmer.
+   if(step%2===1)beep(alien[step%alien.length],.11,.0024,'sawtooth','music');
+   if(step%4===3)beep(alien[(step+3)%alien.length]*1.51,.075,.0018,'square','music');
+   if(step%8===7)beep(1568,.12,.0022,'sine','music');
+   step++;gt=setTimeout(goldNote,168);
+ }
+ function startGoldMusic(){
+   if(gt||!window.audio||!window.save||save.settings.music===false)return;
+   // Stop other music only when entering Gold Waves.
+   try{titleMusicStop()}catch(e){}
+   try{shopMusicStop()}catch(e){}
+   try{endlessMusicStop()}catch(e){}
+   try{bossMusicStop()}catch(e){}
+   step=0;goldNote();
+ }
+ function watch(){
+   const g=!!(window.game&&game.mode==='gold'&&!game.over);
+   if(g&&!wasGold)startGoldMusic();
+   if(!g&&wasGold)stopGoldMusic();
+   wasGold=g;
+   requestAnimationFrame(watch);
+ }
+ requestAnimationFrame(watch);
 })();
 </script>
 </body>
