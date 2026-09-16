@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.197: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.198: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1144,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.197 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.198 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1157,7 +1157,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #finalPrep .choice .art{display:none!important}
 
 
-/* v18.0.197 GOLD WAVES ONLY */
+/* v18.0.198 GOLD WAVES ONLY */
 body.gold157 .hudWave{
  background:transparent!important;border:0!important;box-shadow:none!important;
  outline:0!important;filter:none!important;
@@ -1173,7 +1173,7 @@ body.gold157 #waveProgress,body.gold157 #boostBtn{display:none!important}
  to{filter:brightness(1.24);text-shadow:0 0 7px #fffbd5,0 0 14px #ffd13e,0 0 21px #b96c00,0 2px #4b2a02}
 }
 
-/* v18.0.197 GOLD WAVES ONLY */
+/* v18.0.198 GOLD WAVES ONLY */
 body.g159 .hudWave{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
 body.g159 .hudWave::before,body.g159 .hudWave::after{display:none!important}
 body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
@@ -1182,7 +1182,7 @@ body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
 body.g159 #waveProgress,body.g159 #boostBtn{display:none!important}
 @keyframes g159wave{to{filter:brightness(1.28);text-shadow:0 0 7px #fffbd1,0 0 15px #ffd23d,0 0 23px #a85e00,0 2px #4b2902}}
 
-/* v18.0.197 — Gold Waves boss health color only */
+/* v18.0.198 — Gold Waves boss health color only */
 body.g159 #bossBarFill,
 body.g159 #bossHealthFill,
 body.g159 .bossHpFill,
@@ -1196,7 +1196,7 @@ body.g159 #bossFill0,body.g159 #bossFill1{
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
 }
 
-/* v18.0.197 — GOLD WAVES boss HUD only */
+/* v18.0.198 — GOLD WAVES boss HUD only */
 body.g159 #bossFill0,body.g159 #bossFill1{
  background:linear-gradient(90deg,#9b6108 0%,#e3a91c 42%,#ffe16a 72%,#fff1a6 100%)!important;
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
@@ -1206,24 +1206,24 @@ body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
  padding:0!important;
 }
 
-/* v18.0.197 Gold Waves boss identity */
+/* v18.0.198 Gold Waves boss identity */
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.197 — Gold Waves fluid wave presentation only */
+/* v18.0.198 — Gold Waves fluid wave presentation only */
 body.g159 .hudWave,body.g159 #waveLabel,body.g159 #wave{
  transition:opacity .18s ease,transform .18s ease,filter .18s ease!important;
  will-change:opacity,transform;
 }
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.197 — Gold Waves environment */
+/* v18.0.198 — Gold Waves environment */
 body.g159 #game,body.g159 canvas{
  background:
    radial-gradient(ellipse at 50% 42%,rgba(255,225,105,.15) 0%,rgba(191,123,10,.08) 30%,transparent 57%),
    linear-gradient(145deg,#2a1a04 0%,#503006 31%,#7a4c08 54%,#3a2204 78%,#1d1203 100%)!important;
 }
 
-/* v18.0.197 — accessible temporary Gold tester */
+/* v18.0.198 — accessible temporary Gold tester */
 #goldWaveJumpWrap{
  position:fixed!important;
  left:18px!important;
@@ -1237,7 +1237,7 @@ body.g159 #game,body.g159 canvas{
 #goldWaveJumpWrap #goldTestWave{max-width:112px!important;font-size:12px!important}
 #goldWaveJumpWrap .goldWavesTestBtn{font-size:11px!important;padding:8px 10px!important;white-space:nowrap!important}
 
-/* v18.0.197 — Gold Waves boss reward screen */
+/* v18.0.198 — Gold Waves boss reward screen */
 body.g159 #upgrade .panel{
  background:
   radial-gradient(circle at 50% 0%,#fff0a82b 0 8%,transparent 30%),
@@ -1263,7 +1263,7 @@ body.g159 #upgrade .choice p{color:#5b4316!important;opacity:1!important}
 body.g159 #upgrade .choice .rarity{display:none!important}
 body.g159 #upgrade .choice .upgradeMark{filter:sepia(1) saturate(1.7) brightness(1.08)}
 
-/* v18.0.197 — transparent Gold Ladybug movement icon */
+/* v18.0.198 — transparent Gold Ladybug movement icon */
 body.g159 #upgrade .choice .buddyUpgradeIcon{
  background:transparent!important;
  border:0!important;
@@ -1271,7 +1271,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  filter:drop-shadow(0 2px 2px #5b3508aa)!important;
 }
 
-/* v18.0.197 — isolated Gold true-finale mini-mode */
+/* v18.0.198 — isolated Gold true-finale mini-mode */
 #goldFinaleMode{position:fixed;inset:0;z-index:9998;overflow:hidden}
 #goldFinaleMode.hidden{display:none!important}
 #goldFinaleHomeStage{position:absolute;inset:0;overflow:hidden;pointer-events:none}
@@ -1288,7 +1288,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 @keyframes gfmGlitch{50%{filter:contrast(1.8) saturate(1.8);transform:translate(2px,-2px)}100%{filter:hue-rotate(12deg);transform:translate(-2px,2px)}}
 #goldFinaleTestBtn{position:fixed;left:18px;bottom:54px;z-index:82}
 
-/* v18.0.197 — finale uses the REAL Home as protected scenery */
+/* v18.0.198 — finale uses the REAL Home as protected scenery */
 #goldFinaleMode{background:transparent!important;filter:none!important;transform:none!important}
 #goldFinaleHomeStage{display:none!important}
 #goldFinaleMode.glitch{animation:none!important;filter:none!important;transform:none!important}
@@ -1307,7 +1307,7 @@ body.goldFinaleBreaking #home button{animation:gfmRealBreak .72s forwards!import
  100%{opacity:0;transform:translateY(55px) rotate(10deg);filter:none}
 }
 
-/* v18.0.197 — transparent combat layer over the complete real Home */
+/* v18.0.198 — transparent combat layer over the complete real Home */
 #goldFinaleMode.homeArena{background:transparent!important}
 #goldFinaleMode.homeArena #goldFinaleCombat{background:transparent!important}
 #goldFinaleMode.homeArena #goldFinaleName{top:3.5%!important;font-size:clamp(34px,9vw,66px)!important}
@@ -1318,6 +1318,14 @@ body.goldFinaleRealHome #home{
 }
 body.goldFinaleRealHome #game{visibility:hidden!important}
 body.goldFinaleRealHome #goldFinaleMode{z-index:9998!important}
+
+/* v18.0.198 — true final fight is a pure-black arena */
+#goldFinaleMode.blackArena{background:#000!important}
+#goldFinaleMode.blackArena #goldFinaleCombat{background:transparent!important}
+body.goldFinaleBlackArena #home{visibility:hidden!important;opacity:0!important}
+
+#goldFinaleMode.blackArena #goldFinaleCombat{pointer-events:auto!important;touch-action:none!important}
+#goldFinaleMode.blackArena #goldFinaleName{z-index:2}
 </style>
 </head>
 <body>
@@ -1362,8 +1370,8 @@ body.goldFinaleRealHome #goldFinaleMode{z-index:9998!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.197</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.197</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.198</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.198</div>
 <button id="goldFinaleTestBtn" class="btn dark small" data-action="testGoldFinale">TEST GOLD FINALE</button></section>
 
 <section id="bugs" class="screen hidden">
@@ -3518,7 +3526,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.197 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.198 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4870,7 +4878,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.197';
+const BB_BUILD_VERSION='18.0.198';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
@@ -4902,7 +4910,7 @@ setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300
 </script>
 
 <script>
-/* BIG BUG v18.0.197 — isolated Gold Waves visual/combat correction */
+/* BIG BUG v18.0.198 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
@@ -5178,7 +5186,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 
 
 <script>
-/* v18.0.197 Gold HUD continuity — presentation only */
+/* v18.0.198 Gold HUD continuity — presentation only */
 (()=>{
  let lastWave='';
  function keepGoldHudFluid(){
@@ -5203,7 +5211,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.197 Gold-state containment */
+/* v18.0.198 Gold-state containment */
 (()=>{
  function clearGoldPresentation(){
    const gp=document.getElementById('game');
@@ -5216,7 +5224,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.197 — reliable isolated Gold Waves music */
+/* v18.0.198 — reliable isolated Gold Waves music */
 (()=>{
  let timer=null,step=0,active=false;
  const melody=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
@@ -5250,7 +5258,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.197 test-control visibility */
+/* v18.0.198 test-control visibility */
 (()=>{
  const box=document.getElementById('goldWaveJumpWrap');
  function syncGoldTester(){
@@ -5263,7 +5271,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.197 — dedicated ??? evolving alien/gold boss score */
+/* v18.0.198 — dedicated ??? evolving alien/gold boss score */
 (()=>{
  let tmr=null,step=0,active=false,lastBoss=false;
  const motif=[220,277,330,415,330,277,247,311,370,466,370,311,262,330,392,494];
@@ -5333,7 +5341,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
  requestAnimationFrame(watch);
 })();
 
-/* v18.0.197 — clean isolated finale built from stable .188 */
+/* v18.0.198 — clean isolated finale built from stable .188 */
 let goldFinaleTemplate=null,goldFinaleTimers=[],goldFinaleRAF=0,goldFinaleState=null;
 function prepareGoldFinaleHome(){
  const real=$('home'); if(!real)return;
@@ -5350,7 +5358,7 @@ function gfmLater(fn,ms){const id=setTimeout(fn,ms);goldFinaleTimers.push(id)}
 function stopGoldFinaleMode(){
  goldFinaleTimers.forEach(clearTimeout);goldFinaleTimers=[];
  if(goldFinaleRAF)cancelAnimationFrame(goldFinaleRAF);goldFinaleRAF=0;goldFinaleState=null;
- document.body.classList.remove('goldFinaleRealHome','goldFinaleBreaking');
+ document.body.classList.remove('goldFinaleRealHome','goldFinaleBreaking','goldFinaleBlackArena');
  const m=$('goldFinaleMode');if(m){m.className='hidden';m.setAttribute('aria-hidden','true')}
  const st=$('goldFinaleHomeStage');if(st)st.innerHTML='';
 }
@@ -5385,12 +5393,23 @@ function startGoldTrueFinale(boss=null){
    m.classList.remove('glitch');m.classList.add('homeArena');mountGoldFinaleHome();
  },5550);
  gfmLater(()=>{document.body.classList.add('goldFinaleBreaking');m.classList.add('breaking')},6900);
- gfmLater(()=>{m.classList.add('reveal')},8350);
- gfmLater(startBigBugFight,10150);
+ // Once Home finishes breaking, cut to absolute black.
+ gfmLater(()=>{
+   document.body.classList.add('goldFinaleBlackArena');
+   m.classList.remove('homeArena','breaking');m.classList.add('blackArena');
+   const cx=c.getContext('2d');cx.setTransform(1,0,0,1,0,0);cx.globalAlpha=1;cx.clearRect(0,0,c.width,c.height);
+ },7850);
+ // Hold black briefly, then reveal the real name.
+ gfmLater(()=>{m.classList.add('reveal')},8750);
+ // Start the playable fight after the reveal has had time to land.
+ gfmLater(()=>{startBigBugFight()},10450);
 }
 function startBigBugFight(){
- const m=$('goldFinaleMode'),c=$('goldFinaleCombat'),x=c.getContext('2d');m.classList.remove('glitch','breaking');m.classList.add('homeArena','reveal');
- const W=()=>c.width,H=()=>c.height;
+ const m=$('goldFinaleMode'),c=$('goldFinaleCombat');
+ m.classList.remove('glitch','breaking','homeArena');m.classList.add('blackArena','reveal');
+ document.body.classList.add('goldFinaleBlackArena');
+ c.width=Math.max(1,innerWidth);c.height=Math.max(1,innerHeight);
+ const x=c.getContext('2d'),W=()=>c.width,H=()=>c.height;
  goldFinaleState={px:W()/2,py:H()*.78,hp:180,maxHp:180,bx:W()/2,by:H()*.27,bhp:4200,bmax:4200,shots:[],enemyShots:[],adds:[],keys:{},last:performance.now(),fire:0,addClock:0,phase:0};
  const S=goldFinaleState;
  function spawnAdd(kind){
@@ -5398,7 +5417,8 @@ function startBigBugFight(){
  }
  function loop(now){
   if(!goldFinaleState||m.classList.contains('hidden'))return;
-  const dt=Math.min(.033,(now-S.last)/1000);S.last=now;c.width=innerWidth;c.height=innerHeight;
+  const dt=Math.min(.033,(now-S.last)/1000);S.last=now;
+  if(c.width!==innerWidth||c.height!==innerHeight){c.width=Math.max(1,innerWidth);c.height=Math.max(1,innerHeight)}
   // touch target follows pointer position; keyboard also works.
   const sp=205*dt;if(S.keys.ArrowLeft||S.keys.a)S.px-=sp;if(S.keys.ArrowRight||S.keys.d)S.px+=sp;if(S.keys.ArrowUp||S.keys.w)S.py-=sp;if(S.keys.ArrowDown||S.keys.s)S.py+=sp;
   S.px=Math.max(18,Math.min(W()-18,S.px));S.py=Math.max(90,Math.min(H()-18,S.py));
@@ -5412,9 +5432,9 @@ function startBigBugFight(){
   for(const q of S.enemyShots){q.x+=q.vx*dt;q.y+=q.vy*dt;if(Math.hypot(q.x-S.px,q.y-S.py)<18){S.hp-=10;q.dead=1}}
   for(const a of S.adds){a.t+=dt;const ang=Math.atan2(S.py-a.y,S.px-a.x),v=a.kind==='mosquito'?105:65;a.x+=Math.cos(ang)*v*dt;a.y+=Math.sin(ang)*v*dt;if(Math.hypot(a.x-S.px,a.y-S.py)<20){S.hp-=a.kind==='storyBoss'?14:7;a.x-=Math.cos(ang)*45;a.y-=Math.sin(ang)*45}}
   S.shots=S.shots.filter(q=>!q.dead&&q.x>-30&&q.x<W()+30&&q.y>-30&&q.y<H()+30);S.enemyShots=S.enemyShots.filter(q=>!q.dead&&q.x>-30&&q.x<W()+30&&q.y>-30&&q.y<H()+30);S.adds=S.adds.filter(a=>a.hp>0);
-  // Transparent overlay only: the REAL Home remains fully visible underneath.
-  x.setTransform(1,0,0,1,0,0);x.globalAlpha=1;x.clearRect(0,0,W(),H());
-  // HUD over exact Home battlefield.
+  // True final arena: completely black, with only combat elements visible.
+  x.setTransform(1,0,0,1,0,0);x.globalAlpha=1;x.clearRect(0,0,W(),H());x.fillStyle='#000';x.fillRect(0,0,W(),H());
+  // Final-fight HUD.
   x.fillStyle='#402800';x.fillRect(W()*.12,54,W()*.76,13);x.fillStyle='#ffd43b';x.fillRect(W()*.12,54,W()*.76*Math.max(0,S.bhp/S.bmax),13);
   x.fillStyle='#4b1515';x.fillRect(18,82,120,10);x.fillStyle='#e65c5c';x.fillRect(18,82,120*Math.max(0,S.hp/S.maxHp),10);
   // BIG BUG
