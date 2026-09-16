@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.192: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.193: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1144,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.192 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.193 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1157,7 +1157,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #finalPrep .choice .art{display:none!important}
 
 
-/* v18.0.192 GOLD WAVES ONLY */
+/* v18.0.193 GOLD WAVES ONLY */
 body.gold157 .hudWave{
  background:transparent!important;border:0!important;box-shadow:none!important;
  outline:0!important;filter:none!important;
@@ -1173,7 +1173,7 @@ body.gold157 #waveProgress,body.gold157 #boostBtn{display:none!important}
  to{filter:brightness(1.24);text-shadow:0 0 7px #fffbd5,0 0 14px #ffd13e,0 0 21px #b96c00,0 2px #4b2a02}
 }
 
-/* v18.0.192 GOLD WAVES ONLY */
+/* v18.0.193 GOLD WAVES ONLY */
 body.g159 .hudWave{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
 body.g159 .hudWave::before,body.g159 .hudWave::after{display:none!important}
 body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
@@ -1182,7 +1182,7 @@ body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
 body.g159 #waveProgress,body.g159 #boostBtn{display:none!important}
 @keyframes g159wave{to{filter:brightness(1.28);text-shadow:0 0 7px #fffbd1,0 0 15px #ffd23d,0 0 23px #a85e00,0 2px #4b2902}}
 
-/* v18.0.192 — Gold Waves boss health color only */
+/* v18.0.193 — Gold Waves boss health color only */
 body.g159 #bossBarFill,
 body.g159 #bossHealthFill,
 body.g159 .bossHpFill,
@@ -1196,7 +1196,7 @@ body.g159 #bossFill0,body.g159 #bossFill1{
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
 }
 
-/* v18.0.192 — GOLD WAVES boss HUD only */
+/* v18.0.193 — GOLD WAVES boss HUD only */
 body.g159 #bossFill0,body.g159 #bossFill1{
  background:linear-gradient(90deg,#9b6108 0%,#e3a91c 42%,#ffe16a 72%,#fff1a6 100%)!important;
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
@@ -1206,24 +1206,24 @@ body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
  padding:0!important;
 }
 
-/* v18.0.192 Gold Waves boss identity */
+/* v18.0.193 Gold Waves boss identity */
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.192 — Gold Waves fluid wave presentation only */
+/* v18.0.193 — Gold Waves fluid wave presentation only */
 body.g159 .hudWave,body.g159 #waveLabel,body.g159 #wave{
  transition:opacity .18s ease,transform .18s ease,filter .18s ease!important;
  will-change:opacity,transform;
 }
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.192 — Gold Waves environment */
+/* v18.0.193 — Gold Waves environment */
 body.g159 #game,body.g159 canvas{
  background:
    radial-gradient(ellipse at 50% 42%,rgba(255,225,105,.15) 0%,rgba(191,123,10,.08) 30%,transparent 57%),
    linear-gradient(145deg,#2a1a04 0%,#503006 31%,#7a4c08 54%,#3a2204 78%,#1d1203 100%)!important;
 }
 
-/* v18.0.192 — accessible temporary Gold tester */
+/* v18.0.193 — accessible temporary Gold tester */
 #goldWaveJumpWrap{
  position:fixed!important;
  left:18px!important;
@@ -1237,7 +1237,7 @@ body.g159 #game,body.g159 canvas{
 #goldWaveJumpWrap #goldTestWave{max-width:112px!important;font-size:12px!important}
 #goldWaveJumpWrap .goldWavesTestBtn{font-size:11px!important;padding:8px 10px!important;white-space:nowrap!important}
 
-/* v18.0.192 — Gold Waves boss reward screen */
+/* v18.0.193 — Gold Waves boss reward screen */
 body.g159 #upgrade .panel{
  background:
   radial-gradient(circle at 50% 0%,#fff0a82b 0 8%,transparent 30%),
@@ -1263,7 +1263,7 @@ body.g159 #upgrade .choice p{color:#5b4316!important;opacity:1!important}
 body.g159 #upgrade .choice .rarity{display:none!important}
 body.g159 #upgrade .choice .upgradeMark{filter:sepia(1) saturate(1.7) brightness(1.08)}
 
-/* v18.0.192 — transparent Gold Ladybug movement icon */
+/* v18.0.193 — transparent Gold Ladybug movement icon */
 body.g159 #upgrade .choice .buddyUpgradeIcon{
  background:transparent!important;
  border:0!important;
@@ -1284,22 +1284,21 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 #goldFinale.gfBreak .gfMosq{animation-delay:.1s}#goldFinale.gfBreak .gfRow span:nth-child(1){animation-delay:.18s}#goldFinale.gfBreak .gfRow span:nth-child(2){animation-delay:.25s}#goldFinale.gfBreak .gfRow span:nth-child(3){animation-delay:.32s}#goldFinale.gfBreak .gfBest{animation-delay:.38s}#goldFinale.gfBreak .gfBook{animation-delay:.45s}#goldFinale.gfBreak .gfSettings{animation-delay:.5s}#goldFinale.gfBreak .gfShop{animation-delay:.58s}
 @keyframes gfBreak{25%{transform:translate(5px,-3px) skew(5deg);filter:brightness(2)}60%{transform:translate(-7px,4px) skew(-8deg)}100%{transform:translateY(55px) rotate(13deg);opacity:0}}
 #goldFinalReveal{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:1000 clamp(52px,16vw,110px)/1 Arial;color:#ffe45c;text-shadow:0 0 8px #fff3a0,0 0 24px #ffc400,0 0 55px #a95e00;opacity:0}#goldFinale.gfReveal #goldFinalReveal{animation:gfReveal 2.1s forwards}@keyframes gfReveal{0%{opacity:0;transform:scale(.55)}35%,100%{opacity:1;transform:scale(1)}}#goldFinale.gfGlitch{animation:gfGlitch .11s steps(2) infinite}@keyframes gfGlitch{50%{filter:contrast(1.8) saturate(2);transform:translate(3px,-2px)}100%{filter:hue-rotate(18deg);transform:translate(-2px,2px)}}
-/* v18.0.192 — temporary Gold test controls kept accessible and non-overlapping */
+/* v18.0.193 — temporary Gold test controls kept accessible and non-overlapping */
 #goldWaveJumpWrap{left:18px!important;bottom:108px!important;display:grid!important;grid-template-columns:112px 108px!important;gap:6px!important;width:226px!important}
 #goldFinaleTestBtn{left:18px!important;bottom:58px!important;width:226px!important;max-width:226px!important;font-size:11px!important;padding:9px 7px!important}
 
-/* v18.0.192 — finale uses an isolated runtime clone of the REAL Home screen */
+/* v18.0.193 — finale uses an isolated runtime clone of the REAL Home screen */
 #goldFinaleFakeHome{position:absolute!important;inset:0!important;opacity:0;overflow:hidden;background:transparent!important}
 #goldFinaleFakeHome .screen{position:absolute!important;inset:0!important;display:block!important;opacity:1!important;pointer-events:none!important}
 #goldFinaleFakeHome #goldWaveJumpWrap,
 #goldFinaleFakeHome #goldFinaleTestBtn,
 #goldFinaleFakeHome #goldWavesTestBtn{display:none!important}
-#goldFinaleFakeHome .hidden{display:block!important}
 #goldFinaleFakeHome .gfForceGoldMode{display:block!important;visibility:visible!important;opacity:1!important}
 #goldFinale.gfBreak #goldFinaleFakeHome button,
 #goldFinale.gfBreak #goldFinaleFakeHome .btn{animation:gfBreak .65s forwards!important}
 
-/* v18.0.192 — exact Home viewport geometry inside the finale clone */
+/* v18.0.193 — exact Home viewport geometry inside the finale clone */
 #goldFinaleFakeHome{width:100vw!important;height:100dvh!important;inset:0!important}
 #goldFinaleFakeHome #goldFinaleHomeClone{
  position:fixed!important;
@@ -1318,6 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  width:var(--gf-real-w,100vw)!important;
  height:var(--gf-real-h,100dvh)!important;
 }
+
+#goldFinaleFakeHome #goldFinaleHomeClone .gfForceModeButton{display:block!important;visibility:visible!important;opacity:1!important}
 </style>
 </head>
 <body>
@@ -1362,8 +1363,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.192</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.192</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.193</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.193</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2215,6 +2216,7 @@ function makeGoldPlayer(){
  finally{save.selected=old}
 }
 function startGoldWaves(testMode=false,startWave=1){
+ cacheGoldFinaleHome();
  if(!testMode&&!goldWavesUnlocked())return;
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
@@ -3518,7 +3520,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.192 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.193 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4866,7 +4868,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.192';
+const BB_BUILD_VERSION='18.0.193';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
@@ -4898,7 +4900,7 @@ setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300
 </script>
 
 <script>
-/* BIG BUG v18.0.192 — isolated Gold Waves visual/combat correction */
+/* BIG BUG v18.0.193 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
@@ -5174,7 +5176,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 
 
 <script>
-/* v18.0.192 Gold HUD continuity — presentation only */
+/* v18.0.193 Gold HUD continuity — presentation only */
 (()=>{
  let lastWave='';
  function keepGoldHudFluid(){
@@ -5199,7 +5201,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.192 Gold-state containment */
+/* v18.0.193 Gold-state containment */
 (()=>{
  function clearGoldPresentation(){
    const gp=document.getElementById('game');
@@ -5212,7 +5214,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.192 — reliable isolated Gold Waves music */
+/* v18.0.193 — reliable isolated Gold Waves music */
 (()=>{
  let timer=null,step=0,active=false;
  const melody=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
@@ -5246,7 +5248,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.192 test-control visibility */
+/* v18.0.193 test-control visibility */
 (()=>{
  const box=document.getElementById('goldWaveJumpWrap');
  function syncGoldTester(){
@@ -5259,7 +5261,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.192 — dedicated ??? evolving alien/gold boss score */
+/* v18.0.193 — dedicated ??? evolving alien/gold boss score */
 (()=>{
  let tmr=null,step=0,active=false,lastBoss=false;
  const motif=[220,277,330,415,330,277,247,311,370,466,370,311,262,330,392,494];
@@ -5329,6 +5331,16 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
  requestAnimationFrame(watch);
 })();
 
+let goldFinaleHomeSnapshot=null,goldFinaleHomeRect=null;
+function cacheGoldFinaleHome(){
+ const real=$('home');if(!real)return;
+ const r=real.getBoundingClientRect();
+ goldFinaleHomeRect={left:r.left,top:r.top,width:r.width||innerWidth,height:r.height||innerHeight};
+ goldFinaleHomeSnapshot=real.cloneNode(true);
+ // Paint current canvas pixels into data URLs because cloned canvases are blank.
+ const rc=[...real.querySelectorAll('canvas')],cc=[...goldFinaleHomeSnapshot.querySelectorAll('canvas')];
+ rc.forEach((c,i)=>{if(!cc[i])return;try{cc[i].dataset.gfimg=c.toDataURL()}catch(e){}});
+}
 let goldFinaleTimer=[];
 function gfLater(fn,ms){const id=setTimeout(fn,ms);goldFinaleTimer.push(id)}
 function clearGoldTrueFinale(){goldFinaleTimer.forEach(clearTimeout);goldFinaleTimer=[];const o=$('goldFinale');if(o){o.className='hidden';o.setAttribute('aria-hidden','true')}}
@@ -5340,23 +5352,22 @@ function startGoldTrueFinale(boss){
  gfLater(()=>{
  const host=$('goldFinaleFakeHome'),real=$('home');
  host.innerHTML='';
- if(real){
-   const clone=real.cloneNode(true);clone.id='goldFinaleHomeClone';clone.classList.remove('hidden');clone.classList.add('gfForceGoldMode');
-   const rr=real.getBoundingClientRect(),rs=getComputedStyle(real);
+ if(goldFinaleHomeSnapshot){
+   const clone=goldFinaleHomeSnapshot.cloneNode(true);clone.id='goldFinaleHomeClone';clone.classList.remove('hidden');clone.classList.add('gfForceGoldMode');
+   const rr=goldFinaleHomeRect||{left:0,top:0,width:innerWidth,height:innerHeight};
    clone.style.setProperty('--gf-real-w',rr.width+'px');clone.style.setProperty('--gf-real-h',rr.height+'px');clone.style.width=rr.width+'px';clone.style.height=rr.height+'px';
    clone.style.left=rr.left+'px';clone.style.top=rr.top+'px';
-   clone.style.fontSize=rs.fontSize;
    // Remove all temporary testing UI from the clone.
    clone.querySelectorAll('#goldWaveJumpWrap,#goldFinaleTestBtn,#goldWavesTestBtn,[data-action="testGoldWave"],[data-action="testGoldWaves"],[data-action="testGoldFinale"]').forEach(n=>n.remove());
    // Force both bonus-mode buttons to look unlocked in this finale copy only.
-   clone.querySelectorAll('[data-action="endless"],#endlessBtn').forEach(n=>{n.classList.remove('locked','hidden');n.disabled=false;n.removeAttribute('disabled')});
-   clone.querySelectorAll('[data-action="goldWaves"],#goldWavesBtn').forEach(n=>{n.classList.remove('locked','hidden');n.disabled=false;n.removeAttribute('disabled')});
+   clone.querySelectorAll('[data-action="endless"],#endlessBtn').forEach(n=>{n.classList.remove('locked','hidden');n.classList.add('gfForceModeButton');n.disabled=false;n.removeAttribute('disabled')});
+   clone.querySelectorAll('[data-action="goldWaves"],#goldWavesBtn').forEach(n=>{n.classList.remove('locked','hidden');n.classList.add('gfForceModeButton');n.disabled=false;n.removeAttribute('disabled')});
    // Prevent duplicate IDs in the disposable clone from being used by normal game code.
    clone.querySelectorAll('[id]').forEach(n=>{if(n!==clone)n.id='gfclone_'+n.id});
    clone.querySelectorAll('button,[data-action],a,input,select').forEach(n=>{n.removeAttribute('data-action');n.tabIndex=-1;n.style.pointerEvents='none'});
    host.appendChild(clone);
    // Repaint cloned canvases from their real counterparts so the exact current Home artwork carries over.
-   real.querySelectorAll('canvas').forEach((rc,i)=>{const cc=clone.querySelectorAll('canvas')[i];if(cc){cc.width=rc.width;cc.height=rc.height;try{cc.getContext('2d').drawImage(rc,0,0)}catch(e){}}});
+   clone.querySelectorAll('canvas').forEach(cc=>{const img=cc.dataset.gfimg;if(!img)return;const im=new Image();im.onload=()=>{try{cc.getContext('2d').drawImage(im,0,0,cc.width,cc.height)}catch(e){}};im.src=img});
  }
  host.style.transition='opacity .7s';host.style.opacity='1';
 },5550);
