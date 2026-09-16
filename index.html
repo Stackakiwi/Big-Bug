@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.149: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.150: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1144,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.149 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.150 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1200,8 +1200,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.149</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.149</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.150</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.150</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2051,6 +2051,20 @@ function startGoldWaves(testMode=false){
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true};
  beginWave(1);titleMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
+const GOLD_BOSSES=[
+ {wave:5,key:'gildedSentinel',name:'GILDED SENTINEL',base:'beetle'},
+ {wave:10,key:'sunScarab',name:'SUN SCARAB',base:'scarab'},
+ {wave:15,key:'crownMantis',name:'CROWN MANTIS',base:'mantisBoss'},
+ {wave:20,key:'auricWeaver',name:'AURIC WEAVER',base:'tarantula'},
+ {wave:25,key:'royalFirefly',name:'ROYAL FIREFLY',base:'wasp'},
+ {wave:30,key:'goldenBurrower',name:'GOLDEN BURROWER',base:'moleCricket'},
+ {wave:35,key:'sunHornet',name:'SUN HORNET',base:'hornet'},
+ {wave:40,key:'crownStag',name:'CROWN STAG',base:'stagBeetle'},
+ {wave:45,key:'radiantQueen',name:'RADIANT QUEEN',base:'queenSpider'},
+ {wave:50,key:'goldEmperor',name:'THE GOLDEN EMPEROR',base:'scarab'}
+];
+function goldBossFor(w){return GOLD_BOSSES.find(b=>b.wave===w)||GOLD_BOSSES[Math.max(0,Math.min(9,Math.floor(w/5)-1))]}
+
 function goldWaveQuota(w){return Math.min(12,4+Math.floor((Math.max(1,w)-1)/5))}
 
 function startEndless(){
@@ -2095,7 +2109,7 @@ const AREAS=[
  {name:'The Bloom',icon:'',top:'#3c2f43',mid:'#49344a',bot:'#27252f',patch1:'#8f567f',patch2:'#241d2a',leaf1:'#68405d',leaf2:'#7b4a69',leaf3:'#54394f',edge1:'#5b3b52',edge2:'#71445f',vignette:'#180d209e'},
  {name:'Heart of the Garden',icon:'',top:'#202a25',mid:'#29332b',bot:'#171e1b',patch1:'#625363',patch2:'#151a18',leaf1:'#3e493e',leaf2:'#514554',leaf3:'#343b35',edge1:'#39483b',edge2:'#4a5142',vignette:'#070b099f'}
 ];
-const GOLD_AREA={name:'Golden Garden',icon:'',top:'#5b4516',mid:'#8a6b20',bot:'#3f3517',patch1:'#d1a83b',patch2:'#342b13',leaf1:'#e0b94d',leaf2:'#a98227',leaf3:'#f0d36a',edge1:'#6f5b22',edge2:'#9a7b2b',vignette:'#21180688'};
+const GOLD_AREA={name:'Golden Garden',icon:'',top:'#241603',mid:'#7d5007',bot:'#342005',patch1:'#d99b16',patch2:'#503006',leaf1:'#f6cf55',leaf2:'#bb790b',leaf3:'#fff0a3',edge1:'#684006',edge2:'#dca51f',vignette:'#100900bb'};
 function areaIndex(w=game?.wave||1){return game?.mode==='gold'?0:Math.min(AREAS.length-1,Math.floor((Math.max(1,w)-1)/5))}
 function areaFor(w=game?.wave||1){return game?.mode==='gold'?GOLD_AREA:AREAS[areaIndex(w)]}
 
@@ -2172,7 +2186,7 @@ function beginWave(w){
    g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
    $('bossbar').style.display='none';
    flashBanner(bossWave?'GOLD BOSS '+w:'GOLD WAVE '+w,bossWave?1.45:1.0);
-   if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0;configureBossHud(w);updateBossHud()}
+   if(bossWave){const gb=goldBossFor(w),be=spawnEnemy('boss',gb.base,0);if(be){be.goldBossKey=gb.key;be.goldBossName=gb.name;be.goldElite=true}g.spawnLeft=0;configureBossHud(w);updateBossHud()}
    updateHud();return;
  }
  if(w===100&&!g.finalPrepDone){showFinalPrep();return}
@@ -2348,7 +2362,7 @@ function damageEnemy(e,d,source='player'){
      completeGameEnding(false,false);return;
    }
    e.dead=true;game.p.kills++;game.score++;game.waveKills++;
-   if(game.mode!=='endless'){
+   if(game.mode!=='endless'&&game.mode!=='gold'){
      let val=Math.max(1,Math.floor((2+game.wave*.35)*game.p.greed));
      let luckyLeaf=false;
      if(e.boss){val*=20;}
@@ -2494,6 +2508,22 @@ function bossRing(e,count=10,speed=155,damage=10,offset=0,style='normal'){
 function stingBurst(e,count=8,speed=145){
  for(let i=0;i<count;i++){let a=i*6.283/count+performance.now()/900;game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:3,r:4,sting:true,damage:7+game.wave*.25})}
 }
+function goldBossMechanics(e,dt){
+ if(game.mode!=='gold'||!e.goldBossKey||e.invuln>0||e.dead)return;
+ e.goldCd=(e.goldCd||1.1)-dt;if(e.goldCd>0)return;
+ const p=game.p,dx=p.x-e.x,dy=p.y-e.y,d=Math.hypot(dx,dy)||1,aim=Math.atan2(dy,dx),shot=(a,spd,dam,r=4.8)=>game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.8,r,sting:true,damage:dam,goldShot:true}),k=e.goldBossKey,dam=8+game.wave*.22;
+ if(k==='gildedSentinel'){e.goldCd=2.35;for(let a of [-.28,0,.28])shot(aim+a,190,dam);flashBanner('GOLD CHARGE!',.28)}
+ else if(k==='sunScarab'){e.goldCd=2.05;for(let i=0;i<8;i++)shot(i*Math.PI/4+game.time*.18,165,dam);flashBanner('SUN RING!',.28)}
+ else if(k==='crownMantis'){e.goldCd=1.8;for(let i=-2;i<=2;i++)shot(aim+i*.14,235,dam);flashBanner('CROWN CUT!',.25)}
+ else if(k==='auricWeaver'){e.goldCd=2.5;for(let i=-1;i<=1;i++)bossHazard(Math.max(35,Math.min(W-35,p.x+i*92)),Math.max(100,Math.min(H-35,p.y+(i%2)*55)),25,3,'webline',dam*.65);flashBanner('GOLD WEB!',.32)}
+ else if(k==='royalFirefly'){e.goldCd=2.15;for(let i=0;i<6;i++)shot(i*Math.PI/3,205,dam);flashBanner('FLASH BURST!',.25)}
+ else if(k==='goldenBurrower'){e.goldCd=3;for(let i=-1;i<=1;i++)bossHazard(Math.max(40,Math.min(W-40,p.x+i*78)),Math.max(105,Math.min(H-40,p.y)),28,1.55,'thorn',dam*.72);flashBanner('GOLDEN CRACK!',.34)}
+ else if(k==='sunHornet'){e.goldCd=1.65;for(let i=-1;i<=1;i++)shot(aim+i*.18,255,dam);flashBanner('SUN STING!',.22)}
+ else if(k==='crownStag'){e.goldCd=2.2;bossRing(e,6,145,dam*.7,game.time*.2);flashBanner('ROYAL RUSH!',.28)}
+ else if(k==='radiantQueen'){e.goldCd=2.05;for(let i=0;i<8;i++)shot(i*Math.PI/4+game.time*.3,180,dam);toxicCloud(e.x,e.y,38,1.8,dam*.35);flashBanner('RADIANT BLOOM!',.28)}
+ else if(k==='goldEmperor'){e.goldCd=1.45;e.goldPhase=(e.goldPhase||0)+1;if(e.goldPhase%2){for(let i=0;i<10;i++)shot(i*Math.PI/5+e.goldPhase*.11,180,dam)}else{for(let i=-2;i<=2;i++)shot(aim+i*.15,260,dam+2)}flashBanner(e.goldPhase%2?'EMPEROR RING!':'GOLDEN LANCES!',.25)}
+}
+
 function enemyMove(e,dt){
  const p=game.p,t=game.time;let dx=p.x-e.x,dy=p.y-e.y,slow=e.slow>0?.45:1;
  if(e.kind==='mosquito'){
@@ -2876,6 +2906,7 @@ function update(dt,now){
  // v17.9.94 — this decay factor is identical for every enemy in a frame, so calculate it once.
  const knockDecay=Math.pow(.05,dt);
  for(const e of g.enemies)if(!e.dead){
+   if(g.mode==='gold'&&e.goldBossKey)goldBossMechanics(e,dt);
    e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,e.hit-dt);
    if(e.poison)damageEnemy(e,e.poison*dt*.8);
    enemyMove(e,dt);
@@ -2988,7 +3019,7 @@ function openUpgrade(afterWave=false){
    [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();endlessUp[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1)});
    $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
  }
- const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet');
+ const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
  const count=3;
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  // v18.0.21 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
@@ -3059,23 +3090,12 @@ function hudNode(id){return HUD_NODES[id]||(HUD_NODES[id]=$(id))}
 function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_CACHE[id]=value;hudNode(id).textContent=value}}
 function setBossBarFill(index,value){const key='bossFill'+index;if(HUD_CACHE[key]!==value){HUD_CACHE[key]=value;hudNode(key).style.width=value}}
 function configureBossHud(w){
- const kinds=bossKindsFor(w),dual=kinds.length>1;
- for(let i=0;i<2;i++){
-  const row=$('bossRow'+i),name=$('bossName'+i);if(!row||!name)continue;
-  const kind=kinds[i];row.classList.toggle('hidden',!kind);
-  if(kind)name.textContent=bossDisplayName(kind,w);
-  setBossBarFill(i,kind?'100%':'0%');
- }
- $('bossbar').style.width=dual?'min(330px,72vw)':'min(290px,62vw)';
+ if(game?.mode==='gold'){const gb=goldBossFor(w),r0=$('bossRow0'),r1=$('bossRow1'),n0=$('bossName0');if(r0)r0.classList.remove('hidden');if(r1)r1.classList.add('hidden');if(n0)n0.textContent=gb.name;setBossBarFill(0,'100%');setBossBarFill(1,'0%');$('bossbar').style.width='min(310px,66vw)';return}
+ const kinds=bossKindsFor(w),dual=kinds.length>1;for(let i=0;i<2;i++){const row=$('bossRow'+i),name=$('bossName'+i);if(!row||!name)continue;const kind=kinds[i];row.classList.toggle('hidden',!kind);if(kind)name.textContent=bossDisplayName(kind,w);setBossBarFill(i,kind?'100%':'0%')}$('bossbar').style.width=dual?'min(330px,72vw)':'min(290px,62vw)';
 }
 function updateBossHud(){
- if(!game)return;const kinds=bossKindsFor(game.wave),bosses=game.bosses||[];
- for(let i=0;i<2;i++){
-  const kind=kinds[i];if(!kind){setBossBarFill(i,'0%');continue}
-  const b=bosses.find(q=>q&&!q.dead&&q.kind===kind);
-  const pct=b&&b.max>0?Math.max(0,Math.min(100,100*b.hp/b.max)):0;
-  setBossBarFill(i,pct+'%');
- }
+ if(!game)return;if(game.mode==='gold'){const b=(game.bosses||[]).find(q=>q&&!q.dead),pct=b&&b.max>0?Math.max(0,Math.min(100,100*b.hp/b.max)):0;setBossBarFill(0,pct+'%');setBossBarFill(1,'0%');return}
+ const kinds=bossKindsFor(game.wave),bosses=game.bosses||[];for(let i=0;i<2;i++){const kind=kinds[i];if(!kind){setBossBarFill(i,'0%');continue}const b=bosses.find(q=>q&&!q.dead&&q.kind===kind),pct=b&&b.max>0?Math.max(0,Math.min(100,100*b.hp/b.max)):0;setBossBarFill(i,pct+'%')}
 }
 function setHudClass(el,key,cls,on){if(HUD_CACHE[key]!==on||el.classList.contains(cls)!==on){HUD_CACHE[key]=on;el.classList.toggle(cls,on)}}
 function setHudDisabled(el,key,on){if(HUD_CACHE[key]!==on||el.disabled!==on){HUD_CACHE[key]=on;el.disabled=on}}
@@ -3086,7 +3106,7 @@ function updateHud(force=true,now=performance.now()){
  const p=game.p,g=game,active=boostActive();
  setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',g.mode==='gold'?(g.wave>=50?'FINAL GOLD WAVE':'GOLD WAVE'):(g.wave===100?'FINAL WAVE':'WAVE'));setHudText('wave',(g.mode==='gold'&&g.wave>=50)||g.wave===100?'':g.wave);
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
- const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis='';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
+ const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis=g.mode==='gold'?'hidden':'';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
  setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',(g.mode==='gold'||g.wave===100)?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
  const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
@@ -3296,7 +3316,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.149 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.150 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4057,6 +4077,12 @@ function draw(now=performance.now()){
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
  if(game?.mode==='gold'){
+   const gt=FRAME_NOW*.001;X.save();X.globalCompositeOperation='screen';
+   const sx=W*(.5+.22*Math.sin(gt*.24)),sy=H*.13;
+   for(let j=0;j<5;j++){X.save();X.translate(sx,sy);X.rotate(gt*.025+j*1.25);const rg=X.createLinearGradient(0,0,W*.8,0);rg.addColorStop(0,'#fff1a82c');rg.addColorStop(.5,'#ffd34b12');rg.addColorStop(1,'#ffd34b00');X.fillStyle=rg;X.beginPath();X.moveTo(0,-10);X.lineTo(W*.8,-42);X.lineTo(W*.8,42);X.lineTo(0,10);X.fill();X.restore()}
+   for(let j=0;j<12;j++){const gx=(j*157+41)%W,gy=(j*91+Math.sin(gt*1.2+j)*30+H)%H,rr=2+2*(.5+.5*Math.sin(gt*3.4+j));X.globalAlpha=.3+.55*(.5+.5*Math.sin(gt*4+j));X.strokeStyle='#fff4b0';X.lineWidth=1;X.beginPath();X.moveTo(gx-rr*2,gy);X.lineTo(gx+rr*2,gy);X.moveTo(gx,gy-rr*2);X.lineTo(gx,gy+rr*2);X.stroke()}
+   X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
+
    const t=FRAME_NOW*.001;
    X.save();X.globalCompositeOperation='screen';
    for(let i=0;i<24;i++){
@@ -4625,7 +4651,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.149';
+const BB_BUILD_VERSION='18.0.150';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
