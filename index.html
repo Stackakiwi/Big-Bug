@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.148: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.149: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -30,7 +30,12 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .btn.red{background:#d84d48;color:white;box-shadow:inset 0 -4px #8f2926,0 5px 0 #1f3b20}
 .btn.dark{background:#223827;color:white;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
 .btn.small{min-width:0;font-size:14px;padding:10px 14px}
-#endlessBtn:disabled{opacity:.62;filter:saturate(.55);cursor:default;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}#endlessBtn .endlessUnlockNote{display:block;font-size:9px;line-height:1;margin-top:4px;letter-spacing:.35px;opacity:.78}
+#endlessBtn:disabled{opacity:.62;filter:saturate(.55);cursor:default;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
+#goldWavesBtn{background:linear-gradient(180deg,#8c6a1e,#4e3a13)!important;border:1px solid #d8b85b!important;color:#fff2b0!important;text-shadow:0 2px #2a1d08}
+#goldWavesBtn:disabled{opacity:.58;filter:saturate(.55);cursor:default}
+#goldWavesBtn small{display:block;font-size:9px;line-height:1.05;margin-top:4px;letter-spacing:.25px;opacity:.82}
+.goldWavesTestBtn{position:absolute!important;left:8px!important;bottom:max(48px,calc(env(safe-area-inset-bottom) + 43px))!important;z-index:52!important;min-width:0!important;padding:7px 9px!important;font-size:9px!important;background:#5d481b!important;color:#ffe79a!important;border:1px solid #b99339!important}
+#endlessBtn .endlessUnlockNote{display:block;font-size:9px;line-height:1;margin-top:4px;letter-spacing:.35px;opacity:.78}
 .tag{margin:10px 0 18px;font-weight:850;opacity:.8}
 .panel{width:min(720px,100%);max-height:92vh;overflow:auto;background:#15271aee;border:2px solid #d9efbf33;border-radius:24px;padding:20px;box-shadow:0 25px 80px #0008}
 .panel h2{margin:0 0 6px;font-size:28px}.panel p{opacity:.72}
@@ -1139,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.148 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.149 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1184,6 +1189,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
+  <button id="goldWavesBtn" class="btn dark homeLowerLift goldWavesBtn" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
+  <button id="goldWavesTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldWaves">TEMP GOLD WAVES TEST</button>
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
@@ -1193,8 +1200,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.148</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.148</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.149</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.149</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1468,6 +1475,12 @@ if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // A best wave above 20 proves Wave 20 was cleared in older saves, so migrate those automatically.
 save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=21;
 function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;const html=unlocked?'MOSQUITO MODE':' MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small>';if(b.innerHTML!==html)b.innerHTML=html}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
+function goldWavesUnlocked(){return !!(save.mainGameBeaten&&save.legendaryGolden?.owned)}
+function refreshGoldWavesHome(){
+ const b=$('goldWavesBtn');if(!b)return;const unlocked=goldWavesUnlocked();b.disabled=!unlocked;
+ b.innerHTML=unlocked?'GOLD WAVES<small>POST-GAME CHALLENGE</small>':'GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small>';
+}
+
 // v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
@@ -2024,6 +2037,22 @@ function startRun(startWave=1,testMode=false){
  last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 
+
+function makeGoldPlayer(){
+ const old=save.selected;
+ try{save.selected='golden';return basePlayer()}
+ finally{save.selected=old}
+}
+function startGoldWaves(testMode=false){
+ if(!testMode&&!goldWavesUnlocked())return;
+ initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
+ const p=makeGoldPlayer();
+ game={p,bugId:'golden',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'gold',
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true};
+ beginWave(1);titleMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
+}
+function goldWaveQuota(w){return Math.min(12,4+Math.floor((Math.max(1,w)-1)/5))}
+
 function startEndless(){
  if(!save.endlessUnlocked)return;
  initAudio();titleMusicStop();shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
@@ -2066,8 +2095,9 @@ const AREAS=[
  {name:'The Bloom',icon:'',top:'#3c2f43',mid:'#49344a',bot:'#27252f',patch1:'#8f567f',patch2:'#241d2a',leaf1:'#68405d',leaf2:'#7b4a69',leaf3:'#54394f',edge1:'#5b3b52',edge2:'#71445f',vignette:'#180d209e'},
  {name:'Heart of the Garden',icon:'',top:'#202a25',mid:'#29332b',bot:'#171e1b',patch1:'#625363',patch2:'#151a18',leaf1:'#3e493e',leaf2:'#514554',leaf3:'#343b35',edge1:'#39483b',edge2:'#4a5142',vignette:'#070b099f'}
 ];
-function areaIndex(w=game?.wave||1){return Math.min(AREAS.length-1,Math.floor((Math.max(1,w)-1)/5))}
-function areaFor(w=game?.wave||1){return AREAS[areaIndex(w)]}
+const GOLD_AREA={name:'Golden Garden',icon:'',top:'#5b4516',mid:'#8a6b20',bot:'#3f3517',patch1:'#d1a83b',patch2:'#342b13',leaf1:'#e0b94d',leaf2:'#a98227',leaf3:'#f0d36a',edge1:'#6f5b22',edge2:'#9a7b2b',vignette:'#21180688'};
+function areaIndex(w=game?.wave||1){return game?.mode==='gold'?0:Math.min(AREAS.length-1,Math.floor((Math.max(1,w)-1)/5))}
+function areaFor(w=game?.wave||1){return game?.mode==='gold'?GOLD_AREA:AREAS[areaIndex(w)]}
 
 function arenaNumber(w=game?.wave||1){return Math.floor((Math.max(1,w)-1)/5)+1}
 const BOOST_COSTS=[100,300,500,700,900,1200,1600,2200,3000,4500,6500,9000,12500,17000,23000,30000,40000,52000,65000,80000];
@@ -2136,6 +2166,15 @@ function beginWave(w){
    g.waveQuota=endlessWaveQuota(w);g.spawnLeft=g.waveQuota;$('bossbar').style.display='none';
    flashBanner('MOSQUITO SWARM '+w,w===1?1.5:1.0);updateHud();return;
  }
+ if(g.mode==='gold'){
+   g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
+   const bossWave=w%5===0;
+   g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
+   $('bossbar').style.display='none';
+   flashBanner(bossWave?'GOLD BOSS '+w:'GOLD WAVE '+w,bossWave?1.45:1.0);
+   if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0;configureBossHud(w);updateBossHud()}
+   updateHud();return;
+ }
  if(w===100&&!g.finalPrepDone){showFinalPrep();return}
  g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
  const bossWave=w%5===0;
@@ -2179,6 +2218,19 @@ function completeWave(){
  }
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
+ if(g.mode==='gold'){
+   const bossClear=g.wave%5===0;
+   if(bossClear){
+     const heal=Math.ceil(g.p.maxHp*.20);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
+     flashBanner('GOLD BOSS DOWN! +'+heal+' HP',1.25);
+     if(g.wave>=50){setTimeout(()=>{if(game===g&&!g.over)finish(true)},500)}
+     else setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
+   }else{
+     flashBanner('GOLD WAVE CLEAR!',.9);
+     setTimeout(()=>{if(game===g&&!g.over){g.paused=false;beginWave(g.wave+1)}},360);
+   }
+   return;
+ }
  if(g.mode==='endless'){
    if(g.wave%5===0){g.p.speed*=1.04;g.p.rate=Math.max(70,g.p.rate*.96);flashBanner('SWARM CLEAR!  •  SPEED UP!',1.15)}
    else flashBanner('SWARM CLEAR!',1.0);
@@ -2221,9 +2273,9 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  const side=Math.floor(Math.random()*4),m=42;let x,y;
  if(side===0){x=-m;y=Math.random()*H}else if(side===1){x=W+m;y=Math.random()*H}else if(side===2){x=Math.random()*W;y=-m}else{x=Math.random()*W;y=H+m}
  const w=game.wave, boss=type==='boss';
- let kinds=game.mode==='endless'?['mosquito']:w<5?['ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','beetle']:w<11?['ant','ant','wasp','wasp','beetle','mosquito','mosquito','mosquito','mosquito']:w<16?['ant','ant','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito','mosquito']:['ant','ant','spider','spider','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito','mosquito'];
+ let kinds=game.mode==='endless'?['mosquito']:game.mode==='gold'?['ant','beetle','spider','wasp','stink','mosquito'] :w<5?['ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','ant','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','mosquito','beetle']:w<11?['ant','ant','wasp','wasp','beetle','mosquito','mosquito','mosquito','mosquito']:w<16?['ant','ant','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito','mosquito']:['ant','ant','spider','spider','wasp','wasp','stink','stink','beetle','mosquito','mosquito','mosquito','mosquito'];
  let k=boss?(forcedKind||bossKindFor(w)):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
- if(!boss&&game.mode!=='endless'){
+ if(!boss&&game.mode!=='endless'&&game.mode!=='gold'){
    game.normalSpawned=game.normalSpawned||0;
    if(k==='mosquito'&&game.normalSpawned<5){
      // Avoid a temporary array allocation during spawning; preserve the same early-wave rule.
@@ -2240,11 +2292,13 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(k==='spider'){baseHp*=1.05;sp*=.92;r*=1.05}
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
+ if(game.mode==='gold'&&!boss){baseHp*=1.70;sp*=1.20;damage*=1.45}
  if(boss){
    const duo=bossKindsFor(w).length>1;
    // v18.0.81 — boss HP is progression-based only; player damage/attack-speed upgrades no longer increase boss max HP.
    baseHp=(80+w*15)*24*1.12*(duo?.62:1);
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
+   if(game.mode==='gold'){baseHp*=1.55;sp*=1.10;damage*=1.35}
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
@@ -2922,8 +2976,8 @@ function paintUpgradeBuddyIcons(root,choices){
 
 function openUpgrade(afterWave=false){
  const g=game;g.paused=true;
- $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'SWARM '+g.wave+' CLEARED!':(g.wave%5===0?'BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
- $('upgradeSub').textContent=g.mode==='endless'?'Choose one ability':'Choose one upgrade';
+ $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'SWARM '+g.wave+' CLEARED!':g.mode==='gold'?'GOLD BOSS '+g.wave+' CLEARED!':(g.wave%5===0?'BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
+ $('upgradeSub').textContent=g.mode==='endless'?'Choose one ability':g.mode==='gold'?'Choose one hard-earned upgrade':'Choose one upgrade';
  if(g.mode==='endless'){
    const endlessUp=[];
    if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:`Store 10 seconds of rapid healing  •  ${(g.endlessHealthCharge||0)}/3 stored`,rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
@@ -3030,11 +3084,11 @@ function updateHud(force=true,now=performance.now()){
  // This avoids needless DOM/class/style work on every animation frame while preserving the same displayed values.
  if(!force&&now-(HUD_CACHE.lastPaint||0)<40)return;HUD_CACHE.lastPaint=now;
  const p=game.p,g=game,active=boostActive();
- setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',g.wave===100?'FINAL WAVE':'WAVE');setHudText('wave',g.wave===100?'':g.wave);
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',g.mode==='gold'?(g.wave>=50?'FINAL GOLD WAVE':'GOLD WAVE'):(g.wave===100?'FINAL WAVE':'WAVE'));setHudText('wave',(g.mode==='gold'&&g.wave>=50)||g.wave===100?'':g.wave);
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
  const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis='';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
- setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',g.wave===100?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
+ setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',(g.mode==='gold'||g.wave===100)?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
  const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
  const et=hudNode('endlessTripleBtn');if(et){const ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`2× BOOST<small>${left.toFixed(1)}s</small>`:`2× BOOST<small>x${charges} / 3</small>`;setHudClass(et,'tripleHidden','hidden',!endless);setHudClass(et,'tripleActive','active',ta);setHudDisabled(et,'tripleDisabled',!ta&&charges<=0);if(HUD_CACHE.tripleHtml!==html){HUD_CACHE.tripleHtml=html;et.innerHTML=html}}
  const er=hudNode('endlessRepelBtn');if(er){const ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charges=g.endlessRepelCharge||0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>x${charges} / 3</small>`;setHudClass(er,'repelHidden','hidden',!endless);setHudClass(er,'repelActive','active',ra);setHudDisabled(er,'repelDisabled',!ra&&charges<=0);if(HUD_CACHE.repelHtml!==html){HUD_CACHE.repelHtml=html;er.innerHTML=html}}
@@ -3234,15 +3288,15 @@ function finish(won,quit=false){
  const coins=game.coins||0;
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
- if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:Math.floor(game.wave/2);if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome()}
+ if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:(game.mode==='gold'?0:Math.floor(game.wave/2));if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else if(game.mode==='gold')save.goldBest=Math.max(save.goldBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome();refreshGoldWavesHome()}
  $('gameover').classList.toggle('endlessOver',game.mode==='endless');
  $('overTitle').classList.toggle('quitTitle',!!quit);
- $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='endless'?'YOU GOT SWARMED!':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
+ $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='gold'?(won?'GOLD WAVES CLEARED!':(game.testMode?'GOLD TEST ENDED!':'GOLD RUN ENDED!')):game.mode==='endless'?'YOU GOT SWARMED!':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
  $('overSub').textContent=game.mode==='endless'?'':(won?'You pushed deep into the garden.':'');
- $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':'play';
+ $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.148 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.149 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4002,6 +4056,20 @@ function draw(now=performance.now()){
  // v17.8.59 — all arena bases above are cached; only these intentionally animated accents stay live.
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
+ if(game?.mode==='gold'){
+   const t=FRAME_NOW*.001;
+   X.save();X.globalCompositeOperation='screen';
+   for(let i=0;i<24;i++){
+     const x=(i*97+31+Math.sin(t*.7+i*1.9)*24)%W;
+     const raw=(i*139+47-FRAME_NOW*(.012+(i%4)*.002))%H,y=raw<0?raw+H:raw;
+     const tw=.20+.34*(.5+.5*Math.sin(t*2.2+i));
+     X.globalAlpha=tw;X.fillStyle=i%3===0?'#fff0a0':'#e9bd45';
+     X.beginPath();X.arc(x,y,1.2+(i%3)*.55,0,6.28);X.fill();
+   }
+   const sweep=(Math.sin(t*.55)*.5+.5)*W;
+   const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
+   X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
+ }
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
  if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
@@ -4307,7 +4375,7 @@ document.addEventListener('change',e=>{
 // silence old voices before restarting the normal title soundtrack.
 function enterHomeCleanly(){
  bossMusicStop();shopMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);
- showGameUI(false);stopTitleGardenLoop();screen('home');$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
+ showGameUI(false);stopTitleGardenLoop();screen('home');$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
  requestAnimationFrame(()=>{
   resizeTitleGarden();
   const w=titleGarden?.getBoundingClientRect().width||innerWidth;
@@ -4327,6 +4395,8 @@ document.addEventListener('click',e=>{
  if(a==='play')startRun();
   if(a==='goldContinue')goldContinue();
  if(a==='endless')startEndless();
+ if(a==='goldWaves')startGoldWaves(false);
+ if(a==='testGoldWaves')startGoldWaves(true);
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testEnding')previewFinalPurification(false)
  if(a==='testPurify')previewFinalPurification(true)
@@ -4550,12 +4620,12 @@ function paintHelpGameIcons(){
   q.fillStyle='#6c5d4d';q.beginPath();q.ellipse(0,8,7,15,0,0,Math.PI*2);q.fill();q.fillStyle='#3b3028';q.beginPath();q.arc(0,-8,7,0,Math.PI*2);q.fill();eye(-2.5,-9,1.7);eye(2.5,-9,1.7);ln(-2,-14,-7,-21,1.5);ln(2,-14,7,-21,1.5);ln(0,-15,0,-28,2,'#30251b');
  }
  q.restore()})}
-paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldUI();
+paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.148';
+const BB_BUILD_VERSION='18.0.149';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
