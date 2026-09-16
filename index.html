@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.183: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.184: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1144,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.183 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.184 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1157,7 +1157,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #finalPrep .choice .art{display:none!important}
 
 
-/* v18.0.183 GOLD WAVES ONLY */
+/* v18.0.184 GOLD WAVES ONLY */
 body.gold157 .hudWave{
  background:transparent!important;border:0!important;box-shadow:none!important;
  outline:0!important;filter:none!important;
@@ -1173,7 +1173,7 @@ body.gold157 #waveProgress,body.gold157 #boostBtn{display:none!important}
  to{filter:brightness(1.24);text-shadow:0 0 7px #fffbd5,0 0 14px #ffd13e,0 0 21px #b96c00,0 2px #4b2a02}
 }
 
-/* v18.0.183 GOLD WAVES ONLY */
+/* v18.0.184 GOLD WAVES ONLY */
 body.g159 .hudWave{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
 body.g159 .hudWave::before,body.g159 .hudWave::after{display:none!important}
 body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
@@ -1182,7 +1182,7 @@ body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
 body.g159 #waveProgress,body.g159 #boostBtn{display:none!important}
 @keyframes g159wave{to{filter:brightness(1.28);text-shadow:0 0 7px #fffbd1,0 0 15px #ffd23d,0 0 23px #a85e00,0 2px #4b2902}}
 
-/* v18.0.183 — Gold Waves boss health color only */
+/* v18.0.184 — Gold Waves boss health color only */
 body.g159 #bossBarFill,
 body.g159 #bossHealthFill,
 body.g159 .bossHpFill,
@@ -1196,7 +1196,7 @@ body.g159 #bossFill0,body.g159 #bossFill1{
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
 }
 
-/* v18.0.183 — GOLD WAVES boss HUD only */
+/* v18.0.184 — GOLD WAVES boss HUD only */
 body.g159 #bossFill0,body.g159 #bossFill1{
  background:linear-gradient(90deg,#9b6108 0%,#e3a91c 42%,#ffe16a 72%,#fff1a6 100%)!important;
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
@@ -1206,24 +1206,24 @@ body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
  padding:0!important;
 }
 
-/* v18.0.183 Gold Waves boss identity */
+/* v18.0.184 Gold Waves boss identity */
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.183 — Gold Waves fluid wave presentation only */
+/* v18.0.184 — Gold Waves fluid wave presentation only */
 body.g159 .hudWave,body.g159 #waveLabel,body.g159 #wave{
  transition:opacity .18s ease,transform .18s ease,filter .18s ease!important;
  will-change:opacity,transform;
 }
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.183 — Gold Waves environment */
+/* v18.0.184 — Gold Waves environment */
 body.g159 #game,body.g159 canvas{
  background:
    radial-gradient(ellipse at 50% 42%,rgba(255,225,105,.15) 0%,rgba(191,123,10,.08) 30%,transparent 57%),
    linear-gradient(145deg,#2a1a04 0%,#503006 31%,#7a4c08 54%,#3a2204 78%,#1d1203 100%)!important;
 }
 
-/* v18.0.183 — accessible temporary Gold tester */
+/* v18.0.184 — accessible temporary Gold tester */
 #goldWaveJumpWrap{
  position:fixed!important;
  left:18px!important;
@@ -1237,7 +1237,7 @@ body.g159 #game,body.g159 canvas{
 #goldWaveJumpWrap #goldTestWave{max-width:112px!important;font-size:12px!important}
 #goldWaveJumpWrap .goldWavesTestBtn{font-size:11px!important;padding:8px 10px!important;white-space:nowrap!important}
 
-/* v18.0.183 — Gold Waves boss reward screen */
+/* v18.0.184 — Gold Waves boss reward screen */
 body.g159 #upgrade .panel{
  background:
   radial-gradient(circle at 50% 0%,#fff0a82b 0 8%,transparent 30%),
@@ -1306,8 +1306,8 @@ body.g159 #upgrade .choice .upgradeMark{filter:sepia(1) saturate(1.7) brightness
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.183</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.183</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.184</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.184</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3109,6 +3109,7 @@ function upgradeIconSvg(id){
 function upgradeCardIconMarkup(u){
  const sword='<svg class="bbSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>';
  if(!u)return '';
+ if(u.id==='goldMove')return '';
  if(u.id==='clone'||u.id==='helperArmy'||u.id==='crit')return '';
  if(['sharp','speed','triple','endlessTriple'].includes(u.id))return sword;
  if(['heart','endlessHealth'].includes(u.id))return '<span class="bbIcon bbHeartIcon"></span>';
@@ -3117,7 +3118,14 @@ function upgradeCardIconMarkup(u){
 }
 function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${u.desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`}
 function paintUpgradeBuddyIcons(root,choices){
- [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;if(u.id==='clone'||u.id==='crit'){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,(game?.bugId||save.selected),34,false)}else if(u.id==='helperArmy'){mark.innerHTML='';const wrap=document.createElement('span');wrap.className='buddyArmyWrap';mark.appendChild(wrap);for(let n=0;n<3;n++){const c=document.createElement('canvas');c.width=40;c.height=40;wrap.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,(game?.bugId||save.selected),22,false)}}})
+ [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
+if(u.id==='goldMove'){
+ mark.innerHTML='';const c=document.createElement('canvas');c.width=72;c.height=72;c.className='buddyUpgradeIcon';mark.appendChild(c);
+ const q=c.getContext('2d');q.translate(36,36);
+ // Use BIG BUG's playable ladybug art with the golden cosmetic enabled just for this icon.
+ const oldGold=save.goldLadybugOn;save.goldLadybugOn=true;
+ try{drawPlayableBug(q,'ladybug',38,false)}finally{save.goldLadybugOn=oldGold}
+}else if(u.id==='clone'||u.id==='crit'){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,(game?.bugId||save.selected),34,false)}else if(u.id==='helperArmy'){mark.innerHTML='';const wrap=document.createElement('span');wrap.className='buddyArmyWrap';mark.appendChild(wrap);for(let n=0;n<3;n++){const c=document.createElement('canvas');c.width=40;c.height=40;wrap.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,(game?.bugId||save.selected),22,false)}}})
 }
 
 function openUpgrade(afterWave=false){
@@ -3140,10 +3148,11 @@ function openUpgrade(afterWave=false){
   {id:'sharp',name:'ATTACK',desc:'+15% attack damage',rarity:'common',apply:p=>{p.damage*=1.15}},
   {id:'speed',name:'ATTACK SPEED',desc:'+12% attack speed',rarity:'common',apply:p=>{p.rate=Math.max(70,p.rate/1.12)}},
   {id:'heart',name:'HEALTH',desc:'+20% max health',rarity:'common',apply:p=>{const add=p.maxHp*.20;p.maxHp+=add;p.hp=Math.min(p.maxHp,p.hp+add)}},
-  {id:'move',name:'MOVEMENT SPEED',desc:'+10% movement speed',rarity:'common',apply:p=>{p.speed*=1.10}}
+  {id:'goldMove',name:'MOVEMENT SPEED',desc:'+10% movement speed',rarity:'common',apply:p=>{p.speed*=1.10}}
  ];
  const picks=goldUp;
  $('choices').innerHTML=picks.map(u=>upgradeChoiceHtml(u)).join('');
+ paintUpgradeBuddyIcons($('choices'),picks);
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();picks[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound('common');updateHud();if(afterWave)beginWave(g.wave+1)});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
 }
@@ -3448,7 +3457,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.183 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.184 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4795,7 +4804,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.183';
+const BB_BUILD_VERSION='18.0.184';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
@@ -4827,7 +4836,7 @@ setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300
 </script>
 
 <script>
-/* BIG BUG v18.0.183 — isolated Gold Waves visual/combat correction */
+/* BIG BUG v18.0.184 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
@@ -5085,7 +5094,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 
 
 <script>
-/* v18.0.183 Gold HUD continuity — presentation only */
+/* v18.0.184 Gold HUD continuity — presentation only */
 (()=>{
  let lastWave='';
  function keepGoldHudFluid(){
@@ -5110,7 +5119,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.183 Gold-state containment */
+/* v18.0.184 Gold-state containment */
 (()=>{
  function clearGoldPresentation(){
    const gp=document.getElementById('game');
@@ -5123,7 +5132,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.183 — reliable isolated Gold Waves music */
+/* v18.0.184 — reliable isolated Gold Waves music */
 (()=>{
  let timer=null,step=0,active=false;
  const melody=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
@@ -5164,7 +5173,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.183 test-control visibility */
+/* v18.0.184 test-control visibility */
 (()=>{
  const box=document.getElementById('goldWaveJumpWrap');
  function syncGoldTester(){
