@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.200: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.201: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1144,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.200 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.201 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1157,7 +1157,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #finalPrep .choice .art{display:none!important}
 
 
-/* v18.0.200 GOLD WAVES ONLY */
+/* v18.0.201 GOLD WAVES ONLY */
 body.gold157 .hudWave{
  background:transparent!important;border:0!important;box-shadow:none!important;
  outline:0!important;filter:none!important;
@@ -1173,7 +1173,7 @@ body.gold157 #waveProgress,body.gold157 #boostBtn{display:none!important}
  to{filter:brightness(1.24);text-shadow:0 0 7px #fffbd5,0 0 14px #ffd13e,0 0 21px #b96c00,0 2px #4b2a02}
 }
 
-/* v18.0.200 GOLD WAVES ONLY */
+/* v18.0.201 GOLD WAVES ONLY */
 body.g159 .hudWave{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
 body.g159 .hudWave::before,body.g159 .hudWave::after{display:none!important}
 body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
@@ -1182,7 +1182,7 @@ body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
 body.g159 #waveProgress,body.g159 #boostBtn{display:none!important}
 @keyframes g159wave{to{filter:brightness(1.28);text-shadow:0 0 7px #fffbd1,0 0 15px #ffd23d,0 0 23px #a85e00,0 2px #4b2902}}
 
-/* v18.0.200 — Gold Waves boss health color only */
+/* v18.0.201 — Gold Waves boss health color only */
 body.g159 #bossBarFill,
 body.g159 #bossHealthFill,
 body.g159 .bossHpFill,
@@ -1196,7 +1196,7 @@ body.g159 #bossFill0,body.g159 #bossFill1{
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
 }
 
-/* v18.0.200 — GOLD WAVES boss HUD only */
+/* v18.0.201 — GOLD WAVES boss HUD only */
 body.g159 #bossFill0,body.g159 #bossFill1{
  background:linear-gradient(90deg,#9b6108 0%,#e3a91c 42%,#ffe16a 72%,#fff1a6 100%)!important;
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
@@ -1206,24 +1206,24 @@ body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
  padding:0!important;
 }
 
-/* v18.0.200 Gold Waves boss identity */
+/* v18.0.201 Gold Waves boss identity */
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.200 — Gold Waves fluid wave presentation only */
+/* v18.0.201 — Gold Waves fluid wave presentation only */
 body.g159 .hudWave,body.g159 #waveLabel,body.g159 #wave{
  transition:opacity .18s ease,transform .18s ease,filter .18s ease!important;
  will-change:opacity,transform;
 }
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.200 — Gold Waves environment */
+/* v18.0.201 — Gold Waves environment */
 body.g159 #game,body.g159 canvas{
  background:
    radial-gradient(ellipse at 50% 42%,rgba(255,225,105,.15) 0%,rgba(191,123,10,.08) 30%,transparent 57%),
    linear-gradient(145deg,#2a1a04 0%,#503006 31%,#7a4c08 54%,#3a2204 78%,#1d1203 100%)!important;
 }
 
-/* v18.0.200 — accessible temporary Gold tester */
+/* v18.0.201 — accessible temporary Gold tester */
 #goldWaveJumpWrap{
  position:fixed!important;
  left:18px!important;
@@ -1237,7 +1237,7 @@ body.g159 #game,body.g159 canvas{
 #goldWaveJumpWrap #goldTestWave{max-width:112px!important;font-size:12px!important}
 #goldWaveJumpWrap .goldWavesTestBtn{font-size:11px!important;padding:8px 10px!important;white-space:nowrap!important}
 
-/* v18.0.200 — Gold Waves boss reward screen */
+/* v18.0.201 — Gold Waves boss reward screen */
 body.g159 #upgrade .panel{
  background:
   radial-gradient(circle at 50% 0%,#fff0a82b 0 8%,transparent 30%),
@@ -1263,7 +1263,7 @@ body.g159 #upgrade .choice p{color:#5b4316!important;opacity:1!important}
 body.g159 #upgrade .choice .rarity{display:none!important}
 body.g159 #upgrade .choice .upgradeMark{filter:sepia(1) saturate(1.7) brightness(1.08)}
 
-/* v18.0.200 — transparent Gold Ladybug movement icon */
+/* v18.0.201 — transparent Gold Ladybug movement icon */
 body.g159 #upgrade .choice .buddyUpgradeIcon{
  background:transparent!important;
  border:0!important;
@@ -1271,7 +1271,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  filter:drop-shadow(0 2px 2px #5b3508aa)!important;
 }
 
-/* v18.0.200 — clean isolated true finale rebuilt from stable .188 */
+/* v18.0.201 — clean isolated true finale rebuilt from stable .188 */
 #bbFinale{position:fixed;inset:0;z-index:10050;overflow:hidden;background:transparent;pointer-events:auto}
 #bbFinale.hidden{display:none!important}
 #bbFinaleCanvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;background:transparent!important;touch-action:none!important;z-index:1!important}
@@ -1290,6 +1290,8 @@ body.bbFinaleHome.bbHomeBreak #home .btn,body.bbFinaleHome.bbHomeBreak #home but
 #bbFinale{position:fixed!important;left:0!important;top:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;margin:0!important;padding:0!important}
 #bbFinale.black{background:#000!important}
 #bbFinale.black #bbFinaleCanvas{position:absolute!important;inset:0!important;width:100vw!important;height:100dvh!important;background:#000!important}
+
+#goldFinaleTestBtn{pointer-events:auto!important;touch-action:manipulation!important;z-index:1000!important}
 </style>
 </head>
 <body>
@@ -1324,7 +1326,7 @@ body.bbFinaleHome.bbHomeBreak #home .btn,body.bbFinaleHome.bbHomeBreak #home but
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
   <button id="goldWavesBtn" class="btn dark homeLowerLift goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
-  <button id="goldWavesTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldWaves">TEMP GOLD WAVES TEST</button><button id="goldFinaleTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldFinale">TEST GOLD FINALE</button><div id="goldWaveJumpWrap"><select id="goldTestWave" style="font:inherit;font-weight:900;padding:7px;border-radius:10px;background:#3a2607;color:#ffe67a;border:2px solid #b77a13"><option value="1">WAVE 1</option><option value="2">WAVE 2</option><option value="3">WAVE 3</option><option value="4">WAVE 4</option><option value="5">WAVE 5</option><option value="6">WAVE 6</option><option value="7">WAVE 7</option><option value="8">WAVE 8</option><option value="9">WAVE 9</option><option value="10">WAVE 10</option><option value="11">WAVE 11</option><option value="12">WAVE 12</option><option value="13">WAVE 13</option><option value="14">WAVE 14</option><option value="15">WAVE 15</option><option value="16">WAVE 16</option><option value="17">WAVE 17</option><option value="18">WAVE 18</option><option value="19">WAVE 19</option><option value="20">WAVE 20</option><option value="21">WAVE 21</option><option value="22">WAVE 22</option><option value="23">WAVE 23</option><option value="24">WAVE 24</option><option value="25">WAVE 25</option><option value="26">WAVE 26</option><option value="27">WAVE 27</option><option value="28">WAVE 28</option><option value="29">WAVE 29</option><option value="30">WAVE 30</option><option value="31">WAVE 31</option><option value="32">WAVE 32</option><option value="33">WAVE 33</option><option value="34">WAVE 34</option><option value="35">WAVE 35</option><option value="36">WAVE 36</option><option value="37">WAVE 37</option><option value="38">WAVE 38</option><option value="39">WAVE 39</option><option value="40">WAVE 40</option><option value="41">WAVE 41</option><option value="42">WAVE 42</option><option value="43">WAVE 43</option><option value="44">WAVE 44</option><option value="45">WAVE 45</option><option value="46">WAVE 46</option><option value="47">WAVE 47</option><option value="48">WAVE 48</option><option value="49">WAVE 49</option><option value="50">WAVE 50</option></select><button class="btn dark small goldWavesTestBtn" data-action="testGoldWave">TEST WAVE</button></div>
+  <button id="goldWavesTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldWaves">TEMP GOLD WAVES TEST</button><button id="goldFinaleTestBtn" class="btn dark small goldWavesTestBtn" type="button" onclick="return window.__launchBBFinale(event)">TEST GOLD FINALE</button><div id="goldWaveJumpWrap"><select id="goldTestWave" style="font:inherit;font-weight:900;padding:7px;border-radius:10px;background:#3a2607;color:#ffe67a;border:2px solid #b77a13"><option value="1">WAVE 1</option><option value="2">WAVE 2</option><option value="3">WAVE 3</option><option value="4">WAVE 4</option><option value="5">WAVE 5</option><option value="6">WAVE 6</option><option value="7">WAVE 7</option><option value="8">WAVE 8</option><option value="9">WAVE 9</option><option value="10">WAVE 10</option><option value="11">WAVE 11</option><option value="12">WAVE 12</option><option value="13">WAVE 13</option><option value="14">WAVE 14</option><option value="15">WAVE 15</option><option value="16">WAVE 16</option><option value="17">WAVE 17</option><option value="18">WAVE 18</option><option value="19">WAVE 19</option><option value="20">WAVE 20</option><option value="21">WAVE 21</option><option value="22">WAVE 22</option><option value="23">WAVE 23</option><option value="24">WAVE 24</option><option value="25">WAVE 25</option><option value="26">WAVE 26</option><option value="27">WAVE 27</option><option value="28">WAVE 28</option><option value="29">WAVE 29</option><option value="30">WAVE 30</option><option value="31">WAVE 31</option><option value="32">WAVE 32</option><option value="33">WAVE 33</option><option value="34">WAVE 34</option><option value="35">WAVE 35</option><option value="36">WAVE 36</option><option value="37">WAVE 37</option><option value="38">WAVE 38</option><option value="39">WAVE 39</option><option value="40">WAVE 40</option><option value="41">WAVE 41</option><option value="42">WAVE 42</option><option value="43">WAVE 43</option><option value="44">WAVE 44</option><option value="45">WAVE 45</option><option value="46">WAVE 46</option><option value="47">WAVE 47</option><option value="48">WAVE 48</option><option value="49">WAVE 49</option><option value="50">WAVE 50</option></select><button class="btn dark small goldWavesTestBtn" data-action="testGoldWave">TEST WAVE</button></div>
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
@@ -1334,8 +1336,8 @@ body.bbFinaleHome.bbHomeBreak #home .btn,body.bbFinaleHome.bbHomeBreak #home but
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.200</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.200</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.201</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.201</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3490,7 +3492,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.200 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.201 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4608,7 +4610,6 @@ document.addEventListener('click',e=>{
  if(a==='endless')startEndless();
  if(a==='goldWaves')startGoldWaves(false);
  if(a==='testGoldWaves')startGoldWaves(true);
- if(a==='testGoldFinale')startBigBugFinale(null,true);
   if(a==='testGoldWave'){const w=Number($('goldTestWave')?.value)||1;startGoldWaves(true,w)}
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testEnding')previewFinalPurification(false)
@@ -4838,7 +4839,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.200';
+const BB_BUILD_VERSION='18.0.201';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
@@ -4870,7 +4871,7 @@ setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300
 </script>
 
 <script>
-/* BIG BUG v18.0.200 — isolated Gold Waves visual/combat correction */
+/* BIG BUG v18.0.201 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
@@ -5146,7 +5147,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 
 
 <script>
-/* v18.0.200 Gold HUD continuity — presentation only */
+/* v18.0.201 Gold HUD continuity — presentation only */
 (()=>{
  let lastWave='';
  function keepGoldHudFluid(){
@@ -5171,7 +5172,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.200 Gold-state containment */
+/* v18.0.201 Gold-state containment */
 (()=>{
  function clearGoldPresentation(){
    const gp=document.getElementById('game');
@@ -5184,7 +5185,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.200 — reliable isolated Gold Waves music */
+/* v18.0.201 — reliable isolated Gold Waves music */
 (()=>{
  let timer=null,step=0,active=false;
  const melody=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
@@ -5218,7 +5219,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.200 test-control visibility */
+/* v18.0.201 test-control visibility */
 (()=>{
  const box=document.getElementById('goldWaveJumpWrap');
  function syncGoldTester(){
@@ -5231,7 +5232,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 <script>
-/* v18.0.200 — dedicated ??? evolving alien/gold boss score */
+/* v18.0.201 — dedicated ??? evolving alien/gold boss score */
 (()=>{
  let tmr=null,step=0,active=false,lastBoss=false;
  const motif=[220,277,330,415,330,277,247,311,370,466,370,311,262,330,392,494];
@@ -5301,14 +5302,14 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
  requestAnimationFrame(watch);
 })();
 
-/* v18.0.200 — self-contained BIG BUG finale. No prototype finale code. */
+/* v18.0.201 — self-contained BIG BUG finale. No prototype finale code. */
 let BBF=null,BBFraf=0,BBFtimers=[];
 function bbfLater(fn,ms){const id=setTimeout(fn,ms);BBFtimers.push(id);return id}
 function bbfCanvas(){const c=$('bbFinaleCanvas');c.width=Math.max(1,innerWidth);c.height=Math.max(1,innerHeight);return c}
 function bbfStopTimers(){BBFtimers.forEach(clearTimeout);BBFtimers=[];if(BBFraf)cancelAnimationFrame(BBFraf);BBFraf=0}
 function bbfRestoreHome(){
  bbfStopTimers();BBF=null;document.body.classList.remove('bbFinaleHome','bbHomeBreak','g159');
- const o=$('bbFinale');if(o){o.className='hidden';o.setAttribute('aria-hidden','true')}
+ const o=$('bbFinale');if(o){o.className='hidden';o.removeAttribute('style');o.setAttribute('aria-hidden','true')}
  refreshEndlessHome();refreshGoldWavesHome();
 }
 function bbfDrawUnknown(ctx,x,y,t,intensity=0){
@@ -5332,8 +5333,10 @@ function bbfShowHome(){
  resizeTitleGarden();resetTitleScene(performance.now(),titleGarden?.getBoundingClientRect().width||innerWidth);startTitleGardenLoop();
 }
 function startBigBugFinale(deadBoss=null,test=false){
- if(BBF)return;initAudio();try{goldWavesMusicStop()}catch(e){};try{bossMusicStop()}catch(e){};titleMusicStop(false);shopMusicStop();endlessMusicStop();
- const o=$('bbFinale'),c=bbfCanvas(),q=c.getContext('2d');o.className='';o.setAttribute('aria-hidden','false');
+ if(BBF)bbfRestoreHome();
+ try{initAudio()}catch(e){}try{goldWavesMusicStop()}catch(e){}try{bossMusicStop()}catch(e){}try{titleMusicStop(false)}catch(e){}try{shopMusicStop()}catch(e){}try{endlessMusicStop()}catch(e){}
+ const o=document.getElementById('bbFinale'),c=document.getElementById('bbFinaleCanvas');if(!o||!c)return;
+ c.width=Math.max(1,innerWidth);c.height=Math.max(1,innerHeight);const q=c.getContext('2d');o.className='';o.style.display='block';o.style.visibility='visible';o.style.opacity='1';o.setAttribute('aria-hidden','false');
  const bx=deadBoss?.x??innerWidth*.5,by=deadBoss?.y??innerHeight*.30;BBF={stage:'glitch',bx,by,start:performance.now(),test};
  if(game){game.paused=true;if(deadBoss){deadBoss.dead=true;deadBoss.hp=0}}
  function glitch(now){
@@ -5364,7 +5367,7 @@ function startBigBugFightClean(){
  function hitPlayer(d){S.p.hp=Math.max(0,S.p.hp-d)}
  function frame(now){
   if(!BBF||BBF!==S||S.stage!=='fight')return;const dt=Math.min(.033,(now-S.last)/1000);S.last=now;if(c.width!==innerWidth||c.height!==innerHeight){c.width=innerWidth;c.height=innerHeight}
-  const P=S.p,B=S.boss;pct=B.hp/B.max;B.t+=dt;B.x=c.width*.5+Math.sin(B.t*1.35)*c.width*.27;B.y=c.height*.22+Math.sin(B.t*2.1)*24;
+  const P=S.p,B=S.boss,pct=B.hp/B.max;B.t+=dt;B.x=c.width*.5+Math.sin(B.t*1.35)*c.width*.27;B.y=c.height*.22+Math.sin(B.t*2.1)*24;
   // touch/keyboard movement
   const step=P.speed*dt;if(S.keys.ArrowLeft||S.keys.a)P.x-=step;if(S.keys.ArrowRight||S.keys.d)P.x+=step;if(S.keys.ArrowUp||S.keys.w)P.y-=step;if(S.keys.ArrowDown||S.keys.s)P.y+=step;
   const dx=P.targetX-P.x,dy=P.targetY-P.y,dd=Math.hypot(dx,dy);if(dd>3){const m=Math.min(dd,step);P.x+=dx/dd*m;P.y+=dy/dd*m}P.x=Math.max(22,Math.min(c.width-22,P.x));P.y=Math.max(100,Math.min(c.height-22,P.y));
@@ -5399,7 +5402,7 @@ function bbfPoint(e){if(BBF?.stage!=='fight')return;BBF.p.targetX=e.clientX;BBF.
 
 <div id="bbFinale" class="hidden" aria-hidden="true"><canvas id="bbFinaleCanvas"></canvas><div id="bbFinaleReveal">BIG BUG</div></div>
 <script>
-/* v18.0.200 — bind finale controls only AFTER the finale DOM exists. */
+/* v18.0.201 — bind finale controls only AFTER the finale DOM exists. */
 (function(){
   const canvas=document.getElementById('bbFinaleCanvas');
   if(canvas){
@@ -5418,6 +5421,34 @@ function bbfPoint(e){if(BBF?.stage!=='fight')return;BBF.p.targetX=e.clientX;BBF.
     },false);
   }
 })();
+</script>
+
+<script>
+/* v18.0.201 — direct finale launch path, independent of the normal action router. */
+window.__launchBBFinale=function(e){
+ if(e){e.preventDefault();e.stopPropagation();}
+ const o=document.getElementById('bbFinale'),c=document.getElementById('bbFinaleCanvas');
+ if(!o||!c)return false;
+ o.className='';o.style.display='block';o.style.visibility='visible';o.style.opacity='1';
+ o.style.position='fixed';o.style.inset='0';o.style.zIndex='10050';o.style.pointerEvents='auto';
+ c.width=Math.max(1,innerWidth);c.height=Math.max(1,innerHeight);
+ const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);
+ requestAnimationFrame(function(){
+   try{startBigBugFinale(null,true)}
+   catch(err){
+     try{
+       BBF={stage:'black'};o.className='black';o.style.background='#000';
+       q.fillStyle='#000';q.fillRect(0,0,c.width,c.height);
+       setTimeout(function(){try{startBigBugFightClean()}catch(e){}},300);
+     }catch(e){}
+   }
+ });
+ return false;
+};
+document.addEventListener('pointerup',function(e){
+ const b=e.target&&e.target.closest?e.target.closest('#goldFinaleTestBtn'):null;
+ if(b)window.__launchBBFinale(e);
+},true);
 </script>
 </body>
 </html>
