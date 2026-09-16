@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.162: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.163: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1144,7 +1144,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v18.0.162 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v18.0.163 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1157,7 +1157,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #finalPrep .choice .art{display:none!important}
 
 
-/* v18.0.162 GOLD WAVES ONLY */
+/* v18.0.163 GOLD WAVES ONLY */
 body.gold157 .hudWave{
  background:transparent!important;border:0!important;box-shadow:none!important;
  outline:0!important;filter:none!important;
@@ -1173,7 +1173,7 @@ body.gold157 #waveProgress,body.gold157 #boostBtn{display:none!important}
  to{filter:brightness(1.24);text-shadow:0 0 7px #fffbd5,0 0 14px #ffd13e,0 0 21px #b96c00,0 2px #4b2a02}
 }
 
-/* v18.0.162 GOLD WAVES ONLY */
+/* v18.0.163 GOLD WAVES ONLY */
 body.g159 .hudWave{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
 body.g159 .hudWave::before,body.g159 .hudWave::after{display:none!important}
 body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
@@ -1182,7 +1182,7 @@ body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
 body.g159 #waveProgress,body.g159 #boostBtn{display:none!important}
 @keyframes g159wave{to{filter:brightness(1.28);text-shadow:0 0 7px #fffbd1,0 0 15px #ffd23d,0 0 23px #a85e00,0 2px #4b2902}}
 
-/* v18.0.162 — Gold Waves boss health color only */
+/* v18.0.163 — Gold Waves boss health color only */
 body.g159 #bossBarFill,
 body.g159 #bossHealthFill,
 body.g159 .bossHpFill,
@@ -1196,7 +1196,7 @@ body.g159 #bossFill0,body.g159 #bossFill1{
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
 }
 
-/* v18.0.162 — GOLD WAVES boss HUD only */
+/* v18.0.163 — GOLD WAVES boss HUD only */
 body.g159 #bossFill0,body.g159 #bossFill1{
  background:linear-gradient(90deg,#9b6108 0%,#e3a91c 42%,#ffe16a 72%,#fff1a6 100%)!important;
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
@@ -1205,6 +1205,9 @@ body.g159 #bossFill0,body.g159 #bossFill1{
 body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
  padding:0!important;
 }
+
+/* v18.0.163 Gold Waves boss identity */
+body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 </style>
 </head>
 <body>
@@ -1249,8 +1252,8 @@ body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.162</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.162</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.163</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.163</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3378,7 +3381,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.162 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
+ // v18.0.163 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
  // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music)setTimeout(()=>{if(!game||!game.over)return;hardStopAllAudioVoices(.012);titleMusicStop(false);titleMusicStart()},55);
 }
@@ -4249,7 +4252,16 @@ function draw(now=performance.now()){
      if(f.ex!=null){X.beginPath();X.arc(f.x+(f.ex-f.x)*q,f.y+(f.ey-f.y)*q,f.r,0,6.28);X.fill()}
      X.globalAlpha=1;continue}
    X.globalAlpha=Math.max(0,Math.min(1,f.life));
-   if(f.sting){X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30');X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent'}
+   if(f.sting){
+     if(f.goldShot){
+       // Gold Waves crystal/shard projectile: angular, luminous, never the normal red dot.
+       X.save();X.translate(f.x,f.y);X.rotate(Math.atan2(f.vy||0,f.vx||1)+Math.PI/2);
+       X.fillStyle='#ffd84a';X.strokeStyle='#fff0a0';X.lineWidth=1.2;X.shadowColor='#ffbd24';X.shadowBlur=8;
+       X.beginPath();X.moveTo(0,-f.r*1.65);X.lineTo(f.r*.78,0);X.lineTo(0,f.r*1.65);X.lineTo(-f.r*.78,0);X.closePath();X.fill();X.stroke();X.restore();
+     }else{
+       X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30');X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent';
+     }
+   }
    else if(f.shot){X.fillStyle=f.helper?'#c9f4ff':'#fff3a6';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
@@ -4713,7 +4725,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='18.0.162';
+const BB_BUILD_VERSION='18.0.163';
 let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
 function bbCanApplyUpdate(){
   if(document.hidden)return false;
@@ -4745,7 +4757,7 @@ setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300
 </script>
 
 <script>
-/* BIG BUG v18.0.162 — isolated Gold Waves visual/combat correction */
+/* BIG BUG v18.0.163 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
@@ -4766,54 +4778,75 @@ function tick(e,dt){
  else{e._gg=.75;fire(e,a-.18,210,d);fire(e,a+.18,210,d);e._gc=2.1}
 }
 function goldTint(e){
- // Tint the EXISTING rendered bug itself gold, preserving its exact BIG BUG shape/animation.
+ // No rectangle/composite recolor here. The original enemy is rendered through
+ // a gold canvas filter in the draw wrapper below, so only the bug pixels change.
  if(!G()||!e||e.dead||e.boss)return;
- const r=e.r||14;X.save();
- // Recolor the complete bug footprint gold while preserving the original BIG BUG drawing.
- X.globalCompositeOperation='color';X.globalAlpha=.98;X.fillStyle='#d9a21b';
- X.fillRect(e.x-r*3.2,e.y-r*3.2,r*6.4,r*6.4);
- X.globalCompositeOperation='screen';X.globalAlpha=.13;X.fillStyle='#ffe882';
- X.fillRect(e.x-r*3.2,e.y-r*3.2,r*6.4,r*6.4);X.restore();
- // Tiny shell glint only; no armor and no circles.
- X.save();X.fillStyle='#fff6bd';X.globalAlpha=.78;X.beginPath();X.ellipse(e.x-r*.22,e.y-r*.26,Math.max(1.3,r*.10),Math.max(1,r*.045),-.45,0,TAU);X.fill();
- if(e._tell>0){X.strokeStyle='#fff0a0';X.lineWidth=2;X.setLineDash([5,5]);X.beginPath();X.moveTo(e.x,e.y);X.lineTo(e.x+(e._vx||0)*.25,e.y+(e._vy||-220)*.25);X.stroke();X.setLineDash([])}
- if(e._gg>0){X.strokeStyle='#ffe17a';X.lineWidth=4;X.beginPath();X.moveTo(e.x-r*.7,e.y-r*.82);X.lineTo(e.x+r*.7,e.y-r*.82);X.stroke()}X.restore();
+ const r=e.r||14;
+ X.save();
+ // Small Golden-Ladybug-style glint only.
+ X.fillStyle='#fff2a1';X.globalAlpha=.70;
+ X.beginPath();X.ellipse(e.x-r*.22,e.y-r*.28,Math.max(1.2,r*.09),Math.max(.8,r*.04),-.45,0,TAU);X.fill();
+ // Attack tells remain simple and readable.
+ if(e._tell>0){
+   X.strokeStyle='#ffe77a';X.lineWidth=2;X.setLineDash([5,5]);
+   X.beginPath();X.moveTo(e.x,e.y);X.lineTo(e.x,e.y-58);X.stroke();X.setLineDash([]);
+ }
+ if(e._gg>0){
+   X.strokeStyle='#ffe77a';X.lineWidth=3;
+   X.beginPath();X.moveTo(e.x-r*.65,e.y-r*.82);X.lineTo(e.x+r*.65,e.y-r*.82);X.stroke();
+ }
+ X.restore();
 }
 function bossTick(e,dt){
  if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
  const p=game.p;if(!p)return;
- if(!e._g162Init){
-   e._g162Init=true;e.goldBossName='GOLD ???';e.name='GOLD ???';e.kind='goldUnknown';
-   e.maxHp=520;e.hp=520;e.damage=12;e.speed=0;e.vx=0;e.vy=0;
-   e._orbit=0;e._bc=.8;e._phase=0;e._hunt=0;e._dash=0;
+ if(!e._g163Init){
+   e._g163Init=true;e.goldBossName='???';e.name='???';e.kind='goldUnknown';
+   e.maxHp=900;e.hp=900;e.damage=18;e.speed=0;e.vx=0;e.vy=0;
+   e._orbit=0;e._bc=.48;e._phase=0;e._hunt=0;e._dash=0;
  }
- e.goldBossName='GOLD ???';e.name='GOLD ???';e.kind='goldUnknown';
- e._orbit+=dt*.62;e._bc-=dt;
+ e.goldBossName='???';e.name='???';e.kind='goldUnknown';
+ e._orbit+=dt*1.35;e._bc-=dt;
+
+ // Very fast tracking burst: roughly 5x the old 54px/s drift speed.
  if(e._hunt>0){
    e._hunt-=dt;const x=p.x-e.x,y=p.y-e.y,d=Math.hypot(x,y)||1;
-   e.x+=x/d*188*dt;e.y+=y/d*188*dt;
-   if(e._hunt<=0)e._bc=.9;return;
+   e.x+=x/d*410*dt;e.y+=y/d*410*dt;
+   if(e._hunt<=0)e._bc=.42;return;
  }
  if(e._dash>0){e._dash-=dt;e.x+=e._dvx*dt;e.y+=e._dvy*dt;return}
+
+ // Normal alien movement is ~270px/s, 5x the previous 54px/s drift.
  if(e._bc>0){
-   // Unique slow alien drift around the player.
-   const tx=p.x+Math.cos(e._orbit)*155,ty=p.y+Math.sin(e._orbit*.79)*112;
+   const tx=p.x+Math.cos(e._orbit)*170,ty=p.y+Math.sin(e._orbit*.81)*125;
    const x=tx-e.x,y=ty-e.y,d=Math.hypot(x,y)||1;
-   e.x+=x/d*54*dt;e.y+=y/d*54*dt;return;
+   e.x+=x/d*270*dt;e.y+=y/d*270*dt;return;
  }
- const a=Math.atan2(p.y-e.y,p.x-e.x),dam=11;
- e._phase=(e._phase+1)%4;
- if(e._phase===0){e._hunt=.72;e._bc=2.25}
- else if(e._phase===1){
-   // Four-shot split with a dodgeable center lane.
-   for(const o of [-.55,-.28,.28,.55])fire(e,a+o,198,dam,4.8);e._bc=1.85;
+
+ const aim=Math.atan2(p.y-e.y,p.x-e.x),dam=16;
+ e._phase=(e._phase+1)%5;
+
+ if(e._phase===0){
+   // Aggressive lock-on chase.
+   e._hunt=.52;e._bc=1.05;
+ }else if(e._phase===1){
+   // GOLD SHARDS: fast four-way fan with a narrow dodge lane.
+   for(const o of [-.48,-.19,.19,.48])fire(e,aim+o,285,dam,5.2);
+   e._bc=.82;
  }else if(e._phase===2){
-   // Six crystal directions rotate each cycle.
-   e._bs=(e._bs||0)+.47;for(let i=0;i<6;i++)fire(e,e._bs+i*TAU/6,162,dam*.82,4.5);e._bc=2.1;
- }else{
-   // Telegraph-free reposition then committed straight lunge.
+   // SOLAR BLOOM: rotating eight-shard burst.
+   e._bs=(e._bs||0)+.63;
+   for(let i=0;i<8;i++)fire(e,e._bs+i*TAU/8,225,dam*.78,4.8);
+   e._bc=.95;
+ }else if(e._phase===3){
+   // COMET LUNGE: extremely quick committed dash; dodge perpendicular.
    const x=p.x-e.x,y=p.y-e.y,d=Math.hypot(x,y)||1;
-   e._dvx=x/d*285;e._dvy=y/d*285;e._dash=.30;e._bc=2.35;
+   e._dvx=x/d*720;e._dvy=y/d*720;e._dash=.26;e._bc=1.0;
+ }else{
+   // CROSS CUT: two crossing gold spreads, deliberately not a normal enemy shot.
+   for(const o of [-.62,-.31,.31,.62])fire(e,aim+o,330,dam*.9,4.4);
+   for(const o of [-1.57,1.57])fire(e,aim+o,250,dam*.8,4.4);
+   e._bc=.9;
  }
 }
 function bossDraw(e){
@@ -4864,8 +4897,19 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  return out;
 };
 const D=window.drawEnemy;if(typeof D==='function')window.drawEnemy=function(e){
- if(G()&&e&&e.boss&&e.goldBossKey==='gildedSentinel'){e.goldBossName='GOLD ???';e.name='GOLD ???';bossDraw(e);return}
- const o=D.apply(this,arguments);if(G()&&e&&!e.boss)goldTint(e);return o
+ if(G()&&e&&e.boss&&e.goldBossKey==='gildedSentinel'){
+   e.goldBossName='???';e.name='???';bossDraw(e);return;
+ }
+ if(G()&&e&&!e.boss){
+   X.save();
+   // True golden version of the existing bug: recolor only pixels D actually paints.
+   X.filter='sepia(1) saturate(7) hue-rotate(355deg) brightness(1.28) contrast(1.05)';
+   const o=D.apply(this,arguments);
+   X.restore();
+   goldTint(e);
+   return o;
+ }
+ return D.apply(this,arguments);
 };
 const S=window.show;if(typeof S==='function')window.show=function(){const o=S.apply(this,arguments);sync();return o};
 })();
