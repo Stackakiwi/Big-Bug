@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.37 SIMPLE FINAL BOSS: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.38 SIMPLE FINAL BOSS: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1317,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.37</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.37</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.38</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.38</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2102,6 +2102,19 @@ function bossMusicStart(){
  const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
  bossMusicTimer=setTimeout(tick,380);
 }
+// v19.0.38 — short, self-contained reveal sting for ??? -> BIG BIG.
+// It briefly owns the music channel, then hands control back to the normal boss theme.
+function bigBigRevealSting(){
+ if(!audio||save.settings.music===false)return;
+ bossMusicStop();
+ const live=()=>!!(game&&game.mode==='gold'&&game.wave===50&&game.goldFinale&&game.boss&&!game.boss.dead&&game.boss.goldPhase===2);
+ beep(82,.52,.026,'sawtooth','music');
+ setTimeout(()=>{if(live())beep(123,.30,.021,'triangle','music')},210);
+ setTimeout(()=>{if(live()){beep(164,.28,.021,'sawtooth','music');beep(82,.34,.013,'sine','music')}},455);
+ setTimeout(()=>{if(live())beep(220,.30,.024,'triangle','music')},690);
+ setTimeout(()=>{if(live()){beep(65,.34,.040,'square','music');beep(330,.26,.025,'triangle','music')}},930);
+ setTimeout(()=>{if(live())bossMusicStart()},1380);
+}
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
 
 function buildBugScreen(){
@@ -2174,7 +2187,7 @@ function startGoldWaves(testMode=false,startWave=1){
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
  game={p,bugId:'golden',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'gold',
-       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldCorruptionStart:0};
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldCorruptionStart:0,goldFinaleRevealStart:0};
  beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);titleMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 const GOLD_BOSSES=[
@@ -2299,7 +2312,7 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.37 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
+// v19.0.38 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  try{
@@ -2308,7 +2321,7 @@ function bb22Trace(msg){
   console.log('[BB22]',line);
   let el=document.getElementById('bb22Trace');
   if(!el){el=document.createElement('div');el.id='bb22Trace';el.style.cssText='position:fixed;left:6px;right:6px;bottom:6px;z-index:20000;background:rgba(0,0,0,.88);color:#fff;font:700 11px/1.25 monospace;padding:7px;border:2px solid #ffe15b;border-radius:5px;white-space:pre-wrap;pointer-events:none;max-height:38vh;overflow:hidden';document.body.appendChild(el)}
-  el.textContent='v19.0.37 W50 TRACE\n'+BB22TRACE.join('\n');
+  el.textContent='v19.0.38 W50 TRACE\n'+BB22TRACE.join('\n');
  }catch(err){console.error('[BB22 trace error]',err)}
 }
 // v19.0.30 — Wave 50 finale fix: this helper must live in the main script scope.
@@ -2334,11 +2347,11 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.37 — there is no separate internal Wave 51 anymore.
+   // v19.0.38 — there is no separate internal Wave 51 anymore.
    // Wave 50 owns both phases of the same live boss object. If any legacy path asks for
    // Wave 51, keep the run on Wave 50 rather than spawning/replacing the boss.
    if(w===51){w=50;bb22Trace('LEGACY beginWave(51) redirected to Wave 50');}
-   g.goldFinale=false;g.goldCorruptionStart=0;
+   g.goldFinale=false;g.goldCorruptionStart=0;g.goldFinaleRevealStart=0;
    const bossWave=w%5===0;
    g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
    $('bossbar').style.display='none';
@@ -2392,12 +2405,12 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.37 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
+   // v19.0.38 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
    // damageEnemy() promotes that same object in place. When phase 2 finally dies, Wave 50 ends the run.
    if(g.wave===50){
      if(g.goldFinale){
        bb22Trace('W50 PHASE 2 COMPLETE -> GOLD VICTORY');
-       g.goldFinale=false;g.goldFinaleRevealUntil=0;
+       g.goldFinale=false;g.goldFinaleRevealUntil=0;g.goldFinaleRevealStart=0;
        setTimeout(()=>{if(game===g&&!g.over)finish(true)},500);return;
      }
      // Defensive fallback only: if an external/test path somehow clears phase 1 without a lethal hit,
@@ -2518,7 +2531,7 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave===50&&e&&e.goldBossKey==='goldUnknownBoss';
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' phase='+(e.goldPhase||1)+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey);
- // v19.0.37 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
+ // v19.0.38 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
  // The lethal hit on ??? now promotes that SAME live entity into BIG BIG before it can be
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
@@ -2526,15 +2539,17 @@ function damageEnemy(e,d,source='player'){
    const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=Math.round(760*Math.pow(1.245,tier-1));
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
-   g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealUntil=g.time+1.65;
-   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='BIG BIG';e.name='BIG BIG';e.goldElite=true;e.boss=true;
+   g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+1.65;
+   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;
    e._goldTier=tier;e.maxHp=fullHp;e.max=fullHp;e.hp=fullHp;e.damage=14+tier*3.4;e.speed=0;
    e.x=W/2;e.y=Math.max(145,H*.24);e.enterX=e.x;e.enterY=e.y;e.state='chase';e.stateT=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
    e.invuln=1.65;e._dash=0;e._hunt=0;e._bc=.18;e._goldCycle=0;
    g.boss=e;g.bosses=[e];
    updateHud();configureBossHud(50);updateBossHud();
    try{dropQuestionName()}catch(_){ }
-   flashBanner('BIG BIG',1.55);
+   bigBigRevealSting();
+   // Let the player see ??? destabilize before the final name lands.
+   setTimeout(()=>{if(game===g&&g.goldFinale&&e&&!e.dead&&e.goldPhase===2)flashBanner('BIG BIG',1.35)},900);
    bb22Trace('SAME-BOSS PHASE 2 BIG BIG hp='+e.hp+'/'+e.max+' enemies='+g.enemies.length+' wave='+g.wave);
    return;
  }
@@ -3712,23 +3727,37 @@ function drawMedievalEnemyOverlay(ctx,e){
  ctx.restore();
 }
 function drawGoldUnknownBossCore(e){
- // v19.0.37 — direct core-canvas renderer. No window wrapper or later script binding.
+ // v19.0.38 — one proven renderer for both phases, with a brief reveal-only glitch layer.
  if(!e||e.dead)return;
  const r=(Number.isFinite(e.r)&&e.r>7)?e.r:32,t=FRAME_NOW*.001,tau=Math.PI*2;
  const tier=e._goldTier||Math.max(1,Math.floor((game?.wave||5)/5));
- X.save();X.translate(e.x,e.y);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6));
+ const revealStart=(game?.goldFinaleRevealStart||0),revealAge=(e.goldPhase===2&&revealStart)?Math.max(0,game.time-revealStart):99;
+ const revealing=e.goldPhase===2&&revealAge<1.65;
+ // Keep the familiar ??? look for the first beat, then rapidly flicker between old/new before locking to BIG BIG.
+ const flickerBand=revealing&&revealAge>=.48&&revealAge<1.02;
+ const finalLook=e.goldPhase===2&&(!revealing||revealAge>=1.02||(flickerBand&&((Math.floor(revealAge*22)&1)===0)));
+ const glitchPower=revealing?Math.max(0,1-Math.abs(revealAge-.70)/.62):0;
+ const jx=glitchPower*Math.sin(revealAge*91)*5.2,jy=glitchPower*Math.cos(revealAge*73)*3.1;
+ X.save();X.translate(e.x+jx,e.y+jy);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6)+(revealing?Math.sin(revealAge*65)*.018*glitchPower:0));
  X.fillStyle='#241703';X.beginPath();X.ellipse(0,0,r*1.28,r*1.18,0,0,tau);X.fill();
  X.strokeStyle='#b97b08';X.lineWidth=Math.max(5,r*.12);X.lineCap='round';
  for(let i=0;i<6;i++){const a=i*tau/6+.16*Math.sin(t*3+i),bend=.28*Math.sin(t*4+i);X.beginPath();X.moveTo(Math.cos(a)*r*.48,Math.sin(a)*r*.44);X.quadraticCurveTo(Math.cos(a+bend)*r*1.02,Math.sin(a+bend)*r*.94,Math.cos(a)*r*1.48,Math.sin(a)*r*1.30);X.stroke()}
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
  for(let i=0;i<10;i++){const a=-Math.PI/2+i*tau/10,z=i%2?r*.73:r*.98;i?X.lineTo(Math.cos(a)*z,Math.sin(a)*z):X.moveTo(Math.cos(a)*z,Math.sin(a)*z)}X.closePath();X.fill();X.stroke();
- {const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle=e.goldPhase===2?'#8f5f0b':'#211505';X.strokeStyle=e.goldPhase===2?'#ffd85a':'#332005';X.lineWidth=e.goldPhase===2?Math.max(3,r*.08):1;X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,tau);X.fill();if(e.goldPhase===2)X.stroke();if(e.goldPhase===2){X.globalAlpha=.72;X.fillStyle='#d99c16';X.beginPath();X.ellipse(0,r*.19,r*.30,r*.16,0,0,tau);X.fill();X.globalAlpha=1;}X.restore();}
+ {const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle=finalLook?'#8f5f0b':'#211505';X.strokeStyle=finalLook?'#ffd85a':'#332005';X.lineWidth=finalLook?Math.max(3,r*.08):1;X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,tau);X.fill();if(finalLook)X.stroke();if(finalLook){X.globalAlpha=.72;X.fillStyle='#d99c16';X.beginPath();X.ellipse(0,r*.19,r*.30,r*.16,0,0,tau);X.fill();X.globalAlpha=1;}X.restore();}
  for(let i=0;i<3;i++){const P=[[0,-.38],[-.24,-.07],[.24,-.07]][i],blink=.82+.18*Math.sin(t*4+i);X.fillStyle='#fff0a0';X.beginPath();X.ellipse(r*P[0],r*P[1],Math.max(3,r*.11),Math.max(2,r*.11*blink),0,0,tau);X.fill();X.fillStyle='#7a3e00';X.beginPath();X.arc(r*P[0],r*P[1],Math.max(1.3,r*.035),0,tau);X.fill()}
  const bob=Math.sin(t*3)*r*.04;X.fillStyle='#ffd447';X.beginPath();X.moveTo(0,-r*1.42+bob);X.lineTo(r*.24,-r*.82);X.lineTo(0,-r*.62);X.lineTo(-r*.24,-r*.82);X.closePath();X.fill();
  for(const side of [-1,1])for(let j=0;j<2;j++){const x=side*r*(1.06+j*.28),y=r*(-.42+j*.64)+Math.sin(t*2.6+j+side)*r*.08;X.beginPath();X.moveTo(x,y-r*.16);X.lineTo(x+r*.09,y);X.lineTo(x,y+r*.16);X.lineTo(x-r*.09,y);X.closePath();X.fill()}
  X.globalAlpha=.9;X.strokeStyle='#ffd84a';X.lineWidth=2;const spikes=Math.min(3+tier,12);
  for(let i=0;i<spikes;i++){const a=i*tau/spikes+t*.12,rr=r*(1.38+.035*tier);X.beginPath();X.moveTo(Math.cos(a)*r*1.12,Math.sin(a)*r*1.05);X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);X.stroke()}
  if(tier>=3){X.fillStyle='#fff0a0';const motes=Math.min(tier-1,8);for(let i=0;i<motes;i++){const a=t*(.7+.03*tier)+i*tau/motes,rr=r*(1.58+.03*Math.sin(t*2+i));X.beginPath();X.arc(Math.cos(a)*rr,Math.sin(a)*rr,2.2+(tier>=7?1:0),0,tau);X.fill()}}
+ if(revealing){
+   // Hand-drawn-looking glitch streaks: brief, sharp, and local to the boss rather than a full-screen effect.
+   const g=Math.max(0,Math.min(1,glitchPower));X.save();X.globalCompositeOperation='source-over';X.globalAlpha=.18+.42*g;
+   for(let i=0;i<4;i++){const yy=(-.72+i*.46)*r+Math.sin(revealAge*77+i*9)*r*.07,off=Math.sin(revealAge*103+i*5)*r*.34;X.fillStyle=i%2?'#fff0a0':'#b97b08';X.fillRect(-r*.78+off,yy,r*(1.10+.18*(i%2)),Math.max(2,r*.045));}
+   if(revealAge>.88&&revealAge<1.13){const flash=1-Math.abs(revealAge-1.005)/.125;X.globalAlpha=Math.max(0,flash)*.45;X.fillStyle='#fff4bd';X.beginPath();X.arc(0,0,r*(1.12+flash*.22),0,tau);X.fill();}
+   X.restore();
+ }
  X.restore();
 }
 function drawEnemy(e){
@@ -4465,7 +4494,7 @@ function draw(now=performance.now()){
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
  }
- // v19.0.37 — no duplicate Gold boss render pass; the normal enemy loop owns the single renderer.
+ // v19.0.38 — no duplicate Gold boss render pass; the normal enemy loop owns the single renderer.
  const p=game.p;
  // lively player: eases toward the enemy being attacked and gently bobs at idle
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
@@ -5052,7 +5081,8 @@ function bossTick(e,dt){
      // v19.0.30 — keep BIG BIG visibly on-field for the entire reveal. Its Gold AI must
      // not spend the reveal window chasing/dashing offscreen before the player can see it.
      e.x=W/2;e.y=Math.max(145,H*.24);e.vx=0;e.vy=0;e._dash=0;e._hunt=0;
-     e.goldBossName='BIG BIG';e.name='BIG BIG';
+     const revealAge=Math.max(0,game.time-(game.goldFinaleRevealStart||game.time));
+     e.goldBossName=revealAge<.92?'???':'BIG BIG';e.name=e.goldBossName;
      return;
    }
    game.goldFinaleRevealUntil=0;
@@ -5129,7 +5159,7 @@ function bossDraw(e){
  // Alien gold shell.
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
  for(let i=0;i<10;i++){const a=-Math.PI/2+i*TAU/10,z=i%2?r*.73:r*.98;i?X.lineTo(Math.cos(a)*z,Math.sin(a)*z):X.moveTo(Math.cos(a)*z,Math.sin(a)*z)}X.closePath();X.fill();X.stroke();
- // v19.0.37 — keep the proven visible central body in BOTH phases. BIG BIG reveals a brighter core instead of deleting the body geometry.
+ // v19.0.38 — keep the proven visible central body in BOTH phases. BIG BIG reveals a brighter core instead of deleting the body geometry.
  {const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle=e.goldPhase===2?'#8f5f0b':'#211505';X.strokeStyle=e.goldPhase===2?'#ffd85a':'#332005';X.lineWidth=e.goldPhase===2?Math.max(3,r*.08):1;X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();if(e.goldPhase===2)X.stroke();if(e.goldPhase===2){X.globalAlpha=.72;X.fillStyle='#d99c16';X.beginPath();X.ellipse(0,r*.19,r*.30,r*.16,0,0,TAU);X.fill();X.globalAlpha=1;}X.restore();}
  // Three animated eyes.
  for(let i=0;i<3;i++){const P=[[0,-.38],[-.24,-.07],[.24,-.07]][i],blink=.82+.18*Math.sin(t*4+i);X.fillStyle='#fff0a0';X.beginPath();X.ellipse(r*P[0],r*P[1],Math.max(3,r*.11),Math.max(2,r*.11*blink),0,0,TAU);X.fill();X.fillStyle='#7a3e00';X.beginPath();X.arc(r*P[0],r*P[1],Math.max(1.3,r*.035),0,TAU);X.fill()}
@@ -5149,7 +5179,8 @@ window.__bbGoldBossDraw=bossDraw;
 function syncGoldBossName(){
  if(!G())return;
  const b=(game.bosses||[]).find(q=>q&&!q.dead&&q.goldBossKey==='goldUnknownBoss');
- const label=b?.goldPhase===2?'BIG BIG':'???';
+ const revealAge=(game?.goldFinaleRevealStart&&b?.goldPhase===2)?Math.max(0,game.time-game.goldFinaleRevealStart):99;
+ const label=b?.goldPhase===2&&revealAge>=.92?'BIG BIG':'???';
  const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
  for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.textContent=label;n.style.color='#ffe15b';n.style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}}
  const nodes=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
@@ -5184,11 +5215,11 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    }
  }
  let bossState=null;
- const preserveFinalBoss=false; // v19.0.37: no separate identity path; one Gold boss identity for every phase.
+ const preserveFinalBoss=false; // v19.0.38: no separate identity path; one Gold boss identity for every phase.
  if(alien){
    if(game.wave>=50&&!alien.__bb22MaskSeen){alien.__bb22MaskSeen=true;bb22Trace('WRAPPER MASK wave='+game.wave+' hp='+alien.hp+' boss='+alien.boss+' key='+alien.goldBossKey)}
    bossState=[alien.boss,alien.kind];
-   // v19.0.37 — only mask the generic Story boss flag while inherited core AI runs.
+   // v19.0.38 — only mask the generic Story boss flag while inherited core AI runs.
    // The Gold boss key NEVER changes mid-frame anymore.
    alien.boss=false;alien.kind='goldUnknown';
  }
@@ -5207,7 +5238,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    if(bossState){alien.boss=bossState[0];alien.kind='goldUnknown'}
    if(!alien.dead)bossTick(alien,dt);
    if(alien.goldPhase===2&&!alien.dead){
-     // v19.0.37 — finale geometry is authoritative after every core update. A transient
+     // v19.0.38 — finale geometry is authoritative after every core update. A transient
      // wrapper/AI value can no longer leave the live boss invisible or outside the arena.
      if(!Number.isFinite(alien.r)||alien.r<8)alien.r=32;
      if(!Number.isFinite(alien.x))alien.x=W/2;if(!Number.isFinite(alien.y))alien.y=Math.max(145,H*.24);
@@ -5250,7 +5281,7 @@ function drawGoldAlien(e){
  
  X.restore();
 }
-// v19.0.37 — no window.drawEnemy override. The core lexical renderer is authoritative for ??? / BIG BIG; regular Gold aliens keep their normal core path.
+// v19.0.38 — no window.drawEnemy override. The core lexical renderer is authoritative for ??? / BIG BIG; regular Gold aliens keep their normal core path.
 const S=window.show;if(typeof S==='function')window.show=function(){const o=S.apply(this,arguments);sync();return o};
 })();
 </script>
