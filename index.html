@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.43 REVEAL POLISH: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.44 TESTING: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1319,8 +1319,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.43</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.43</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.44</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.44</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2634,7 +2634,7 @@ function damageEnemy(e,d,source='player'){
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
    bb22Trace('W50 LETHAL PROMOTION ACCEPTED key='+e.goldBossKey+' boss='+e.boss+' hp='+e.hp+' d='+d);
-   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=Math.round(760*Math.pow(1.245,tier-1));
+   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=300; // TEMP TEST: BIG BIG phase 2 HP
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
    g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
@@ -5169,7 +5169,7 @@ function bossTick(e,dt){
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
-   e.maxHp=Math.round(760*Math.pow(1.245,tier-1));e.max=e.maxHp;e.hp=e.maxHp;
+   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?300:Math.round(760*Math.pow(1.245,tier-1));e.max=e.maxHp;e.hp=e.maxHp; // TEMP TEST: BIG BIG phase 2 HP
    // v19.0.30 — Wave 50's ??? is deliberately 50 HP for finale testing.
    // This must live here, after Gold boss initialization, because bossTick is the code
    // that owns/overwrites Gold boss HP on its first frame. BIG BIG finale keeps
