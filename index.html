@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.215: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v18.0.217: removed temporary/testing buttons; gameplay and underlying systems preserved. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1272,6 +1272,9 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 }
 
 #goldFinaleGlitchTestBtn{position:fixed!important;right:12px!important;bottom:58px!important;z-index:9000!important;width:auto!important;min-width:132px!important;padding:8px 12px!important;font-size:12px!important}
+
+/* v18.0.217 — temporary/testing controls removed from player-facing UI; underlying systems preserved. */
+.goldDevTools,.testJump,.creditsTestBtn,.purifyTestBtn,.goldWavesTestBtn,#goldWaveJumpWrap,#goldFinaleGlitchTestBtn{display:none!important}
 </style>
 </head>
 <body>
@@ -1306,19 +1309,11 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
   <button id="goldWavesBtn" class="btn dark homeLowerLift goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
-  <button id="goldWavesTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldWaves">TEMP GOLD WAVES TEST</button>
-  <button id="goldFinaleGlitchTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldFinaleGlitch">TEST FINALE</button><div id="goldWaveJumpWrap"><select id="goldTestWave" style="font:inherit;font-weight:900;padding:7px;border-radius:10px;background:#3a2607;color:#ffe67a;border:2px solid #b77a13"><option value="1">WAVE 1</option><option value="2">WAVE 2</option><option value="3">WAVE 3</option><option value="4">WAVE 4</option><option value="5">WAVE 5</option><option value="6">WAVE 6</option><option value="7">WAVE 7</option><option value="8">WAVE 8</option><option value="9">WAVE 9</option><option value="10">WAVE 10</option><option value="11">WAVE 11</option><option value="12">WAVE 12</option><option value="13">WAVE 13</option><option value="14">WAVE 14</option><option value="15">WAVE 15</option><option value="16">WAVE 16</option><option value="17">WAVE 17</option><option value="18">WAVE 18</option><option value="19">WAVE 19</option><option value="20">WAVE 20</option><option value="21">WAVE 21</option><option value="22">WAVE 22</option><option value="23">WAVE 23</option><option value="24">WAVE 24</option><option value="25">WAVE 25</option><option value="26">WAVE 26</option><option value="27">WAVE 27</option><option value="28">WAVE 28</option><option value="29">WAVE 29</option><option value="30">WAVE 30</option><option value="31">WAVE 31</option><option value="32">WAVE 32</option><option value="33">WAVE 33</option><option value="34">WAVE 34</option><option value="35">WAVE 35</option><option value="36">WAVE 36</option><option value="37">WAVE 37</option><option value="38">WAVE 38</option><option value="39">WAVE 39</option><option value="40">WAVE 40</option><option value="41">WAVE 41</option><option value="42">WAVE 42</option><option value="43">WAVE 43</option><option value="44">WAVE 44</option><option value="45">WAVE 45</option><option value="46">WAVE 46</option><option value="47">WAVE 47</option><option value="48">WAVE 48</option><option value="49">WAVE 49</option><option value="50">WAVE 50</option></select><button class="btn dark small goldWavesTestBtn" data-action="testGoldWave">TEST WAVE</button></div>
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
-  <button class="btn dark small purifyTestBtn" data-action="testPurify">TEMP PURIFY</button>
-  <div class="testJump" aria-label="Temporary wave and boss tester">
-    <select id="testWave" aria-label="Choose test wave"></select>
-    <button class="btn dark small" data-action="testWave">TEST</button>
-  </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.215</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.215</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.217</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.217</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1379,8 +1374,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    <div class="goldPack best"><div class="amount"><span class="goldLeafIcon"></span>2000</div><div class="bonus">BEST VALUE • +100%</div><button class="btn small" data-gold-pack="2000">$49.99</button></div>
   </div>
   <p class="goldStoreNote">Gold Leaves are permanent and are never erased by Reset Progress. Real-money checkout will activate when the payment system is connected.</p>
-  <div class="goldDevTools" aria-label="Temporary Gold Leaf testing controls"><button class="btn small" data-action="tempAddGold">TEMP +100 GOLD</button><button class="btn small goldDevClear" data-action="tempClearGold">TEMP CLEAR GOLD</button></div>
-  <button class="btn dark" data-action="home">BACK</button>
+<button class="btn dark" data-action="home">BACK</button>
  </div>
 </section>
 
@@ -4763,8 +4757,6 @@ document.addEventListener('click',e=>{
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
  if(a==='gardenBook'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildGardenBook('playable');screen('gardenBook');titleMusicStart()}
  if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');shopMusicStart(true)}
- if(a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+100;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +100 GOLD LEAVES',.9)}
- if(a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
  if(a==='resume'){startOrResume()}
  if(a==='showQuitConfirm'){$('pauseMain').classList.add('hidden');$('quitConfirm').classList.remove('hidden')}
  if(a==='cancelQuit'){$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden')}
