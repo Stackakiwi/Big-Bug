@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.20: fixed the actual Wave 50 test-health bug: Gold boss initialization was overwriting the requested 50 HP on the first gameplay frame. The authoritative bossTick initializer now preserves 50 HP only for Wave 50 ???, while hidden Final Wave BIG BIG keeps full tier-10 health. -->
+<!-- Big Bug v19.0.21: Wave 50 now hands off synchronously to an isolated internal Final Wave. The 1.65s BIG BIG reveal is visual/invulnerability timing only, so no delayed callback can lose the finale lifecycle. Removed the now-unused goldFinalePending state. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1317,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.20</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.20</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.21</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.21</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2174,7 +2174,7 @@ function startGoldWaves(testMode=false,startWave=1){
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
  game={p,bugId:'golden',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'gold',
-       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldFinalePending:false,goldCorruptionStart:0};
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldCorruptionStart:0};
  beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);titleMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 const GOLD_BOSSES=[
@@ -2308,7 +2308,7 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.20 — the finale is a real, isolated internal wave. Wave 50 is allowed to
+   // v19.0.21 — the finale is a real, isolated internal wave. Wave 50 is allowed to
    // finish normally; hidden Wave 51 contains one fresh BIG BIG boss and nothing else.
    if(w===51){
      g.goldFinale=true;g.goldCorruptionStart=g.time;g.waveQuota=1;g.spawnLeft=0;
@@ -2369,16 +2369,24 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.20 — Wave 50 is no longer a two-life boss. It completes through the normal
+   // v19.0.21 — Wave 50 is no longer a two-life boss. It completes through the normal
    // Gold boss path, then hands off to a separate hidden finale wave before victory.
    if(g.wave===50){
      const heal=Math.ceil(g.p.maxHp*.20);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);updateHud();
-     dropQuestionName();flashBanner('...',1.35);g.goldFinalePending=true;
-     setTimeout(()=>{if(game===g&&!g.over&&g.goldFinalePending){g.goldFinalePending=false;g.paused=false;beginWave(51)}},1650);
+     // v19.0.21 — synchronous handoff: do not leave the finale transition dependent on
+     // a delayed callback after completeWave() has paused/closed Wave 50. Wave 50 is already
+     // complete here, so immediately create the isolated internal Final Wave and let that wave
+     // own BIG BIG from this point forward. The reveal delay is visual only, never lifecycle logic.
+     dropQuestionName();flashBanner('...',1.35);g.paused=false;
+     beginWave(51);
+     if(game===g&&g.boss){
+       g.goldFinaleRevealUntil=g.time+1.65;
+       g.boss.invuln=Math.max(g.boss.invuln||0,1.65);
+     }
      return;
    }
    if(g.wave===51){
-     g.goldFinale=false;g.goldFinalePending=false;
+     g.goldFinale=false;
      setTimeout(()=>{if(game===g&&!g.over)finish(true)},500);return;
    }
    const bossClear=g.wave%5===0;
@@ -2492,6 +2500,10 @@ function burst(x,y,n=8,life=.5,col=null){
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
+ // v19.0.21 — BIG BIG exists immediately when Final Wave starts, but the reveal window
+ // is presentation-only. Protect it directly instead of relying on e.boss, because the
+ // Gold wrapper intentionally masks that flag while inherited combat executes.
+ if(game&&game.mode==='gold'&&e.bigBigFinale&&(game.goldFinaleRevealUntil||0)>game.time)return;
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
@@ -4271,7 +4283,7 @@ function draw(now=performance.now()){
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
    X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
  }
-   // v19.0.20 — BIG BIG's separate finale wave progressively corrupts the existing
+   // v19.0.21 — BIG BIG's separate finale wave progressively corrupts the existing
    // Gold arena. Irregular black growth closes in over ~12 seconds while combat/HUD stay live.
    if(game?.mode==='gold'&&game.wave===51&&game.goldFinale){
      const age=Math.max(0,game.time-(game.goldCorruptionStart||game.time)),q=Math.min(.96,age/12);
@@ -4850,8 +4862,8 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.20';
-// v19.0.20 — stability: automatic network update/reload system remains removed.
+const BB_BUILD_VERSION='19.0.21';
+// v19.0.21 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
@@ -4958,7 +4970,7 @@ function bossTick(e,dt){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
    e.maxHp=Math.round(760*Math.pow(1.245,tier-1));e.hp=e.maxHp;
-   // v19.0.20 — Wave 50's ??? is deliberately 50 HP for finale testing.
+   // v19.0.21 — Wave 50's ??? is deliberately 50 HP for finale testing.
    // This must live here, after Gold boss initialization, because bossTick is the code
    // that owns/overwrites Gold boss HP on its first frame. Hidden Wave 51 BIG BIG keeps
    // the full tier-10 health calculated above.
@@ -4967,6 +4979,11 @@ function bossTick(e,dt){
    e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;
  }
  e.kind='goldUnknown';
+ if(e.bigBigFinale&&game.goldFinaleRevealUntil){
+   const left=game.goldFinaleRevealUntil-game.time;
+   e.invuln=left>0?left:0;
+   if(left<=0)game.goldFinaleRevealUntil=0;
+ }
  e.goldBossName=e.bigBigFinale?'BIG BIG':'???';e.name=e.goldBossName;e._orbit+=dt*(1.35+(e._goldTier||1)*.035);e._bc-=dt;
  if((e._goldTier||1)>=10){const hpPct=e.hp/Math.max(1,e.maxHp);if(hpPct<.50)e._bc-=dt*.22;if(hpPct<.25)e._bc-=dt*.32;}
 
