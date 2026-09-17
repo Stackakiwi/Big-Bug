@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.217: removed temporary/testing buttons; gameplay and underlying systems preserved. -->
+<!-- Big Bug v18.0.218: safely hides remaining temporary/test controls without removing their DOM or handlers; gameplay preserved. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1272,9 +1272,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 }
 
 #goldFinaleGlitchTestBtn{position:fixed!important;right:12px!important;bottom:58px!important;z-index:9000!important;width:auto!important;min-width:132px!important;padding:8px 12px!important;font-size:12px!important}
-
-/* v18.0.217 — temporary/testing controls removed from player-facing UI; underlying systems preserved. */
-.goldDevTools,.testJump,.creditsTestBtn,.purifyTestBtn,.goldWavesTestBtn,#goldWaveJumpWrap,#goldFinaleGlitchTestBtn{display:none!important}
+/* v18.0.218 — hide temp controls only; keep their markup/JS intact to avoid regressions. */
+.goldDevTools,#goldWaveJumpWrap,#goldFinaleGlitchTestBtn{display:none!important}
 </style>
 </head>
 <body>
@@ -1312,8 +1311,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <div class="versionStamp" aria-hidden="true">v18.0.217</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.217</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.218</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.218</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1374,7 +1373,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    <div class="goldPack best"><div class="amount"><span class="goldLeafIcon"></span>2000</div><div class="bonus">BEST VALUE • +100%</div><button class="btn small" data-gold-pack="2000">$49.99</button></div>
   </div>
   <p class="goldStoreNote">Gold Leaves are permanent and are never erased by Reset Progress. Real-money checkout will activate when the payment system is connected.</p>
-<button class="btn dark" data-action="home">BACK</button>
+  <div class="goldDevTools" aria-label="Temporary Gold Leaf testing controls"><button class="btn small" data-action="tempAddGold">TEMP +100 GOLD</button><button class="btn small goldDevClear" data-action="tempClearGold">TEMP CLEAR GOLD</button></div>
+  <button class="btn dark" data-action="home">BACK</button>
  </div>
 </section>
 
@@ -4757,6 +4757,8 @@ document.addEventListener('click',e=>{
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
  if(a==='gardenBook'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildGardenBook('playable');screen('gardenBook');titleMusicStart()}
  if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');shopMusicStart(true)}
+ if(a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+100;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +100 GOLD LEAVES',.9)}
+ if(a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
  if(a==='resume'){startOrResume()}
  if(a==='showQuitConfirm'){$('pauseMain').classList.add('hidden');$('quitConfirm').classList.remove('hidden')}
  if(a==='cancelQuit'){$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden')}
