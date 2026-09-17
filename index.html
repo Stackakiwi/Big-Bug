@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.16: actually enforces Wave 50 finale transition immunity even while the Gold wrapper masks the boss flag; the reveal boss cannot take any further damage or be removed before BIG BIG revives. -->
+<!-- Big Bug v19.0.17: Wave 50 finale rebuilt as a game-level state machine. The first ??? death intentionally retires phase 1, an independent transition clock spawns a fresh BIG BIG at full health, and only BIG BIG death unlocks Gold victory. Obsolete entity-revival fallback code removed. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1319,7 +1319,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v19.0.0</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.16</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.17</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2309,9 +2309,9 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.16 — Wave 50 owns a separate finale state. Normal Gold completion is locked
+   // v19.0.17 — Wave 50 owns a separate finale state. Normal Gold completion is locked
    // until BIG BIG's second/final health bar is actually defeated.
-   g.goldFinaleState=w===50?'phase1':null;if(w!==50){g.bigBigVoid=0;g.bigBigPhase2Start=0}
+   g.goldFinaleState=w===50?'phase1':null;g.goldFinaleRevealAt=0;g.goldFinaleX=0;g.goldFinaleY=0;g.goldFinaleFullHp=0;if(w!==50){g.bigBigVoid=0;g.bigBigPhase2Start=0}
    const bossWave=w%5===0;
    g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
    $('bossbar').style.display='none';
@@ -2335,9 +2335,9 @@ function beginWave(w){
 }
 function completeWave(){
  const g=game;if(!g.waveActive||g.intermission)return;
- // v19.0.16 — hard gate for the isolated Gold finale. No cleanup, pause, heal,
+ // v19.0.17 — hard gate for the isolated Gold finale. No cleanup, pause, heal,
  // reward, victory screen, or finish(true) may run after ???'s first defeat.
- // Only damageEnemy() marking BIG BIG as 'defeated' opens the normal victory path.
+ // Only BIG BIG's final death marks the finale 'defeated' and opens normal victory.
  if(g.mode==='gold'&&g.wave===50&&g.goldFinaleState!=='defeated')return;
  // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
@@ -2477,58 +2477,60 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
 function burst(x,y,n=8,life=.5,col=null){
  n=Math.min(n,Math.max(0,110-game.fx.length));for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4,col})}
 }
-// v19.0.16 — independent Wave 50 finale controller.
-// Gold Waves deliberately masks its special boss while inherited Story combat executes. If that
-// inherited code removes ??? before damageEnemy() can retain the entity, the finale must not depend
-// on the removed object surviving. Rebuild a transition-only copy and let the finale own it.
-function rebuildGoldFinaleTransition(source){
- if(!game||game.mode!=='gold'||game.wave!==50||game.goldFinaleState!=='phase1')return null;
- const gb=goldBossFor(50),e=spawnEnemy('boss',gb.base,0);if(!e)return null;
- e.goldBossKey='gildedSentinel';e.goldBossName='???';e.name='???';e.goldElite=true;e.kind='goldUnknown';
- e.x=source&&Number.isFinite(source.x)?source.x:W/2;e.y=source&&Number.isFinite(source.y)?source.y:Math.max(125,H*.20);
- const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
- e._bigBigFullHp=Math.round(760*Math.pow(1.245,tier-1));e.maxHp=50;e.max=50;e.hp=1;
- e.damage=14+tier*3.4;e.speed=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
- e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;e._g163Init=true;
- e.dead=false;e.invuln=999;e._bigBigTransition=true;e._bigBigReviveAt=game.time+2.35;
- game.goldFinaleState='transition';game.bigBigVoid=0;game.boss=e;game.bosses=[e];game.spawnLeft=0;game.waveActive=true;
+// v19.0.17 — Wave 50 finale is a game-level state machine, not an enemy-object revival.
+// The first ??? death deliberately retires that enemy. A clock owned by `game` then spawns a
+// brand-new BIG BIG boss. This keeps the finale independent of inherited enemy cleanup/masking.
+function startGoldFinaleTransition(source){
+ if(!game||game.mode!=='gold'||game.wave!==50||game.goldFinaleState!=='phase1')return false;
+ const tier=Math.max(1,Math.floor(game.wave/5));
+ game.goldFinaleState='transition';
+ game.goldFinaleRevealAt=game.time+2.35;
+ game.goldFinaleX=source&&Number.isFinite(source.x)?source.x:W/2;
+ game.goldFinaleY=source&&Number.isFinite(source.y)?source.y:Math.max(125,H*.20);
+ game.goldFinaleFullHp=(source&&source._bigBigFullHp)||Math.round(760*Math.pow(1.245,tier-1));
+ game.bigBigVoid=0;game.boss=null;game.bosses=[];game.spawnLeft=0;game.waveActive=true;
+ if(source){source.hp=0;source.dead=true;source._goldFinaleRetired=true;source.vx=0;source.vy=0;source.knockX=0;source.knockY=0}
  dropQuestionName();syncGoldBossName();flashBanner('...',1.15);
  try{beep(78,.24,.03,'square','music');setTimeout(()=>beep(64,.20,.025,'sawtooth','music'),110)}catch(_){}
+ return true;
+}
+function spawnBigBigPhase2(){
+ if(!game||game.mode!=='gold'||game.wave!==50||game.goldFinaleState!=='transition')return null;
+ const gb=goldBossFor(50),e=spawnEnemy('boss',gb.base,0);if(!e)return null;
+ const tier=Math.max(1,Math.floor(game.wave/5)),full=Math.max(1,Math.round(game.goldFinaleFullHp||760*Math.pow(1.245,tier-1)));
+ e.goldBossKey='gildedSentinel';e.goldBossName='BIG BIG';e.name='BIG BIG';e.goldElite=true;e.kind='goldUnknown';
+ e.x=Number.isFinite(game.goldFinaleX)?game.goldFinaleX:W/2;e.y=Number.isFinite(game.goldFinaleY)?game.goldFinaleY:Math.max(125,H*.20);
+ e._goldTier=tier;e._g163Init=true;e._bigBigPhase2=true;e._bigBigFullHp=full;e.maxHp=full;e.max=full;e.hp=full;
+ e.damage=14+tier*3.4;e.speed=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;e.invuln=.35;
+ e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;
+ game.goldFinaleState='phase2';game.goldFinaleRevealAt=0;game.bigBigPhase2Start=game.time;game.bigBigVoid=0;game.boss=e;game.bosses=[e];
+ $('bossbar').style.display='block';configureBossHud(50);updateBossHud();syncGoldBossName();flashBanner('BIG BIG REVIVES!',1.45);
+ try{beep(110,.22,.035,'sawtooth','music');setTimeout(()=>beep(220,.20,.028,'triangle','music'),90);setTimeout(()=>beep(440,.18,.022,'sine','music'),180)}catch(_){}
  return e;
 }
-function goldFinalePostInherited(source){
+function goldFinaleController(source){
  if(!game||game.mode!=='gold'||game.wave!==50)return;
  const live=game.enemies&&game.enemies.find(e=>e&&!e.dead&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive'));
- // Phase 1 disappeared through inherited cleanup: enter the isolated finale now. completeWave()
- // is already hard-gated, so no reward/victory/intermission can have happened.
+ // Fallback for any inherited path that retires phase 1 without going through damageEnemy().
  if(game.goldFinaleState==='phase1'&&!live&&(source&&source.dead||((game.spawnLeft||0)<=0&&(!game.enemies||game.enemies.length===0)))){
-   rebuildGoldFinaleTransition(source||null);return;
+   startGoldFinaleTransition(source||null);return;
  }
- // Belt-and-suspenders final-death handling: if inherited cleanup removes BIG BIG before the lethal
- // hook marks him defeated, unlock completion only here, after phase 2 existed.
+ if(game.goldFinaleState==='transition'){
+   game.spawnLeft=0;game.waveActive=true;$('bossbar').style.display='block';syncGoldBossName();
+   if(game.time>=(game.goldFinaleRevealAt||Infinity))spawnBigBigPhase2();
+   return;
+ }
+ // BIG BIG alone unlocks normal Gold victory.
  if(game.goldFinaleState==='phase2'&&!live&&(source&&source._bigBigPhase2||((game.spawnLeft||0)<=0&&(!game.enemies||game.enemies.length===0)))){
    game.goldFinaleState='defeated';setTimeout(()=>{if(game&&game.mode==='gold'&&game.wave===50&&game.goldFinaleState==='defeated')completeWave()},0);
  }
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
- // v19.0.16 — the Gold wrapper intentionally masks this boss as non-boss/'goldUnknownActive'
- // while inherited combat runs. Identify the finale boss by either identity, never by e.boss.
  const goldFinaleBoss=game&&game.mode==='gold'&&game.wave===50&&e&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive');
- // First lethal hit: consume the hit as a phase break. The enemy stays alive, so the inherited
- // enemy cleanup and completeWave() path never sees Wave 50 as cleared here.
- if(goldFinaleBoss&&!e._bigBigPhase2&&!e._bigBigTransition&&game.goldFinaleState!=='defeated'&&d>=e.hp){
-   const chip=Math.max(0,e.hp-1);if(chip>0)damageEnemy(e,chip,source);
-   e.hp=1;e.dead=false;e.invuln=999;e._bigBigTransition=true;e._bigBigReviveAt=game.time+2.35;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
-   game.goldFinaleState='transition';game.bigBigVoid=0;dropQuestionName();syncGoldBossName();flashBanner('...',1.15);
-   try{beep(78,.24,.03,'square','music');setTimeout(()=>beep(64,.20,.025,'sawtooth','music'),110)}catch(_){}
-   return;
- }
- // v19.0.16 — IMPORTANT: during the reveal delay the Gold wrapper has e.boss=false, so the
- // generic boss invulnerability check below cannot protect this entity. Enforce finale immunity
- // directly from the finale identity/state before any normal damage logic can run.
- if(goldFinaleBoss&&e._bigBigTransition){e.hp=Math.max(1,e.hp);e.dead=false;return;}
- // Second lethal hit: this is the only event that unlocks Wave 50's normal Gold victory path.
+ // ??? has exactly one terminal event: retire phase 1 and hand control to the game-level finale.
+ if(goldFinaleBoss&&!e._bigBigPhase2&&game.goldFinaleState==='phase1'&&d>=e.hp){startGoldFinaleTransition(e);return;}
+ // Only BIG BIG's lethal hit opens the normal Wave 50 completion path.
  if(goldFinaleBoss&&e._bigBigPhase2&&d>=e.hp)game.goldFinaleState='defeated';
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
@@ -4990,17 +4992,7 @@ function goldTint(e){
 function bossTick(e,dt){
  if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
  const p=game.p;if(!p)return;
- // v19.0.0 — Wave 50's first lethal hit is a phase break, not a death.
- if(e._bigBigTransition){
-   e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
-   if(game.time>=(e._bigBigReviveAt||Infinity)){
-     e._bigBigTransition=false;e._bigBigPhase2=true;e.invuln=0;if(e._bigBigFullHp){e.maxHp=e._bigBigFullHp;e.max=e._bigBigFullHp;}e.hp=e.maxHp;
-     game.goldFinaleState='phase2';game.bigBigPhase2Start=game.time;game.bigBigVoid=0;
-     flashBanner('BIG BIG REVIVES!',1.45);
-     try{beep(110,.22,.035,'sawtooth','music');setTimeout(()=>beep(220,.20,.028,'triangle','music'),90);setTimeout(()=>beep(440,.18,.022,'sine','music'),180)}catch(_){}
-   }
-   return;
- }
+ // BIG BIG phase 2 is spawned fresh by goldFinaleController(); no entity-level revival lives here.
  if(e._bigBigPhase2){game.bigBigVoid=Math.min(1,Math.max(0,(game.time-(game.bigBigPhase2Start||game.time))/12));}
 
  if(!e._g163Init){
@@ -5075,7 +5067,7 @@ function bossTick(e,dt){
 function bossDraw(e){
  if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
  const r=e.r||32,t=FRAME_NOW*.001,tier=e._goldTier||Math.max(1,Math.floor(game.wave/5));X.save();
- const glitch=e._bigBigTransition?1:0,gx=glitch?(Math.random()-.5)*18:0,gy=glitch?(Math.random()-.5)*10:0;
+ const glitch=0,gx=0,gy=0;
  X.translate(e.x+gx,e.y+gy);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6)+(glitch?(Math.random()-.5)*.22:0));
  if(glitch&&Math.random()<.24)X.globalAlpha=.38;
  // Fully opaque body hides the old boss underneath.
@@ -5105,7 +5097,7 @@ function bossDraw(e){
 function syncGoldBossName(){
  if(!G())return;
  const b=game&&game.enemies?game.enemies.find(e=>e&&e.goldBossKey==='gildedSentinel'&&!e.dead):null;
- const label=b?(b._bigBigPhase2?'BIG BIG':(b._bigBigTransition?'':'???')):'???';
+ const state=game&&game.goldFinaleState;const label=state==='transition'?'':(state==='phase2'?'BIG BIG':(b?(b._bigBigPhase2?'BIG BIG':'???'):'???'));
  const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
  for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.textContent=label;n.style.color='#ffe15b';n.style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}}
  const nodes=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
@@ -5140,9 +5132,9 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  const fxBefore=(G()&&game.fx)?game.fx.length:0;
  const out=U.apply(this,arguments);
 
- // v19.0.16 — inherited combat may have removed Wave 50's boss object. Resolve that handoff
+ // v19.0.17 — inherited combat may have removed Wave 50's boss object. Resolve that handoff
  // before any Gold post-processing relies on the old entity.
- goldFinalePostInherited(alien);
+ goldFinaleController(alien);
 
  // Remove any inherited poison/venom/purple-ring FX that somehow spawned during this Gold frame.
  if(G()&&game.fx&&game.fx.length>fxBefore){
