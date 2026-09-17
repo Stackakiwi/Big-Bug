@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.4: BIG BIG finale test one-hits only the first ??? phase; revived BIG BIG uses full normal health; Gold finale: ??? glitches into BIG BIG; revived final phase fades the battlefield to black.  removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v19.0.5: BIG BIG finale test one-hits only the first ??? phase; revived BIG BIG uses full normal health; Gold finale: ??? glitches into BIG BIG; revived final phase fades the battlefield to black.  removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -2472,8 +2472,9 @@ function burst(x,y,n=8,life=.5,col=null){
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
- // v19.0.4 — finale test only: one player hit defeats the first ??? phase; revived BIG BIG keeps full normal health.
- if(game&&game.testMode&&game.mode==='gold'&&game.wave===50&&e.boss&&e.goldBossKey==='gildedSentinel'&&!e._bigBigPhase2&&!e._bigBigTransition&&source==='player')d=Math.max(d,e.hp);
+ // v19.0.5 — dedicated finale-test flag survives Gold boss identity masking during the inherited combat tick.
+ // It applies only to the first ??? phase; the revived BIG BIG phase keeps full normal health.
+ if(game&&game.testMode&&game.mode==='gold'&&game.wave===50&&e._bigBigTestOneShot&&!e._bigBigPhase2&&!e._bigBigTransition&&source==='player')d=Math.max(d,e.hp);
  // v19.0.0 — the first Wave 50 Gold-boss "death" reveals BIG BIG instead of ending the run.
  if(game&&game.mode==='gold'&&game.wave===50&&e.boss&&e.goldBossKey==='gildedSentinel'&&!e._bigBigPhase2&&!e._bigBigTransition&&d>=e.hp){
    const chip=Math.max(0,e.hp-1);if(chip>0)damageEnemy(e,chip,source);
@@ -4601,7 +4602,7 @@ document.addEventListener('click',e=>{
  if(a==='endless')startEndless();
  if(a==='goldWaves')startGoldWaves(false);
  if(a==='testGoldWaves')startGoldWaves(true);
- if(a==='testBigBigFinale')startGoldWaves(true,50);
+ if(a==='testBigBigFinale'){startGoldWaves(true,50);const b=game&&game.enemies?game.enemies.find(e=>e&&e.goldBossKey==='gildedSentinel'):null;if(b)b._bigBigTestOneShot=true;}
   if(a==='testGoldWave'){const w=Number($('goldTestWave')?.value)||1;startGoldWaves(true,w)}
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testEnding')previewFinalPurification(false)
