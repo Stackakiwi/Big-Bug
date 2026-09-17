@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.34 GOLD BOSS CLEANUP: one stable Gold boss identity, no mid-frame key masking, and direct core-canvas rendering for ??? / BIG BIG. -->
+<!-- Big Bug v19.0.35 GOLD BOSS CLEANUP: one stable Gold boss identity, no mid-frame key masking, and direct core-canvas rendering for ??? / BIG BIG. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1317,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.34</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.34</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.35</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.35</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2299,7 +2299,7 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.34 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
+// v19.0.35 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  try{
@@ -2308,7 +2308,7 @@ function bb22Trace(msg){
   console.log('[BB22]',line);
   let el=document.getElementById('bb22Trace');
   if(!el){el=document.createElement('div');el.id='bb22Trace';el.style.cssText='position:fixed;left:6px;right:6px;bottom:6px;z-index:20000;background:rgba(0,0,0,.88);color:#fff;font:700 11px/1.25 monospace;padding:7px;border:2px solid #ffe15b;border-radius:5px;white-space:pre-wrap;pointer-events:none;max-height:38vh;overflow:hidden';document.body.appendChild(el)}
-  el.textContent='v19.0.34 W50 TRACE\n'+BB22TRACE.join('\n');
+  el.textContent='v19.0.35 W50 TRACE\n'+BB22TRACE.join('\n');
  }catch(err){console.error('[BB22 trace error]',err)}
 }
 // v19.0.30 — Wave 50 finale fix: this helper must live in the main script scope.
@@ -2397,7 +2397,7 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.34 fallback only — normal play now promotes the Wave 50 boss in place inside damageEnemy(),
+   // v19.0.35 fallback only — normal play now promotes the Wave 50 boss in place inside damageEnemy(),
    // so this branch should only run if some external/test path clears Wave 50 without a lethal hit.
    if(g.wave===50){
      bb22Trace('completeWave W50 BRANCH');
@@ -2541,7 +2541,7 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave>=50&&e&&(e.goldBossKey==='goldUnknownBoss'||e.bigBigFinale);
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey+' bigBig='+!!e.bigBigFinale);
- // v19.0.34 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
+ // v19.0.35 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
  // The lethal hit on ??? now promotes that SAME live entity into BIG BIG before it can be
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&!e.bigBigFinale&&(e.goldBossKey==='goldUnknownBoss')&&d>=e.hp){
@@ -3735,7 +3735,7 @@ function drawMedievalEnemyOverlay(ctx,e){
  ctx.restore();
 }
 function drawGoldUnknownBossCore(e){
- // v19.0.34 — direct core-canvas renderer. No window wrapper or later script binding.
+ // v19.0.35 — direct core-canvas renderer. No window wrapper or later script binding.
  if(!e||e.dead)return;
  const r=(Number.isFinite(e.r)&&e.r>7)?e.r:32,t=FRAME_NOW*.001;
  const tier=e._goldTier||Math.max(1,Math.floor((game?.wave||5)/5));
@@ -4488,6 +4488,26 @@ function draw(now=performance.now()){
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
  }
+ // v19.0.35 — authoritative final Gold boss render pass.
+ // Draw BIG BIG after all enemy/FX rendering with a fully reset canvas state so no
+ // inherited alpha/filter/composite/clip state can make a live on-screen boss invisible.
+ if(game&&game.mode==='gold'){
+   let bbFinal=null;
+   for(const q of game.enemies||[]){if(q&&!q.dead&&(q.bigBigFinale||q.goldBossKey==='goldUnknownBoss')){bbFinal=q;if(q.bigBigFinale)break}}
+   if(bbFinal){
+     const pad=Math.max(42,(Number.isFinite(bbFinal.r)&&bbFinal.r>7?bbFinal.r:32)*1.65);
+     if(!Number.isFinite(bbFinal.r)||bbFinal.r<8)bbFinal.r=32;
+     if(!Number.isFinite(bbFinal.x))bbFinal.x=W/2;if(!Number.isFinite(bbFinal.y))bbFinal.y=Math.max(145,H*.24);
+     bbFinal.x=Math.max(pad,Math.min(W-pad,bbFinal.x));bbFinal.y=Math.max(118+pad*.35,Math.min(H-pad,bbFinal.y));
+     X.save();
+     X.setTransform(D,0,0,D,0,0);
+     X.globalAlpha=1;X.globalCompositeOperation='source-over';X.filter='none';
+     X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetX=0;X.shadowOffsetY=0;
+     drawGoldUnknownBossCore(bbFinal);
+     X.restore();
+     if(bbFinal.bigBigFinale&&!bbFinal.__bb35RenderTrace){bbFinal.__bb35RenderTrace=true;bb22Trace('FINAL AUTHORITATIVE DRAW x='+Math.round(bbFinal.x)+' y='+Math.round(bbFinal.y)+' r='+bbFinal.r)}
+   }
+ }
  const p=game.p;
  // lively player: eases toward the enemy being attacked and gently bobs at idle
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
@@ -4950,7 +4970,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.34';
+const BB_BUILD_VERSION='19.0.35';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
@@ -5207,11 +5227,11 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    }
  }
  let bossState=null;
- const preserveFinalBoss=false; // v19.0.34: no separate identity path; one Gold boss identity for every phase.
+ const preserveFinalBoss=false; // v19.0.35: no separate identity path; one Gold boss identity for every phase.
  if(alien){
    if(game.wave>=50&&!alien.__bb22MaskSeen){alien.__bb22MaskSeen=true;bb22Trace('WRAPPER MASK wave='+game.wave+' hp='+alien.hp+' boss='+alien.boss+' key='+alien.goldBossKey)}
    bossState=[alien.boss,alien.kind];
-   // v19.0.34 — only mask the generic Story boss flag while inherited core AI runs.
+   // v19.0.35 — only mask the generic Story boss flag while inherited core AI runs.
    // The Gold boss key NEVER changes mid-frame anymore.
    alien.boss=false;alien.kind='goldUnknown';
  }
@@ -5230,7 +5250,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    if(bossState){alien.boss=bossState[0];alien.kind='goldUnknown'}
    if(!alien.dead)bossTick(alien,dt);
    if(alien.bigBigFinale&&!alien.dead){
-     // v19.0.34 — finale geometry is authoritative after every core update. A transient
+     // v19.0.35 — finale geometry is authoritative after every core update. A transient
      // wrapper/AI value can no longer leave the live boss invisible or outside the arena.
      if(!Number.isFinite(alien.r)||alien.r<8)alien.r=32;
      if(!Number.isFinite(alien.x))alien.x=W/2;if(!Number.isFinite(alien.y))alien.y=Math.max(145,H*.24);
