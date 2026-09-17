@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.6: BIG BIG finale test gives the first ??? phase 50 HP; revived BIG BIG uses full normal health; Gold finale: ??? glitches into BIG BIG; revived final phase fades the battlefield to black. -->
+<!-- Big Bug v19.0.9: removed redundant TEMP BIG BIG FINALE button; Gold Wave selector remains for finale testing; Gold Wave 50 ??? remains temporarily at 50 HP. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1308,7 +1308,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
   <button id="goldWavesBtn" class="btn dark homeLowerLift goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
-  <button id="goldWavesTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldWaves">TEMP GOLD WAVES TEST</button><button id="bigBigFinaleTestBtn" class="btn dark small goldWavesTestBtn" style="left:118px!important" data-action="testBigBigFinale">TEMP BIG BIG FINALE</button><div id="goldWaveJumpWrap"><select id="goldTestWave" style="font:inherit;font-weight:900;padding:7px;border-radius:10px;background:#3a2607;color:#ffe67a;border:2px solid #b77a13"><option value="1">WAVE 1</option><option value="2">WAVE 2</option><option value="3">WAVE 3</option><option value="4">WAVE 4</option><option value="5">WAVE 5</option><option value="6">WAVE 6</option><option value="7">WAVE 7</option><option value="8">WAVE 8</option><option value="9">WAVE 9</option><option value="10">WAVE 10</option><option value="11">WAVE 11</option><option value="12">WAVE 12</option><option value="13">WAVE 13</option><option value="14">WAVE 14</option><option value="15">WAVE 15</option><option value="16">WAVE 16</option><option value="17">WAVE 17</option><option value="18">WAVE 18</option><option value="19">WAVE 19</option><option value="20">WAVE 20</option><option value="21">WAVE 21</option><option value="22">WAVE 22</option><option value="23">WAVE 23</option><option value="24">WAVE 24</option><option value="25">WAVE 25</option><option value="26">WAVE 26</option><option value="27">WAVE 27</option><option value="28">WAVE 28</option><option value="29">WAVE 29</option><option value="30">WAVE 30</option><option value="31">WAVE 31</option><option value="32">WAVE 32</option><option value="33">WAVE 33</option><option value="34">WAVE 34</option><option value="35">WAVE 35</option><option value="36">WAVE 36</option><option value="37">WAVE 37</option><option value="38">WAVE 38</option><option value="39">WAVE 39</option><option value="40">WAVE 40</option><option value="41">WAVE 41</option><option value="42">WAVE 42</option><option value="43">WAVE 43</option><option value="44">WAVE 44</option><option value="45">WAVE 45</option><option value="46">WAVE 46</option><option value="47">WAVE 47</option><option value="48">WAVE 48</option><option value="49">WAVE 49</option><option value="50">WAVE 50</option></select><button class="btn dark small goldWavesTestBtn" data-action="testGoldWave">TEST WAVE</button></div>
+  <button id="goldWavesTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldWaves">TEMP GOLD WAVES TEST</button><div id="goldWaveJumpWrap"><select id="goldTestWave" style="font:inherit;font-weight:900;padding:7px;border-radius:10px;background:#3a2607;color:#ffe67a;border:2px solid #b77a13"><option value="1">WAVE 1</option><option value="2">WAVE 2</option><option value="3">WAVE 3</option><option value="4">WAVE 4</option><option value="5">WAVE 5</option><option value="6">WAVE 6</option><option value="7">WAVE 7</option><option value="8">WAVE 8</option><option value="9">WAVE 9</option><option value="10">WAVE 10</option><option value="11">WAVE 11</option><option value="12">WAVE 12</option><option value="13">WAVE 13</option><option value="14">WAVE 14</option><option value="15">WAVE 15</option><option value="16">WAVE 16</option><option value="17">WAVE 17</option><option value="18">WAVE 18</option><option value="19">WAVE 19</option><option value="20">WAVE 20</option><option value="21">WAVE 21</option><option value="22">WAVE 22</option><option value="23">WAVE 23</option><option value="24">WAVE 24</option><option value="25">WAVE 25</option><option value="26">WAVE 26</option><option value="27">WAVE 27</option><option value="28">WAVE 28</option><option value="29">WAVE 29</option><option value="30">WAVE 30</option><option value="31">WAVE 31</option><option value="32">WAVE 32</option><option value="33">WAVE 33</option><option value="34">WAVE 34</option><option value="35">WAVE 35</option><option value="36">WAVE 36</option><option value="37">WAVE 37</option><option value="38">WAVE 38</option><option value="39">WAVE 39</option><option value="40">WAVE 40</option><option value="41">WAVE 41</option><option value="42">WAVE 42</option><option value="43">WAVE 43</option><option value="44">WAVE 44</option><option value="45">WAVE 45</option><option value="46">WAVE 46</option><option value="47">WAVE 47</option><option value="48">WAVE 48</option><option value="49">WAVE 49</option><option value="50">WAVE 50</option></select><button class="btn dark small goldWavesTestBtn" data-action="testGoldWave">TEST WAVE</button></div>
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
@@ -1319,7 +1319,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v19.0.0</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.4</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.9</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4599,7 +4599,6 @@ document.addEventListener('click',e=>{
  if(a==='endless')startEndless();
  if(a==='goldWaves')startGoldWaves(false);
  if(a==='testGoldWaves')startGoldWaves(true);
- if(a==='testBigBigFinale'){startGoldWaves(true,50);const b=game&&game.enemies?game.enemies.find(e=>e&&e.goldBossKey==='gildedSentinel'):null;if(b){b.hp=50;b.maxHp=50;}}
   if(a==='testGoldWave'){const w=Number($('goldTestWave')?.value)||1;startGoldWaves(true,w)}
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testEnding')previewFinalPurification(false)
@@ -4835,7 +4834,15 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 /* BIG BUG v18.0.188 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
-function sync(){document.body.classList.toggle('g159',!!G())}
+function sync(){
+ const gold=!!G();document.body.classList.toggle('g159',gold);
+ if(!gold){
+  const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
+  for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.style.removeProperty('color');n.style.removeProperty('text-shadow')}}
+  const nodes=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
+  for(let i=0;i<nodes.length;i++){nodes[i].style.removeProperty('color');nodes[i].style.removeProperty('text-shadow')}
+ }
+}
 
 function drawGoldEnvironment(){
  if(!G()||!window.X)return;
@@ -4933,7 +4940,7 @@ function bossTick(e,dt){
  if(e._bigBigTransition){
    e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
    if(game.time>=(e._bigBigReviveAt||Infinity)){
-     e._bigBigTransition=false;e._bigBigPhase2=true;e.invuln=0;e.hp=e.maxHp;
+     e._bigBigTransition=false;e._bigBigPhase2=true;e.invuln=0;if(e._bigBigFullHp){e.maxHp=e._bigBigFullHp;e.max=e._bigBigFullHp;}e.hp=e.maxHp;
      game.bigBigPhase2Start=game.time;game.bigBigVoid=0;
      flashBanner('BIG BIG REVIVES!',1.45);
      try{beep(110,.22,.035,'sawtooth','music');setTimeout(()=>beep(220,.20,.028,'triangle','music'),90);setTimeout(()=>beep(440,.18,.022,'sine','music'),180)}catch(_){}
@@ -4946,6 +4953,7 @@ function bossTick(e,dt){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
    e.maxHp=Math.round(760*Math.pow(1.245,tier-1));e.hp=e.maxHp;
+   if(game.wave===50){e._bigBigFullHp=e.maxHp;e.maxHp=50;e.max=50;e.hp=50;}
    e.damage=14+tier*3.4;e.speed=0;e.vx=0;e.vy=0;
    e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;
  }
