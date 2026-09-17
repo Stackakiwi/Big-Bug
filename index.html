@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.219: temporary/test controls hidden with CSS only; all original DOM and handlers preserved. -->
+<!-- Big Bug v18.0.220: temporary/test controls hidden without removing any DOM nodes or handlers; gameplay preserved from v18.0.215. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1273,8 +1273,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 #goldFinaleGlitchTestBtn{position:fixed!important;right:12px!important;bottom:58px!important;z-index:9000!important;width:auto!important;min-width:132px!important;padding:8px 12px!important;font-size:12px!important}
 
-/* v18.0.219 — release cleanup: hide temporary/test UI only. Keep every node and handler intact because startup code references these controls. */
-#goldWavesTestBtn,#goldFinaleGlitchTestBtn,#goldWaveJumpWrap,.goldWavesTestBtn,.creditsTestBtn,.purifyTestBtn,.testJump,[data-action="testEnding"],[data-action="testPurify"],[data-action="testWave"],[data-action="testGoldWaves"],[data-action="testGoldFinaleGlitch"],[data-action="testGoldWave"],[data-action="tempGrantGold"],[data-action="tempClearGold"]{display:none!important;}
+/* v18.0.220 — hide temporary controls only; keep their DOM nodes and JS handlers intact. */
+#goldWavesTestBtn,#goldFinaleGlitchTestBtn,#goldWaveJumpWrap,.goldDevTools{display:none!important;}
 </style>
 </head>
 <body>
@@ -1320,8 +1320,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.219</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.219</div>
+  <div class="versionStamp" aria-hidden="true">v18.0.220</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.220</div>
 </section>
 
 <section id="bugs" class="screen hidden">
