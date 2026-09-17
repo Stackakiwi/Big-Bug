@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.46 TESTING FIX: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.47 TESTING: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -48,7 +48,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .pill{background:#0b3b20;border:1px solid #ffffff22;border-radius:14px;padding:7px 6px;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;text-align:center;white-space:nowrap;min-width:0}
 #bossbar{position:fixed;top:max(78px,calc(env(safe-area-inset-top) + 68px));left:50%;right:auto;transform:translateX(-50%);width:min(310px,68vw);z-index:6;text-align:center;display:none;pointer-events:none}.bossHealthRow{margin-bottom:7px}.bossHealthRow:last-child{margin-bottom:0}.bossName{font-weight:1000;font-size:12px;letter-spacing:.6px;text-shadow:0 2px 4px #000b;margin-bottom:3px}.bossBar{height:10px;border-radius:99px;background:#210d0ddd;border:1px solid #fff4;box-shadow:0 3px 10px #0007;overflow:hidden}.bossBar i{display:block;height:100%;background:#e64d4d;border-radius:99px;transition:width .08s linear}
 #pauseBtn{position:fixed;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:0;border-radius:50%;width:48px;height:48px;background:#132419dd;color:white;font-size:20px}
-#bigBigHudEatCanvas{position:fixed;inset:0;width:100vw;height:100vh;z-index:19;pointer-events:none;display:none}
 #boostBtn{position:fixed;left:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:1px solid #ffffff2a;border-radius:18px;min-width:92px;height:58px;padding:5px 10px;background:#17301eee;color:white;font:900 13px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:inset 0 -4px #0b1b10,0 5px 14px #0006;backdrop-filter:blur(6px)}#boostBtn small{display:block;font-size:10px;color:#ffd48a;margin-top:1px}#boostBtn:disabled{opacity:.48}#boostBtn.active{background:#9b6b16ee;box-shadow:inset 0 -4px #684308,0 0 18px #ffd45e88;animation:boostPulse .35s ease-in-out infinite alternate}#endlessTripleBtn{position:fixed;left:112px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:1px solid #ffffff2a;border-radius:18px;min-width:94px;height:58px;padding:5px 10px;background:#2b2340ee;color:white;font:900 12px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:inset 0 -4px #171021,0 5px 14px #0006;backdrop-filter:blur(6px)}#endlessTripleBtn small{display:block;font-size:10px;color:#e3c7ff;margin-top:1px}#endlessTripleBtn:disabled{opacity:.42}#endlessTripleBtn.active{background:#70439bee;box-shadow:inset 0 -4px #43225f,0 0 18px #c97cff88;animation:boostPulse .28s ease-in-out infinite alternate}#endlessRepelBtn{position:fixed;left:212px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:1px solid #ffffff2a;border-radius:18px;min-width:112px;height:58px;padding:5px 9px;background:#174044ee;color:white;font:900 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:inset 0 -4px #0b2528,0 5px 14px #0006;backdrop-filter:blur(6px)}#endlessRepelBtn small{display:block;font-size:9px;color:#bff7e9;margin-top:1px}#endlessRepelBtn:disabled{opacity:.42}#endlessRepelBtn.active{background:#24766eee;box-shadow:inset 0 -4px #124640,0 0 18px #7fffe088;animation:boostPulse .28s ease-in-out infinite alternate}@media(max-width:400px){#boostBtn{min-width:82px;padding:5px 7px;font-size:12px}#endlessTripleBtn{left:100px;min-width:82px;padding:5px 7px;font-size:11px}#endlessRepelBtn{left:188px;min-width:99px;padding:5px 6px;font-size:10px}}@keyframes boostPulse{to{transform:scale(1.04)}}.waveProg{font-size:10px;opacity:.68;margin-left:4px}.telegraph{position:fixed;top:92px;left:50%;transform:translateX(-50%);z-index:6;font-weight:950;background:#341b12dd;border:1px solid #ffc95a55;padding:6px 12px;border-radius:999px;letter-spacing:.5px}
 .choice{min-height:142px;text-align:left;background:#18301f;border:1px solid #ffffff18;border-radius:16px;padding:14px;box-shadow:none;position:relative;overflow:hidden}.choice:active{transform:scale(.98)}.choice .art{font-size:30px;margin-bottom:7px}.choice .rarity{font-size:10px;text-transform:uppercase;letter-spacing:1.1px;opacity:.58;font-weight:900;margin-bottom:4px}.choice b{display:block;font-size:17px}.choice p{margin:6px 0 0;line-height:1.3}.choice.common{border-left:4px solid #86a879}.choice.rare{border-left:4px solid #e3b64b}.choice.epic{border-left:4px solid #9a75c8}#upgrade .panel{max-width:520px;background:#13281a;border:1px solid #ffffff1c;box-shadow:0 18px 60px #07120b99}#upgrade .panel h2{margin-bottom:3px}#upgrade .grid{gap:9px}
 .shopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#203925;border-radius:16px;padding:12px;margin:8px 0}.shopRow .left{display:flex;gap:12px;align-items:center}.coin{font-weight:1000;color:#ffd166}
@@ -1295,7 +1294,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <button id="endlessTripleBtn" class="hidden">2× BOOST<small>EMPTY</small></button>
 <button id="endlessRepelBtn" class="hidden">REPELLENT<small>EMPTY</small></button>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
-<canvas id="bigBigHudEatCanvas" aria-hidden="true"></canvas>
 
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
@@ -1319,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.46</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.46</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.47</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.47</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1866,131 +1864,46 @@ function makeArmyHelper(i=0){
 }
 let game=null, last=0, raf=0, audio=null;
 
-// v19.0.43 — BIG BIG HUD-eating presentation.
-// The real boss entity never leaves the arena. A lightweight visual double performs the bite,
-// then the targeted HUD element is hidden. This keeps AI, collision, damage, and phase logic isolated.
-const BB_HUD_EAT_TARGETS={
+// v19.0.47 — BIG BIG HUD fade presentation.
+// Intentionally presentation-only: no combat pause, no boss movement changes, no damage/game-over guards.
+const BB_HUD_FADE_TARGETS={
  health:()=>document.querySelector('#hud .hudHealth'),
  wave:()=>document.querySelector('#hud .hudWave'),
  pause:()=>document.getElementById('pauseBtn'),
  bossbar:()=>document.getElementById('bossbar')
 };
-let bbHudEatAnim=null,bbHudEatQueue=[],bbHudEatRAF=0,bbHudEatCinematic=null;
-function beginBigBigHudEatCinematic(){
- if(bbHudEatCinematic||!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale)return;
- const p=game.p,b=game.boss;
- bbHudEatCinematic={gameRef:game,playerHp:p.hp,playerX:p.x,playerY:p.y,moveX:p.moveX,moveY:p.moveY,goldInvulnUntil:p.goldInvulnUntil||0,bossX:b?.x,bossY:b?.y,bossVX:b?.vx||0,bossVY:b?.vy||0};
- game.bbHudEatCinematic=true;p.pendingDamage=0;p.goldInvulnUntil=Infinity;
+const bbHudFadeTimers=new Map();
+function resetBigBigHudFades(){
+ for(const t of bbHudFadeTimers.values())clearTimeout(t);bbHudFadeTimers.clear();
+ for(const key of Object.keys(BB_HUD_FADE_TARGETS)){
+   const el=BB_HUD_FADE_TARGETS[key]?.();if(!el)continue;
+   el.style.transition='';el.style.opacity='';el.style.pointerEvents='';
+ }
+ if(game)game.bbHudFaded={health:false,wave:false,pause:false,bossbar:false};
 }
-function holdBigBigHudEatCinematic(){
- const c=bbHudEatCinematic;if(!c||!game||game!==c.gameRef)return;const p=game.p,b=game.boss;
- // Nothing in the live run is allowed to change underneath the visual cutscene.
- p.hp=c.playerHp;p.pendingDamage=0;p.x=c.playerX;p.y=c.playerY;p.moveX=c.moveX;p.moveY=c.moveY;p.goldInvulnUntil=Infinity;
- if(b&&!b.dead){if(Number.isFinite(c.bossX))b.x=c.bossX;if(Number.isFinite(c.bossY))b.y=c.bossY;b.vx=0;b.vy=0}
- game.goldFinale=true;game.over=false;
+function startBigBigHudFade(key){
+ if(!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale)return;
+ game.bbHudFaded ||= {health:false,wave:false,pause:false,bossbar:false};
+ if(game.bbHudFaded[key])return;
+ const el=BB_HUD_FADE_TARGETS[key]?.();if(!el)return;
+ game.bbHudFaded[key]=true;
+ // Force a known visible start, then transition only opacity for five seconds.
+ el.style.transition='none';el.style.opacity='1';void el.offsetWidth;
+ el.style.transition='opacity 5s linear';el.style.opacity='0';
+ if(bbHudFadeTimers.has(key))clearTimeout(bbHudFadeTimers.get(key));
+ bbHudFadeTimers.set(key,setTimeout(()=>{
+   bbHudFadeTimers.delete(key);
+   // Once the pause control is fully invisible, do not leave an invisible clickable hotspot.
+   if(key==='pause'&&el)el.style.pointerEvents='none';
+ },5050));
 }
-function endBigBigHudEatCinematic(){
- const c=bbHudEatCinematic;bbHudEatCinematic=null;
- if(!c||!game||game!==c.gameRef)return;const p=game.p,b=game.boss;
- p.hp=Math.max(1,Math.min(p.maxHp,c.playerHp));p.pendingDamage=0;p.x=c.playerX;p.y=c.playerY;p.moveX=c.moveX;p.moveY=c.moveY;
- // A tiny grace window prevents a projectile frozen on top of the player from landing on the first resumed frame.
- p.goldInvulnUntil=Math.max(c.goldInvulnUntil||0,game.time+.45);
- if(b&&!b.dead){if(Number.isFinite(c.bossX))b.x=c.bossX;if(Number.isFinite(c.bossY))b.y=c.bossY;b.vx=c.bossVX||0;b.vy=c.bossVY||0}
- game.bbHudEatCinematic=false;
-}
-function bigBigHudEatCombatLocked(){
- return !!(game&&game.mode==='gold'&&game.wave===50&&game.goldFinale&&(game.bbHudEatCinematic||bbHudEatCinematic||bbHudEatAnim||bbHudEatQueue.length));
-}
-
-function bbHudEatCanvas(){
- const c=document.getElementById('bigBigHudEatCanvas');if(!c)return null;
- const d=Math.max(1,Math.min(2,window.devicePixelRatio||1)),w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
- if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d);c.style.width=w+'px';c.style.height=h+'px'}
- const q=c.getContext('2d');q.setTransform(d,0,0,d,0,0);return {c,q,w,h};
-}
-function drawBigBigHudEater(q,x,y,r,mouth=0,rot=0){
- const T=Math.PI*2;q.save();q.translate(x,y);q.rotate(rot);
- q.shadowColor='#000a';q.shadowBlur=10;q.shadowOffsetY=5;
- q.strokeStyle='#b97b08';q.lineWidth=Math.max(4,r*.12);q.lineCap='round';
- for(let i=0;i<6;i++){const a=i*T/6;q.beginPath();q.moveTo(Math.cos(a)*r*.42,Math.sin(a)*r*.38);q.lineTo(Math.cos(a)*r*1.25,Math.sin(a)*r*1.08);q.stroke()}
- q.shadowBlur=0;q.fillStyle='#d99c16';q.strokeStyle='#553003';q.lineWidth=2.5;q.beginPath();
- for(let i=0;i<10;i++){const a=-Math.PI/2+i*T/10,z=i%2?r*.70:r*.94;i?q.lineTo(Math.cos(a)*z,Math.sin(a)*z):q.moveTo(Math.cos(a)*z,Math.sin(a)*z)}
- q.closePath();q.fill();q.stroke();
- q.fillStyle='#8f5f0b';q.strokeStyle='#ffd85a';q.lineWidth=3;q.beginPath();q.ellipse(0,-r*.03,r*.48,r*.56,0,0,T);q.fill();q.stroke();
- for(const [ex,ey] of [[0,-.34],[-.22,-.05],[.22,-.05]]){q.fillStyle='#fff0a0';q.beginPath();q.ellipse(ex*r,ey*r,r*.10,r*.08,0,0,T);q.fill();q.fillStyle='#7a3e00';q.beginPath();q.arc(ex*r,ey*r,r*.032,0,T);q.fill()}
- // Exaggerated bite jaws used only during the HUD-eating presentation.
- const gap=r*(.18+.42*mouth);q.fillStyle='#1b1104';q.beginPath();q.moveTo(-r*.45,r*.12-gap);q.quadraticCurveTo(0,r*.52-gap,r*.45,r*.12-gap);q.lineTo(r*.34,r*.33-gap);q.quadraticCurveTo(0,r*.15-gap,-r*.34,r*.33-gap);q.closePath();q.fill();
- q.fillStyle='#fff3c1';
- for(let s of [-1,1])for(let i=0;i<3;i++){const xx=(i-1)*r*.19,yy=r*(.17+s*.05)-s*gap;q.beginPath();q.moveTo(xx-r*.055,yy);q.lineTo(xx+r*.055,yy);q.lineTo(xx,yy+s*r*.13);q.closePath();q.fill()}
- q.restore();
-}
-function bbHudEatHide(key){
- const el=BB_HUD_EAT_TARGETS[key]?.();if(el)el.style.visibility='hidden';
- if(game?.bbHudEaten)game.bbHudEaten[key]=true;
- try{beep(105,.10,.04,'square');setTimeout(()=>beep(72,.12,.035,'triangle'),45)}catch(_){}
-}
-function applyBigBigHudEatVisibility(){
- if(!game?.bbHudEaten)return;
- for(const key of Object.keys(BB_HUD_EAT_TARGETS)){const el=BB_HUD_EAT_TARGETS[key]?.();if(el&&game.bbHudEaten[key])el.style.visibility='hidden'}
-}
-function resetBigBigHudEat(){
- bbHudEatQueue.length=0;bbHudEatAnim=null;
- if(bbHudEatCinematic)endBigBigHudEatCinematic();else if(game)game.bbHudEatCinematic=false;
- if(bbHudEatRAF){cancelAnimationFrame(bbHudEatRAF);bbHudEatRAF=0}
- const c=document.getElementById('bigBigHudEatCanvas');if(c){c.style.display='none';const q=c.getContext('2d');q&&q.clearRect(0,0,c.width,c.height)}
- for(const key of Object.keys(BB_HUD_EAT_TARGETS)){const el=BB_HUD_EAT_TARGETS[key]?.();if(el)el.style.visibility=''}
- if(game){game.bbHudEaten={health:false,wave:false,pause:false,bossbar:false};game.bbHudEatQueued={health:false,wave:false,pause:false,bossbar:false}}
-}
-function queueBigBigHudEat(key,boss){
- if(!game||game.mode!=='gold'||game.wave!==50||!boss||boss.dead||boss.goldPhase!==2)return;
- game.bbHudEaten ||= {health:false,wave:false,pause:false,bossbar:false};
- game.bbHudEatQueued ||= {health:false,wave:false,pause:false,bossbar:false};
- if(game.bbHudEaten[key]||game.bbHudEatQueued[key])return;
- game.bbHudEatQueued[key]=true;
- bbHudEatQueue.push({key,sx:Number.isFinite(boss.x)?boss.x:innerWidth*.5,sy:Number.isFinite(boss.y)?boss.y:innerHeight*.35});
- if(!bbHudEatAnim)startNextBigBigHudEat();
-}
-function startNextBigBigHudEat(){
- if(bbHudEatAnim||!bbHudEatQueue.length||!game||game.over)return;
- beginBigBigHudEatCinematic();holdBigBigHudEatCinematic();
- const job=bbHudEatQueue.shift(),el=BB_HUD_EAT_TARGETS[job.key]?.();
- if(!el){if(game?.bbHudEatQueued)game.bbHudEatQueued[job.key]=false;startNextBigBigHudEat();return}
- const r=el.getBoundingClientRect(),tx=r.left+r.width*.5,ty=r.top+r.height*.5;
- bbHudEatAnim={...job,tx,ty,start:performance.now(),bitten:false,dur:1080};
- const pack=bbHudEatCanvas();if(pack)pack.c.style.display='block';
- if(!bbHudEatRAF)bbHudEatRAF=requestAnimationFrame(stepBigBigHudEat);
-}
-function stepBigBigHudEat(now){
- bbHudEatRAF=0;const a=bbHudEatAnim,pack=bbHudEatCanvas();
- if(!a||!pack||!game){if(pack){pack.q.clearRect(0,0,pack.w,pack.h);pack.c.style.display='none'}bbHudEatAnim=null;endBigBigHudEatCinematic();return}
- holdBigBigHudEatCinematic();
- const {c,q,w,h}=pack;q.clearRect(0,0,w,h);const u=Math.max(0,Math.min(1,(now-a.start)/a.dur));
- let p,mouth=0,scale=1,rot=0;
- if(u<.62){p=u/.62;const ease=1-Math.pow(1-p,3);p=ease;mouth=.15;scale=1+.12*Math.sin(p*Math.PI);rot=Math.sin(p*Math.PI)*.09}
- else if(u<.82){p=1;const bite=(u-.62)/.20;mouth=Math.sin(bite*Math.PI);scale=1+.20*Math.sin(bite*Math.PI);rot=.07*Math.sin(bite*Math.PI*2)}
- else{const back=(u-.82)/.18;p=1-back*.22;mouth=0;scale=1-back*.12;rot=0}
- const x=a.sx+(a.tx-a.sx)*p,y=a.sy+(a.ty-a.sy)*p;
- drawBigBigHudEater(q,x,y,34*scale,mouth,rot);
- if(!a.bitten&&u>=.70){a.bitten=true;bbHudEatHide(a.key)}
- if(u<1){bbHudEatRAF=requestAnimationFrame(stepBigBigHudEat);return}
- q.clearRect(0,0,w,h);c.style.display='none';if(game?.bbHudEatQueued)game.bbHudEatQueued[a.key]=false;bbHudEatAnim=null;
- setTimeout(()=>{
-   if(!game)return endBigBigHudEatCinematic();
-   holdBigBigHudEatCinematic();
-   if(bbHudEatQueue.length)startNextBigBigHudEat();
-   else endBigBigHudEatCinematic();
- },140);
-}
-function syncBigBigHudEating(boss){
+function syncBigBigHudFades(boss){
  if(!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale||!boss||boss.dead||boss.goldPhase!==2||!(boss.max>0))return;
- game.bbHudEaten ||= {health:false,wave:false,pause:false,bossbar:false};
- game.bbHudEatQueued ||= {health:false,wave:false,pause:false,bossbar:false};
  const pct=100*boss.hp/boss.max;
- if(pct<=75)queueBigBigHudEat('health',boss);
- if(pct<=50)queueBigBigHudEat('wave',boss);
- if(pct<=25)queueBigBigHudEat('pause',boss);
- if(pct<=20)queueBigBigHudEat('bossbar',boss);
- applyBigBigHudEatVisibility();
+ if(pct<=75)startBigBigHudFade('health');
+ if(pct<=50)startBigBigHudFade('wave');
+ if(pct<=25)startBigBigHudFade('pause');
+ if(pct<=20)startBigBigHudFade('bossbar');
 }
 const BB_LOW_FX_DEVICE=((navigator.hardwareConcurrency||8)<=4)||((navigator.deviceMemory||8)<=4);
 
@@ -2298,7 +2211,7 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(startWave=1,testMode=false){
- resetBigBigHudEat();
+ resetBigBigHudFades();
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const w=Math.max(1,Math.min(100,Number(startWave)||1));
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
@@ -2314,7 +2227,7 @@ function makeGoldPlayer(){
  finally{save.selected=old}
 }
 function startGoldWaves(testMode=false,startWave=1){
- resetBigBigHudEat();
+ resetBigBigHudFades();
  if(!testMode&&!goldWavesUnlocked())return;
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
@@ -2339,7 +2252,7 @@ function goldBossFor(w){return GOLD_BOSSES.find(b=>b.wave===w)||GOLD_BOSSES[Math
 function goldWaveQuota(w){return Math.min(12,4+Math.floor((Math.max(1,w)-1)/5))}
 
 function startEndless(){
- resetBigBigHudEat();
+ resetBigBigHudFades();
  if(!save.endlessUnlocked)return;
  initAudio();titleMusicStop();shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
@@ -2671,7 +2584,7 @@ function damageEnemy(e,d,source='player'){
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
    g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
-   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;g.bbHudEaten={health:false,wave:false,pause:false,bossbar:false};g.bbHudEatQueued={health:false,wave:false,pause:false,bossbar:false};
+   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;g.bbHudFaded={health:false,wave:false,pause:false,bossbar:false};
    e._goldTier=tier;e.maxHp=fullHp;e.max=fullHp;e.hp=fullHp;e.damage=14+tier*3.4;e.speed=0;
    e.x=W/2;e.y=Math.max(145,H*.24);e.enterX=e.x;e.enterY=e.y;e.state='chase';e.stateT=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
    e.invuln=3.30;e._dash=0;e._hunt=0;e._bc=.18;e._goldCycle=0;
@@ -2820,7 +2733,6 @@ function showPlayerDamage(amount){
 }
 function hurtPlayer(amount){
  if(!game||!game.p||amount<=0)return;
- if(bigBigHudEatCombatLocked())return; // v19.0.46: HUD bite presentation cannot damage the player.
  const p=game.p;
  // Gold Leaf revive protection: every player-damage source routes through hurtPlayer,
  // so blocking here guarantees the full two seconds against contact, hazards, and projectiles.
@@ -3135,11 +3047,6 @@ function update(dt,now){
    return;
  }
  if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);if((p.goldInvulnUntil||0)>0&&g.time>=p.goldInvulnUntil)p.goldInvulnUntil=0;
- // v19.0.46 — HUD-eating is a short cinematic beat. Freeze combat/world simulation
- // while the visual double bites the UI so low test HP cannot stack thresholds, kill the
- // player, or let projectiles/AI continue behind the presentation. The independent HUD
- // eater RAF keeps animating while the main game state stays still.
- if(bigBigHudEatCombatLocked()){holdBigBigHudEatCinematic();p.lastAttack=now;p.pendingDamage=0;return;}
  // Flush accumulated contact damage into one readable popup roughly six times per second.
  if((p.pendingDamage||0)>0&&now-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=now}
  g.time+=dt;
@@ -3684,10 +3591,7 @@ function previewFinalPurification(purifyOnly=false){
 }
 
 function finish(won,quit=false){
- // v19.0.46 — a HUD-eating cutscene is presentation only. Delayed projectiles/callbacks
- // are not allowed to end the run while combat is frozen underneath it.
- if(!won&&!quit&&bigBigHudEatCombatLocked()){holdBigBigHudEatCinematic();return;}
- resetBigBigHudEat();
+ resetBigBigHudFades();
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
@@ -4849,7 +4753,7 @@ document.addEventListener('change',e=>{
 // or short-lived gameplay oscillator behind; rebuild the Home canvas after it is visible and
 // silence old voices before restarting the normal title soundtrack.
 function enterHomeCleanly(){
- resetBigBigHudEat();
+ resetBigBigHudFades();
   document.body.classList.remove('g159');
   if(game&&game.mode==='gold'){game.mode='home';game.over=true;}
  bossMusicStop();shopMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);
@@ -4899,7 +4803,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('pointerdown',()=>{if(game&&game.mode==='endless'&&!game.over&&!game.paused){initAudio();if(!endlessMusicTimer)endlessMusicStart(false)}else if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
-$('pauseBtn').onclick=()=>{if(!game||game.over||game.bbHudEaten?.pause)return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
+$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
 const pcKeys={w:false,a:false,s:false,d:false};
 function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'}
@@ -5208,7 +5112,6 @@ function goldTint(e){
 function bossTick(e,dt){
  if(!G()||!e||e.dead||e.goldBossKey!=='goldUnknownBoss')return;
  const p=game.p;if(!p)return;
- if(bigBigHudEatCombatLocked()&&e.goldPhase===2){e.vx=0;e.vy=0;e._dash=0;e._hunt=0;return;}
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
@@ -5400,8 +5303,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    }
    alien.goldBossName=alien.goldPhase===2?'BIG BIG':'???';alien.name=alien.goldBossName;syncGoldBossName();
    const pct=Math.max(0,Math.min(100,(alien.hp/alien.max)*100));
-   syncBigBigHudEating(alien);
-   applyBigBigHudEatVisibility();
+   syncBigBigHudFades(alien);
    for(const id of ['bossFill0','bossFill1']){const f=document.getElementById(id);if(f){f.style.width=pct+'%';f.style.background='linear-gradient(90deg,#9b6108,#e3a91c 42%,#ffe16a 72%,#fff1a6)'}}
  }
 
