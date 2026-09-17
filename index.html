@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.31 FINALE FIX: Wave 50 now transforms the existing Gold boss into BIG BIG in place on the lethal hit, eliminating the remove-and-respawn handoff gap. -->
+<!-- Big Bug v19.0.32 FINALE FIX: Wave 50 in-place promotion now recognizes the Gold wrapper's temporary goldUnknownActive identity, so the lethal hit transforms the same live boss before completeWave can invoke the legacy Wave 51 fallback. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1317,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.31</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.31</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.32</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.32</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2299,7 +2299,7 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.31 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
+// v19.0.32 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  try{
@@ -2308,7 +2308,7 @@ function bb22Trace(msg){
   console.log('[BB22]',line);
   let el=document.getElementById('bb22Trace');
   if(!el){el=document.createElement('div');el.id='bb22Trace';el.style.cssText='position:fixed;left:6px;right:6px;bottom:6px;z-index:20000;background:rgba(0,0,0,.88);color:#fff;font:700 11px/1.25 monospace;padding:7px;border:2px solid #ffe15b;border-radius:5px;white-space:pre-wrap;pointer-events:none;max-height:38vh;overflow:hidden';document.body.appendChild(el)}
-  el.textContent='v19.0.31 W50 TRACE\n'+BB22TRACE.join('\n');
+  el.textContent='v19.0.32 W50 TRACE\n'+BB22TRACE.join('\n');
  }catch(err){console.error('[BB22 trace error]',err)}
 }
 // v19.0.30 — Wave 50 finale fix: this helper must live in the main script scope.
@@ -2397,7 +2397,7 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.31 fallback only — normal play now promotes the Wave 50 boss in place inside damageEnemy(),
+   // v19.0.32 fallback only — normal play now promotes the Wave 50 boss in place inside damageEnemy(),
    // so this branch should only run if some external/test path clears Wave 50 without a lethal hit.
    if(g.wave===50){
      bb22Trace('completeWave W50 BRANCH');
@@ -2541,10 +2541,11 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave>=50&&e&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive'||e.bigBigFinale);
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey+' bigBig='+!!e.bigBigFinale);
- // v19.0.31 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
+ // v19.0.32 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
  // The lethal hit on ??? now promotes that SAME live entity into BIG BIG before it can be
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
- if(game&&game.mode==='gold'&&game.wave===50&&!e.bigBigFinale&&e.goldBossKey==='gildedSentinel'&&d>=e.hp){
+ if(game&&game.mode==='gold'&&game.wave===50&&!e.bigBigFinale&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive')&&d>=e.hp){
+   bb22Trace('W50 LETHAL PROMOTION ACCEPTED key='+e.goldBossKey+' boss='+e.boss+' hp='+e.hp+' d='+d);
    const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=Math.round(760*Math.pow(1.245,tier-1));
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=51;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
@@ -4929,7 +4930,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.31';
+const BB_BUILD_VERSION='19.0.32';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
