@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.11: Story boss bars reliably reset to red outside Gold Waves; Wave 50 ??? first defeat is intercepted during Gold inherited-combat identity masking so BIG BIG finale can begin. -->
+<!-- Big Bug v19.0.12: Gold Wave 50 now hands off to an isolated BIG BIG finale state; the first ??? defeat cannot clear Gold Waves; BIG BIG alone completes the run. Story boss bars reset to red outside Gold Waves. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1319,7 +1319,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v19.0.0</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.11</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.12</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2313,7 +2313,7 @@ function beginWave(w){
    g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
    $('bossbar').style.display='none';
    flashBanner(bossWave?'GOLD BOSS '+w:'GOLD WAVE '+w,bossWave?1.45:1.0);
-   if(bossWave){const gb=goldBossFor(w),be=spawnEnemy('boss',gb.base,0);if(be){be.goldBossKey=gb.key;be.goldBossName=gb.name;be.goldElite=true}g.spawnLeft=0;configureBossHud(w);updateBossHud()}
+   if(bossWave){const gb=goldBossFor(w),be=spawnEnemy('boss',gb.base,0);if(be){be.goldBossKey=gb.key;be.goldBossName=gb.name;be.goldElite=true;if(w===50&&gb.key==='gildedSentinel')be._goldFinaleBoss=true}g.spawnLeft=0;configureBossHud(w);updateBossHud()}
    updateHud();return;
  }
  if(w===100&&!g.finalPrepDone){showFinalPrep();return}
@@ -2332,6 +2332,8 @@ function beginWave(w){
 }
 function completeWave(){
  const g=game;if(!g.waveActive||g.intermission)return;
+ // v19.0.12 — Wave 50's first phase is not a Gold Waves clear. Stay in combat until BIG BIG is truly defeated.
+ if(g.mode==='gold'&&g.wave===50&&g.goldFinaleActive&&!g.goldFinaleDefeated)return;
  // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
@@ -2472,13 +2474,18 @@ function burst(x,y,n=8,life=.5,col=null){
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
- // v19.0.0 — the first Wave 50 Gold-boss "death" reveals BIG BIG instead of ending the run.
- if(game&&game.mode==='gold'&&game.wave===50&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive')&&!e._bigBigPhase2&&!e._bigBigTransition&&d>=e.hp){
+ // v19.0.12 — Wave 50 has its own finale state. The first lethal hit never becomes a normal boss death.
+ if(game&&game.mode==='gold'&&game.wave===50&&e._goldFinaleBoss&&!e._bigBigPhase2&&!e._bigBigTransition&&d>=e.hp){
    const chip=Math.max(0,e.hp-1);if(chip>0)damageEnemy(e,chip,source);
    e.hp=1;e.invuln=999;e._bigBigTransition=true;e._bigBigReviveAt=game.time+2.35;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
-   game.bigBigVoid=0;dropQuestionName();syncGoldBossName();flashBanner('...',1.15);
+   game.goldFinaleActive=true;game.goldFinaleDefeated=false;game.goldFinaleState='reveal';game.bigBigVoid=0;
+   dropQuestionName();syncGoldBossName();flashBanner('...',1.15);
    try{beep(78,.24,.03,'square','music');setTimeout(()=>beep(64,.20,.025,'sawtooth','music'),110)}catch(_){}
    return;
+ }
+ // BIG BIG's death is the one and only point that unlocks the normal Gold Waves clear path.
+ if(game&&game.mode==='gold'&&game.wave===50&&e._goldFinaleBoss&&e._bigBigPhase2&&d>=e.hp){
+   game.goldFinaleDefeated=true;game.goldFinaleState='defeated';
  }
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
@@ -3467,6 +3474,8 @@ function previewFinalPurification(purifyOnly=false){
 }
 
 function finish(won,quit=false){
+ // v19.0.12 — never show GOLD WAVES CLEARED during the ??? -> BIG BIG handoff.
+ if(won&&game&&game.mode==='gold'&&game.wave===50&&game.goldFinaleActive&&!game.goldFinaleDefeated)return;
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
@@ -4841,8 +4850,7 @@ function sync(){
   for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.style.removeProperty('color');n.style.removeProperty('text-shadow')}}
   const nodes=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
   for(let i=0;i<nodes.length;i++){nodes[i].style.removeProperty('color');nodes[i].style.removeProperty('text-shadow')}
-  // Gold Waves writes its fill gradient inline each frame. Clear that inline paint when Gold mode ends
-  // so Story Mode falls back to the original red .bossBar i rule instead of inheriting gold.
+  // Gold Waves paints boss fills inline; remove that paint outside Gold mode so Story uses its original red bar.
   for(const id of ['bossFill0','bossFill1','bossBarFill']){const f=document.getElementById(id);if(f)f.style.removeProperty('background')}
   const fills=document.querySelectorAll('.bossBar i,.bossHealthBar i');
   for(let i=0;i<fills.length;i++)fills[i].style.removeProperty('background');
@@ -4946,7 +4954,7 @@ function bossTick(e,dt){
    e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
    if(game.time>=(e._bigBigReviveAt||Infinity)){
      e._bigBigTransition=false;e._bigBigPhase2=true;e.invuln=0;if(e._bigBigFullHp){e.maxHp=e._bigBigFullHp;e.max=e._bigBigFullHp;}e.hp=e.maxHp;
-     game.bigBigPhase2Start=game.time;game.bigBigVoid=0;
+     game.goldFinaleActive=true;game.goldFinaleDefeated=false;game.goldFinaleState='fight';game.bigBigPhase2Start=game.time;game.bigBigVoid=0;
      flashBanner('BIG BIG REVIVES!',1.45);
      try{beep(110,.22,.035,'sawtooth','music');setTimeout(()=>beep(220,.20,.028,'triangle','music'),90);setTimeout(()=>beep(440,.18,.022,'sine','music'),180)}catch(_){}
    }
@@ -5037,8 +5045,8 @@ function bossDraw(e){
  // Alien gold shell.
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
  for(let i=0;i<10;i++){const a=-Math.PI/2+i*TAU/10,z=i%2?r*.73:r*.98;i?X.lineTo(Math.cos(a)*z,Math.sin(a)*z):X.moveTo(Math.cos(a)*z,Math.sin(a)*z)}X.closePath();X.fill();X.stroke();
- // Breathing/pulsing face cavity.
- const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle='#211505';X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();X.restore();
+ // The black face covering belongs only to ???. When BIG BIG is revealed, it is gone.
+ if(!e._bigBigPhase2){const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle='#211505';X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();X.restore();}
  // Three animated eyes.
  for(let i=0;i<3;i++){const P=[[0,-.38],[-.24,-.07],[.24,-.07]][i],blink=.82+.18*Math.sin(t*4+i);X.fillStyle='#fff0a0';X.beginPath();X.ellipse(r*P[0],r*P[1],Math.max(3,r*.11),Math.max(2,r*.11*blink),0,0,TAU);X.fill();X.fillStyle='#7a3e00';X.beginPath();X.arc(r*P[0],r*P[1],Math.max(1.3,r*.035),0,TAU);X.fill()}
  // Crystal antenna bobs.
