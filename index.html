@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.42 REVEAL POLISH: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.43 REVEAL POLISH: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -48,6 +48,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .pill{background:#0b3b20;border:1px solid #ffffff22;border-radius:14px;padding:7px 6px;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;text-align:center;white-space:nowrap;min-width:0}
 #bossbar{position:fixed;top:max(78px,calc(env(safe-area-inset-top) + 68px));left:50%;right:auto;transform:translateX(-50%);width:min(310px,68vw);z-index:6;text-align:center;display:none;pointer-events:none}.bossHealthRow{margin-bottom:7px}.bossHealthRow:last-child{margin-bottom:0}.bossName{font-weight:1000;font-size:12px;letter-spacing:.6px;text-shadow:0 2px 4px #000b;margin-bottom:3px}.bossBar{height:10px;border-radius:99px;background:#210d0ddd;border:1px solid #fff4;box-shadow:0 3px 10px #0007;overflow:hidden}.bossBar i{display:block;height:100%;background:#e64d4d;border-radius:99px;transition:width .08s linear}
 #pauseBtn{position:fixed;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:0;border-radius:50%;width:48px;height:48px;background:#132419dd;color:white;font-size:20px}
+#bigBigHudEatCanvas{position:fixed;inset:0;width:100vw;height:100vh;z-index:19;pointer-events:none;display:none}
 #boostBtn{position:fixed;left:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:1px solid #ffffff2a;border-radius:18px;min-width:92px;height:58px;padding:5px 10px;background:#17301eee;color:white;font:900 13px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:inset 0 -4px #0b1b10,0 5px 14px #0006;backdrop-filter:blur(6px)}#boostBtn small{display:block;font-size:10px;color:#ffd48a;margin-top:1px}#boostBtn:disabled{opacity:.48}#boostBtn.active{background:#9b6b16ee;box-shadow:inset 0 -4px #684308,0 0 18px #ffd45e88;animation:boostPulse .35s ease-in-out infinite alternate}#endlessTripleBtn{position:fixed;left:112px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:1px solid #ffffff2a;border-radius:18px;min-width:94px;height:58px;padding:5px 10px;background:#2b2340ee;color:white;font:900 12px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:inset 0 -4px #171021,0 5px 14px #0006;backdrop-filter:blur(6px)}#endlessTripleBtn small{display:block;font-size:10px;color:#e3c7ff;margin-top:1px}#endlessTripleBtn:disabled{opacity:.42}#endlessTripleBtn.active{background:#70439bee;box-shadow:inset 0 -4px #43225f,0 0 18px #c97cff88;animation:boostPulse .28s ease-in-out infinite alternate}#endlessRepelBtn{position:fixed;left:212px;bottom:max(12px,env(safe-area-inset-bottom));z-index:7;border:1px solid #ffffff2a;border-radius:18px;min-width:112px;height:58px;padding:5px 9px;background:#174044ee;color:white;font:900 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:inset 0 -4px #0b2528,0 5px 14px #0006;backdrop-filter:blur(6px)}#endlessRepelBtn small{display:block;font-size:9px;color:#bff7e9;margin-top:1px}#endlessRepelBtn:disabled{opacity:.42}#endlessRepelBtn.active{background:#24766eee;box-shadow:inset 0 -4px #124640,0 0 18px #7fffe088;animation:boostPulse .28s ease-in-out infinite alternate}@media(max-width:400px){#boostBtn{min-width:82px;padding:5px 7px;font-size:12px}#endlessTripleBtn{left:100px;min-width:82px;padding:5px 7px;font-size:11px}#endlessRepelBtn{left:188px;min-width:99px;padding:5px 6px;font-size:10px}}@keyframes boostPulse{to{transform:scale(1.04)}}.waveProg{font-size:10px;opacity:.68;margin-left:4px}.telegraph{position:fixed;top:92px;left:50%;transform:translateX(-50%);z-index:6;font-weight:950;background:#341b12dd;border:1px solid #ffc95a55;padding:6px 12px;border-radius:999px;letter-spacing:.5px}
 .choice{min-height:142px;text-align:left;background:#18301f;border:1px solid #ffffff18;border-radius:16px;padding:14px;box-shadow:none;position:relative;overflow:hidden}.choice:active{transform:scale(.98)}.choice .art{font-size:30px;margin-bottom:7px}.choice .rarity{font-size:10px;text-transform:uppercase;letter-spacing:1.1px;opacity:.58;font-weight:900;margin-bottom:4px}.choice b{display:block;font-size:17px}.choice p{margin:6px 0 0;line-height:1.3}.choice.common{border-left:4px solid #86a879}.choice.rare{border-left:4px solid #e3b64b}.choice.epic{border-left:4px solid #9a75c8}#upgrade .panel{max-width:520px;background:#13281a;border:1px solid #ffffff1c;box-shadow:0 18px 60px #07120b99}#upgrade .panel h2{margin-bottom:3px}#upgrade .grid{gap:9px}
 .shopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#203925;border-radius:16px;padding:12px;margin:8px 0}.shopRow .left{display:flex;gap:12px;align-items:center}.coin{font-weight:1000;color:#ffd166}
@@ -1294,6 +1295,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <button id="endlessTripleBtn" class="hidden">2× BOOST<small>EMPTY</small></button>
 <button id="endlessRepelBtn" class="hidden">REPELLENT<small>EMPTY</small></button>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
+<canvas id="bigBigHudEatCanvas" aria-hidden="true"></canvas>
 
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
@@ -1317,8 +1319,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.42</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.42</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.43</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.43</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1863,6 +1865,100 @@ function makeArmyHelper(i=0){
  return {x,y,vx:0,vy:0,target:null,phase:i*(Math.PI*2/10),entered:false,attackCd:0};
 }
 let game=null, last=0, raf=0, audio=null;
+
+// v19.0.43 — BIG BIG HUD-eating presentation.
+// The real boss entity never leaves the arena. A lightweight visual double performs the bite,
+// then the targeted HUD element is hidden. This keeps AI, collision, damage, and phase logic isolated.
+const BB_HUD_EAT_TARGETS={
+ health:()=>document.querySelector('#hud .hudHealth'),
+ wave:()=>document.querySelector('#hud .hudWave'),
+ pause:()=>document.getElementById('pauseBtn'),
+ bossbar:()=>document.getElementById('bossbar')
+};
+let bbHudEatAnim=null,bbHudEatQueue=[],bbHudEatRAF=0;
+
+function bbHudEatCanvas(){
+ const c=document.getElementById('bigBigHudEatCanvas');if(!c)return null;
+ const d=Math.max(1,Math.min(2,window.devicePixelRatio||1)),w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
+ if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d);c.style.width=w+'px';c.style.height=h+'px'}
+ const q=c.getContext('2d');q.setTransform(d,0,0,d,0,0);return {c,q,w,h};
+}
+function drawBigBigHudEater(q,x,y,r,mouth=0,rot=0){
+ const T=Math.PI*2;q.save();q.translate(x,y);q.rotate(rot);
+ q.shadowColor='#000a';q.shadowBlur=10;q.shadowOffsetY=5;
+ q.strokeStyle='#b97b08';q.lineWidth=Math.max(4,r*.12);q.lineCap='round';
+ for(let i=0;i<6;i++){const a=i*T/6;q.beginPath();q.moveTo(Math.cos(a)*r*.42,Math.sin(a)*r*.38);q.lineTo(Math.cos(a)*r*1.25,Math.sin(a)*r*1.08);q.stroke()}
+ q.shadowBlur=0;q.fillStyle='#d99c16';q.strokeStyle='#553003';q.lineWidth=2.5;q.beginPath();
+ for(let i=0;i<10;i++){const a=-Math.PI/2+i*T/10,z=i%2?r*.70:r*.94;i?q.lineTo(Math.cos(a)*z,Math.sin(a)*z):q.moveTo(Math.cos(a)*z,Math.sin(a)*z)}
+ q.closePath();q.fill();q.stroke();
+ q.fillStyle='#8f5f0b';q.strokeStyle='#ffd85a';q.lineWidth=3;q.beginPath();q.ellipse(0,-r*.03,r*.48,r*.56,0,0,T);q.fill();q.stroke();
+ for(const [ex,ey] of [[0,-.34],[-.22,-.05],[.22,-.05]]){q.fillStyle='#fff0a0';q.beginPath();q.ellipse(ex*r,ey*r,r*.10,r*.08,0,0,T);q.fill();q.fillStyle='#7a3e00';q.beginPath();q.arc(ex*r,ey*r,r*.032,0,T);q.fill()}
+ // Exaggerated bite jaws used only during the HUD-eating presentation.
+ const gap=r*(.18+.42*mouth);q.fillStyle='#1b1104';q.beginPath();q.moveTo(-r*.45,r*.12-gap);q.quadraticCurveTo(0,r*.52-gap,r*.45,r*.12-gap);q.lineTo(r*.34,r*.33-gap);q.quadraticCurveTo(0,r*.15-gap,-r*.34,r*.33-gap);q.closePath();q.fill();
+ q.fillStyle='#fff3c1';
+ for(let s of [-1,1])for(let i=0;i<3;i++){const xx=(i-1)*r*.19,yy=r*(.17+s*.05)-s*gap;q.beginPath();q.moveTo(xx-r*.055,yy);q.lineTo(xx+r*.055,yy);q.lineTo(xx,yy+s*r*.13);q.closePath();q.fill()}
+ q.restore();
+}
+function bbHudEatHide(key){
+ const el=BB_HUD_EAT_TARGETS[key]?.();if(el)el.style.visibility='hidden';
+ if(game?.bbHudEaten)game.bbHudEaten[key]=true;
+ try{beep(105,.10,.04,'square');setTimeout(()=>beep(72,.12,.035,'triangle'),45)}catch(_){}
+}
+function applyBigBigHudEatVisibility(){
+ if(!game?.bbHudEaten)return;
+ for(const key of Object.keys(BB_HUD_EAT_TARGETS)){const el=BB_HUD_EAT_TARGETS[key]?.();if(el&&game.bbHudEaten[key])el.style.visibility='hidden'}
+}
+function resetBigBigHudEat(){
+ bbHudEatQueue.length=0;bbHudEatAnim=null;
+ if(bbHudEatRAF){cancelAnimationFrame(bbHudEatRAF);bbHudEatRAF=0}
+ const c=document.getElementById('bigBigHudEatCanvas');if(c){c.style.display='none';const q=c.getContext('2d');q&&q.clearRect(0,0,c.width,c.height)}
+ for(const key of Object.keys(BB_HUD_EAT_TARGETS)){const el=BB_HUD_EAT_TARGETS[key]?.();if(el)el.style.visibility=''}
+ if(game){game.bbHudEaten={health:false,wave:false,pause:false,bossbar:false};game.bbHudEatQueued={health:false,wave:false,pause:false,bossbar:false}}
+}
+function queueBigBigHudEat(key,boss){
+ if(!game||game.mode!=='gold'||game.wave!==50||!boss||boss.dead||boss.goldPhase!==2)return;
+ game.bbHudEaten ||= {health:false,wave:false,pause:false,bossbar:false};
+ game.bbHudEatQueued ||= {health:false,wave:false,pause:false,bossbar:false};
+ if(game.bbHudEaten[key]||game.bbHudEatQueued[key])return;
+ game.bbHudEatQueued[key]=true;
+ bbHudEatQueue.push({key,sx:Number.isFinite(boss.x)?boss.x:innerWidth*.5,sy:Number.isFinite(boss.y)?boss.y:innerHeight*.35});
+ if(!bbHudEatAnim)startNextBigBigHudEat();
+}
+function startNextBigBigHudEat(){
+ if(bbHudEatAnim||!bbHudEatQueue.length||!game||game.over)return;
+ const job=bbHudEatQueue.shift(),el=BB_HUD_EAT_TARGETS[job.key]?.();
+ if(!el){if(game?.bbHudEatQueued)game.bbHudEatQueued[job.key]=false;startNextBigBigHudEat();return}
+ const r=el.getBoundingClientRect(),tx=r.left+r.width*.5,ty=r.top+r.height*.5;
+ bbHudEatAnim={...job,tx,ty,start:performance.now(),bitten:false,dur:1080};
+ const pack=bbHudEatCanvas();if(pack)pack.c.style.display='block';
+ if(!bbHudEatRAF)bbHudEatRAF=requestAnimationFrame(stepBigBigHudEat);
+}
+function stepBigBigHudEat(now){
+ bbHudEatRAF=0;const a=bbHudEatAnim,pack=bbHudEatCanvas();
+ if(!a||!pack||!game||game.over){if(pack){pack.q.clearRect(0,0,pack.w,pack.h);pack.c.style.display='none'}bbHudEatAnim=null;return}
+ const {c,q,w,h}=pack;q.clearRect(0,0,w,h);const u=Math.max(0,Math.min(1,(now-a.start)/a.dur));
+ let p,mouth=0,scale=1,rot=0;
+ if(u<.62){p=u/.62;const ease=1-Math.pow(1-p,3);p=ease;mouth=.15;scale=1+.12*Math.sin(p*Math.PI);rot=Math.sin(p*Math.PI)*.09}
+ else if(u<.82){p=1;const bite=(u-.62)/.20;mouth=Math.sin(bite*Math.PI);scale=1+.20*Math.sin(bite*Math.PI);rot=.07*Math.sin(bite*Math.PI*2)}
+ else{const back=(u-.82)/.18;p=1-back*.22;mouth=0;scale=1-back*.12;rot=0}
+ const x=a.sx+(a.tx-a.sx)*p,y=a.sy+(a.ty-a.sy)*p;
+ drawBigBigHudEater(q,x,y,34*scale,mouth,rot);
+ if(!a.bitten&&u>=.70){a.bitten=true;bbHudEatHide(a.key)}
+ if(u<1){bbHudEatRAF=requestAnimationFrame(stepBigBigHudEat);return}
+ q.clearRect(0,0,w,h);c.style.display='none';if(game?.bbHudEatQueued)game.bbHudEatQueued[a.key]=false;bbHudEatAnim=null;
+ setTimeout(()=>{if(!bbHudEatAnim)startNextBigBigHudEat()},140);
+}
+function syncBigBigHudEating(boss){
+ if(!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale||!boss||boss.dead||boss.goldPhase!==2||!(boss.max>0))return;
+ game.bbHudEaten ||= {health:false,wave:false,pause:false,bossbar:false};
+ game.bbHudEatQueued ||= {health:false,wave:false,pause:false,bossbar:false};
+ const pct=100*boss.hp/boss.max;
+ if(pct<=75)queueBigBigHudEat('health',boss);
+ if(pct<=50)queueBigBigHudEat('wave',boss);
+ if(pct<=25)queueBigBigHudEat('pause',boss);
+ if(pct<=20)queueBigBigHudEat('bossbar',boss);
+ applyBigBigHudEatVisibility();
+}
 const BB_LOW_FX_DEVICE=((navigator.hardwareConcurrency||8)<=4)||((navigator.deviceMemory||8)<=4);
 
 // v17.9.84 — performance-only: coalesce rapid leaf pickup storage writes.
@@ -2102,7 +2198,7 @@ function bossMusicStart(){
  const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
  bossMusicTimer=setTimeout(tick,380);
 }
-// v19.0.42 — short, self-contained reveal sting for ??? -> BIG BIG.
+// v19.0.43 — short, self-contained reveal sting for ??? -> BIG BIG.
 // It briefly owns the music channel, then hands control back to the normal boss theme.
 function bigBigRevealSting(){
  if(!audio||save.settings.music===false)return;
@@ -2169,6 +2265,7 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(startWave=1,testMode=false){
+ resetBigBigHudEat();
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const w=Math.max(1,Math.min(100,Number(startWave)||1));
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
@@ -2184,6 +2281,7 @@ function makeGoldPlayer(){
  finally{save.selected=old}
 }
 function startGoldWaves(testMode=false,startWave=1){
+ resetBigBigHudEat();
  if(!testMode&&!goldWavesUnlocked())return;
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
@@ -2208,6 +2306,7 @@ function goldBossFor(w){return GOLD_BOSSES.find(b=>b.wave===w)||GOLD_BOSSES[Math
 function goldWaveQuota(w){return Math.min(12,4+Math.floor((Math.max(1,w)-1)/5))}
 
 function startEndless(){
+ resetBigBigHudEat();
  if(!save.endlessUnlocked)return;
  initAudio();titleMusicStop();shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
@@ -2313,13 +2412,13 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.42 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
+// v19.0.43 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  try{
   const g=window.game||game, t=g&&Number.isFinite(g.time)?g.time.toFixed(2):'--';
   const line=t+' '+msg; BB22TRACE.push(line); if(BB22TRACE.length>14)BB22TRACE.shift();
-  // v19.0.42 — diagnostics stay in the console only; no debug UI is created in gameplay.
+  // v19.0.43 — diagnostics stay in the console only; no debug UI is created in gameplay.
   console.log('[BB22]',line);
  }catch(err){console.error('[BB22 trace error]',err)}
 }
@@ -2346,7 +2445,7 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.42 — there is no separate internal Wave 51 anymore.
+   // v19.0.43 — there is no separate internal Wave 51 anymore.
    // Wave 50 owns both phases of the same live boss object. If any legacy path asks for
    // Wave 51, keep the run on Wave 50 rather than spawning/replacing the boss.
    if(w===51){w=50;bb22Trace('LEGACY beginWave(51) redirected to Wave 50');}
@@ -2404,7 +2503,7 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.42 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
+   // v19.0.43 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
    // damageEnemy() promotes that same object in place. When phase 2 finally dies, Wave 50 ends the run.
    if(g.wave===50){
      if(g.goldFinale){
@@ -2530,7 +2629,7 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave===50&&e&&e.goldBossKey==='goldUnknownBoss';
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' phase='+(e.goldPhase||1)+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey);
- // v19.0.42 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
+ // v19.0.43 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
  // The lethal hit on ??? now promotes that SAME live entity into BIG BIG before it can be
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
@@ -2539,7 +2638,7 @@ function damageEnemy(e,d,source='player'){
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
    g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
-   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;
+   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;g.bbHudEaten={health:false,wave:false,pause:false,bossbar:false};g.bbHudEatQueued={health:false,wave:false,pause:false,bossbar:false};
    e._goldTier=tier;e.maxHp=fullHp;e.max=fullHp;e.hp=fullHp;e.damage=14+tier*3.4;e.speed=0;
    e.x=W/2;e.y=Math.max(145,H*.24);e.enterX=e.x;e.enterY=e.y;e.state='chase';e.stateT=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
    e.invuln=3.30;e._dash=0;e._hunt=0;e._bc=.18;e._goldCycle=0;
@@ -3546,6 +3645,7 @@ function previewFinalPurification(purifyOnly=false){
 }
 
 function finish(won,quit=false){
+ resetBigBigHudEat();
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
@@ -3726,7 +3826,7 @@ function drawMedievalEnemyOverlay(ctx,e){
  ctx.restore();
 }
 function drawGoldUnknownBossCore(e){
- // v19.0.42 — one proven renderer for both phases, with a brief reveal-only glitch layer.
+ // v19.0.43 — one proven renderer for both phases, with a brief reveal-only glitch layer.
  if(!e||e.dead)return;
  const r=(Number.isFinite(e.r)&&e.r>7)?e.r:32,t=FRAME_NOW*.001,tau=Math.PI*2;
  const tier=e._goldTier||Math.max(1,Math.floor((game?.wave||5)/5));
@@ -4376,7 +4476,7 @@ function draw(now=performance.now()){
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
    X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
 
-   // v19.0.42 — when ??? begins the BIG BIG reveal, the entire arena quickly
+   // v19.0.43 — when ??? begins the BIG BIG reveal, the entire arena quickly
    // falls into near-solid darkness AFTER every Gold background light/sparkle pass. This is
    // background-only: player, boss, shots, combat FX, and HUD are drawn afterward.
    if(game.goldFinale){
@@ -4391,7 +4491,7 @@ function draw(now=performance.now()){
      }
    }
  }
-   // v19.0.42 — keep BIG BIG's arena uniformly dark after the quick reveal fade.
+   // v19.0.43 — keep BIG BIG's arena uniformly dark after the quick reveal fade.
    // The old slow corruption/black-circle growth pass was intentionally removed.
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
  if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
@@ -4498,7 +4598,7 @@ function draw(now=performance.now()){
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
  }
- // v19.0.42 — no duplicate Gold boss render pass; the normal enemy loop owns the single renderer.
+ // v19.0.43 — no duplicate Gold boss render pass; the normal enemy loop owns the single renderer.
  const p=game.p;
  // lively player: eases toward the enemy being attacked and gently bobs at idle
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
@@ -4707,6 +4807,7 @@ document.addEventListener('change',e=>{
 // or short-lived gameplay oscillator behind; rebuild the Home canvas after it is visible and
 // silence old voices before restarting the normal title soundtrack.
 function enterHomeCleanly(){
+ resetBigBigHudEat();
   document.body.classList.remove('g159');
   if(game&&game.mode==='gold'){game.mode='home';game.over=true;}
  bossMusicStop();shopMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);
@@ -4756,7 +4857,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('pointerdown',()=>{if(game&&game.mode==='endless'&&!game.over&&!game.paused){initAudio();if(!endlessMusicTimer)endlessMusicStart(false)}else if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
-$('pauseBtn').onclick=()=>{if(!game||game.over)return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
+$('pauseBtn').onclick=()=>{if(!game||game.over||game.bbHudEaten?.pause)return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
 const pcKeys={w:false,a:false,s:false,d:false};
 function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'}
@@ -5163,7 +5264,7 @@ function bossDraw(e){
  // Alien gold shell.
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
  for(let i=0;i<10;i++){const a=-Math.PI/2+i*TAU/10,z=i%2?r*.73:r*.98;i?X.lineTo(Math.cos(a)*z,Math.sin(a)*z):X.moveTo(Math.cos(a)*z,Math.sin(a)*z)}X.closePath();X.fill();X.stroke();
- // v19.0.42 — keep the proven visible central body in BOTH phases. BIG BIG reveals a brighter core instead of deleting the body geometry.
+ // v19.0.43 — keep the proven visible central body in BOTH phases. BIG BIG reveals a brighter core instead of deleting the body geometry.
  {const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle=e.goldPhase===2?'#8f5f0b':'#211505';X.strokeStyle=e.goldPhase===2?'#ffd85a':'#332005';X.lineWidth=e.goldPhase===2?Math.max(3,r*.08):1;X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();if(e.goldPhase===2)X.stroke();if(e.goldPhase===2){X.globalAlpha=.72;X.fillStyle='#d99c16';X.beginPath();X.ellipse(0,r*.19,r*.30,r*.16,0,0,TAU);X.fill();X.globalAlpha=1;}X.restore();}
  // Three animated eyes.
  for(let i=0;i<3;i++){const P=[[0,-.38],[-.24,-.07],[.24,-.07]][i],blink=.82+.18*Math.sin(t*4+i);X.fillStyle='#fff0a0';X.beginPath();X.ellipse(r*P[0],r*P[1],Math.max(3,r*.11),Math.max(2,r*.11*blink),0,0,TAU);X.fill();X.fillStyle='#7a3e00';X.beginPath();X.arc(r*P[0],r*P[1],Math.max(1.3,r*.035),0,TAU);X.fill()}
@@ -5219,11 +5320,11 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    }
  }
  let bossState=null;
- const preserveFinalBoss=false; // v19.0.42: no separate identity path; one Gold boss identity for every phase.
+ const preserveFinalBoss=false; // v19.0.43: no separate identity path; one Gold boss identity for every phase.
  if(alien){
    if(game.wave>=50&&!alien.__bb22MaskSeen){alien.__bb22MaskSeen=true;bb22Trace('WRAPPER MASK wave='+game.wave+' hp='+alien.hp+' boss='+alien.boss+' key='+alien.goldBossKey)}
    bossState=[alien.boss,alien.kind];
-   // v19.0.42 — only mask the generic Story boss flag while inherited core AI runs.
+   // v19.0.43 — only mask the generic Story boss flag while inherited core AI runs.
    // The Gold boss key NEVER changes mid-frame anymore.
    alien.boss=false;alien.kind='goldUnknown';
  }
@@ -5242,7 +5343,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    if(bossState){alien.boss=bossState[0];alien.kind='goldUnknown'}
    if(!alien.dead)bossTick(alien,dt);
    if(alien.goldPhase===2&&!alien.dead){
-     // v19.0.42 — finale geometry is authoritative after every core update. A transient
+     // v19.0.43 — finale geometry is authoritative after every core update. A transient
      // wrapper/AI value can no longer leave the live boss invisible or outside the arena.
      if(!Number.isFinite(alien.r)||alien.r<8)alien.r=32;
      if(!Number.isFinite(alien.x))alien.x=W/2;if(!Number.isFinite(alien.y))alien.y=Math.max(145,H*.24);
@@ -5256,6 +5357,8 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    }
    alien.goldBossName=alien.goldPhase===2?'BIG BIG':'???';alien.name=alien.goldBossName;syncGoldBossName();
    const pct=Math.max(0,Math.min(100,(alien.hp/alien.max)*100));
+   syncBigBigHudEating(alien);
+   applyBigBigHudEatVisibility();
    for(const id of ['bossFill0','bossFill1']){const f=document.getElementById(id);if(f){f.style.width=pct+'%';f.style.background='linear-gradient(90deg,#9b6108,#e3a91c 42%,#ffe16a 72%,#fff1a6)'}}
  }
 
@@ -5285,7 +5388,7 @@ function drawGoldAlien(e){
  
  X.restore();
 }
-// v19.0.42 — no window.drawEnemy override. The core lexical renderer is authoritative for ??? / BIG BIG; regular Gold aliens keep their normal core path.
+// v19.0.43 — no window.drawEnemy override. The core lexical renderer is authoritative for ??? / BIG BIG; regular Gold aliens keep their normal core path.
 const S=window.show;if(typeof S==='function')window.show=function(){const o=S.apply(this,arguments);sync();return o};
 })();
 </script>
