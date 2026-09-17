@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.32 FINALE FIX: Wave 50 in-place promotion now recognizes the Gold wrapper's temporary goldUnknownActive identity, so the lethal hit transforms the same live boss before completeWave can invoke the legacy Wave 51 fallback. -->
+<!-- Big Bug v19.0.33 FINALE VISIBILITY FIX: BIG BIG is identified by its permanent finale flag, geometry is sanitized after promotion, and the core draw path no longer depends on transient wrapper boss/key state. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1317,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.32</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.32</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.33</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.33</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2299,7 +2299,7 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.32 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
+// v19.0.33 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  try{
@@ -2308,7 +2308,7 @@ function bb22Trace(msg){
   console.log('[BB22]',line);
   let el=document.getElementById('bb22Trace');
   if(!el){el=document.createElement('div');el.id='bb22Trace';el.style.cssText='position:fixed;left:6px;right:6px;bottom:6px;z-index:20000;background:rgba(0,0,0,.88);color:#fff;font:700 11px/1.25 monospace;padding:7px;border:2px solid #ffe15b;border-radius:5px;white-space:pre-wrap;pointer-events:none;max-height:38vh;overflow:hidden';document.body.appendChild(el)}
-  el.textContent='v19.0.32 W50 TRACE\n'+BB22TRACE.join('\n');
+  el.textContent='v19.0.33 W50 TRACE\n'+BB22TRACE.join('\n');
  }catch(err){console.error('[BB22 trace error]',err)}
 }
 // v19.0.30 — Wave 50 finale fix: this helper must live in the main script scope.
@@ -2397,7 +2397,7 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.32 fallback only — normal play now promotes the Wave 50 boss in place inside damageEnemy(),
+   // v19.0.33 fallback only — normal play now promotes the Wave 50 boss in place inside damageEnemy(),
    // so this branch should only run if some external/test path clears Wave 50 without a lethal hit.
    if(g.wave===50){
      bb22Trace('completeWave W50 BRANCH');
@@ -2541,7 +2541,7 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave>=50&&e&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive'||e.bigBigFinale);
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey+' bigBig='+!!e.bigBigFinale);
- // v19.0.32 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
+ // v19.0.33 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
  // The lethal hit on ??? now promotes that SAME live entity into BIG BIG before it can be
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&!e.bigBigFinale&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive')&&d>=e.hp){
@@ -3738,7 +3738,7 @@ function drawEnemy(e){
  // v19.0.30 — Gold finale rendering is handled directly by the core draw path.
  // This avoids relying on a later window.drawEnemy wrapper, which can be bypassed by the
  // lexical drawEnemy binding used by the main render loop on some browsers (notably iOS Safari).
- if(game&&game.mode==='gold'&&e&&e.boss&&e.goldBossKey==='gildedSentinel'&&typeof window.__bbGoldBossDraw==='function'){window.__bbGoldBossDraw(e);return;}
+ if(game&&game.mode==='gold'&&e&&(e.bigBigFinale||(e.boss&&e.goldBossKey==='gildedSentinel'))&&typeof window.__bbGoldBossDraw==='function'){if(e.bigBigFinale){const pad=Math.max(42,Number.isFinite(e.r)?e.r*1.65:52);if(!Number.isFinite(e.r)||e.r<8)e.r=32;if(!Number.isFinite(e.x))e.x=W/2;if(!Number.isFinite(e.y))e.y=Math.max(145,H*.24);e.x=Math.max(pad,Math.min(W-pad,e.x));e.y=Math.max(118+pad*.35,Math.min(H-pad,e.y));e.dead=false;e.boss=true;e.goldBossKey='gildedSentinel';e.goldBossName='BIG BIG';e.name='BIG BIG';}window.__bbGoldBossDraw(e);return;}
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  const margin=e.r*2.7+24;if(e.x+margin<0||e.x-margin>W||e.y+margin<0||e.y-margin>H)return;
  const r=e.r,t=FRAME_NOW/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+(e.kind==='hornet'?Math.PI:0)+Math.sin(t*5)*.025);
@@ -4930,7 +4930,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.32';
+const BB_BUILD_VERSION='19.0.33';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
@@ -5120,7 +5120,8 @@ function bossTick(e,dt){
  }
 }
 function bossDraw(e){
- if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
+ if(!G()||!e||e.dead||(!e.bigBigFinale&&e.goldBossKey!=='gildedSentinel'))return;
+ if(e.bigBigFinale){if(!Number.isFinite(e.r)||e.r<8)e.r=32;if(!Number.isFinite(e.x))e.x=W/2;if(!Number.isFinite(e.y))e.y=Math.max(145,H*.24);}
  const r=e.r||32,t=FRAME_NOW*.001,tier=e._goldTier||Math.max(1,Math.floor(game.wave/5));X.save();X.translate(e.x,e.y);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6));
  // Fully opaque body hides the old boss underneath.
  X.fillStyle='#241703';X.beginPath();X.ellipse(0,0,r*1.28,r*1.18,0,0,TAU);X.fill();
@@ -5209,11 +5210,17 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    if(bossState){alien.boss=bossState[0];alien.kind='goldUnknown';alien.goldBossKey=bossState[2]}
    if(!alien.dead)bossTick(alien,dt);
    if(alien.bigBigFinale&&!alien.dead){
-     // v19.0.30 — Gold dash/chase attacks may approach the edges, but the finale boss
-     // itself always remains drawable and targetable inside the arena.
-     const pad=Math.max(42,(alien.r||32)*1.65);
+     // v19.0.33 — finale geometry is authoritative after every core update. A transient
+     // wrapper/AI value can no longer leave the live boss invisible or outside the arena.
+     if(!Number.isFinite(alien.r)||alien.r<8)alien.r=32;
+     if(!Number.isFinite(alien.x))alien.x=W/2;if(!Number.isFinite(alien.y))alien.y=Math.max(145,H*.24);
+     if(!Number.isFinite(alien.vx))alien.vx=0;if(!Number.isFinite(alien.vy))alien.vy=0;
+     if(!Number.isFinite(alien._dvx))alien._dvx=0;if(!Number.isFinite(alien._dvy))alien._dvy=0;
+     alien.dead=false;alien.boss=true;alien.goldBossKey='gildedSentinel';alien.goldBossName='BIG BIG';alien.name='BIG BIG';
+     const pad=Math.max(42,alien.r*1.65);
      alien.x=Math.max(pad,Math.min(W-pad,alien.x));
      alien.y=Math.max(118+pad*.35,Math.min(H-pad,alien.y));
+     if(!alien.__bb33VisibleTrace){alien.__bb33VisibleTrace=true;bb22Trace('FINALE VISIBILITY LOCK x='+Math.round(alien.x)+' y='+Math.round(alien.y)+' r='+alien.r+' boss='+alien.boss+' key='+alien.goldBossKey)}
    }
    alien.goldBossName=alien.bigBigFinale?'BIG BIG':'???';alien.name=alien.goldBossName;syncGoldBossName();
    const pct=Math.max(0,Math.min(100,(alien.hp/alien.max)*100));
