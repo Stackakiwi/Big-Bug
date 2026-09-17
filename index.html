@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.41 REVEAL POLISH: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.42 REVEAL POLISH: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1317,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.41</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.41</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.42</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.42</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2102,7 +2102,7 @@ function bossMusicStart(){
  const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
  bossMusicTimer=setTimeout(tick,380);
 }
-// v19.0.41 — short, self-contained reveal sting for ??? -> BIG BIG.
+// v19.0.42 — short, self-contained reveal sting for ??? -> BIG BIG.
 // It briefly owns the music channel, then hands control back to the normal boss theme.
 function bigBigRevealSting(){
  if(!audio||save.settings.music===false)return;
@@ -2313,13 +2313,13 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.41 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
+// v19.0.42 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  try{
   const g=window.game||game, t=g&&Number.isFinite(g.time)?g.time.toFixed(2):'--';
   const line=t+' '+msg; BB22TRACE.push(line); if(BB22TRACE.length>14)BB22TRACE.shift();
-  // v19.0.41 — diagnostics stay in the console only; no debug UI is created in gameplay.
+  // v19.0.42 — diagnostics stay in the console only; no debug UI is created in gameplay.
   console.log('[BB22]',line);
  }catch(err){console.error('[BB22 trace error]',err)}
 }
@@ -2346,7 +2346,7 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.41 — there is no separate internal Wave 51 anymore.
+   // v19.0.42 — there is no separate internal Wave 51 anymore.
    // Wave 50 owns both phases of the same live boss object. If any legacy path asks for
    // Wave 51, keep the run on Wave 50 rather than spawning/replacing the boss.
    if(w===51){w=50;bb22Trace('LEGACY beginWave(51) redirected to Wave 50');}
@@ -2404,7 +2404,7 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.41 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
+   // v19.0.42 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
    // damageEnemy() promotes that same object in place. When phase 2 finally dies, Wave 50 ends the run.
    if(g.wave===50){
      if(g.goldFinale){
@@ -2530,7 +2530,7 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave===50&&e&&e.goldBossKey==='goldUnknownBoss';
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' phase='+(e.goldPhase||1)+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey);
- // v19.0.41 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
+ // v19.0.42 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
  // The lethal hit on ??? now promotes that SAME live entity into BIG BIG before it can be
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
@@ -3726,7 +3726,7 @@ function drawMedievalEnemyOverlay(ctx,e){
  ctx.restore();
 }
 function drawGoldUnknownBossCore(e){
- // v19.0.41 — one proven renderer for both phases, with a brief reveal-only glitch layer.
+ // v19.0.42 — one proven renderer for both phases, with a brief reveal-only glitch layer.
  if(!e||e.dead)return;
  const r=(Number.isFinite(e.r)&&e.r>7)?e.r:32,t=FRAME_NOW*.001,tau=Math.PI*2;
  const tier=e._goldTier||Math.max(1,Math.floor((game?.wave||5)/5));
@@ -4376,7 +4376,7 @@ function draw(now=performance.now()){
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
    X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
 
-   // v19.0.41 — when ??? begins the BIG BIG reveal, the entire arena quickly
+   // v19.0.42 — when ??? begins the BIG BIG reveal, the entire arena quickly
    // falls into near-solid darkness AFTER every Gold background light/sparkle pass. This is
    // background-only: player, boss, shots, combat FX, and HUD are drawn afterward.
    if(game.goldFinale){
@@ -4391,18 +4391,8 @@ function draw(now=performance.now()){
      }
    }
  }
-   // v19.0.30 — BIG BIG's separate finale wave progressively corrupts the existing
-   // Gold arena. Irregular black growth closes in over ~12 seconds while combat/HUD stay live.
-   if(game?.mode==='gold'&&game.goldFinale){
-     const age=Math.max(0,game.time-(game.goldCorruptionStart||game.time)),q=Math.min(.96,age/12);
-     if(q>0){X.save();X.globalCompositeOperation='source-over';X.globalAlpha=.18+.72*q;X.fillStyle='#000';
-       const edge=q*Math.max(W,H)*.34;
-       X.fillRect(0,0,W,edge*.42);X.fillRect(0,H-edge*.42,W,edge*.42);X.fillRect(0,0,edge*.42,H);X.fillRect(W-edge*.42,0,edge*.42,H);
-       for(let i=0;i<18;i++){const a=i*2.399963+Math.sin(i*7.1)*.18,rr=(1-q)*Math.max(W,H)*.58,px=W/2+Math.cos(a)*rr,py=H/2+Math.sin(a)*rr*.72,r=(22+(i%5)*13)*q;X.beginPath();X.arc(px,py,r,0,Math.PI*2);X.fill()}
-       X.globalAlpha=.08+.22*q;for(let i=0;i<9;i++){const y=(i*83+37)%H;X.fillRect(0,y,W*q*(.16+(i%3)*.04),3+(i%2)*2)}
-       X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
-     }
-   }
+   // v19.0.42 — keep BIG BIG's arena uniformly dark after the quick reveal fade.
+   // The old slow corruption/black-circle growth pass was intentionally removed.
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
  if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
@@ -4508,7 +4498,7 @@ function draw(now=performance.now()){
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
  }
- // v19.0.41 — no duplicate Gold boss render pass; the normal enemy loop owns the single renderer.
+ // v19.0.42 — no duplicate Gold boss render pass; the normal enemy loop owns the single renderer.
  const p=game.p;
  // lively player: eases toward the enemy being attacked and gently bobs at idle
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
@@ -5173,7 +5163,7 @@ function bossDraw(e){
  // Alien gold shell.
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
  for(let i=0;i<10;i++){const a=-Math.PI/2+i*TAU/10,z=i%2?r*.73:r*.98;i?X.lineTo(Math.cos(a)*z,Math.sin(a)*z):X.moveTo(Math.cos(a)*z,Math.sin(a)*z)}X.closePath();X.fill();X.stroke();
- // v19.0.41 — keep the proven visible central body in BOTH phases. BIG BIG reveals a brighter core instead of deleting the body geometry.
+ // v19.0.42 — keep the proven visible central body in BOTH phases. BIG BIG reveals a brighter core instead of deleting the body geometry.
  {const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle=e.goldPhase===2?'#8f5f0b':'#211505';X.strokeStyle=e.goldPhase===2?'#ffd85a':'#332005';X.lineWidth=e.goldPhase===2?Math.max(3,r*.08):1;X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();if(e.goldPhase===2)X.stroke();if(e.goldPhase===2){X.globalAlpha=.72;X.fillStyle='#d99c16';X.beginPath();X.ellipse(0,r*.19,r*.30,r*.16,0,0,TAU);X.fill();X.globalAlpha=1;}X.restore();}
  // Three animated eyes.
  for(let i=0;i<3;i++){const P=[[0,-.38],[-.24,-.07],[.24,-.07]][i],blink=.82+.18*Math.sin(t*4+i);X.fillStyle='#fff0a0';X.beginPath();X.ellipse(r*P[0],r*P[1],Math.max(3,r*.11),Math.max(2,r*.11*blink),0,0,TAU);X.fill();X.fillStyle='#7a3e00';X.beginPath();X.arc(r*P[0],r*P[1],Math.max(1.3,r*.035),0,TAU);X.fill()}
@@ -5229,11 +5219,11 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    }
  }
  let bossState=null;
- const preserveFinalBoss=false; // v19.0.41: no separate identity path; one Gold boss identity for every phase.
+ const preserveFinalBoss=false; // v19.0.42: no separate identity path; one Gold boss identity for every phase.
  if(alien){
    if(game.wave>=50&&!alien.__bb22MaskSeen){alien.__bb22MaskSeen=true;bb22Trace('WRAPPER MASK wave='+game.wave+' hp='+alien.hp+' boss='+alien.boss+' key='+alien.goldBossKey)}
    bossState=[alien.boss,alien.kind];
-   // v19.0.41 — only mask the generic Story boss flag while inherited core AI runs.
+   // v19.0.42 — only mask the generic Story boss flag while inherited core AI runs.
    // The Gold boss key NEVER changes mid-frame anymore.
    alien.boss=false;alien.kind='goldUnknown';
  }
@@ -5252,7 +5242,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    if(bossState){alien.boss=bossState[0];alien.kind='goldUnknown'}
    if(!alien.dead)bossTick(alien,dt);
    if(alien.goldPhase===2&&!alien.dead){
-     // v19.0.41 — finale geometry is authoritative after every core update. A transient
+     // v19.0.42 — finale geometry is authoritative after every core update. A transient
      // wrapper/AI value can no longer leave the live boss invisible or outside the arena.
      if(!Number.isFinite(alien.r)||alien.r<8)alien.r=32;
      if(!Number.isFinite(alien.x))alien.x=W/2;if(!Number.isFinite(alien.y))alien.y=Math.max(145,H*.24);
@@ -5295,7 +5285,7 @@ function drawGoldAlien(e){
  
  X.restore();
 }
-// v19.0.41 — no window.drawEnemy override. The core lexical renderer is authoritative for ??? / BIG BIG; regular Gold aliens keep their normal core path.
+// v19.0.42 — no window.drawEnemy override. The core lexical renderer is authoritative for ??? / BIG BIG; regular Gold aliens keep their normal core path.
 const S=window.show;if(typeof S==='function')window.show=function(){const o=S.apply(this,arguments);sync();return o};
 })();
 </script>
