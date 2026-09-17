@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.29 FINALE FIX: BIG BIG keeps boss identity through the core update; its custom Gold AI exclusively owns Final Wave movement. -->
+<!-- Big Bug v19.0.30 FINALE FIX: BIG BIG is pinned on-field during the Final Wave reveal, clamped to the arena afterward, and its live HP max is synchronized. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1317,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.29</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.29</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.30</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.30</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2299,7 +2299,7 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.29 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
+// v19.0.30 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  try{
@@ -2308,10 +2308,10 @@ function bb22Trace(msg){
   console.log('[BB22]',line);
   let el=document.getElementById('bb22Trace');
   if(!el){el=document.createElement('div');el.id='bb22Trace';el.style.cssText='position:fixed;left:6px;right:6px;bottom:6px;z-index:20000;background:rgba(0,0,0,.88);color:#fff;font:700 11px/1.25 monospace;padding:7px;border:2px solid #ffe15b;border-radius:5px;white-space:pre-wrap;pointer-events:none;max-height:38vh;overflow:hidden';document.body.appendChild(el)}
-  el.textContent='v19.0.29 W50 TRACE\n'+BB22TRACE.join('\n');
+  el.textContent='v19.0.30 W50 TRACE\n'+BB22TRACE.join('\n');
  }catch(err){console.error('[BB22 trace error]',err)}
 }
-// v19.0.29 — Wave 50 finale fix: this helper must live in the main script scope.
+// v19.0.30 — Wave 50 finale fix: this helper must live in the main script scope.
 // The previous copy was inside the later Gold-Waves IIFE, so completeWave() could not see it.
 function dropQuestionName(){
  const n=document.getElementById('bossName0')||document.getElementById('bossName');
@@ -2334,13 +2334,13 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.29 — the finale is a real, isolated internal wave. Wave 50 is allowed to
+   // v19.0.30 — the finale is a real, isolated internal wave. Wave 50 is allowed to
    // finish normally; hidden Wave 51 contains one fresh BIG BIG boss and nothing else.
    if(w===51){
      g.goldFinale=true;g.goldCorruptionStart=g.time;g.waveQuota=1;g.spawnLeft=0;
      $('bossbar').style.display='none';flashBanner('BIG BIG',1.55);
      const gb=goldBossFor(50),be=spawnEnemy('boss',gb.base,0);
-     if(be){be.goldBossKey=gb.key;be.goldBossName='BIG BIG';be.name='BIG BIG';be.goldElite=true;be.bigBigFinale=true;/* v19.0.29 — Finale boss begins directly on-field; v19.0.29 keeps its boss identity intact while Gold-specific AI owns movement. */be.x=W/2;be.y=Math.max(145,H*.24);be.enterX=be.x;be.enterY=be.y;be.state='chase';be.stateT=0;be.vx=0;be.vy=0;bb22Trace('W51 SPAWN ONFIELD x='+Math.round(be.x)+' y='+Math.round(be.y)+' hp='+be.hp+'/'+be.max+' enemies='+g.enemies.length)}else bb22Trace('W51 SPAWN FAILED');
+     if(be){be.goldBossKey=gb.key;be.goldBossName='BIG BIG';be.name='BIG BIG';be.goldElite=true;be.bigBigFinale=true;/* v19.0.30 — Finale boss begins directly on-field; v19.0.30 keeps its boss identity intact while Gold-specific AI owns movement. */be.x=W/2;be.y=Math.max(145,H*.24);be.enterX=be.x;be.enterY=be.y;be.state='chase';be.stateT=0;be.vx=0;be.vy=0;bb22Trace('W51 SPAWN ONFIELD x='+Math.round(be.x)+' y='+Math.round(be.y)+' hp='+be.hp+'/'+be.max+' enemies='+g.enemies.length)}else bb22Trace('W51 SPAWN FAILED');
      configureBossHud(50);updateBossHud();updateHud();return;
    }
    g.goldFinale=false;g.goldCorruptionStart=0;
@@ -2397,7 +2397,7 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
-   // v19.0.29 — Wave 50 is no longer a two-life boss. It completes through the normal
+   // v19.0.30 — Wave 50 is no longer a two-life boss. It completes through the normal
    // Gold boss path, then hands off to a separate hidden finale wave before victory.
    if(g.wave===50){
      bb22Trace('completeWave W50 BRANCH');
@@ -2408,8 +2408,8 @@ function completeWave(){
      bb22Trace('W50 step C hp='+g.p.hp+'/'+g.p.maxHp);
      updateHud();
      bb22Trace('W50 step D updateHud OK');
-     // v19.0.29 diagnostic — trace every statement before the Final Wave handoff.
-     // v19.0.29 — cosmetic finale effects are fail-safe and can never block lifecycle progression.
+     // v19.0.30 diagnostic — trace every statement before the Final Wave handoff.
+     // v19.0.30 — cosmetic finale effects are fail-safe and can never block lifecycle progression.
      try{dropQuestionName();bb22Trace('W50 step E dropQuestionName OK')}catch(err){bb22Trace('W50 step E dropQuestionName ERROR '+(err&&err.message?err.message:String(err)))}
      try{flashBanner('...',1.35);bb22Trace('W50 step F flashBanner OK')}catch(err){bb22Trace('W50 step F flashBanner ERROR '+(err&&err.message?err.message:String(err)))}
      g.paused=false;
@@ -2541,7 +2541,7 @@ function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave>=50&&e&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive'||e.bigBigFinale);
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey+' bigBig='+!!e.bigBigFinale);
- // v19.0.29 — BIG BIG exists immediately when Final Wave starts, but the reveal window
+ // v19.0.30 — BIG BIG exists immediately when Final Wave starts, but the reveal window
  // is presentation-only. Protect it directly instead of relying on e.boss, because the
  // Gold wrapper intentionally masks that flag while inherited combat executes.
  if(game&&game.mode==='gold'&&e.bigBigFinale&&(game.goldFinaleRevealUntil||0)>game.time)return;
@@ -2726,7 +2726,7 @@ function goldBossMechanics(e,dt){
 
 function enemyMove(e,dt){
  const p=game.p,t=game.time;
- // v19.0.29 — BIG BIG's Final Wave movement is owned exclusively by bossTick().
+ // v19.0.30 — BIG BIG's Final Wave movement is owned exclusively by bossTick().
  // Keep the entity as a real boss in the core update, but bypass inherited Story boss AI
  // so it cannot be moved/transitioned by two different systems in the same frame.
  if(game.mode==='gold'&&game.wave===51&&e&&e.bigBigFinale)return;
@@ -3717,7 +3717,7 @@ function drawMedievalEnemyOverlay(ctx,e){
  ctx.restore();
 }
 function drawEnemy(e){
- // v19.0.29 — Gold finale rendering is handled directly by the core draw path.
+ // v19.0.30 — Gold finale rendering is handled directly by the core draw path.
  // This avoids relying on a later window.drawEnemy wrapper, which can be bypassed by the
  // lexical drawEnemy binding used by the main render loop on some browsers (notably iOS Safari).
  if(game&&game.mode==='gold'&&e&&e.boss&&e.goldBossKey==='gildedSentinel'&&typeof window.__bbGoldBossDraw==='function'){window.__bbGoldBossDraw(e);return;}
@@ -4333,7 +4333,7 @@ function draw(now=performance.now()){
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
    X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
  }
-   // v19.0.29 — BIG BIG's separate finale wave progressively corrupts the existing
+   // v19.0.30 — BIG BIG's separate finale wave progressively corrupts the existing
    // Gold arena. Irregular black growth closes in over ~12 seconds while combat/HUD stay live.
    if(game?.mode==='gold'&&game.wave===51&&game.goldFinale){
      const age=Math.max(0,game.time-(game.goldCorruptionStart||game.time)),q=Math.min(.96,age/12);
@@ -4912,8 +4912,8 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.29';
-// v19.0.29 — stability: automatic network update/reload system remains removed.
+const BB_BUILD_VERSION='19.0.30';
+// v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
@@ -5019,8 +5019,8 @@ function bossTick(e,dt){
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
-   e.maxHp=Math.round(760*Math.pow(1.245,tier-1));e.hp=e.maxHp;
-   // v19.0.29 — Wave 50's ??? is deliberately 50 HP for finale testing.
+   e.maxHp=Math.round(760*Math.pow(1.245,tier-1));e.max=e.maxHp;e.hp=e.maxHp;
+   // v19.0.30 — Wave 50's ??? is deliberately 50 HP for finale testing.
    // This must live here, after Gold boss initialization, because bossTick is the code
    // that owns/overwrites Gold boss HP on its first frame. Hidden Wave 51 BIG BIG keeps
    // the full tier-10 health calculated above.
@@ -5032,7 +5032,14 @@ function bossTick(e,dt){
  if(e.bigBigFinale&&game.goldFinaleRevealUntil){
    const left=game.goldFinaleRevealUntil-game.time;
    e.invuln=left>0?left:0;
-   if(left<=0)game.goldFinaleRevealUntil=0;
+   if(left>0){
+     // v19.0.30 — keep BIG BIG visibly on-field for the entire reveal. Its Gold AI must
+     // not spend the reveal window chasing/dashing offscreen before the player can see it.
+     e.x=W/2;e.y=Math.max(145,H*.24);e.vx=0;e.vy=0;e._dash=0;e._hunt=0;
+     e.goldBossName='BIG BIG';e.name='BIG BIG';
+     return;
+   }
+   game.goldFinaleRevealUntil=0;
  }
  e.goldBossName=e.bigBigFinale?'BIG BIG':'???';e.name=e.goldBossName;e._orbit+=dt*(1.35+(e._goldTier||1)*.035);e._bc-=dt;
  if((e._goldTier||1)>=10){const hpPct=e.hp/Math.max(1,e.maxHp);if(hpPct<.50)e._bc-=dt*.22;if(hpPct<.25)e._bc-=dt*.32;}
@@ -5121,7 +5128,7 @@ function bossDraw(e){
  if(tier>=3){X.fillStyle='#fff0a0';const motes=Math.min(tier-1,8);for(let i=0;i<motes;i++){const a=t*(.7+.03*tier)+i*TAU/motes,rr=r*(1.58+.03*Math.sin(t*2+i));X.beginPath();X.arc(Math.cos(a)*rr,Math.sin(a)*rr,2.2+(tier>=7?1:0),0,TAU);X.fill()}}
  X.restore();
 }
-// v19.0.29 — expose the Gold boss renderer to the core arena draw loop.
+// v19.0.30 — expose the Gold boss renderer to the core arena draw loop.
 window.__bbGoldBossDraw=bossDraw;
 function syncGoldBossName(){
  if(!G())return;
@@ -5183,6 +5190,13 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  if(alien){
    if(bossState){alien.boss=bossState[0];alien.kind='goldUnknown';alien.goldBossKey=bossState[2]}
    if(!alien.dead)bossTick(alien,dt);
+   if(alien.bigBigFinale&&!alien.dead){
+     // v19.0.30 — Gold dash/chase attacks may approach the edges, but the finale boss
+     // itself always remains drawable and targetable inside the arena.
+     const pad=Math.max(42,(alien.r||32)*1.65);
+     alien.x=Math.max(pad,Math.min(W-pad,alien.x));
+     alien.y=Math.max(118+pad*.35,Math.min(H-pad,alien.y));
+   }
    alien.goldBossName=alien.bigBigFinale?'BIG BIG':'???';alien.name=alien.goldBossName;syncGoldBossName();
    const pct=Math.max(0,Math.min(100,(alien.hp/alien.max)*100));
    for(const id of ['bossFill0','bossFill1']){const f=document.getElementById(id);if(f){f.style.width=pct+'%';f.style.background='linear-gradient(90deg,#9b6108,#e3a91c 42%,#ffe16a 72%,#fff1a6)'}}
