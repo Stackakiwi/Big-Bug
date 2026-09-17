@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.17: Wave 50 finale rebuilt as a game-level state machine. The first ??? death intentionally retires phase 1, an independent transition clock spawns a fresh BIG BIG at full health, and only BIG BIG death unlocks Gold victory. Obsolete entity-revival fallback code removed. -->
+<!-- Big Bug v19.0.18: Gold finale rebuilt from the stable v18.0.188 baseline as a true hidden Wave 51. Wave 50 now completes normally, then routes into a separate BIG BIG boss wave with progressive background corruption; only that wave ends Gold Waves.  removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1271,7 +1271,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  filter:drop-shadow(0 2px 2px #5b3508aa)!important;
 }
 
-/* v19.0.0 — Gold finale reveal; presentation only. */
 #bigBigFallingName{position:fixed;z-index:10000;pointer-events:none;font-weight:1000;font-size:15px;letter-spacing:1px;color:#ffe15b;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e;transform:translate(-50%,-50%);animation:bigBigNameFall 1.45s cubic-bezier(.35,.02,.8,.45) forwards}
 @keyframes bigBigNameFall{0%{opacity:1;transform:translate(-50%,-50%) rotate(0deg)}18%{transform:translate(calc(-50% + 9px),calc(-50% - 3px)) rotate(8deg)}36%{transform:translate(calc(-50% - 8px),calc(-50% + 5px)) rotate(-11deg)}100%{opacity:.05;transform:translate(calc(-50% + 34px),calc(100vh + 80px)) rotate(145deg)}}
 </style>
@@ -1318,8 +1317,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.0</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.17</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.18</div>
+  <div class="versionCorner" aria-hidden="true">v18.0.188</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2175,7 +2174,7 @@ function startGoldWaves(testMode=false,startWave=1){
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
  game={p,bugId:'golden',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'gold',
-       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true};
+       waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldFinalePending:false,goldCorruptionStart:0};
  beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);titleMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
 }
 const GOLD_BOSSES=[
@@ -2309,9 +2308,16 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.17 — Wave 50 owns a separate finale state. Normal Gold completion is locked
-   // until BIG BIG's second/final health bar is actually defeated.
-   g.goldFinaleState=w===50?'phase1':null;g.goldFinaleRevealAt=0;g.goldFinaleX=0;g.goldFinaleY=0;g.goldFinaleFullHp=0;if(w!==50){g.bigBigVoid=0;g.bigBigPhase2Start=0}
+   // v19.0.18 — the finale is a real, isolated internal wave. Wave 50 is allowed to
+   // finish normally; hidden Wave 51 contains one fresh BIG BIG boss and nothing else.
+   if(w===51){
+     g.goldFinale=true;g.goldCorruptionStart=g.time;g.waveQuota=1;g.spawnLeft=0;
+     $('bossbar').style.display='none';flashBanner('BIG BIG',1.55);
+     const gb=goldBossFor(50),be=spawnEnemy('boss',gb.base,0);
+     if(be){be.goldBossKey=gb.key;be.goldBossName='BIG BIG';be.name='BIG BIG';be.goldElite=true;be.bigBigFinale=true}
+     configureBossHud(50);updateBossHud();updateHud();return;
+   }
+   g.goldFinale=false;g.goldCorruptionStart=0;
    const bossWave=w%5===0;
    g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
    $('bossbar').style.display='none';
@@ -2335,10 +2341,6 @@ function beginWave(w){
 }
 function completeWave(){
  const g=game;if(!g.waveActive||g.intermission)return;
- // v19.0.17 — hard gate for the isolated Gold finale. No cleanup, pause, heal,
- // reward, victory screen, or finish(true) may run after ???'s first defeat.
- // Only BIG BIG's final death marks the finale 'defeated' and opens normal victory.
- if(g.mode==='gold'&&g.wave===50&&g.goldFinaleState!=='defeated')return;
  // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
@@ -2367,12 +2369,23 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
+   // v19.0.18 — Wave 50 is no longer a two-life boss. It completes through the normal
+   // Gold boss path, then hands off to a separate hidden finale wave before victory.
+   if(g.wave===50){
+     const heal=Math.ceil(g.p.maxHp*.20);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);updateHud();
+     dropQuestionName();flashBanner('...',1.35);g.goldFinalePending=true;
+     setTimeout(()=>{if(game===g&&!g.over&&g.goldFinalePending){g.goldFinalePending=false;g.paused=false;beginWave(51)}},1650);
+     return;
+   }
+   if(g.wave===51){
+     g.goldFinale=false;g.goldFinalePending=false;
+     setTimeout(()=>{if(game===g&&!g.over)finish(true)},500);return;
+   }
    const bossClear=g.wave%5===0;
    if(bossClear){
      const heal=Math.ceil(g.p.maxHp*.20);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
      flashBanner('GOLD BOSS DOWN! +'+heal+' HP',1.25);
-     if(g.wave>=50){setTimeout(()=>{if(game===g&&!g.over)finish(true)},500)}
-     else setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
+     setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
    }else{
      flashBanner('GOLD WAVE CLEAR!',.9);
      setTimeout(()=>{if(game===g&&!g.over){g.paused=false;beginWave(g.wave+1)}},360);
@@ -2477,61 +2490,8 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
 function burst(x,y,n=8,life=.5,col=null){
  n=Math.min(n,Math.max(0,110-game.fx.length));for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4,col})}
 }
-// v19.0.17 — Wave 50 finale is a game-level state machine, not an enemy-object revival.
-// The first ??? death deliberately retires that enemy. A clock owned by `game` then spawns a
-// brand-new BIG BIG boss. This keeps the finale independent of inherited enemy cleanup/masking.
-function startGoldFinaleTransition(source){
- if(!game||game.mode!=='gold'||game.wave!==50||game.goldFinaleState!=='phase1')return false;
- const tier=Math.max(1,Math.floor(game.wave/5));
- game.goldFinaleState='transition';
- game.goldFinaleRevealAt=game.time+2.35;
- game.goldFinaleX=source&&Number.isFinite(source.x)?source.x:W/2;
- game.goldFinaleY=source&&Number.isFinite(source.y)?source.y:Math.max(125,H*.20);
- game.goldFinaleFullHp=(source&&source._bigBigFullHp)||Math.round(760*Math.pow(1.245,tier-1));
- game.bigBigVoid=0;game.boss=null;game.bosses=[];game.spawnLeft=0;game.waveActive=true;
- if(source){source.hp=0;source.dead=true;source._goldFinaleRetired=true;source.vx=0;source.vy=0;source.knockX=0;source.knockY=0}
- dropQuestionName();syncGoldBossName();flashBanner('...',1.15);
- try{beep(78,.24,.03,'square','music');setTimeout(()=>beep(64,.20,.025,'sawtooth','music'),110)}catch(_){}
- return true;
-}
-function spawnBigBigPhase2(){
- if(!game||game.mode!=='gold'||game.wave!==50||game.goldFinaleState!=='transition')return null;
- const gb=goldBossFor(50),e=spawnEnemy('boss',gb.base,0);if(!e)return null;
- const tier=Math.max(1,Math.floor(game.wave/5)),full=Math.max(1,Math.round(game.goldFinaleFullHp||760*Math.pow(1.245,tier-1)));
- e.goldBossKey='gildedSentinel';e.goldBossName='BIG BIG';e.name='BIG BIG';e.goldElite=true;e.kind='goldUnknown';
- e.x=Number.isFinite(game.goldFinaleX)?game.goldFinaleX:W/2;e.y=Number.isFinite(game.goldFinaleY)?game.goldFinaleY:Math.max(125,H*.20);
- e._goldTier=tier;e._g163Init=true;e._bigBigPhase2=true;e._bigBigFullHp=full;e.maxHp=full;e.max=full;e.hp=full;
- e.damage=14+tier*3.4;e.speed=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;e.invuln=.35;
- e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;
- game.goldFinaleState='phase2';game.goldFinaleRevealAt=0;game.bigBigPhase2Start=game.time;game.bigBigVoid=0;game.boss=e;game.bosses=[e];
- $('bossbar').style.display='block';configureBossHud(50);updateBossHud();syncGoldBossName();flashBanner('BIG BIG REVIVES!',1.45);
- try{beep(110,.22,.035,'sawtooth','music');setTimeout(()=>beep(220,.20,.028,'triangle','music'),90);setTimeout(()=>beep(440,.18,.022,'sine','music'),180)}catch(_){}
- return e;
-}
-function goldFinaleController(source){
- if(!game||game.mode!=='gold'||game.wave!==50)return;
- const live=game.enemies&&game.enemies.find(e=>e&&!e.dead&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive'));
- // Fallback for any inherited path that retires phase 1 without going through damageEnemy().
- if(game.goldFinaleState==='phase1'&&!live&&(source&&source.dead||((game.spawnLeft||0)<=0&&(!game.enemies||game.enemies.length===0)))){
-   startGoldFinaleTransition(source||null);return;
- }
- if(game.goldFinaleState==='transition'){
-   game.spawnLeft=0;game.waveActive=true;$('bossbar').style.display='block';syncGoldBossName();
-   if(game.time>=(game.goldFinaleRevealAt||Infinity))spawnBigBigPhase2();
-   return;
- }
- // BIG BIG alone unlocks normal Gold victory.
- if(game.goldFinaleState==='phase2'&&!live&&(source&&source._bigBigPhase2||((game.spawnLeft||0)<=0&&(!game.enemies||game.enemies.length===0)))){
-   game.goldFinaleState='defeated';setTimeout(()=>{if(game&&game.mode==='gold'&&game.wave===50&&game.goldFinaleState==='defeated')completeWave()},0);
- }
-}
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
- const goldFinaleBoss=game&&game.mode==='gold'&&game.wave===50&&e&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive');
- // ??? has exactly one terminal event: retire phase 1 and hand control to the game-level finale.
- if(goldFinaleBoss&&!e._bigBigPhase2&&game.goldFinaleState==='phase1'&&d>=e.hp){startGoldFinaleTransition(e);return;}
- // Only BIG BIG's lethal hit opens the normal Wave 50 completion path.
- if(goldFinaleBoss&&e._bigBigPhase2&&d>=e.hp)game.goldFinaleState='defeated';
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
@@ -3319,7 +3279,7 @@ function updateHud(force=true,now=performance.now()){
  // This avoids needless DOM/class/style work on every animation frame while preserving the same displayed values.
  if(!force&&now-(HUD_CACHE.lastPaint||0)<40)return;HUD_CACHE.lastPaint=now;
  const p=game.p,g=game,active=boostActive();
- setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',g.mode==='gold'?'WAVE':(g.wave===100?'FINAL WAVE':'WAVE'));setHudText('wave',(g.mode!=='gold'&&g.wave===100)?'':g.wave);
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',(g.mode==='gold'&&g.wave===51)?'FINAL WAVE':(g.mode==='gold'?'WAVE':(g.wave===100?'FINAL WAVE':'WAVE')));setHudText('wave',((g.mode==='gold'&&g.wave===51)||(g.mode!=='gold'&&g.wave===100))?'':g.wave);
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);
  const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis=g.mode==='gold'?'hidden':'';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
@@ -3523,7 +3483,7 @@ function finish(won,quit=false){
  const coins=game.coins||0;
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
- if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:(game.mode==='gold'?0:Math.floor(game.wave/2));if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else if(game.mode==='gold')save.goldBest=Math.max(save.goldBest||0,game.wave);else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome();refreshGoldWavesHome()}
+ if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:(game.mode==='gold'?0:Math.floor(game.wave/2));if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else if(game.mode==='gold')save.goldBest=Math.max(save.goldBest||0,Math.min(50,game.wave));else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome();refreshGoldWavesHome()}
  $('gameover').classList.toggle('endlessOver',game.mode==='endless');
  $('overTitle').classList.toggle('quitTitle',!!quit);
  $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='gold'?(won?'GOLD WAVES CLEARED!':(game.testMode?'GOLD TEST ENDED!':'GOLD RUN ENDED!')):game.mode==='endless'?'YOU GOT SWARMED!':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
@@ -4311,8 +4271,18 @@ function draw(now=performance.now()){
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
    X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
  }
- // v19.0.0 — BIG BIG phase 2 erases the battlefield without leaving the gameplay state.
- if(game?.mode==='gold'&&(game.bigBigVoid||0)>0){X.save();X.globalCompositeOperation='source-over';X.globalAlpha=Math.min(.985,game.bigBigVoid);X.fillStyle='#000';X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;}
+   // v19.0.18 — BIG BIG's separate finale wave progressively corrupts the existing
+   // Gold arena. Irregular black growth closes in over ~12 seconds while combat/HUD stay live.
+   if(game?.mode==='gold'&&game.wave===51&&game.goldFinale){
+     const age=Math.max(0,game.time-(game.goldCorruptionStart||game.time)),q=Math.min(.96,age/12);
+     if(q>0){X.save();X.globalCompositeOperation='source-over';X.globalAlpha=.18+.72*q;X.fillStyle='#000';
+       const edge=q*Math.max(W,H)*.34;
+       X.fillRect(0,0,W,edge*.42);X.fillRect(0,H-edge*.42,W,edge*.42);X.fillRect(0,0,edge*.42,H);X.fillRect(W-edge*.42,0,edge*.42,H);
+       for(let i=0;i<18;i++){const a=i*2.399963+Math.sin(i*7.1)*.18,rr=(1-q)*Math.max(W,H)*.58,px=W/2+Math.cos(a)*rr,py=H/2+Math.sin(a)*rr*.72,r=(22+(i%5)*13)*q;X.beginPath();X.arc(px,py,r,0,TAU);X.fill()}
+       X.globalAlpha=.08+.22*q;for(let i=0;i<9;i++){const y=(i*83+37)%H;X.fillRect(0,y,W*q*(.16+(i%3)*.04),3+(i%2)*2)}
+       X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
+     }
+   }
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
  if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
@@ -4660,7 +4630,7 @@ document.addEventListener('click',e=>{
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly()}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly();setTimeout(bbApplyDeferredUpdate,120)}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
  if(a==='cosmetics'){stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
@@ -4877,8 +4847,37 @@ function paintHelpGameIcons(){
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
 if(loadRunRecovery()){restoreRecoveredRun()}
-// v19.0.1 — stability: automatic network update/reload system removed.
-// Builds now update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
+// v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
+// v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
+// v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
+const BB_BUILD_VERSION='18.0.188';
+let bbUpdateReady=false,bbUpdateChecking=false,bbLastUpdateCheck=0;
+function bbCanApplyUpdate(){
+  if(document.hidden)return false;
+  // A paused run is still a live run. Never reload/update until the run is over or the player is back home.
+  if(game&&!game.over)return false;
+  return true;
+}
+async function bbCheckForUpdate(force=false){
+  const now=Date.now();if(bbUpdateChecking||(!force&&now-bbLastUpdateCheck<60000))return;
+  bbUpdateChecking=true;bbLastUpdateCheck=now;
+  try{
+    const u=new URL(location.href);u.searchParams.set('_bb_update',String(now));
+    const r=await fetch(u.href,{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+    if(!r.ok)return;
+    const html=await r.text(),m=html.match(/class=\"versionCorner\"[^>]*>v([0-9.]+)/);
+    if(m&&m[1]!==BB_BUILD_VERSION){bbUpdateReady=true;if(bbCanApplyUpdate())location.reload()}
+  }catch(e){}finally{bbUpdateChecking=false}
+}
+function bbApplyDeferredUpdate(){if(bbUpdateReady&&bbCanApplyUpdate())location.reload();else bbCheckForUpdate(true)}
+addEventListener('load',async()=>{
+  try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()))}if('caches' in window){const keys=await caches.keys();await Promise.all(keys.map(k=>caches.delete(k)))}}catch(e){}
+  setTimeout(()=>bbCheckForUpdate(true),1200);
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)bbApplyDeferredUpdate()});
+addEventListener('pageshow',()=>bbApplyDeferredUpdate());
+// Five-minute idle check only. No per-frame/network work is added to gameplay.
+setInterval(()=>{if(!document.hidden&&(!game||game.over))bbCheckForUpdate()},300000);
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
 
@@ -4886,19 +4885,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 /* BIG BUG v18.0.188 — isolated Gold Waves visual/combat correction */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
-function sync(){
- const gold=!!G();document.body.classList.toggle('g159',gold);
- if(!gold){
-  const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
-  for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.style.removeProperty('color');n.style.removeProperty('text-shadow')}}
-  const nodes=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
-  for(let i=0;i<nodes.length;i++){nodes[i].style.removeProperty('color');nodes[i].style.removeProperty('text-shadow')}
-  // Gold Waves paints its health fill inline. Remove that paint on mode exit so Story uses
-  // the original red boss-bar CSS instead of carrying Gold styling into Story Mode.
-  for(const id of ['bossFill0','bossFill1','bossBarFill']){const f=document.getElementById(id);if(f)f.style.removeProperty('background')}
-  const fills=document.querySelectorAll('.bossBar i,.bossHealthBar i');for(let i=0;i<fills.length;i++)fills[i].style.removeProperty('background');
- }
-}
+function sync(){document.body.classList.toggle('g159',!!G())}
 
 function drawGoldEnvironment(){
  if(!G()||!window.X)return;
@@ -4992,19 +4979,15 @@ function goldTint(e){
 function bossTick(e,dt){
  if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
  const p=game.p;if(!p)return;
- // BIG BIG phase 2 is spawned fresh by goldFinaleController(); no entity-level revival lives here.
- if(e._bigBigPhase2){game.bigBigVoid=Math.min(1,Math.max(0,(game.time-(game.bigBigPhase2Start||game.time))/12));}
-
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
    e.maxHp=Math.round(760*Math.pow(1.245,tier-1));e.hp=e.maxHp;
-   if(game.wave===50){e._bigBigFullHp=e.maxHp;e.maxHp=50;e.max=50;e.hp=50;}
    e.damage=14+tier*3.4;e.speed=0;e.vx=0;e.vy=0;
    e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;
  }
  e.kind='goldUnknown';
- e.goldBossName='???';e.name='???';e._orbit+=dt*(1.35+(e._goldTier||1)*.035);e._bc-=dt;
+ e.goldBossName=e.bigBigFinale?'BIG BIG':'???';e.name=e.goldBossName;e._orbit+=dt*(1.35+(e._goldTier||1)*.035);e._bc-=dt;
  if((e._goldTier||1)>=10){const hpPct=e.hp/Math.max(1,e.maxHp);if(hpPct<.50)e._bc-=dt*.22;if(hpPct<.25)e._bc-=dt*.32;}
 
  // Very fast tracking burst: roughly 5x the old 54px/s drift speed.
@@ -5066,10 +5049,7 @@ function bossTick(e,dt){
 }
 function bossDraw(e){
  if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
- const r=e.r||32,t=FRAME_NOW*.001,tier=e._goldTier||Math.max(1,Math.floor(game.wave/5));X.save();
- const glitch=0,gx=0,gy=0;
- X.translate(e.x+gx,e.y+gy);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6)+(glitch?(Math.random()-.5)*.22:0));
- if(glitch&&Math.random()<.24)X.globalAlpha=.38;
+ const r=e.r||32,t=FRAME_NOW*.001,tier=e._goldTier||Math.max(1,Math.floor(game.wave/5));X.save();X.translate(e.x,e.y);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6));
  // Fully opaque body hides the old boss underneath.
  X.fillStyle='#241703';X.beginPath();X.ellipse(0,0,r*1.28,r*1.18,0,0,TAU);X.fill();
  // Living six-limbed alien: limbs flex continuously.
@@ -5078,9 +5058,9 @@ function bossDraw(e){
  // Alien gold shell.
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
  for(let i=0;i<10;i++){const a=-Math.PI/2+i*TAU/10,z=i%2?r*.73:r*.98;i?X.lineTo(Math.cos(a)*z,Math.sin(a)*z):X.moveTo(Math.cos(a)*z,Math.sin(a)*z)}X.closePath();X.fill();X.stroke();
- // Breathing/pulsing face cavity. BIG BIG is the same creature revealed: only this
- // black circular covering disappears in phase 2; body, size, limbs, eyes and attacks stay unchanged.
- if(!e._bigBigPhase2){const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle='#211505';X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();X.restore();}
+ // Phase-one ??? has the dark covering. BIG BIG is the same creature revealed,
+ // so hidden Wave 51 removes only this covering and leaves the creature itself unchanged.
+ if(!e.bigBigFinale){const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle='#211505';X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();X.restore();}
  // Three animated eyes.
  for(let i=0;i<3;i++){const P=[[0,-.38],[-.24,-.07],[.24,-.07]][i],blink=.82+.18*Math.sin(t*4+i);X.fillStyle='#fff0a0';X.beginPath();X.ellipse(r*P[0],r*P[1],Math.max(3,r*.11),Math.max(2,r*.11*blink),0,0,TAU);X.fill();X.fillStyle='#7a3e00';X.beginPath();X.arc(r*P[0],r*P[1],Math.max(1.3,r*.035),0,TAU);X.fill()}
  // Crystal antenna bobs.
@@ -5096,18 +5076,17 @@ function bossDraw(e){
 }
 function syncGoldBossName(){
  if(!G())return;
- const b=game&&game.enemies?game.enemies.find(e=>e&&e.goldBossKey==='gildedSentinel'&&!e.dead):null;
- const state=game&&game.goldFinaleState;const label=state==='transition'?'':(state==='phase2'?'BIG BIG':(b?(b._bigBigPhase2?'BIG BIG':'???'):'???'));
+ const b=(game.bosses||[]).find(q=>q&&!q.dead&&q.goldBossKey==='gildedSentinel');
+ const label=(game.wave===51||b?.bigBigFinale)?'BIG BIG':'???';
  const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
  for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.textContent=label;n.style.color='#ffe15b';n.style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}}
  const nodes=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
  for(let i=0;i<nodes.length;i++){nodes[i].textContent=label;nodes[i].style.color='#ffe15b';nodes[i].style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}
 }
 function dropQuestionName(){
- const n=document.getElementById('bossName0')||document.querySelector('.bossName');if(!n)return;
+ const n=document.getElementById('bossName0')||document.getElementById('bossName');if(!n)return;
  const r=n.getBoundingClientRect(),f=document.createElement('div');f.id='bigBigFallingName';f.textContent='???';f.style.left=(r.left+r.width/2)+'px';f.style.top=(r.top+r.height/2)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),1550);
 }
-
 const U=window.update;if(typeof U==='function')window.update=function(dt){
  sync();let alien=null,aliens=[],pos=[],saved=[];
  if(G()&&game.enemies){
@@ -5132,10 +5111,6 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  const fxBefore=(G()&&game.fx)?game.fx.length:0;
  const out=U.apply(this,arguments);
 
- // v19.0.17 — inherited combat may have removed Wave 50's boss object. Resolve that handoff
- // before any Gold post-processing relies on the old entity.
- goldFinaleController(alien);
-
  // Remove any inherited poison/venom/purple-ring FX that somehow spawned during this Gold frame.
  if(G()&&game.fx&&game.fx.length>fxBefore){
    for(let i=game.fx.length-1;i>=fxBefore;i--){
@@ -5147,7 +5122,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  if(alien){
    alien.boss=bossState[0];alien.kind='goldUnknown';alien.goldBossKey=bossState[2];
    if(!alien.dead)bossTick(alien,dt);
-   alien.goldBossName=alien._bigBigPhase2?'BIG BIG':'???';alien.name=alien.goldBossName;syncGoldBossName();
+   alien.goldBossName=alien.bigBigFinale?'BIG BIG':'???';alien.name=alien.goldBossName;syncGoldBossName();
    const pct=Math.max(0,Math.min(100,(alien.hp/alien.maxHp)*100));
    for(const id of ['bossFill0','bossFill1']){const f=document.getElementById(id);if(f){f.style.width=pct+'%';f.style.background='linear-gradient(90deg,#9b6108,#e3a91c 42%,#ffe16a 72%,#fff1a6)'}}
  }
@@ -5179,7 +5154,7 @@ function drawGoldAlien(e){
  X.restore();
 }
 const D=window.drawEnemy;if(typeof D==='function')window.drawEnemy=function(e){
- if(G()&&e&&e.boss&&e.goldBossKey==='gildedSentinel'){e.goldBossName=e._bigBigPhase2?'BIG BIG':'???';e.name=e.goldBossName;syncGoldBossName();bossDraw(e);return}
+ if(G()&&e&&e.boss&&e.goldBossKey==='gildedSentinel'){e.goldBossName=e.bigBigFinale?'BIG BIG':'???';e.name=e.goldBossName;syncGoldBossName();bossDraw(e);return}
  if(G()&&e&&!e.boss){drawGoldAlien(e);return}
  return D.apply(this,arguments);
 };
