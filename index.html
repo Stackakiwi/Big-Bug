@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.45 TESTING FIX: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.46 TESTING FIX: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1319,8 +1319,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.45</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.45</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.46</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.46</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1875,9 +1875,31 @@ const BB_HUD_EAT_TARGETS={
  pause:()=>document.getElementById('pauseBtn'),
  bossbar:()=>document.getElementById('bossbar')
 };
-let bbHudEatAnim=null,bbHudEatQueue=[],bbHudEatRAF=0;
+let bbHudEatAnim=null,bbHudEatQueue=[],bbHudEatRAF=0,bbHudEatCinematic=null;
+function beginBigBigHudEatCinematic(){
+ if(bbHudEatCinematic||!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale)return;
+ const p=game.p,b=game.boss;
+ bbHudEatCinematic={gameRef:game,playerHp:p.hp,playerX:p.x,playerY:p.y,moveX:p.moveX,moveY:p.moveY,goldInvulnUntil:p.goldInvulnUntil||0,bossX:b?.x,bossY:b?.y,bossVX:b?.vx||0,bossVY:b?.vy||0};
+ game.bbHudEatCinematic=true;p.pendingDamage=0;p.goldInvulnUntil=Infinity;
+}
+function holdBigBigHudEatCinematic(){
+ const c=bbHudEatCinematic;if(!c||!game||game!==c.gameRef)return;const p=game.p,b=game.boss;
+ // Nothing in the live run is allowed to change underneath the visual cutscene.
+ p.hp=c.playerHp;p.pendingDamage=0;p.x=c.playerX;p.y=c.playerY;p.moveX=c.moveX;p.moveY=c.moveY;p.goldInvulnUntil=Infinity;
+ if(b&&!b.dead){if(Number.isFinite(c.bossX))b.x=c.bossX;if(Number.isFinite(c.bossY))b.y=c.bossY;b.vx=0;b.vy=0}
+ game.goldFinale=true;game.over=false;
+}
+function endBigBigHudEatCinematic(){
+ const c=bbHudEatCinematic;bbHudEatCinematic=null;
+ if(!c||!game||game!==c.gameRef)return;const p=game.p,b=game.boss;
+ p.hp=Math.max(1,Math.min(p.maxHp,c.playerHp));p.pendingDamage=0;p.x=c.playerX;p.y=c.playerY;p.moveX=c.moveX;p.moveY=c.moveY;
+ // A tiny grace window prevents a projectile frozen on top of the player from landing on the first resumed frame.
+ p.goldInvulnUntil=Math.max(c.goldInvulnUntil||0,game.time+.45);
+ if(b&&!b.dead){if(Number.isFinite(c.bossX))b.x=c.bossX;if(Number.isFinite(c.bossY))b.y=c.bossY;b.vx=c.bossVX||0;b.vy=c.bossVY||0}
+ game.bbHudEatCinematic=false;
+}
 function bigBigHudEatCombatLocked(){
- return !!(game&&game.mode==='gold'&&game.wave===50&&game.goldFinale&&(bbHudEatAnim||bbHudEatQueue.length));
+ return !!(game&&game.mode==='gold'&&game.wave===50&&game.goldFinale&&(game.bbHudEatCinematic||bbHudEatCinematic||bbHudEatAnim||bbHudEatQueue.length));
 }
 
 function bbHudEatCanvas(){
@@ -1913,6 +1935,7 @@ function applyBigBigHudEatVisibility(){
 }
 function resetBigBigHudEat(){
  bbHudEatQueue.length=0;bbHudEatAnim=null;
+ if(bbHudEatCinematic)endBigBigHudEatCinematic();else if(game)game.bbHudEatCinematic=false;
  if(bbHudEatRAF){cancelAnimationFrame(bbHudEatRAF);bbHudEatRAF=0}
  const c=document.getElementById('bigBigHudEatCanvas');if(c){c.style.display='none';const q=c.getContext('2d');q&&q.clearRect(0,0,c.width,c.height)}
  for(const key of Object.keys(BB_HUD_EAT_TARGETS)){const el=BB_HUD_EAT_TARGETS[key]?.();if(el)el.style.visibility=''}
@@ -1929,6 +1952,7 @@ function queueBigBigHudEat(key,boss){
 }
 function startNextBigBigHudEat(){
  if(bbHudEatAnim||!bbHudEatQueue.length||!game||game.over)return;
+ beginBigBigHudEatCinematic();holdBigBigHudEatCinematic();
  const job=bbHudEatQueue.shift(),el=BB_HUD_EAT_TARGETS[job.key]?.();
  if(!el){if(game?.bbHudEatQueued)game.bbHudEatQueued[job.key]=false;startNextBigBigHudEat();return}
  const r=el.getBoundingClientRect(),tx=r.left+r.width*.5,ty=r.top+r.height*.5;
@@ -1938,7 +1962,8 @@ function startNextBigBigHudEat(){
 }
 function stepBigBigHudEat(now){
  bbHudEatRAF=0;const a=bbHudEatAnim,pack=bbHudEatCanvas();
- if(!a||!pack||!game||game.over){if(pack){pack.q.clearRect(0,0,pack.w,pack.h);pack.c.style.display='none'}bbHudEatAnim=null;return}
+ if(!a||!pack||!game){if(pack){pack.q.clearRect(0,0,pack.w,pack.h);pack.c.style.display='none'}bbHudEatAnim=null;endBigBigHudEatCinematic();return}
+ holdBigBigHudEatCinematic();
  const {c,q,w,h}=pack;q.clearRect(0,0,w,h);const u=Math.max(0,Math.min(1,(now-a.start)/a.dur));
  let p,mouth=0,scale=1,rot=0;
  if(u<.62){p=u/.62;const ease=1-Math.pow(1-p,3);p=ease;mouth=.15;scale=1+.12*Math.sin(p*Math.PI);rot=Math.sin(p*Math.PI)*.09}
@@ -1949,7 +1974,12 @@ function stepBigBigHudEat(now){
  if(!a.bitten&&u>=.70){a.bitten=true;bbHudEatHide(a.key)}
  if(u<1){bbHudEatRAF=requestAnimationFrame(stepBigBigHudEat);return}
  q.clearRect(0,0,w,h);c.style.display='none';if(game?.bbHudEatQueued)game.bbHudEatQueued[a.key]=false;bbHudEatAnim=null;
- setTimeout(()=>{if(!bbHudEatAnim)startNextBigBigHudEat()},140);
+ setTimeout(()=>{
+   if(!game)return endBigBigHudEatCinematic();
+   holdBigBigHudEatCinematic();
+   if(bbHudEatQueue.length)startNextBigBigHudEat();
+   else endBigBigHudEatCinematic();
+ },140);
 }
 function syncBigBigHudEating(boss){
  if(!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale||!boss||boss.dead||boss.goldPhase!==2||!(boss.max>0))return;
@@ -2790,7 +2820,7 @@ function showPlayerDamage(amount){
 }
 function hurtPlayer(amount){
  if(!game||!game.p||amount<=0)return;
- if(bigBigHudEatCombatLocked())return; // v19.0.45: HUD bite presentation cannot damage the player.
+ if(bigBigHudEatCombatLocked())return; // v19.0.46: HUD bite presentation cannot damage the player.
  const p=game.p;
  // Gold Leaf revive protection: every player-damage source routes through hurtPlayer,
  // so blocking here guarantees the full two seconds against contact, hazards, and projectiles.
@@ -3105,11 +3135,11 @@ function update(dt,now){
    return;
  }
  if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);if((p.goldInvulnUntil||0)>0&&g.time>=p.goldInvulnUntil)p.goldInvulnUntil=0;
- // v19.0.45 — HUD-eating is a short cinematic beat. Freeze combat/world simulation
+ // v19.0.46 — HUD-eating is a short cinematic beat. Freeze combat/world simulation
  // while the visual double bites the UI so low test HP cannot stack thresholds, kill the
  // player, or let projectiles/AI continue behind the presentation. The independent HUD
  // eater RAF keeps animating while the main game state stays still.
- if(bigBigHudEatCombatLocked()){p.lastAttack=now;p.pendingDamage=0;return;}
+ if(bigBigHudEatCombatLocked()){holdBigBigHudEatCinematic();p.lastAttack=now;p.pendingDamage=0;return;}
  // Flush accumulated contact damage into one readable popup roughly six times per second.
  if((p.pendingDamage||0)>0&&now-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=now}
  g.time+=dt;
@@ -3654,6 +3684,9 @@ function previewFinalPurification(purifyOnly=false){
 }
 
 function finish(won,quit=false){
+ // v19.0.46 — a HUD-eating cutscene is presentation only. Delayed projectiles/callbacks
+ // are not allowed to end the run while combat is frozen underneath it.
+ if(!won&&!quit&&bigBigHudEatCombatLocked()){holdBigBigHudEatCinematic();return;}
  resetBigBigHudEat();
  if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
