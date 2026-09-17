@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v18.0.188: removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
+<!-- Big Bug v19.0.0: Gold finale: ??? glitches into BIG BIG; revived final phase fades the battlefield to black.  removed final-boss test feature; Wave 100 HUD says FINAL WAVE; final preparation visually matches upgrade screens. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1270,6 +1270,10 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  box-shadow:none!important;
  filter:drop-shadow(0 2px 2px #5b3508aa)!important;
 }
+
+/* v19.0.0 — Gold finale reveal; presentation only. */
+#bigBigFallingName{position:fixed;z-index:10000;pointer-events:none;font-weight:1000;font-size:15px;letter-spacing:1px;color:#ffe15b;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e;transform:translate(-50%,-50%);animation:bigBigNameFall 1.45s cubic-bezier(.35,.02,.8,.45) forwards}
+@keyframes bigBigNameFall{0%{opacity:1;transform:translate(-50%,-50%) rotate(0deg)}18%{transform:translate(calc(-50% + 9px),calc(-50% - 3px)) rotate(8deg)}36%{transform:translate(calc(-50% - 8px),calc(-50% + 5px)) rotate(-11deg)}100%{opacity:.05;transform:translate(calc(-50% + 34px),calc(100vh + 80px)) rotate(145deg)}}
 </style>
 </head>
 <body>
@@ -1314,8 +1318,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v18.0.188</div>
-  <div class="versionCorner" aria-hidden="true">v18.0.188</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.0</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.0</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2468,6 +2472,14 @@ function burst(x,y,n=8,life=.5,col=null){
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
+ // v19.0.0 — the first Wave 50 Gold-boss "death" reveals BIG BIG instead of ending the run.
+ if(game&&game.mode==='gold'&&game.wave===50&&e.boss&&e.goldBossKey==='gildedSentinel'&&!e._bigBigPhase2&&!e._bigBigTransition&&d>=e.hp){
+   const chip=Math.max(0,e.hp-1);if(chip>0)damageEnemy(e,chip,source);
+   e.hp=1;e.invuln=999;e._bigBigTransition=true;e._bigBigReviveAt=game.time+2.35;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
+   game.bigBigVoid=0;dropQuestionName();syncGoldBossName();flashBanner('...',1.15);
+   try{beep(78,.24,.03,'square','music');setTimeout(()=>beep(64,.20,.025,'sawtooth','music'),110)}catch(_){}
+   return;
+ }
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
  const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
@@ -4247,6 +4259,8 @@ function draw(now=performance.now()){
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
    X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
  }
+ // v19.0.0 — BIG BIG phase 2 erases the battlefield without leaving the gameplay state.
+ if(game?.mode==='gold'&&(game.bigBigVoid||0)>0){X.save();X.globalCompositeOperation='source-over';X.globalAlpha=Math.min(.985,game.bigBigVoid);X.fillStyle='#000';X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;}
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
  if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
@@ -4943,6 +4957,19 @@ function goldTint(e){
 function bossTick(e,dt){
  if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
  const p=game.p;if(!p)return;
+ // v19.0.0 — Wave 50's first lethal hit is a phase break, not a death.
+ if(e._bigBigTransition){
+   e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
+   if(game.time>=(e._bigBigReviveAt||Infinity)){
+     e._bigBigTransition=false;e._bigBigPhase2=true;e.invuln=0;e.hp=e.maxHp;
+     game.bigBigPhase2Start=game.time;game.bigBigVoid=0;
+     flashBanner('BIG BIG REVIVES!',1.45);
+     try{beep(110,.22,.035,'sawtooth','music');setTimeout(()=>beep(220,.20,.028,'triangle','music'),90);setTimeout(()=>beep(440,.18,.022,'sine','music'),180)}catch(_){}
+   }
+   return;
+ }
+ if(e._bigBigPhase2){game.bigBigVoid=Math.min(1,Math.max(0,(game.time-(game.bigBigPhase2Start||game.time))/12));}
+
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
@@ -5013,7 +5040,10 @@ function bossTick(e,dt){
 }
 function bossDraw(e){
  if(!G()||!e||e.dead||e.goldBossKey!=='gildedSentinel')return;
- const r=e.r||32,t=FRAME_NOW*.001,tier=e._goldTier||Math.max(1,Math.floor(game.wave/5));X.save();X.translate(e.x,e.y);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6));
+ const r=e.r||32,t=FRAME_NOW*.001,tier=e._goldTier||Math.max(1,Math.floor(game.wave/5));X.save();
+ const glitch=e._bigBigTransition?1:0,gx=glitch?(Math.random()-.5)*18:0,gy=glitch?(Math.random()-.5)*10:0;
+ X.translate(e.x+gx,e.y+gy);X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6)+(glitch?(Math.random()-.5)*.22:0));
+ if(glitch&&Math.random()<.24)X.globalAlpha=.38;
  // Fully opaque body hides the old boss underneath.
  X.fillStyle='#241703';X.beginPath();X.ellipse(0,0,r*1.28,r*1.18,0,0,TAU);X.fill();
  // Living six-limbed alien: limbs flex continuously.
@@ -5039,11 +5069,18 @@ function bossDraw(e){
 }
 function syncGoldBossName(){
  if(!G())return;
+ const b=game&&game.enemies?game.enemies.find(e=>e&&e.goldBossKey==='gildedSentinel'&&!e.dead):null;
+ const label=b?(b._bigBigPhase2?'BIG BIG':(b._bigBigTransition?'':'???')):'???';
  const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
- for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.textContent='???';n.style.color='#ffe15b';n.style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}}
+ for(let i=0;i<ids.length;i++){const n=document.getElementById(ids[i]);if(n){n.textContent=label;n.style.color='#ffe15b';n.style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}}
  const nodes=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
- for(let i=0;i<nodes.length;i++){nodes[i].textContent='???';nodes[i].style.color='#ffe15b';nodes[i].style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}
+ for(let i=0;i<nodes.length;i++){nodes[i].textContent=label;nodes[i].style.color='#ffe15b';nodes[i].style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}
 }
+function dropQuestionName(){
+ const n=document.getElementById('bossName0')||document.querySelector('.bossName');if(!n)return;
+ const r=n.getBoundingClientRect(),f=document.createElement('div');f.id='bigBigFallingName';f.textContent='???';f.style.left=(r.left+r.width/2)+'px';f.style.top=(r.top+r.height/2)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),1550);
+}
+
 const U=window.update;if(typeof U==='function')window.update=function(dt){
  sync();let alien=null,aliens=[],pos=[],saved=[];
  if(G()&&game.enemies){
@@ -5079,7 +5116,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  if(alien){
    alien.boss=bossState[0];alien.kind='goldUnknown';alien.goldBossKey=bossState[2];
    if(!alien.dead)bossTick(alien,dt);
-   alien.goldBossName='???';alien.name='???';syncGoldBossName();
+   alien.goldBossName=alien._bigBigPhase2?'BIG BIG':'???';alien.name=alien.goldBossName;syncGoldBossName();
    const pct=Math.max(0,Math.min(100,(alien.hp/alien.maxHp)*100));
    for(const id of ['bossFill0','bossFill1']){const f=document.getElementById(id);if(f){f.style.width=pct+'%';f.style.background='linear-gradient(90deg,#9b6108,#e3a91c 42%,#ffe16a 72%,#fff1a6)'}}
  }
@@ -5111,7 +5148,7 @@ function drawGoldAlien(e){
  X.restore();
 }
 const D=window.drawEnemy;if(typeof D==='function')window.drawEnemy=function(e){
- if(G()&&e&&e.boss&&e.goldBossKey==='gildedSentinel'){e.goldBossName='???';e.name='???';syncGoldBossName();bossDraw(e);return}
+ if(G()&&e&&e.boss&&e.goldBossKey==='gildedSentinel'){e.goldBossName=e._bigBigPhase2?'BIG BIG':'???';e.name=e.goldBossName;syncGoldBossName();bossDraw(e);return}
  if(G()&&e&&!e.boss){drawGoldAlien(e);return}
  return D.apply(this,arguments);
 };
