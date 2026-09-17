@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.15: fixed the Wave 50 finale transition invulnerability hole caused by the Gold wrapper temporarily masking the boss flag; ??? can no longer be killed/removed during the reveal delay, allowing BIG BIG to revive normally. -->
+<!-- Big Bug v19.0.16: actually enforces Wave 50 finale transition immunity even while the Gold wrapper masks the boss flag; the reveal boss cannot take any further damage or be removed before BIG BIG revives. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1319,7 +1319,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v19.0.0</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.15</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.16</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2309,7 +2309,7 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.15 — Wave 50 owns a separate finale state. Normal Gold completion is locked
+   // v19.0.16 — Wave 50 owns a separate finale state. Normal Gold completion is locked
    // until BIG BIG's second/final health bar is actually defeated.
    g.goldFinaleState=w===50?'phase1':null;if(w!==50){g.bigBigVoid=0;g.bigBigPhase2Start=0}
    const bossWave=w%5===0;
@@ -2335,7 +2335,7 @@ function beginWave(w){
 }
 function completeWave(){
  const g=game;if(!g.waveActive||g.intermission)return;
- // v19.0.15 — hard gate for the isolated Gold finale. No cleanup, pause, heal,
+ // v19.0.16 — hard gate for the isolated Gold finale. No cleanup, pause, heal,
  // reward, victory screen, or finish(true) may run after ???'s first defeat.
  // Only damageEnemy() marking BIG BIG as 'defeated' opens the normal victory path.
  if(g.mode==='gold'&&g.wave===50&&g.goldFinaleState!=='defeated')return;
@@ -2477,7 +2477,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
 function burst(x,y,n=8,life=.5,col=null){
  n=Math.min(n,Math.max(0,110-game.fx.length));for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4,col})}
 }
-// v19.0.15 — independent Wave 50 finale controller.
+// v19.0.16 — independent Wave 50 finale controller.
 // Gold Waves deliberately masks its special boss while inherited Story combat executes. If that
 // inherited code removes ??? before damageEnemy() can retain the entity, the finale must not depend
 // on the removed object surviving. Rebuild a transition-only copy and let the finale own it.
@@ -2512,7 +2512,7 @@ function goldFinalePostInherited(source){
 }
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
- // v19.0.15 — the Gold wrapper intentionally masks this boss as non-boss/'goldUnknownActive'
+ // v19.0.16 — the Gold wrapper intentionally masks this boss as non-boss/'goldUnknownActive'
  // while inherited combat runs. Identify the finale boss by either identity, never by e.boss.
  const goldFinaleBoss=game&&game.mode==='gold'&&game.wave===50&&e&&(e.goldBossKey==='gildedSentinel'||e.goldBossKey==='goldUnknownActive');
  // First lethal hit: consume the hit as a phase break. The enemy stays alive, so the inherited
@@ -2524,6 +2524,10 @@ function damageEnemy(e,d,source='player'){
    try{beep(78,.24,.03,'square','music');setTimeout(()=>beep(64,.20,.025,'sawtooth','music'),110)}catch(_){}
    return;
  }
+ // v19.0.16 — IMPORTANT: during the reveal delay the Gold wrapper has e.boss=false, so the
+ // generic boss invulnerability check below cannot protect this entity. Enforce finale immunity
+ // directly from the finale identity/state before any normal damage logic can run.
+ if(goldFinaleBoss&&e._bigBigTransition){e.hp=Math.max(1,e.hp);e.dead=false;return;}
  // Second lethal hit: this is the only event that unlocks Wave 50's normal Gold victory path.
  if(goldFinaleBoss&&e._bigBigPhase2&&d>=e.hp)game.goldFinaleState='defeated';
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
@@ -5136,7 +5140,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  const fxBefore=(G()&&game.fx)?game.fx.length:0;
  const out=U.apply(this,arguments);
 
- // v19.0.15 — inherited combat may have removed Wave 50's boss object. Resolve that handoff
+ // v19.0.16 — inherited combat may have removed Wave 50's boss object. Resolve that handoff
  // before any Gold post-processing relies on the old entity.
  goldFinalePostInherited(alien);
 
