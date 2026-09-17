@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.9: removed redundant TEMP BIG BIG FINALE button; Gold Wave selector remains for finale testing; Gold Wave 50 ??? remains temporarily at 50 HP. -->
+<!-- Big Bug v19.0.10: fixed Gold Wave 50 phase break so ??? cannot end the run; BIG BIG revival and void finale now stay in the same battle. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1319,7 +1319,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
   <div class="versionStamp" aria-hidden="true">v19.0.0</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.9</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.10</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2473,7 +2473,7 @@ function burst(x,y,n=8,life=.5,col=null){
 function damageEnemy(e,d,source='player'){
  if(!e||e.hp<=0)return;
  // v19.0.0 — the first Wave 50 Gold-boss "death" reveals BIG BIG instead of ending the run.
- if(game&&game.mode==='gold'&&game.wave===50&&e.boss&&e.goldBossKey==='gildedSentinel'&&!e._bigBigPhase2&&!e._bigBigTransition&&d>=e.hp){
+ if(game&&game.mode==='gold'&&game.wave===50&&e._bigBigFinalBoss&&!e._bigBigPhase2&&!e._bigBigTransition&&d>=e.hp){
    const chip=Math.max(0,e.hp-1);if(chip>0)damageEnemy(e,chip,source);
    e.hp=1;e.invuln=999;e._bigBigTransition=true;e._bigBigReviveAt=game.time+2.35;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
    game.bigBigVoid=0;dropQuestionName();syncGoldBossName();flashBanner('...',1.15);
@@ -5066,7 +5066,7 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  if(G()&&game.enemies){
    for(let i=0;i<game.enemies.length;i++){
      const e=game.enemies[i];
-     if(e&&e.goldBossKey==='gildedSentinel')alien=e;
+     if(e&&e.goldBossKey==='gildedSentinel'){alien=e;e._bigBigFinalBoss=(game.wave===50);}
      else if(e&&!e.boss&&!e.dead){
        aliens.push(e);pos.push([e.x,e.y]);
        saved.push([e.kind,e.type,e.poison,e.venom,e.venomous,e.poisonOnHit,e.venomOnHit,e.special,e.attackType]);
