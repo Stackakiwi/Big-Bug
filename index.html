@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.48 BIG BIG DEATH: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.49 GOLD FINALE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1273,6 +1273,21 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 #bigBigFallingName{position:fixed;z-index:10000;pointer-events:none;font-weight:1000;font-size:15px;letter-spacing:1px;color:#ffe15b;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e;transform:translate(-50%,-50%);animation:bigBigNameFall 1.45s cubic-bezier(.35,.02,.8,.45) forwards}
 @keyframes bigBigNameFall{0%{opacity:1;transform:translate(-50%,-50%) rotate(0deg)}18%{transform:translate(calc(-50% + 9px),calc(-50% - 3px)) rotate(8deg)}36%{transform:translate(calc(-50% - 8px),calc(-50% + 5px)) rotate(-11deg)}100%{opacity:.05;transform:translate(calc(-50% + 34px),calc(100vh + 80px)) rotate(145deg)}}
+
+/* v19.0.49 — dedicated Gold victory finale; replaces the normal game-over square after BIG BIG. */
+#goldFinaleOutro{position:fixed;inset:0;z-index:1400;display:none;overflow:hidden;pointer-events:none;background:transparent;color:white}
+#goldFinaleOutro.play{display:block}
+#goldFinaleOutro.black{background:#000}
+#goldFinaleWord{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.08);transform-origin:50% 50%;opacity:0;white-space:nowrap;font-family:"Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand","Comic Sans MS",cursive;font-weight:1000;font-size:clamp(64px,22vw,190px);letter-spacing:-.055em;color:#f3ad27;text-shadow:0 5px 0 #6b3418,0 10px 28px #000c,0 0 18px #ffd75a66}
+#goldFinaleOutro.reveal #goldFinaleWord{animation:goldFinaleWord 2.45s cubic-bezier(.18,.82,.22,1) forwards}
+@keyframes goldFinaleWord{0%{opacity:0;transform:translate(-50%,-50%) scale(.08) rotate(-3deg)}12%{opacity:1}58%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(1deg)}72%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg)}100%{opacity:0;transform:translate(145vw,-54%) scale(1.18) rotate(8deg)}}
+#goldFinaleGlint{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%) scale(.2);opacity:0}
+#goldFinaleGlint:before,#goldFinaleGlint:after{content:"";position:absolute;left:50%;top:50%;background:#fff4a8;box-shadow:0 0 12px #fff4a8,0 0 28px #e7b62d}
+#goldFinaleGlint:before{width:3px;height:90px;transform:translate(-50%,-50%)}
+#goldFinaleGlint:after{width:90px;height:3px;transform:translate(-50%,-50%)}
+#goldFinaleOutro.reveal #goldFinaleGlint{animation:goldFinaleGlint 1.5s .42s ease-out forwards}
+@keyframes goldFinaleGlint{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}35%{opacity:.9;transform:translate(-50%,-50%) scale(1) rotate(18deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.1) rotate(42deg)}}
+
 </style>
 </head>
 <body>
@@ -1317,8 +1332,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.48</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.48</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.49</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.49</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1434,6 +1449,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <button class="choice epic" id="prepBuddy"><div class="art"><span class="bbIcon bbBugIcon"></span></div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p></button>
  </div></div>
 </section>
+
+<div id="goldFinaleOutro" aria-hidden="true"><div id="goldFinaleGlint"></div><div id="goldFinaleWord">BIG BUG</div></div>
 
 <section id="ending" class="hidden" aria-label="Ending credits">
  <div id="endingBackdrop"></div>
@@ -1864,7 +1881,7 @@ function makeArmyHelper(i=0){
 }
 let game=null, last=0, raf=0, audio=null;
 
-// v19.0.48 — BIG BIG HUD fade presentation.
+// v19.0.49 — BIG BIG HUD fade presentation.
 // Intentionally presentation-only: no combat pause, no boss movement changes, no damage/game-over guards.
 const BB_HUD_FADE_TARGETS={
  health:()=>document.querySelector('#hud .hudHealth'),
@@ -2468,7 +2485,7 @@ function completeWave(){
      if(g.goldFinale){
        bb22Trace('W50 PHASE 2 COMPLETE -> GOLD VICTORY');
        g.goldFinale=false;g.goldFinaleRevealUntil=0;g.goldFinaleRevealStart=0;
-       setTimeout(()=>{if(game===g&&!g.over)finish(true)},500);return;
+       setTimeout(()=>{if(game===g&&!g.over)startGoldFinaleOutro()},500);return;
      }
      // Defensive fallback only: if an external/test path somehow clears phase 1 without a lethal hit,
      // restart the same Wave 50 boss rather than entering a hidden replacement wave.
@@ -2610,7 +2627,7 @@ function damageEnemy(e,d,source='player'){
    bb22Trace('SAME-BOSS PHASE 2 BIG BIG hp='+e.hp+'/'+e.max+' enemies='+g.enemies.length+' wave='+g.wave);
    return;
  }
- // v19.0.48 — BIG BIG dies in place with a self-contained alien death sequence.
+ // v19.0.49 — BIG BIG dies in place with a self-contained alien death sequence.
  // No wave transition or replacement entity: combat freezes immediately, the same boss remains
  // drawable for the death animation, then the existing Gold victory flow runs.
  if(game&&game.mode==='gold'&&game.wave===50&&e.goldPhase===2&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp&&!e.goldDying){
@@ -3438,7 +3455,7 @@ function updateHud(force=true,now=performance.now()){
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
- clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
+ clearEndingTimers();const go=$('goldFinaleOutro');if(go)go.classList.remove('play','black','reveal');stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
  enterHomeCleanly();
 }
 
@@ -3623,6 +3640,40 @@ function previewFinalPurification(purifyOnly=false){
  boss.x=W/2;boss.y=Math.max(175,H*.43);boss.state='chase';boss.invuln=0;boss.hp=0;boss.dying=true;boss.vx=0;boss.vy=0;
  game.finalBoss=boss;
  completeGameEnding(true,!!purifyOnly);
+}
+
+function goldVictoryMusicStart(){
+ if(!save?.settings?.music)return;
+ hardStopAllAudioVoices(.02);
+ const seq=[
+  [0,523,.18,.030,'triangle'],[160,659,.16,.028,'triangle'],[320,784,.20,.032,'sine'],
+  [560,1047,.12,.020,'sine'],[690,1319,.11,.017,'sine'],[820,1568,.15,.015,'sine'],
+  [1050,659,.18,.026,'triangle'],[1220,784,.18,.028,'triangle'],[1390,988,.24,.030,'sine'],
+  [1690,1175,.11,.017,'sine'],[1810,1480,.10,.014,'sine'],[1940,1760,.13,.012,'sine'],
+  [2180,784,.18,.027,'triangle'],[2350,988,.18,.028,'triangle'],[2520,1319,.30,.029,'sine'],
+  [2860,1568,.10,.014,'sine'],[2980,1976,.10,.012,'sine'],[3120,2349,.15,.010,'sine']
+ ];
+ for(const [ms,n,d,v,w] of seq)endingTimers.push(setTimeout(()=>{const o=$('goldFinaleOutro');if(o&&o.classList.contains('play'))beep(n,d,v,w,'music')},ms));
+}
+function bankGoldVictoryForOutro(){
+ if(!game||game.rewardsBanked||game.testMode)return;
+ save.goldBest=Math.max(save.goldBest||0,50);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome();refreshGoldWavesHome();
+}
+function startGoldFinaleOutro(){
+ if(!game)return;
+ resetBigBigHudFades();clearEndingTimers();bossMusicStop();endlessMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.02);clearRunRecovery();
+ game.over=true;game.paused=true;game.waveActive=false;game.intermission=true;bankGoldVictoryForOutro();
+ showGameUI(false);$('bossbar').style.display='none';screens.forEach(id=>$(id)?.classList.add('hidden'));
+ const o=$('goldFinaleOutro');if(!o)return;
+ o.classList.remove('black','reveal');o.classList.add('play');void o.offsetHeight;
+ goldVictoryMusicStart();
+ endingTimers.push(setTimeout(()=>{if(game&&game.over&&o.classList.contains('play'))o.classList.add('reveal')},1900));
+ endingTimers.push(setTimeout(()=>{if(game&&game.over&&o.classList.contains('play')){hardStopAllAudioVoices(.02);o.classList.add('black');o.classList.remove('reveal')}},4450));
+ endingTimers.push(setTimeout(()=>{
+  if(!o.classList.contains('play'))return;
+  o.classList.remove('play','black','reveal');
+  enterHomeCleanly();
+ },9450));
 }
 
 function finish(won,quit=false){
