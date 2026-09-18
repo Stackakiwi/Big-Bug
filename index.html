@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.74 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.75 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1326,8 +1326,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.74</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.74</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.75</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.75</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1381,7 +1381,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
   <div class="goldPackGrid">
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>20</div><div class="bonus">STARTER PACK</div><button class="btn small" data-gold-pack="20">$0.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>700</div><div class="bonus">BETTER VALUE</div><button class="btn small" data-gold-pack="700">$2.99</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>70</div><div class="bonus">BETTER VALUE</div><button class="btn small" data-gold-pack="70">$2.99</button></div>
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>130</div><div class="bonus">+30% VALUE</div><button class="btn small" data-gold-pack="130">$4.99</button></div>
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>300</div><div class="bonus">+50% VALUE</div><button class="btn small" data-gold-pack="300">$9.99</button></div>
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>700</div><div class="bonus">+75% VALUE</div><button class="btn small" data-gold-pack="700">$19.99</button></div>
@@ -1493,6 +1493,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
+// v19.0.75 — Gold Leaf Shop: corrected the $2.99 pack from 700 to 70 Gold Leaves; display and pack value match.
 // v19.0.74 — Story Mode boss HUD only: BOSS text beside the wave number is always red; all other modes/HUD text unchanged.
 // v19.0.73 — Story Mode leaves are now banked only when the run ends (death, quit, or game clear); exact carried amount only. Mosquito Mode and Gold Leaves unchanged.
 // v19.0.70 — Legendary Golden Ladybug regular-leaf purchase is 500,000; 100 Gold Leaves alternative unchanged.
