@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.75 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.76 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1326,8 +1326,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.75</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.75</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.76</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.76</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1493,11 +1493,12 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
+// v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
 // v19.0.75 — Gold Leaf Shop: corrected the $2.99 pack from 700 to 70 Gold Leaves; display and pack value match.
 // v19.0.74 — Story Mode boss HUD only: BOSS text beside the wave number is always red; all other modes/HUD text unchanged.
 // v19.0.73 — Story Mode leaves are now banked only when the run ends (death, quit, or game clear); exact carried amount only. Mosquito Mode and Gold Leaves unchanged.
 // v19.0.70 — Legendary Golden Ladybug regular-leaf purchase is 500,000; 100 Gold Leaves alternative unchanged.
-// v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
+// v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and rare boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
 // v18.0.81 — Mosquito Mode stationary detection is more tolerant of tiny movement jitter; stand-still firing bonus is a true 25% and stacks with existing faster attack-speed scaling and boosts.
 // v18.0.81 — Mosquito Mode also gets the stand-still firing-speed bonus, stacking with its existing faster attack-speed scaling and boosts.
@@ -2683,7 +2684,7 @@ function damageEnemy(e,d,source='player'){
      // v19.0.69 — Story Mode only: regular Armored Beetles have a 20% chance to drop a tiny +10 HP heart.
      // Keep this as a normal lightweight pickup in the existing drop array so Gold/Mosquito modes and wave logic are untouched.
      if(game.mode==='story'&&!e.boss&&e.kind==='beetle'&&Math.random()<.20)game.drops.push({x:e.x+10,y:e.y-6,v:0,r:7,age:0,phase:Math.random()*6.28,healDrop:true,healAmount:10});
-      if(e.boss&&Math.random()<1/1000)game.drops.push({x:e.x+18,y:e.y-8,v:0,r:15,age:0,phase:Math.random()*6.28,goldLeaf:true});
+      if(e.boss&&Math.random()<1/350)game.drops.push({x:e.x+18,y:e.y-8,v:0,r:15,age:0,phase:Math.random()*6.28,goldLeaf:true});
    }
    if(e.kind==='mosquito'){
      // Endless swarms can die in large bursts, so keep each death deliberately tiny and cheap.
