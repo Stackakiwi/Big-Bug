@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.89 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.90 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1168,7 +1168,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v19.0.89 — tighter upgrade cards; final 3-choice reward uses existing leaf + selected player + sword icons. */
+/* v19.0.90 — tighter upgrade cards; final 3-choice reward uses existing leaf + selected player + sword icons. */
 /* v18.0.188 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
@@ -1316,7 +1316,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 
 
-/* v19.0.89 — larger upgrade text retained; mobile cards tightened to remove excess empty space. */
+/* v19.0.90 — larger upgrade text retained; mobile cards tightened to remove excess empty space. */
 #upgrade .choice b{font-size:clamp(29px,2.65vw,38px)!important;line-height:1.04!important}
 #upgrade .choice p{font-size:clamp(21px,1.8vw,26px)!important;line-height:1.27!important}
 @media(max-width:760px){
@@ -1367,8 +1367,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.89</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.89</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.90</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.90</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4305,24 +4305,39 @@ function drawEnemy(e){
   }
   X.lineCap='butt';
  }else if(e.kind==='bombardier'){
-  // BOMBARDIER: dark armored beetle with a bright chemical abdomen and twin rear spray nozzles.
+  // v19.0.90 — BOMBARDIER visual-only identity pass: squat charcoal fire beetle,
+  // orange warning bands, heavy head plate, and an oversized twin-nozzle rear chamber.
+  // Gameplay size, hitbox, movement and attacks are unchanged.
   for(let side of [-1,1]){
-    line(side*7,-3,side*(r+9),-12+step,2.6,'#263b31');
-    line(side*8,6,side*(r+11),7-step2,2.6,'#263b31');
-    line(side*6,14,side*(r+8),23+step,2.4,'#263b31');
+    line(side*7,-4,side*(r+10),-13+step,3,'#25251f');
+    line(side*8,6,side*(r+12),7-step2,3,'#25251f');
+    line(side*6,15,side*(r+9),24+step,2.7,'#25251f');
   }
-  X.fillStyle='#293e33';X.beginPath();X.ellipse(0,4,r*.88,r*1.05,0,0,6.28);X.fill();
-  X.strokeStyle='#17281f';X.lineWidth=2;X.stroke();
-  X.fillStyle='#3d5947';X.beginPath();X.ellipse(0,-r*.57,r*.62,r*.48,0,0,6.28);X.fill();
-  eye(-r*.22,-r*.67,2.4);eye(r*.22,-r*.67,2.4);
-  // Bright orange chemical chamber at the rear.
-  X.fillStyle='#d87839';X.beginPath();X.ellipse(0,r*.63,r*.52,r*.48,0,0,6.28);X.fill();
-  X.strokeStyle='#7c3f24';X.lineWidth=2;X.stroke();
-  X.fillStyle='#f0a04b';X.beginPath();X.ellipse(0,r*.58,r*.25,r*.27,0,0,6.28);X.fill();
-  // Twin rear exhaust/spray tubes.
+  // Wide, almost black armored shell.
+  X.fillStyle='#252b24';X.beginPath();X.ellipse(0,5,r*.94,r*1.08,0,0,6.28);X.fill();
+  X.strokeStyle='#111a14';X.lineWidth=2.5;X.stroke();
+  // Split shell seam and chunky orange warning bands make him readable at a glance.
+  line(0,-r*.18,0,r*.52,2,'#111a14');
+  X.fillStyle='#b85d2b';
+  X.fillRect(-r*.76,r*.02,r*1.52,r*.16);
+  X.fillRect(-r*.68,r*.31,r*1.36,r*.14);
+  // Broad armored head/neck plate with short hooked antennae.
+  X.fillStyle='#394137';X.beginPath();X.ellipse(0,-r*.61,r*.68,r*.50,0,0,6.28);X.fill();
+  X.strokeStyle='#171f19';X.lineWidth=2;X.stroke();
+  X.fillStyle='#171f19';X.beginPath();X.moveTo(-r*.52,-r*.79);X.lineTo(-r*.73,-r*.98);X.lineTo(-r*.45,-r*.91);X.fill();
+  X.beginPath();X.moveTo(r*.52,-r*.79);X.lineTo(r*.73,-r*.98);X.lineTo(r*.45,-r*.91);X.fill();
+  eye(-r*.23,-r*.69,2.5);eye(r*.23,-r*.69,2.5);
+  line(-r*.18,-r*.94,-r*.47,-r*1.25,1.8,'#22281f');line(r*.18,-r*.94,r*.47,-r*1.25,1.8,'#22281f');
+  // Oversized orange pressure chamber at the rear, like a built-in little furnace.
+  X.fillStyle='#a94e27';X.beginPath();X.ellipse(0,r*.70,r*.61,r*.52,0,0,6.28);X.fill();
+  X.strokeStyle='#55291d';X.lineWidth=2.5;X.stroke();
+  X.fillStyle='#e98737';X.beginPath();X.ellipse(0,r*.65,r*.34,r*.31,0,0,6.28);X.fill();
+  X.fillStyle='#ffd06a';X.beginPath();X.ellipse(0,r*.61,r*.14,r*.13,0,0,6.28);X.fill();
+  // Thick twin exhaust nozzles angled outward from the abdomen.
   for(let side of [-1,1]){
-    line(side*r*.22,r*.82,side*r*.34,r*1.34,6,'#b65d31');
-    X.fillStyle='#3a241b';X.beginPath();X.arc(side*r*.34,r*1.38,4.2,0,6.28);X.fill();
+    line(side*r*.25,r*.91,side*r*.42,r*1.42,7,'#8d4328');
+    X.fillStyle='#241b16';X.beginPath();X.arc(side*r*.42,r*1.45,5,0,6.28);X.fill();
+    X.fillStyle='#e98737';X.beginPath();X.arc(side*r*.42,r*1.45,2.3,0,6.28);X.fill();
   }
  }else if(e.kind==='waterStrider'){
   // POND SKATER: compact aquatic bug body with exactly four broad skating legs.
@@ -4750,7 +4765,7 @@ function draw(now=performance.now()){
      const q=Math.max(0,f.life/(f.maxLife||1)),pulse=.85+.15*Math.sin(game.time*9);X.save();X.translate(f.x,f.y);X.globalAlpha=.28+.42*q;
      const cols={acid:'#e58b3b',dark:'#7d5a91',ripple:'#a8e7df',thorn:'#b8d05b',webline:'#e8d9f4',root:'#9a6a42',rootFinal:'#b77a4d',spore:'#c879d1',clamp:'#d86b45'};X.strokeStyle=cols[f.style]||'#f0d16a';X.fillStyle=cols[f.style]||'#f0d16a';X.lineWidth=f.style==='webline'?3:2.5;
      if(f.style==='acid'){
-       // v19.0.89 — Bombardier hazards keep the same gameplay radius/damage, but render as chunky hand-drawn fire instead of circles.
+       // v19.0.90 — Bombardier hazards keep the same gameplay radius/damage, but render as chunky hand-drawn fire instead of circles.
        const age=(f.maxLife||1)-f.life,seed=f.spraySeed||0,ang=Number.isFinite(f.sprayAngle)?f.sprayAngle:-Math.PI/2;
        X.rotate(ang+Math.PI/2);
        X.globalAlpha=.42+.50*q;
@@ -5340,7 +5355,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.89';
+const BB_BUILD_VERSION='19.0.90';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
