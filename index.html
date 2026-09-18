@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.62 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.64 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1323,8 +1323,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.62</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.62</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.64</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.64</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1490,6 +1490,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
+// v19.0.64 — Legendary Golden Ladybug regular-leaf purchase reduced from 1,000,000 to 100,000; 100 Gold Leaves alternative unchanged.
 // v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
 // v18.0.81 — Mosquito Mode stationary detection is more tolerant of tiny movement jitter; stand-still firing bonus is a true 25% and stacks with existing faster attack-speed scaling and boosts.
@@ -2189,9 +2190,9 @@ function buildBugScreen(){
  const grid=$('bugGrid');grid.innerHTML='';
  const normalIds=['ladybug','beetle','butterfly'];
  normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?40:50;const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>Or unlock early for 10 Gold Leaves.</div>`:'';el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'goldUnlockBtn'}">${selected?'SELECTED':unlocked?'SELECT':`<span class="goldLeafIcon" aria-hidden="true"></span> UNLOCK — 10`}</button>`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen()}else if(save.goldLeaves>=10){save.goldLeaves-=10;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id);if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}else beep(155,.10,.022,'triangle')};grid.appendChild(el)});
- if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>1,000,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
+ if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>100,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
 }
-function buyLegendary(kind){if(save.legendaryGolden.owned)return;const ok=kind==='leaf'?save.scrap>=1000000:save.goldLeaves>=100;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf')save.scrap-=1000000;else save.goldLeaves-=100;save.legendaryGolden.owned=true;if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210)}
+function buyLegendary(kind){if(save.legendaryGolden.owned)return;const ok=kind==='leaf'?save.scrap>=100000:save.goldLeaves>=100;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf')save.scrap-=100000;else save.goldLeaves-=100;save.legendaryGolden.owned=true;if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210)}
 function permanentUpgradeLeafCost(k,level){
  // v18.0.34 — same simple leaf-price ladder for every permanent upgrade.
  // level is the current 0–9 level, so index 0 is the first purchase.
@@ -2671,6 +2672,9 @@ function damageEnemy(e,d,source='player'){
      if(e.boss){val*=20;}
      else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
      game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
+     // v19.0.64 — Story Mode only: regular Armored Beetles have a rare 5% chance to drop a tiny +10 HP heart.
+     // Keep this as a normal lightweight pickup in the existing drop array so Gold/Mosquito modes and wave logic are untouched.
+     if(game.mode==='story'&&!e.boss&&e.kind==='beetle'&&Math.random()<1/20)game.drops.push({x:e.x+10,y:e.y-6,v:0,r:7,age:0,phase:Math.random()*6.28,healDrop:true,healAmount:10});
       if(e.boss&&Math.random()<1/1000)game.drops.push({x:e.x+18,y:e.y-8,v:0,r:15,age:0,phase:Math.random()*6.28,goldLeaf:true});
    }
    if(e.kind==='mosquito'){
@@ -3227,7 +3231,7 @@ function update(dt,now){
  for(const d of g.drops){
    d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,dist=0,mag2=p.magnet*p.magnet;
    if(d2<mag2){dist=Math.sqrt(d2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt}
-   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+10;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ 10 GOLD LEAVES FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;if(game.mode!=='endless'&&!game.testMode){save.scrap=(save.scrap||0)+d.v;persistLeafPickup()}d.dead=true;const leafHud=$('hudCurrencyIcon')||document.querySelector('#hud .hudLeaves');const leafRect=leafHud?.getBoundingClientRect();const leafTX=leafRect?leafRect.left+leafRect.width*.5:W*.72,leafTY=leafRect?leafRect.top+leafRect.height*.5:42;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.52,maxLife:.52,r:10,scrapFly:true,tx:leafTX,ty:leafTY});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
+   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.healDrop){const healed=Math.min(d.healAmount||10,Math.max(0,p.maxHp-p.hp));p.hp=Math.min(p.maxHp,p.hp+(d.healAmount||10));d.dead=true;game.fx.push({x:d.x,y:d.y-8,vx:0,vy:-24,life:.72,maxLife:.72,r:0,healHeart:true});burst(d.x,d.y,5,.28,'#ff8b78');beep(620,.055,.018,'sine');if(healed>0)flashBanner('+'+healed+' HP',.7)}else if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+10;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ 10 GOLD LEAVES FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;if(game.mode!=='endless'&&!game.testMode){save.scrap=(save.scrap||0)+d.v;persistLeafPickup()}d.dead=true;const leafHud=$('hudCurrencyIcon')||document.querySelector('#hud .hudLeaves');const leafRect=leafHud?.getBoundingClientRect();const leafTX=leafRect?leafRect.left+leafRect.width*.5:W*.72,leafTY=leafRect?leafRect.top+leafRect.height*.5:42;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.52,maxLife:.52,r:10,scrapFly:true,tx:leafTX,ty:leafTY});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
  }
  for(const f of g.fx){
    f.life-=dt;
@@ -3851,6 +3855,7 @@ function leafSprite(r){
 }
 function drawLeaves(d){
  const t=FRAME_NOW/1000,bob=Math.sin(t*5+(d.phase||d.x*.01))*2.2,rot=-.45+Math.sin(t*2.2+(d.phase||0))*.18,r=Math.max(9,(d.r||8)*1.28);
+ if(d.healDrop){X.save();X.globalAlpha=.96;X.shadowColor='#ff776f';X.shadowBlur=7;drawBigBugHeartFx(d.x,d.y+bob,16);X.restore();return}
  X.save();X.translate(d.x,d.y+bob);X.rotate(rot);
  if(!d.goldLeaf){const sp=leafSprite(r);X.drawImage(sp.c,-sp.size/2,-sp.size/2,sp.size,sp.size);X.restore();return}
  // Gold Leaves are extremely rare, so retain their full live metallic sparkle renderer.
