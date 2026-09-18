@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.92 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.94 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1129,6 +1129,14 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #upgrade .choice .buddyArmyWrap{width:82px!important;height:76px!important}
 #upgrade .choice .buddyArmyWrap canvas{width:44px!important;height:44px!important}
 #upgrade .choice .buddyArmyWrap canvas:nth-child(1){left:0!important;top:24px!important}#upgrade .choice .buddyArmyWrap canvas:nth-child(2){left:19px!important;top:2px!important}#upgrade .choice .buddyArmyWrap canvas:nth-child(3){right:0!important;top:24px!important}
+#upgrade .choice.noDesc p{display:none!important}
+#upgrade .choice.noDesc{grid-template-rows:1fr!important;min-height:170px!important}
+#upgrade .choice.noDesc b{align-self:center!important;margin:0!important}
+#upgrade .choice.noDesc .upgradeMark{grid-row:1!important}
+@media(max-width:760px){
+ #upgrade .choice.noDesc{min-height:118px!important}
+}
+
 @media(max-width:760px){
  #upgrade{padding:12px!important;overflow:auto!important;touch-action:pan-y!important}
  #upgrade .panel{width:min(540px,100%)!important;padding:20px 14px 18px!important;max-height:none!important;overflow:visible!important;margin:auto!important}
@@ -1367,8 +1375,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.92</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.92</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.94</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.94</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3356,7 +3364,7 @@ function update(dt,now){
  if(p.hp<=0)finish(false);
  updateHud(false,now);
 }
-function upgradeCardClass(u){return (u&&(['triple','clone','helperArmy'].includes(u.id)))?'bbRare':''}
+function upgradeCardClass(u){if(!u)return '';const cls=[];if(['triple','clone','helperArmy'].includes(u.id))cls.push('bbRare');if(['endlessHealth','endlessTriple','endlessRepel'].includes(u.id))cls.push('noDesc');return cls.join(' ')}
 function upgradeIconSvg(id){
  const open='<svg class="bbUpgradeIcon" viewBox="0 0 64 64" aria-hidden="true">',close='</svg>';
  // v18.0.58 — deliberately simple BIG BUG garden doodles: chunky ink, small asymmetry,
@@ -3391,7 +3399,7 @@ function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgrad
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
 if(u.id==='endlessRepel'){
- // v19.0.92 — Repellent uses a dedicated mosquito canvas icon without touching the gameplay canvas context.
+ // v19.0.94 — Repellent uses a dedicated mosquito canvas icon without touching the gameplay canvas context.
  // Never swap the main canvas context X here: X is const, and assigning to it throws during
  // the between-wave ability screen, leaving Mosquito Mode paused after the first swarm.
 }else if(u.id==='goldMove'){
@@ -3412,9 +3420,9 @@ function openUpgrade(afterWave=false){
  $('upgradeSub').textContent=g.mode==='endless'?'Choose one ability':g.mode==='gold'?'':'Choose one upgrade';
  if(g.mode==='endless'){
    const endlessUp=[];
-   if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:`10 sec rapid healing  •  ${(g.endlessHealthCharge||0)}/3 ready`,rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
-   if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'2× BOOST',desc:`6 sec 2× attack + 2-shot  •  ${(g.endlessTripleCharge||0)}/3 ready`,rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
-   if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:`5 sec swarm slow + pushback  •  ${(g.endlessRepelCharge||0)}/3 ready`,rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
+   if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:'',rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
+   if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'2x ATTACK BOOST',desc:'',rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
+   if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:'',rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
    if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
    $('choices').innerHTML=endlessUp.map(u=>upgradeChoiceHtml(u)).join('');
    paintUpgradeBuddyIcons($('choices'),endlessUp);
@@ -3506,17 +3514,33 @@ const HUD_CACHE={},HUD_NODES={};
 function hudNode(id){return HUD_NODES[id]||(HUD_NODES[id]=$(id))}
 function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_CACHE[id]=value;hudNode(id).textContent=value}}
 function setBossBarFill(index,value){const key='bossFill'+index;if(HUD_CACHE[key]!==value){HUD_CACHE[key]=value;hudNode(key).style.width=value}}
+function resetRegularBossHudVisuals(w=game?.wave||5){
+ document.body.classList.remove('g159');
+ if(typeof __bbGoldBossNameNodes!=='undefined')__bbGoldBossNameNodes=null;
+ const kinds=bossKindsFor(w);
+ for(let i=0;i<2;i++){
+   const name=$('bossName'+i),fill=$('bossFill'+i),kind=kinds[i];
+   if(name){
+     if(kind)name.textContent=bossDisplayName(kind,w);
+     name.style.color='';name.style.textShadow='';
+   }
+   if(fill){fill.style.background='';}
+ }
+}
 function configureBossHud(w){
  if(game?.mode==='gold'){
    const t=FRAME_NOW*.001;X.save();X.globalCompositeOperation='screen';X.strokeStyle='#fff1a0';X.lineWidth=1;
    for(let i=0;i<6;i++){const x=(i*173+41)%W,y=(i*127+Math.sin(t*1.15+i)*24+H)%H,r=1.4+Math.sin(t*2.4+i)*.4;X.globalAlpha=.22+.18*(.5+.5*Math.sin(t*2.8+i));X.beginPath();X.moveTo(x-r*2,y);X.lineTo(x+r*2,y);X.moveTo(x,y-r*2);X.lineTo(x,y+r*2);X.stroke()}
    X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
+ }else{
+   resetRegularBossHudVisuals(w);
  }
  const kinds=bossKindsFor(w),dual=kinds.length>1;for(let i=0;i<2;i++){const row=$('bossRow'+i),name=$('bossName'+i);if(!row||!name)continue;const kind=kinds[i];row.classList.toggle('hidden',!kind);if(kind)name.textContent=bossDisplayName(kind,w);setBossBarFill(i,kind?'100%':'0%')}$('bossbar').style.width=dual?'min(330px,72vw)':'min(290px,62vw)';
 }
 function updateBossHud(){
  if(!game)return;if(game.mode==='gold'){const b=(game.bosses||[]).find(q=>q&&!q.dead),pct=b&&b.max>0?Math.max(0,Math.min(100,100*b.hp/b.max)):0;setBossBarFill(0,pct+'%');setBossBarFill(1,'0%');return}
- const kinds=bossKindsFor(game.wave),bosses=game.bosses||[];for(let i=0;i<2;i++){const kind=kinds[i];if(!kind){setBossBarFill(i,'0%');continue}const b=bosses.find(q=>q&&!q.dead&&q.kind===kind),pct=b&&b.max>0?Math.max(0,Math.min(100,100*b.hp/b.max)):0;setBossBarFill(i,pct+'%')}
+ resetRegularBossHudVisuals(game.wave);
+ const kinds=bossKindsFor(game.wave),bosses=game.bosses||[];for(let i=0;i<2;i++){const kind=kinds[i];if(!kind){setBossBarFill(i,'0%');continue}const name=$('bossName'+i);if(name)name.textContent=bossDisplayName(kind,game.wave);const b=bosses.find(q=>q&&!q.dead&&q.kind===kind),pct=b&&b.max>0?Math.max(0,Math.min(100,100*b.hp/b.max)):0;setBossBarFill(i,pct+'%')}
 }
 function setHudClass(el,key,cls,on){if(HUD_CACHE[key]!==on||el.classList.contains(cls)!==on){HUD_CACHE[key]=on;el.classList.toggle(cls,on)}}
 function setHudDisabled(el,key,on){if(HUD_CACHE[key]!==on||el.disabled!==on){HUD_CACHE[key]=on;el.disabled=on}}
@@ -5380,7 +5404,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.92';
+const BB_BUILD_VERSION='19.0.94';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
