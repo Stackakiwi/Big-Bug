@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.65 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.66 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -412,7 +412,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .bbSwordSvg{width:1.28em;height:1.28em;display:block;flex:0 0 auto;overflow:visible;filter:drop-shadow(0 1px 1px #0008)}
 #pause .panel h2{display:block;text-align:center;width:100%;margin-left:auto;margin-right:auto}
 .pauseStats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px auto 18px;max-width:330px;text-align:left}.pauseStat{background:#17301f;border:1px solid #ffffff22;border-radius:10px;padding:9px 11px;box-shadow:inset 0 -2px #0b1b10}.pauseStat small{display:block;font-size:10px;opacity:.7;letter-spacing:.6px}.pauseStat b{display:block;font-size:18px;margin-top:2px}
-.leafCurrencyIcon.bbLeafIcon{width:24px;height:24px;font-size:0;background:none;border:0;box-shadow:none;filter:drop-shadow(0 0 5px #dfff63);transform:none}.leafCurrencyIcon.bbLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23c9f84f' stroke='%23fbffe1' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%233d792d' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%2373963c' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}.leafCurrencyIcon.bbLeafIcon:after{display:none}
+.leafCurrencyIcon.bbLeafIcon{width:24px;height:24px;font-size:0;background:none;border:0;box-shadow:none;filter:drop-shadow(0 0 5px #dfff63);transform:none}.leafCurrencyIcon.bbLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23c9f84f' stroke='%23fbffe1' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%233d792d' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}.leafCurrencyIcon.bbLeafIcon:after{display:none}
 .goldLeafIcon{display:inline-block;position:relative;width:24px;height:24px;vertical-align:-6px;margin-right:4px;filter:drop-shadow(0 0 5px #ffd84f) drop-shadow(0 0 10px #fff0a055)}
 .goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%23b88718' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
 .goldLeafIcon:after{content:"✦";position:absolute;right:-6px;top:-7px;color:#fff7c7;font-size:11px;text-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
@@ -920,6 +920,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #hud .hudWave #wave{margin-left:5px!important}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
 /* v19.0.65 — Story Mode boss-wave HUD only: BOSS matches the Wave/number size and is red. */
+/* v19.0.66 — regular Leaf icon stem removed; Story-only beetle heart drop increased to 20%. */
 #hud .hudWave.storyBossWave .waveProg{font-size:26px!important;line-height:1!important;margin-left:5px!important;letter-spacing:-1px!important;color:#e64d4d!important;text-shadow:0 2px 4px #000b!important}
 
 /* v18.0.58 — keep temporary wave tester higher and selectable */
@@ -1325,8 +1326,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.64</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.64</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.66</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.66</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2674,9 +2675,9 @@ function damageEnemy(e,d,source='player'){
      if(e.boss){val*=20;}
      else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
      game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
-     // v19.0.64 — Story Mode only: regular Armored Beetles have a rare 5% chance to drop a tiny +10 HP heart.
+     // v19.0.66 — Story Mode only: regular Armored Beetles have a 20% chance to drop a tiny +10 HP heart.
      // Keep this as a normal lightweight pickup in the existing drop array so Gold/Mosquito modes and wave logic are untouched.
-     if(game.mode==='story'&&!e.boss&&e.kind==='beetle'&&Math.random()<1/20)game.drops.push({x:e.x+10,y:e.y-6,v:0,r:7,age:0,phase:Math.random()*6.28,healDrop:true,healAmount:10});
+     if(game.mode==='story'&&!e.boss&&e.kind==='beetle'&&Math.random()<.20)game.drops.push({x:e.x+10,y:e.y-6,v:0,r:7,age:0,phase:Math.random()*6.28,healDrop:true,healAmount:10});
       if(e.boss&&Math.random()<1/1000)game.drops.push({x:e.x+18,y:e.y-8,v:0,r:15,age:0,phase:Math.random()*6.28,goldLeaf:true});
    }
    if(e.kind==='mosquito'){
@@ -3852,7 +3853,7 @@ function leafSprite(r){
  q.beginPath();q.moveTo(0,-r);q.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);q.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);q.closePath();q.fill();q.stroke();
  q.shadowBlur=0;q.strokeStyle='#3d792d';q.lineWidth=1.6;q.beginPath();q.moveTo(0,-r*.78);q.lineTo(0,r*.82);q.stroke();
  q.beginPath();q.moveTo(0,-r*.38);q.lineTo(r*.50,-r*.10);q.moveTo(0,-r*.05);q.lineTo(-r*.52,r*.20);q.moveTo(0,r*.25);q.lineTo(r*.45,r*.48);q.stroke();
- q.strokeStyle='#73963c';q.lineWidth=2.2;q.beginPath();q.moveTo(0,r*.78);q.lineTo(r*.22,r*1.12);q.stroke();
+ // v19.0.66 — regular Leaf silhouette ends cleanly at its tip; no protruding stem.
  const out={c,size};LEAF_SPRITE_CACHE.set(key,out);return out;
 }
 function drawLeaves(d){
@@ -5238,7 +5239,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.61';
+const BB_BUILD_VERSION='19.0.66';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
