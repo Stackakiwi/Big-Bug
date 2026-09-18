@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.101 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.102 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1343,7 +1343,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  #upgrade .choice p{font-size:20px!important;line-height:1.25!important}
 }
 
-/* v19.0.101 — Bug Parade copy/readability only. */
+/* v19.0.102 — Legendary Golden Ladybug Bug Parade description only. */
 #bugs .card b{font-size:31px!important;line-height:1.08!important}
 #bugs .card p,#bugs .card .muted{font-size:23px!important;line-height:1.34!important}
 #bugs .card .btn{font-size:20px!important;min-height:50px!important}
@@ -1391,8 +1391,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.101</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.101</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.102</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.102</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1713,7 +1713,7 @@ const BUGS={
  ladybug:{name:'Ladybug',art:'ladybug',desc:'The original bug',bonus:p=>p.crit+=.10},
  beetle:{name:'Beetle',art:'beetle',desc:'The tanky bug',bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.damage*=1.20;p.rate*=1.12}},
  butterfly:{name:'Butterfly',art:'butterfly',desc:'The Swift bug',bonus:p=>{p.damage*=.95;p.rate*=.65;p.speed*=1.10}},
- golden:{name:'The Legendary Golden Ladybug',art:'golden',desc:'+50% Health, Damage, Movement & Attack Speed. 20% crit chance.',bonus:p=>{p.maxHp=Math.round(p.maxHp*1.5);p.hp=p.maxHp;p.damage*=1.5;p.rate/=1.5;p.speed*=1.5;p.crit+=.20}}
+ golden:{name:'The Legendary Golden Ladybug',art:'golden',desc:'The perfect bug',bonus:p=>{p.maxHp=Math.round(p.maxHp*1.5);p.hp=p.maxHp;p.damage*=1.5;p.rate/=1.5;p.speed*=1.5;p.crit+=.20}}
 };
 function allPermanentMaxed(){const u=save.upgrades||{};return ['hp','dmg','magnet','coins'].every(k=>(u[k]||0)>=10)}
 function syncLegendaryGolden(showNotice=false){if(!allPermanentMaxed())return false;const newly=!save.legendaryGolden.revealed;save.legendaryGolden.revealed=true;if(save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');if((newly||showNotice)&&!save.legendaryGolden.noticeSeen){save.legendaryGolden.noticeSeen=true;persist();setTimeout(showLegendaryReveal,80)}return newly}
@@ -5426,7 +5426,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.101';
+const BB_BUILD_VERSION='19.0.102';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
