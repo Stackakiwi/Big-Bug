@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.95 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.96 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1375,8 +1375,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.95</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.95</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.96</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.96</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1989,6 +1989,8 @@ function syncBigBigHudFades(boss){
  if(pct<=20)startBigBigHudFade('bossbar');
 }
 const BB_LOW_FX_DEVICE=((navigator.hardwareConcurrency||8)<=4)||((navigator.deviceMemory||8)<=4);
+// v19.0.96 — low-end Story rendering pass. Presentation-only: no HP, damage, speed, spawn, collision, wave, boss, or timing changes.
+function lowStoryFx(){return !!(BB_LOW_FX_DEVICE&&game&&game.mode==='story'&&game.wave>=15)}
 
 // v17.9.84 — performance-only: coalesce rapid leaf pickup storage writes.
 let leafPersistTimer=0;
@@ -2674,6 +2676,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  return e;
 }
 function burst(x,y,n=8,life=.5,col=null){
+ if(lowStoryFx()&&n>2)n=Math.max(2,Math.ceil(n*.55));
  n=Math.min(n,Math.max(0,110-game.fx.length));for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4,col})}
 }
 function damageEnemy(e,d,source='player'){
@@ -2731,7 +2734,7 @@ function damageEnemy(e,d,source='player'){
  const shown=Math.max(1,Math.round(d))*(game.mode==='gold'?10:1), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
- const damageTextCap=game.enemies.length>28?12:(game.enemies.length>18?18:24);if(source!=='helperArmy'&&game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',damageTextCap)<damageTextCap)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
+ const damageTextCap=lowStoryFx()?8:(game.enemies.length>28?12:(game.enemies.length>18?18:24));if(source!=='helperArmy'&&game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',damageTextCap)<damageTextCap)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(e.kind==='beetle'){e.knockX=0;e.knockY=0}else if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
  if(game.mode==='endless'&&e.kind==='mosquito')burst(e.x,e.y,1,.16,'#d7d1b7');else burst(e.x,e.y,game.enemies.length>28?2:3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
@@ -2862,7 +2865,7 @@ function showPlayerDamage(amount){
  if(!game||!game.p||amount<=0)return;
  const p=game.p,shown=Math.max(1,Math.round(amount));
  // Red floating number above the player, matching the enemy damage-number feel.
- if(save.settings.damageNumbers!==false&&countFxFlag('playerDamageText',8)<8)game.fx.push({x:p.x+(Math.random()-.5)*8,y:p.y-p.r-12,vx:(Math.random()-.5)*9,vy:-31,life:.78,maxLife:.78,r:0,playerDamageText:shown});
+ const playerDamageCap=lowStoryFx()?4:8;if(save.settings.damageNumbers!==false&&countFxFlag('playerDamageText',playerDamageCap)<playerDamageCap)game.fx.push({x:p.x+(Math.random()-.5)*8,y:p.y-p.r-12,vx:(Math.random()-.5)*9,vy:-31,life:.78,maxLife:.78,r:0,playerDamageText:shown});
  // v17.9.91 — tiny two-note player-hit chirp.
  beep(510,.035,.007,'triangle');setTimeout(()=>beep(690,.045,.0045,'sine'),22);
 }
@@ -3399,7 +3402,7 @@ function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgrad
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
 if(u.id==='endlessRepel'){
- // v19.0.95 — purely decorative mosquito icon on this card's own tiny canvas.
+ // v19.0.96 — purely decorative mosquito icon on this card's own tiny canvas.
  // No enemy object is created, and the main gameplay canvas/context is never touched.
  mark.innerHTML='';
  const c=document.createElement('canvas');c.width=72;c.height=72;c.className='buddyUpgradeIcon';mark.appendChild(c);
@@ -4149,7 +4152,7 @@ function drawEnemy(e){
  // v18.0.84 — live shadowBlur on every bug is disproportionately expensive on some
  // desktop/integrated-GPU browsers. Mobile keeps the original look; desktop skips only
  // this soft blur while retaining the bug artwork, movement, hit flash, and gameplay.
- if(DESKTOP_PERF_RENDER){X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetY=0}
+ if(DESKTOP_PERF_RENDER||lowStoryFx()){X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetY=0}
  else{X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5}
  if(e.kind==='mosquito'){
   drawMosquitoBody(step,step2);
@@ -4820,7 +4823,8 @@ function draw(now=performance.now()){
        const age=(f.maxLife||1)-f.life,seed=f.spraySeed||0,ang=Number.isFinite(f.sprayAngle)?f.sprayAngle:-Math.PI/2;
        X.rotate(ang+Math.PI/2);
        X.globalAlpha=.42+.50*q;
-       for(let i=-2;i<=2;i++){
+       const flameStart=lowStoryFx()?-1:-2,flameEnd=lowStoryFx()?1:2;
+       for(let i=flameStart;i<=flameEnd;i++){
          const sway=Math.sin(game.time*10+seed+i*1.7)*3.2,baseX=i*f.r*.18+sway;
          const h=f.r*(.48+.10*((i+5)%3))*(.88+.12*Math.sin(game.time*8+seed+i));
          const w=f.r*(.16+(i===0?.05:0));
@@ -4829,7 +4833,7 @@ function draw(now=performance.now()){
          X.fillStyle='#ffd35a';X.globalAlpha=.30+.42*q;X.beginPath();X.moveTo(baseX-w*.42,f.r*.28);X.quadraticCurveTo(baseX,-h*.12,baseX+sway*.12,-h*.58);X.quadraticCurveTo(baseX+w*.45,-h*.12,baseX+w*.42,f.r*.28);X.closePath();X.fill();X.globalAlpha=.42+.50*q;
        }
        // Small ember flecks make the spray read as flame without adding extra FX objects.
-       X.fillStyle='#ffd86a';for(let i=0;i<4;i++){const yy=-f.r*(.12+i*.18),xx=Math.sin(seed+i*2.1+game.time*7)*f.r*.32;X.beginPath();X.arc(xx,yy,1.5+(i%2),0,6.28);X.fill()}
+       X.fillStyle='#ffd86a';for(let i=0,n=lowStoryFx()?2:4;i<n;i++){const yy=-f.r*(.12+i*.18),xx=Math.sin(seed+i*2.1+game.time*7)*f.r*.32;X.beginPath();X.arc(xx,yy,1.5+(i%2),0,6.28);X.fill()}
      }
      else if(f.style==='thorn'){for(let i=0;i<7;i++){let a=i*6.283/7;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r*pulse,Math.sin(a)*f.r*pulse);X.stroke()}}
      else if(f.style==='rootFinal'){
@@ -4842,13 +4846,13 @@ function draw(now=performance.now()){
      }
      else if(f.style==='root'){for(let i=0;i<5;i++){let a=i*1.25+.4;X.beginPath();X.moveTo(0,0);X.quadraticCurveTo(Math.cos(a+.5)*f.r*.55,Math.sin(a+.5)*f.r*.55,Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}}
      else if(f.style==='webline'){for(let i=-2;i<=2;i++){X.beginPath();X.moveTo(-f.r,i*6);X.lineTo(f.r,-i*6);X.stroke()}}
-     else if(f.style!=='clamp'){X.beginPath();X.arc(0,0,f.r*pulse,0,6.28);X.stroke();if(f.style==='dark'){X.globalAlpha=.09+.13*q;X.fill()}if(f.style==='spore')for(let i=0;i<6;i++){let a=i*1.047+game.time;X.beginPath();X.arc(Math.cos(a)*f.r*.55,Math.sin(a)*f.r*.55,5,0,6.28);X.fill()}}
+     else if(f.style!=='clamp'){X.beginPath();X.arc(0,0,f.r*pulse,0,6.28);X.stroke();if(f.style==='dark'){X.globalAlpha=.09+.13*q;X.fill()}if(f.style==='spore')for(let i=0,n=lowStoryFx()?3:6;i<n;i++){let a=i*(6.283/n)+game.time;X.beginPath();X.arc(Math.cos(a)*f.r*.55,Math.sin(a)*f.r*.55,5,0,6.28);X.fill()}}
      X.restore();X.globalAlpha=1;continue
    }
    if(f.web){
      const q=Math.max(0,f.life/f.maxLife);X.save();X.globalAlpha=.30+.35*q;X.translate(f.x,f.y);X.strokeStyle='#e8d9f4';X.lineWidth=1.7;
-     for(let ring=1;ring<=3;ring++){X.beginPath();for(let i=0;i<=8;i++){let a=i*6.283/8,rr=f.r*ring/3;if(i===0)X.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.stroke()}
-     for(let i=0;i<8;i++){let a=i*6.283/8;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}X.restore();X.globalAlpha=1;continue
+     const webRings=lowStoryFx()?2:3,webSpokes=lowStoryFx()?4:8;for(let ring=1;ring<=webRings;ring++){X.beginPath();for(let i=0;i<=webSpokes;i++){let a=i*6.283/webSpokes,rr=f.r*ring/webRings;if(i===0)X.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.stroke()}
+     for(let i=0;i<webSpokes;i++){let a=i*6.283/webSpokes;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}X.restore();X.globalAlpha=1;continue
    }
    if(f.playerDamageText){
      const q=Math.max(0,Math.min(1,f.life/(f.maxLife||.78)));
@@ -4868,10 +4872,10 @@ function draw(now=performance.now()){
    }
    if(f.killPop){continue}
    if(f.scrapFly){let q=Math.max(0,Math.min(1,1-f.life/(f.maxLife||.52))),ease=1-Math.pow(1-q,3),xx=f.x+(f.tx-f.x)*ease,yy=f.y+(f.ty-f.y)*ease,rr=Math.max(4,f.r*(1-q*.42));X.globalAlpha=1-q*.22;const sp=leafSprite(rr);X.save();X.translate(xx,yy);X.rotate(-.42+q*.7);X.drawImage(sp.c,-sp.size/2,-sp.size/2,sp.size,sp.size);X.restore();X.globalAlpha=1;continue}
-   if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0,n=BB_LOW_FX_DEVICE?3:5;i<n;i++){let a=i*(6.283/n)+FRAME_NOW/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
+   if(f.toxic){let q=Math.max(0,f.life/f.maxLife);X.globalAlpha=.08+.17*q;X.fillStyle='#9b55d4';X.beginPath();X.arc(f.x,f.y,f.r*(1+(1-q)*.18),0,6.28);X.fill();X.globalAlpha=.28*q;for(let i=0,n=lowStoryFx()?2:(BB_LOW_FX_DEVICE?3:5);i<n;i++){let a=i*(6.283/n)+FRAME_NOW/900,rr=f.r*.45;X.beginPath();X.arc(f.x+Math.cos(a)*rr,f.y+Math.sin(a)*rr,5,0,6.28);X.fill()}X.globalAlpha=1;continue}
    if(f.playerShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle=f.goldenShot?'#ffd43b':'#fff3a6';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
    if(f.helperShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=.9*Math.max(0,1-q*.35);X.fillStyle='#c9f4ff';X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill();X.globalAlpha=1;continue}
-   if(f.helperArmyShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.18)),e=1-Math.pow(1-q,2);X.globalAlpha=Math.max(0,1-q*.18);X.fillStyle='#c9f4ff';X.shadowColor='#e8fbff';X.shadowBlur=7;X.beginPath();X.arc(f.x+(f.ax-f.x)*e,f.y+(f.ay-f.y)*e,f.r,0,6.28);X.fill();X.shadowColor='transparent';X.globalAlpha=1;continue}
+   if(f.helperArmyShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.18)),e=1-Math.pow(1-q,2);X.globalAlpha=Math.max(0,1-q*.18);X.fillStyle='#c9f4ff';X.shadowColor=lowStoryFx()?'transparent':'#e8fbff';X.shadowBlur=lowStoryFx()?0:7;X.beginPath();X.arc(f.x+(f.ax-f.x)*e,f.y+(f.ay-f.y)*e,f.r,0,6.28);X.fill();X.shadowColor='transparent';X.globalAlpha=1;continue}
    if(f.tripleShotFx){let q=1-Math.max(0,f.life/(f.maxLife||.16));X.globalAlpha=Math.max(0,1-q*.35);X.fillStyle=f.goldenShot?'#ffd43b':'#fff3a6';
      if(f.ax!=null){X.beginPath();X.arc(f.x+(f.ax-f.x)*q,f.y+(f.ay-f.y)*q,f.r,0,6.28);X.fill()}
      if(f.bx!=null){X.beginPath();X.arc(f.x+(f.bx-f.x)*q,f.y+(f.by-f.y)*q,f.r,0,6.28);X.fill()}
@@ -4887,7 +4891,7 @@ function draw(now=performance.now()){
        X.fillStyle='#ffd84a';X.strokeStyle='#fff0a0';X.lineWidth=1.2;X.shadowColor='#ffbd24';X.shadowBlur=8;
        X.beginPath();X.moveTo(0,-f.r*1.65);X.lineTo(f.r*.78,0);X.lineTo(0,f.r*1.65);X.lineTo(-f.r*.78,0);X.closePath();X.fill();X.stroke();X.restore();
      }else{
-       X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30');X.shadowBlur=6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent';
+       X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=lowStoryFx()?'transparent':(f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30'));X.shadowBlur=lowStoryFx()?0:6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent';
      }
    }
    else if(f.shot){X.fillStyle=f.helper?'#c9f4ff':'#fff3a6';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
@@ -5406,7 +5410,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.95';
+const BB_BUILD_VERSION='19.0.96';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
