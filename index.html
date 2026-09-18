@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.60 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.61 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1338,8 +1338,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.60</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.60</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.61</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.61</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2484,7 +2484,9 @@ function completeWave(){
    },16);
  }
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
- saveRunRecovery('wave-clear');
+ // v19.0.61 — Gold Hard Mode does not synchronously serialize a run snapshot at every wave boundary.
+ // That checkpoint write was unnecessary for the no-pause hard-mode flow and could create a tiny frame hitch.
+ if(g.mode!=='gold')saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
    // v19.0.43 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
    // damageEnemy() promotes that same object in place. When phase 2 finally dies, Wave 50 ends the run.
@@ -2505,8 +2507,10 @@ function completeWave(){
      flashBanner('GOLD BOSS DOWN! +'+heal+' HP',1.25);
      setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
    }else{
-     flashBanner('GOLD WAVE CLEAR!',.9);
-     setTimeout(()=>{if(game===g&&!g.over){g.paused=false;beginWave(g.wave+1)}},360);
+     // v19.0.61 — seamless Gold-wave handoff: no artificial clear pause/timer.
+     // Advance in the same update boundary so movement/rendering never visibly freezes between normal waves.
+     g.paused=false;
+     beginWave(g.wave+1);
    }
    return;
  }
@@ -3758,7 +3762,7 @@ function finish(won,quit=false){
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
  if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:(game.mode==='gold'?0:Math.floor(game.wave/2));if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else if(game.mode==='gold')save.goldBest=Math.max(save.goldBest||0,Math.min(50,game.wave));else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome();refreshGoldWavesHome()}
- // v19.0.60 — Gold Hard Mode has no defeat screen or pause/revive flow. A loss ends the run immediately at Home.
+ // v19.0.61 — Gold Hard Mode has no defeat screen or pause/revive flow. A loss ends the run immediately at Home.
  if(game.mode==='gold'&&!won){game.mode='home';enterHomeCleanly();return;}
  $('gameover').classList.toggle('endlessOver',game.mode==='endless');
  $('overTitle').classList.toggle('quitTitle',!!quit);
@@ -5243,14 +5247,14 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.60';
+const BB_BUILD_VERSION='19.0.61';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
 
 <script>
-/* BIG BUG v19.0.60 — Gold Hard Mode escape/death-flow pass */
+/* BIG BUG v19.0.61 — Gold Hard Mode escape/death-flow pass */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
@@ -5290,7 +5294,7 @@ function tick(e,dt){
  e._gc-=dt;e._phase+=dt;
  const dx=p.x-e.x,dy=p.y-e.y,dist=Math.hypot(dx,dy)||1,nx=dx/dist,ny=dy/dist,px=-ny,py=nx;
  const dam=e.damage,rawPress=e._goldPressure||1;
- // v19.0.60 — Gold hard-mode escape rule: sustained chase speed stays disengageable for 92% of regular aliens.
+ // v19.0.61 — Gold hard-mode escape rule: sustained chase speed stays disengageable for 92% of regular aliens.
  // 8% are Relentless and may sustain up to ~8% over the player's current movement speed.
  // Short teleports/ram bursts/projectiles remain intentionally dangerous and are not flattened into normal chase speed.
  const playerSp=Math.max(1,p.speed||420),relentless=!!e._goldRelentless;
