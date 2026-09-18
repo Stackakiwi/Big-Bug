@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.79 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.81 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1330,8 +1330,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.79</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.79</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.81</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.81</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1498,6 +1498,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
 // v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
+// v19.0.81 — Gold Waves difficulty pass: modest Gold enemy durability/speed bump, BIG BUG +25% HP, and unique GOLDEN CAGE attack; attack damage/player health unchanged.
 // v19.0.79 — Gold Waves intensity pass: visual-only 10× outgoing damage numbers and pause ATTACK display; real damage/health/enemy attacks/player health unchanged.
 // v19.0.78 — Home Gold Waves button polish only: removed POST-GAME CHALLENGE subtitle, centered label, richer gold finish, and lightweight CSS sparkles.
 // v19.0.78 — Pause polish: removed the breather subtitle and added pause-safe Settings access that returns to the paused run.
@@ -2578,13 +2579,13 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(k==='spider'){baseHp*=1.05;sp*=.92;r*=1.05}
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
- if(game.mode==='gold'&&!boss){baseHp*=1.70;sp*=1.20;damage*=1.45}
+ if(game.mode==='gold'&&!boss){baseHp*=1.80;sp*=1.25;damage*=1.45} // v19.0.81 — Gold Waves only: slightly tougher/faster regular enemies; damage unchanged
  if(boss){
    const duo=bossKindsFor(w).length>1;
    // v18.0.81 — boss HP is progression-based only; player damage/attack-speed upgrades no longer increase boss max HP.
    baseHp=(80+w*15)*24*1.12*(duo?.62:1);
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
-   if(game.mode==='gold'){baseHp*=1.55;sp*=1.10;damage*=1.35}
+   if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.81 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
@@ -2626,7 +2627,7 @@ function damageEnemy(e,d,source='player'){
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
    bb22Trace('W50 LETHAL PROMOTION ACCEPTED key='+e.goldBossKey+' boss='+e.boss+' hp='+e.hp+' d='+d);
-   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=4500; // v19.0.59: BIG BIG finale HP
+   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.81: BIG BUG finale +25% HP (4,500 -> 5,625)
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
    g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
@@ -5390,7 +5391,7 @@ function bossTick(e,dt){
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
-   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?4500:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.59: Gold bosses 5-45 -15%; BIG BIG 4,500 HP
+   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?5625:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.81: Gold bosses keep progression; BIG BUG phase 2 is 5,625 HP (+25%)
    // v19.0.30 — Wave 50's ??? is deliberately 50 HP for finale testing.
    // This must live here, after Gold boss initialization, because bossTick is the code
    // that owns/overwrites Gold boss HP on its first frame. BIG BIG finale keeps
@@ -5433,7 +5434,7 @@ function bossTick(e,dt){
 
  const tier=e._goldTier||1,aim=Math.atan2(p.y-e.y,p.x-e.x),dam=13+tier*2.2;
  e._goldCycle=(e._goldCycle||0)+1;
- const phaseCount=tier>=9?9:tier>=7?8:tier>=5?7:tier>=3?6:5;
+ const phaseCount=(tier>=10&&e.goldPhase===2)?10:tier>=9?9:tier>=7?8:tier>=5?7:tier>=3?6:5; // v19.0.81 — BIG BUG alone gains a tenth unique attack
  e._phase=(e._phase+1)%phaseCount;
 
  if(e._phase===0){
@@ -5466,11 +5467,26 @@ function bossTick(e,dt){
  }else if(e._phase===7){
    const side=((e._goldCycle||0)&1)?1:-1,px=-Math.sin(aim),py=Math.cos(aim),a=Math.atan2((p.y+py*side*115)-e.y,(p.x+px*side*115)-e.x);
    e._dvx=Math.cos(a)*(760+tier*32);e._dvy=Math.sin(a)*(760+tier*32);e._dash=.22;e._bc=Math.max(.26,.68-tier*.025);
- }else{
+ }else if(e._phase===8){
    const rot=(e._goldCycle||0)*.31,shots=tier>=10?16:14;
    for(let i=0;i<shots;i++){if(i%7===((e._goldCycle||0)%7))continue;fire(e,rot+i*TAU/shots,285+tier*10,dam*.88,4.8)}
    if(tier>=10){const a=Math.atan2(p.y+(p.motionY||0)*.34*(p.motionScale125||1)-e.y,p.x+(p.motionX||0)*.34*(p.motionScale125||1)-e.x);for(const o of [-.11,0,.11])fire(e,a+o,430,dam*1.05,5)}
    e._bc=tier>=10?.24:.42;
+ }else{
+   // v19.0.81 — BIG BUG unique attack: GOLDEN CAGE. Four inward shard walls
+   // close around the player's current position, with one rotating lane left open to dodge through.
+   // Uses the normal lightweight Gold projectile objects: no persistent hazards or extra damage scaling.
+   const cageSp=430,gap=Math.abs(e._goldCycle||0)%5|0,step=42,edge=24;
+   for(let j=0;j<5;j++){
+     if(j===gap)continue;
+     const off=(j-2)*step,yy=Math.max(92,Math.min(H-32,p.y+off)),xx=Math.max(32,Math.min(W-32,p.x+off));
+     game.fx.push({x:edge,y:yy,vx:cageSp,vy:0,life:2.8,r:5,sting:true,damage:dam*.82,goldShot:true});
+     game.fx.push({x:W-edge,y:yy,vx:-cageSp,vy:0,life:2.8,r:5,sting:true,damage:dam*.82,goldShot:true});
+     game.fx.push({x:xx,y:92,vx:0,vy:cageSp,life:2.8,r:5,sting:true,damage:dam*.82,goldShot:true});
+     game.fx.push({x:xx,y:H-edge,vx:0,vy:-cageSp,life:2.8,r:5,sting:true,damage:dam*.82,goldShot:true});
+   }
+   flashBanner('GOLDEN CAGE!',.34);
+   e._bc=.88;
  }
 }
 function bossDraw(e){
