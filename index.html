@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.61 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.62 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -34,7 +34,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #goldWavesBtn{background:linear-gradient(180deg,#8c6a1e,#4e3a13)!important;border:1px solid #d8b85b!important;color:#fff2b0!important;text-shadow:0 2px #2a1d08}
 #goldWavesBtn:disabled{opacity:.58;filter:saturate(.55);cursor:default}
 #goldWavesBtn small{display:block;font-size:9px;line-height:1.05;margin-top:4px;letter-spacing:.25px;opacity:.82}
-.goldWavesTestBtn{position:absolute!important;left:8px!important;bottom:max(48px,calc(env(safe-area-inset-bottom) + 43px))!important;z-index:52!important;min-width:0!important;padding:7px 9px!important;font-size:9px!important;background:#5d481b!important;color:#ffe79a!important;border:1px solid #b99339!important}
 #endlessBtn .endlessUnlockNote{display:block;font-size:9px;line-height:1;margin-top:4px;letter-spacing:.35px;opacity:.78}
 .tag{margin:10px 0 18px;font-weight:850;opacity:.8}
 .panel{width:min(720px,100%);max-height:92vh;overflow:auto;background:#15271aee;border:2px solid #d9efbf33;border-radius:24px;padding:20px;box-shadow:0 25px 80px #0008}
@@ -1223,19 +1222,6 @@ body.g159 #game,body.g159 canvas{
    linear-gradient(145deg,#2a1a04 0%,#503006 31%,#7a4c08 54%,#3a2204 78%,#1d1203 100%)!important;
 }
 
-/* v18.0.188 — accessible temporary Gold tester */
-#goldWaveJumpWrap{
- position:fixed!important;
- left:18px!important;
- bottom:92px!important;
- z-index:80!important;
- display:flex!important;
- gap:6px!important;
- align-items:center!important;
- max-width:calc(100vw - 36px)!important;
-}
-#goldWaveJumpWrap #goldTestWave{max-width:112px!important;font-size:12px!important}
-#goldWaveJumpWrap .goldWavesTestBtn{font-size:11px!important;padding:8px 10px!important;white-space:nowrap!important}
 
 /* v18.0.188 — Gold Waves boss reward screen */
 body.g159 #upgrade .panel{
@@ -1328,7 +1314,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
   <button id="goldWavesBtn" class="btn dark homeLowerLift goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
-  <button id="goldWavesTestBtn" class="btn dark small goldWavesTestBtn" data-action="testGoldWaves">TEMP GOLD WAVES TEST</button><div id="goldWaveJumpWrap"><select id="goldTestWave" style="font:inherit;font-weight:900;padding:7px;border-radius:10px;background:#3a2607;color:#ffe67a;border:2px solid #b77a13"><option value="1">WAVE 1</option><option value="2">WAVE 2</option><option value="3">WAVE 3</option><option value="4">WAVE 4</option><option value="5">WAVE 5</option><option value="6">WAVE 6</option><option value="7">WAVE 7</option><option value="8">WAVE 8</option><option value="9">WAVE 9</option><option value="10">WAVE 10</option><option value="11">WAVE 11</option><option value="12">WAVE 12</option><option value="13">WAVE 13</option><option value="14">WAVE 14</option><option value="15">WAVE 15</option><option value="16">WAVE 16</option><option value="17">WAVE 17</option><option value="18">WAVE 18</option><option value="19">WAVE 19</option><option value="20">WAVE 20</option><option value="21">WAVE 21</option><option value="22">WAVE 22</option><option value="23">WAVE 23</option><option value="24">WAVE 24</option><option value="25">WAVE 25</option><option value="26">WAVE 26</option><option value="27">WAVE 27</option><option value="28">WAVE 28</option><option value="29">WAVE 29</option><option value="30">WAVE 30</option><option value="31">WAVE 31</option><option value="32">WAVE 32</option><option value="33">WAVE 33</option><option value="34">WAVE 34</option><option value="35">WAVE 35</option><option value="36">WAVE 36</option><option value="37">WAVE 37</option><option value="38">WAVE 38</option><option value="39">WAVE 39</option><option value="40">WAVE 40</option><option value="41">WAVE 41</option><option value="42">WAVE 42</option><option value="43">WAVE 43</option><option value="44">WAVE 44</option><option value="45">WAVE 45</option><option value="46">WAVE 46</option><option value="47">WAVE 47</option><option value="48">WAVE 48</option><option value="49">WAVE 49</option><option value="50">WAVE 50</option></select><button class="btn dark small goldWavesTestBtn" data-action="testGoldWave">TEST WAVE</button></div>
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> POWER UPS</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
@@ -1338,8 +1323,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.61</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.61</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.62</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.62</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1504,6 +1489,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 </section>
 
 <script>
+// v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
 // v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
 // v18.0.81 — Mosquito Mode stationary detection is more tolerant of tiny movement jitter; stand-still firing bonus is a true 25% and stacks with existing faster attack-speed scaling and boosts.
@@ -2484,7 +2470,7 @@ function completeWave(){
    },16);
  }
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
- // v19.0.61 — Gold Hard Mode does not synchronously serialize a run snapshot at every wave boundary.
+ // v19.0.62 — Gold Hard Mode does not synchronously serialize a run snapshot at every wave boundary.
  // That checkpoint write was unnecessary for the no-pause hard-mode flow and could create a tiny frame hitch.
  if(g.mode!=='gold')saveRunRecovery('wave-clear');
  if(g.mode==='gold'){
@@ -2507,7 +2493,7 @@ function completeWave(){
      flashBanner('GOLD BOSS DOWN! +'+heal+' HP',1.25);
      setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
    }else{
-     // v19.0.61 — seamless Gold-wave handoff: no artificial clear pause/timer.
+     // v19.0.62 — seamless Gold-wave handoff: no artificial clear pause/timer.
      // Advance in the same update boundary so movement/rendering never visibly freezes between normal waves.
      g.paused=false;
      beginWave(g.wave+1);
@@ -3762,7 +3748,7 @@ function finish(won,quit=false){
  const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:coins+Math.floor(game.wave/2));
  if(!game.testMode&&!game.rewardsBanked){save.scrap+=game.mode==='endless'?endlessReward:(game.mode==='gold'?0:Math.floor(game.wave/2));if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else if(game.mode==='gold')save.goldBest=Math.max(save.goldBest||0,Math.min(50,game.wave));else save.best=Math.max(save.best,game.wave);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome();refreshGoldWavesHome()}
- // v19.0.61 — Gold Hard Mode has no defeat screen or pause/revive flow. A loss ends the run immediately at Home.
+ // v19.0.62 — Gold Hard Mode has no defeat screen or pause/revive flow. A loss ends the run immediately at Home.
  if(game.mode==='gold'&&!won){game.mode='home';enterHomeCleanly();return;}
  $('gameover').classList.toggle('endlessOver',game.mode==='endless');
  $('overTitle').classList.toggle('quitTitle',!!quit);
@@ -5017,8 +5003,6 @@ document.addEventListener('click',e=>{
   if(a==='goldContinue')goldContinue();
  if(a==='endless')startEndless();
  if(a==='goldWaves')startGoldWaves(false);
- if(a==='testGoldWaves')startGoldWaves(true);
-  if(a==='testGoldWave'){const w=Number($('goldTestWave')?.value)||1;startGoldWaves(true,w)}
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testEnding')previewFinalPurification(false)
  if(a==='testPurify')previewFinalPurification(true)
@@ -5254,7 +5238,7 @@ const BB_BUILD_VERSION='19.0.61';
 </script>
 
 <script>
-/* BIG BUG v19.0.61 — Gold Hard Mode escape/death-flow pass */
+/* BIG BUG v19.0.62 — Gold Hard Mode escape/death-flow pass */
 (()=>{
 'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
 function sync(){document.body.classList.toggle('g159',!!G())}
@@ -5294,7 +5278,7 @@ function tick(e,dt){
  e._gc-=dt;e._phase+=dt;
  const dx=p.x-e.x,dy=p.y-e.y,dist=Math.hypot(dx,dy)||1,nx=dx/dist,ny=dy/dist,px=-ny,py=nx;
  const dam=e.damage,rawPress=e._goldPressure||1;
- // v19.0.61 — Gold hard-mode escape rule: sustained chase speed stays disengageable for 92% of regular aliens.
+ // v19.0.62 — Gold hard-mode escape rule: sustained chase speed stays disengageable for 92% of regular aliens.
  // 8% are Relentless and may sustain up to ~8% over the player's current movement speed.
  // Short teleports/ram bursts/projectiles remain intentionally dangerous and are not flattened into normal chase speed.
  const playerSp=Math.max(1,p.speed||420),relentless=!!e._goldRelentless;
@@ -5679,18 +5663,6 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 })();
 </script>
 
-<script>
-/* v18.0.188 test-control visibility */
-(()=>{
- const box=document.getElementById('goldWaveJumpWrap');
- function syncGoldTester(){
-   if(!box)return;
-   const h=document.getElementById('home');
-   box.style.visibility=(h&&!h.classList.contains('hidden'))?'visible':'hidden';
- }
- requestAnimationFrame(function f(){syncGoldTester();requestAnimationFrame(f)});
-})();
-</script>
 
 <script>
 /* v18.0.188 — dedicated ??? evolving alien/gold boss score */
