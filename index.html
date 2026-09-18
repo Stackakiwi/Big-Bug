@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.81 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.82 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -309,6 +309,23 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 
 
 /* v17.8.3 — small layout polish only: center game-over actions and lower Best Wave slightly. */
+
+/* v19.0.82 — Gold Waves-only failure popup. Compact gold/black presentation; no olive game-over panel. */
+#goldFail{position:fixed;inset:0;z-index:1600;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(circle at 50% 42%,#3b2909aa 0%,#100b05ee 52%,#030201f5 100%)}
+#goldFail.hidden{display:none!important}
+#goldFail .goldFailPanel{position:relative;width:min(420px,92vw);padding:24px 20px 20px;text-align:center;overflow:hidden;border:2px solid #ffe38a;border-radius:18px;background:linear-gradient(165deg,#211708 0%,#120d06 58%,#080603 100%);box-shadow:0 8px 0 #4a2b05,0 20px 55px #000c,inset 0 0 28px #d89a1b22,0 0 28px #ffd84f55}
+#goldFail .goldFailPanel:before,#goldFail .goldFailPanel:after{content:"✦";position:absolute;color:#fff4ae;text-shadow:0 0 7px #fff,0 0 13px #ffc928;font-size:17px;animation:goldFailTwinkle 1.15s ease-in-out infinite}
+#goldFail .goldFailPanel:before{left:20px;top:18px}
+#goldFail .goldFailPanel:after{right:22px;top:42px;animation-delay:.45s}
+#goldFail h2{margin:0 0 8px;color:#ffe071;font-size:clamp(30px,8vw,42px);line-height:1;text-shadow:0 3px #5d3605,0 0 12px #f5c63855}
+#goldFail .goldFailSub{margin:0 0 18px;color:#eadfb7;font-size:15px;opacity:.92}
+#goldFail .goldFailBalance{display:flex;align-items:center;justify-content:center;gap:5px;margin:0 auto 16px;padding:8px 12px;width:max-content;max-width:100%;border:1px solid #9f762d;border-radius:999px;background:#2a1d09;color:#fff0a6;font-weight:900}
+#goldFail .goldFailActions{display:grid;gap:10px}
+#goldFail .goldFailContinue{margin:0!important;width:100%!important;background:linear-gradient(#f4d45c,#c48a17)!important;color:#2f1c03!important;border:1px solid #ffe99b!important;box-shadow:inset 0 3px #fff3ad,inset 0 -4px #8c5d0b,0 5px 0 #523305!important;text-shadow:0 1px #fff1a0!important}
+#goldFail .goldFailContinue:disabled{opacity:.46;filter:saturate(.45);cursor:default}
+#goldFail .goldFailSquished{margin:0!important;width:100%!important;background:linear-gradient(#c94e48,#8e2725)!important;border:1px solid #ef7a70!important;color:#fff5ec!important;box-shadow:inset 0 3px #e98178,inset 0 -4px #5c1716,0 5px 0 #320d0c!important}
+@keyframes goldFailTwinkle{0%,100%{opacity:.28;transform:scale(.72) rotate(0)}50%{opacity:1;transform:scale(1.18) rotate(20deg)}}
+
 #gameover .panel>.btn{display:block;margin:14px auto;width:min(100%,470px)}
 /* v17.8.10 — cleaner defeat screen: remove defeat subtitle and scale title responsively. */
 #gameover #overTitle{font-size:clamp(30px,8vw,46px);line-height:1.05;text-align:left;white-space:nowrap}
@@ -1330,8 +1347,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.81</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.81</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.82</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.82</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1485,6 +1502,19 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  </div>
 </section>
 
+
+<section id="goldFail" class="screen hidden">
+ <div class="goldFailPanel">
+  <h2>SQUISHED!</h2>
+  <p class="goldFailSub">Spend 10 Gold Leaves to jump back into the same Gold Waves run.</p>
+  <div class="goldFailBalance"><span class="goldLeafIcon" aria-hidden="true"></span><span id="goldFailCount">0</span> Gold Leaves</div>
+  <div class="goldFailActions">
+   <button id="goldFailContinueBtn" class="btn goldFailContinue" data-action="goldContinue"><span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10</button>
+   <button class="btn red goldFailSquished" data-action="goldSquished">SQUISHED</button>
+  </div>
+ </div>
+</section>
+
 <section id="gameover" class="screen hidden">
  <div class="panel">
   <h2 id="overTitle">RUN COMPLETE!</h2>
@@ -1498,7 +1528,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
 // v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
-// v19.0.81 — Gold Waves difficulty pass: modest Gold enemy durability/speed bump, BIG BUG +25% HP, and unique GOLDEN CAGE attack; attack damage/player health unchanged.
+// v19.0.82 — Gold Waves difficulty pass: modest Gold enemy durability/speed bump, BIG BUG +25% HP, and unique GOLDEN CAGE attack; attack damage/player health unchanged.
 // v19.0.79 — Gold Waves intensity pass: visual-only 10× outgoing damage numbers and pause ATTACK display; real damage/health/enemy attacks/player health unchanged.
 // v19.0.78 — Home Gold Waves button polish only: removed POST-GAME CHALLENGE subtitle, centered label, richer gold finish, and lightweight CSS sparkles.
 // v19.0.78 — Pause polish: removed the breather subtitle and added pause-safe Settings access that returns to the paused run.
@@ -1543,7 +1573,7 @@ function resize(){
 } addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
-const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','settings','help','upgrade','pause','gameover','finalPrep','ending'];
+const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','settings','help','upgrade','pause','goldFail','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
@@ -2579,13 +2609,13 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(k==='spider'){baseHp*=1.05;sp*=.92;r*=1.05}
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
- if(game.mode==='gold'&&!boss){baseHp*=1.80;sp*=1.25;damage*=1.45} // v19.0.81 — Gold Waves only: slightly tougher/faster regular enemies; damage unchanged
+ if(game.mode==='gold'&&!boss){baseHp*=1.80;sp*=1.25;damage*=1.45} // v19.0.82 — Gold Waves only: slightly tougher/faster regular enemies; damage unchanged
  if(boss){
    const duo=bossKindsFor(w).length>1;
    // v18.0.81 — boss HP is progression-based only; player damage/attack-speed upgrades no longer increase boss max HP.
    baseHp=(80+w*15)*24*1.12*(duo?.62:1);
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
-   if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.81 — Gold Waves only: modest boss durability/speed bump; damage unchanged
+   if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.82 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
@@ -2627,7 +2657,7 @@ function damageEnemy(e,d,source='player'){
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
    bb22Trace('W50 LETHAL PROMOTION ACCEPTED key='+e.goldBossKey+' boss='+e.boss+' hp='+e.hp+' d='+d);
-   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.81: BIG BUG finale +25% HP (4,500 -> 5,625)
+   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.82: BIG BUG finale +25% HP (4,500 -> 5,625)
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
    g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
@@ -3787,8 +3817,14 @@ function finish(won,quit=false){
    save.runs++;game.rewardsBanked=true;
    persist();refreshEndlessHome();refreshGoldWavesHome();
  }
- // v19.0.62 — Gold Hard Mode has no defeat screen or pause/revive flow. A loss ends the run immediately at Home.
- if(game.mode==='gold'&&!won){game.mode='home';enterHomeCleanly();return;}
+ // v19.0.82 — Gold Waves failure uses its own compact gold/black continue popup.
+ if(game.mode==='gold'&&!won&&!game.testMode){
+   const c=$('goldFailCount'),btn=$('goldFailContinueBtn');
+   if(c)c.textContent=save.goldLeaves||0;
+   if(btn){btn.disabled=(save.goldLeaves||0)<10;btn.title=btn.disabled?'You need 10 Gold Leaves to continue':'';}
+   screen('goldFail');
+   return;
+ }
  $('gameover').classList.toggle('endlessOver',game.mode==='endless');
  $('overTitle').classList.toggle('quitTitle',!!quit);
  $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='gold'?(won?'GOLD WAVES CLEARED!':(game.testMode?'GOLD TEST ENDED!':'GOLD RUN ENDED!')):game.mode==='endless'?'YOU GOT SWARMED!':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
@@ -3809,7 +3845,7 @@ function restoreBossFightAfterContinue(){
  configureBossHud(game.wave);updateBossHud();$('bossbar').style.display='block';
  titleMusicStop();bossMusicStart();return true;
 }
-function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<10)return;save.goldLeaves-=10;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart();else if(!restoreBossFightAfterContinue())titleMusicStart();updateHud(true);last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
+function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<10)return;save.goldLeaves-=10;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart();else if(game.mode==='gold'){restoreBossFightAfterContinue()}else if(!restoreBossFightAfterContinue())titleMusicStart();updateHud(true);last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
 function quitRun(){if(game&&!game.over)finish(false,true)}
 
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
@@ -5032,6 +5068,7 @@ document.addEventListener('click',e=>{
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
   if(a==='goldContinue')goldContinue();
+ if(a==='goldSquished'){if(game&&game.mode==='gold'){clearRunRecovery();game.over=true;enterHomeCleanly();}}
  if(a==='endless')startEndless();
  if(a==='goldWaves')startGoldWaves(false);
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
@@ -5391,7 +5428,7 @@ function bossTick(e,dt){
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
-   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?5625:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.81: Gold bosses keep progression; BIG BUG phase 2 is 5,625 HP (+25%)
+   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?5625:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.82: Gold bosses keep progression; BIG BUG phase 2 is 5,625 HP (+25%)
    // v19.0.30 — Wave 50's ??? is deliberately 50 HP for finale testing.
    // This must live here, after Gold boss initialization, because bossTick is the code
    // that owns/overwrites Gold boss HP on its first frame. BIG BIG finale keeps
@@ -5434,7 +5471,7 @@ function bossTick(e,dt){
 
  const tier=e._goldTier||1,aim=Math.atan2(p.y-e.y,p.x-e.x),dam=13+tier*2.2;
  e._goldCycle=(e._goldCycle||0)+1;
- const phaseCount=(tier>=10&&e.goldPhase===2)?10:tier>=9?9:tier>=7?8:tier>=5?7:tier>=3?6:5; // v19.0.81 — BIG BUG alone gains a tenth unique attack
+ const phaseCount=(tier>=10&&e.goldPhase===2)?10:tier>=9?9:tier>=7?8:tier>=5?7:tier>=3?6:5; // v19.0.82 — BIG BUG alone gains a tenth unique attack
  e._phase=(e._phase+1)%phaseCount;
 
  if(e._phase===0){
@@ -5473,7 +5510,7 @@ function bossTick(e,dt){
    if(tier>=10){const a=Math.atan2(p.y+(p.motionY||0)*.34*(p.motionScale125||1)-e.y,p.x+(p.motionX||0)*.34*(p.motionScale125||1)-e.x);for(const o of [-.11,0,.11])fire(e,a+o,430,dam*1.05,5)}
    e._bc=tier>=10?.24:.42;
  }else{
-   // v19.0.81 — BIG BUG unique attack: GOLDEN CAGE. Four inward shard walls
+   // v19.0.82 — BIG BUG unique attack: GOLDEN CAGE. Four inward shard walls
    // close around the player's current position, with one rotating lane left open to dodge through.
    // Uses the normal lightweight Gold projectile objects: no persistent hazards or extra damage scaling.
    const cageSp=430,gap=Math.abs(e._goldCycle||0)%5|0,step=42,edge=24;
