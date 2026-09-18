@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.69 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.70 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1326,8 +1326,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.69</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.69</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.70</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.70</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2193,9 +2193,9 @@ function buildBugScreen(){
  const grid=$('bugGrid');grid.innerHTML='';
  const normalIds=['ladybug','beetle','butterfly'];
  normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?40:50;const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>Or unlock early for 10 Gold Leaves.</div>`:'';el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'goldUnlockBtn'}">${selected?'SELECTED':unlocked?'SELECT':`<span class="goldLeafIcon" aria-hidden="true"></span> UNLOCK — 10`}</button>`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen()}else if(save.goldLeaves>=10){save.goldLeaves-=10;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id);if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}else beep(155,.10,.022,'triangle')};grid.appendChild(el)});
- if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>100,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
+ if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>500,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
 }
-function buyLegendary(kind){if(save.legendaryGolden.owned)return;const ok=kind==='leaf'?save.scrap>=100000:save.goldLeaves>=100;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf')save.scrap-=100000;else save.goldLeaves-=100;save.legendaryGolden.owned=true;if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210)}
+function buyLegendary(kind){if(save.legendaryGolden.owned)return;const ok=kind==='leaf'?save.scrap>=500000:save.goldLeaves>=100;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf')save.scrap-=500000;else save.goldLeaves-=100;save.legendaryGolden.owned=true;if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210)}
 function permanentUpgradeLeafCost(k,level){
  // v18.0.34 — same simple leaf-price ladder for every permanent upgrade.
  // level is the current 0–9 level, so index 0 is the first purchase.
@@ -2572,6 +2572,8 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    baseHp=(80+w*15)*24*1.12*(duo?.62:1);
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    if(game.mode==='gold'){baseHp*=1.55;sp*=1.10;damage*=1.35}
+   // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
+   if(duo&&game.mode==='story')sp*=1.12;
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
@@ -2867,8 +2869,9 @@ function enemyMove(e,dt){
    if(e.invuln<=0){e.state='chase';e.stateT=0;flashBanner('FIGHT!',.55)}
    return;
  }
- e.cool-=dt;e.stateT-=dt;
- e.shotCd=(e.shotCd||2)-dt;
+ const duoBossRate=(e.boss&&game.mode==='story'&&(game.wave===90||game.wave===95))?1.16:1;
+ e.cool-=dt*duoBossRate;e.stateT-=dt;
+ e.shotCd=(e.shotCd||2)-dt*duoBossRate;
  // Mole Thing fully disappears underground, then pops up exactly at the crack after a 2-second warning.
  if(e.boss&&e.kind==='moleCricket'&&e.state==='burrowWait'){
    if(e.stateT<=0){e.x=e.burrowX;e.y=e.burrowY;e.state='chase';e.stateT=0;e.cool=.28;burst(e.x,e.y,10,.48,'#8b6a45')}
@@ -2963,10 +2966,10 @@ function enemyMove(e,dt){
    else if(e.state==='pounce'){e.x+=e.vx*dt;e.y+=e.vy*dt;if(e.stateT<=0)e.state='chase';return}
  }
  if(e.kind==='stink'||e.kind==='queenSpider'){
-   e.cloudCd-=dt;if(e.cloudCd<=0){e.cloudCd=3.1;toxicCloud(e.x,e.y,44,2.4,5.5+game.wave*.18);burst(e.x,e.y,5,.35,'#b56cff')}
+   e.cloudCd-=dt*duoBossRate;if(e.cloudCd<=0){e.cloudCd=3.1;toxicCloud(e.x,e.y,44,2.4,5.5+game.wave*.18);burst(e.x,e.y,5,.35,'#b56cff')}
  }
  if(e.boss&&e.kind==='queenSpider'){
-   e.webCd=(e.webCd||0)-dt;
+   e.webCd=(e.webCd||0)-dt*duoBossRate;
    if(e.cloudCd<=0){
      e.cloudCd=bossSecondFight(game.wave)?1.65:2.25;
      toxicCloud(e.x,e.y,bossSecondFight(game.wave)?62:52,2.2,7+game.wave*.16);
@@ -3032,11 +3035,9 @@ function enemyMove(e,dt){
      e.shotCd=2.55;
      for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,4.8,'spore',(10+game.wave*.16)*.5)}
      bossRing(e,8,105,(8+game.wave*.14)*.5,t*.2,'spore');
-     if(Math.random()<.22){
-       const px=Math.max(38,Math.min(W-38,p.x+(Math.random()-.5)*70)),py=Math.max(110,Math.min(H-38,p.y+(Math.random()-.5)*70));
-       game.fx.push({x:px,y:py,vx:0,vy:0,life:30,maxLife:30,r:24,toxicScar:true,damage:(4+game.wave*.045)*.5,tick:.35});
-       flashBanner('BLIGHT SPORE!',.32)
-     }else flashBanner('SPORE BLOOM!',.35)
+     // v19.0.70 — Sporeback no longer leaves 30-second damaging ground poison behind.
+     // This prevents long-lived FX accumulation during the Wave 85 fight.
+     flashBanner('SPORE BLOOM!',.35)
    }
    else if(e.kind==='gardenHeart'){e.shotCd=1.85;bossRing(e,12,165,10+game.wave*.18,t*.12,'spore');if(Math.random()<.7){bossHazard(p.x,p.y,86,2.31,'rootFinal',12+game.wave*.18);bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16)}flashBanner('HEART PULSE!',.34)}
  }
@@ -3246,10 +3247,6 @@ function update(dt,now){
    }
    if(f.toxic){
       f.tick-=dt;if(f.tick<=0){f.tick=.22;const dx=p.x-f.x,dy=p.y-f.y,rr=f.r+p.r;if(dx*dx+dy*dy<rr*rr){hurtPlayer(f.damage*.22)}}
-      continue;
-   }
-   if(f.toxicScar){
-      f.tick-=dt;if(f.tick<=0){f.tick=.65;const dx=p.x-f.x,dy=p.y-f.y,rr=f.r+p.r*.45;if(dx*dx+dy*dy<rr*rr)hurtPlayer(f.damage*.18)}
       continue;
    }
    // Visual-only crack/hazard rendering belongs in draw(); skip it here to avoid duplicate canvas work.
@@ -4457,8 +4454,7 @@ function drawEnemy(e){
        X.fillStyle='#9a6399';X.beginPath();X.ellipse(mx,my-sz*.48,sz*.72,sz*.34,0,0,6.28);X.fill();
        X.strokeStyle='#5d3d62';X.lineWidth=1;X.stroke();
      }
-     // Very faint infected rim so both duo bosses read as part of the same spore event.
-     X.globalAlpha=.22+.08*Math.sin(t*3.2);X.strokeStyle='#c879d1';X.lineWidth=2.2;X.beginPath();X.arc(0,0,rr*1.18,0,6.28);X.stroke();
+     // v19.0.70 — no surrounding infection ring on the Waves 90/95 double bosses.
      X.restore();
    }
    
@@ -4659,14 +4655,6 @@ function draw(now=performance.now()){
        X.globalAlpha=(.48+.38*fade);X.beginPath();X.moveTo(0,0);X.lineTo(x1,y1);X.lineTo(x2,y2);X.lineTo(x3,y3);X.stroke();
        if(grow>.45&&i<4){const ba=a+k*.68,bl=len*.20;X.globalAlpha=.28+.34*fade;X.beginPath();X.moveTo(x2,y2);X.lineTo(x2+Math.cos(ba)*bl,y2+Math.sin(ba)*bl);X.stroke()}
      }
-     X.restore();X.globalAlpha=1;continue
-   }
-   if(f.toxicScar){
-     const q=Math.max(0,f.life/30);X.save();X.translate(f.x,f.y);
-     X.globalAlpha=.32+.28*Math.min(1,q*4);X.fillStyle='#4b4228';X.beginPath();X.ellipse(0,0,f.r*1.08,f.r*.82,.18,0,6.28);X.fill();
-     X.strokeStyle='#75672f';X.lineWidth=1.5;
-     for(let i=0;i<7;i++){let a=i*.91+0.3,rad=f.r*(.35+(i%3)*.16);X.beginPath();X.moveTo(Math.cos(a)*rad*.35,Math.sin(a)*rad*.35);X.lineTo(Math.cos(a)*rad,Math.sin(a)*rad);X.stroke()}
-     X.fillStyle='#7d8b39';for(let i=0;i<4;i++){let a=i*1.57+.4;X.beginPath();X.arc(Math.cos(a)*f.r*.52,Math.sin(a)*f.r*.38,2.5,0,6.28);X.fill()}
      X.restore();X.globalAlpha=1;continue
    }
    if(f.bossHazard){
