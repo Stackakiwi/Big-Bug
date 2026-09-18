@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.87 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.88 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1167,7 +1167,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v19.0.87 — final-prep choices now match regular upgrade-card text sizing/layout and include BIG BUG upgrade-style icons. */
+/* v19.0.88 — tighter upgrade cards; final 3-choice reward uses existing leaf + selected player + sword icons. */
 /* v18.0.188 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
@@ -1175,13 +1175,17 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #finalPrep h2{position:relative;z-index:1;text-align:center;margin:0 0 8px;color:#f0e6b9;text-shadow:0 2px #000;font-family:"Chalkboard SE","Marker Felt","Noteworthy","Bradley Hand","Comic Sans MS",cursive;font-size:31px}
 #finalPrep .panel>p{position:relative;z-index:1;text-align:center;font-family:"Noteworthy","Bradley Hand","Chalkboard SE","Marker Felt",cursive;font-size:17px;color:#b8c7a4;opacity:1;margin:0 0 18px}
 #finalPrep .grid{position:relative;z-index:1;gap:9px}
-#finalPrep .choice{position:relative;min-height:158px;padding:17px 88px 17px 16px;background:linear-gradient(145deg,#f4e7bd,#e4d39f);color:#19301c;border:2px solid #52d96a;border-radius:7px;box-shadow:0 3px 0 #214d2b,0 0 7px #54ff70,0 0 18px #39dd59a5,inset 0 0 12px #65ff7830;display:flex;flex-direction:column;justify-content:center;text-align:left}
+#finalPrep .choice{position:relative;min-height:142px;padding:17px 88px 17px 16px;background:linear-gradient(145deg,#f4e7bd,#e4d39f);color:#19301c;border:2px solid #52d96a;border-radius:7px;box-shadow:0 3px 0 #214d2b,0 0 7px #54ff70,0 0 18px #39dd59a5,inset 0 0 12px #65ff7830;display:flex;flex-direction:column;justify-content:center;text-align:left}
 #finalPrep .choice b{font-family:"Chalkboard SE","Marker Felt","Noteworthy","Bradley Hand","Comic Sans MS",cursive;font-size:29px;line-height:1.04;color:#17311d;margin:0 0 8px}
 #finalPrep .choice p{font-family:"Noteworthy","Bradley Hand","Chalkboard SE","Marker Felt",cursive;font-size:20px;line-height:1.25;font-style:italic;color:#59654f;opacity:1;margin:0}
 #finalPrep .choice .art{display:none!important}
 #finalPrep .choice .upgradeMark{position:absolute;right:18px;top:50%;transform:translateY(-50%);width:66px;height:66px;display:flex;align-items:center;justify-content:center}
 #finalPrep .choice .upgradeMark .bbSwordSvg,#finalPrep .choice .upgradeMark .bbUpgradeIcon{width:60px;height:60px}
 #finalPrep .choice .upgradeMark .leafCurrencyIcon.bbLeafIcon{width:58px;height:58px}
+#finalPrep .choice .upgradeMark.finalChoiceTrio{width:76px;height:58px;right:12px;gap:1px;display:flex;align-items:center;justify-content:center}
+#finalPrep .finalChoiceTrio .leafCurrencyIcon.bbLeafIcon{width:24px!important;height:24px!important;flex:0 0 24px}
+#finalPrep .finalChoiceTrio canvas{width:27px!important;height:27px!important;flex:0 0 27px}
+#finalPrep .finalChoiceTrio .bbSwordSvg{width:25px!important;height:25px!important;flex:0 0 25px}
 #finalPrep .choice .buddyUpgradeIcon{width:60px!important;height:60px!important}
 @media(min-width:761px){#finalPrep .choice b{font-size:clamp(29px,2.65vw,38px)}#finalPrep .choice p{font-size:clamp(21px,1.8vw,26px)}}
 
@@ -1311,11 +1315,11 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 
 
-/* v19.0.87 — upgrade readability pass: larger choice text while preserving handwritten description styling and existing icon sizing. */
+/* v19.0.88 — larger upgrade text retained; mobile cards tightened to remove excess empty space. */
 #upgrade .choice b{font-size:clamp(29px,2.65vw,38px)!important;line-height:1.04!important}
 #upgrade .choice p{font-size:clamp(21px,1.8vw,26px)!important;line-height:1.27!important}
 @media(max-width:760px){
- #upgrade .choice{min-height:158px!important;grid-template-columns:minmax(0,1fr) 68px!important}
+ #upgrade .choice{min-height:142px!important;grid-template-columns:minmax(0,1fr) 68px!important}
  #upgrade .choice b{font-size:29px!important;line-height:1.04!important;margin-bottom:8px!important}
  #upgrade .choice p{font-size:20px!important;line-height:1.25!important}
 }
@@ -1362,8 +1366,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.87</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.87</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.88</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.88</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1475,7 +1479,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="panel"><h2>FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p>
  <div class="grid">
   <button class="choice rare" id="prepLeaves"><div class="art"></div><b>100,067 LEAVES</b><p class="muted">Take 100,067 Leaves into the final fight.</p><span class="upgradeMark"><span class="leafCurrencyIcon bbLeafIcon"></span></span></button>
-  <button class="choice epic" id="prepUpgrades"><div class="art"></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p><span class="upgradeMark"><svg class="bbSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg></span></button>
+  <button class="choice epic" id="prepUpgrades"><div class="art"></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p><span class="upgradeMark finalChoiceTrio" id="finalChoicesMark"></span></button>
   <button class="choice epic" id="prepBuddy"><div class="art"></div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p><span class="upgradeMark" id="finalBuddyMark"></span></button>
  </div></div>
 </section>
@@ -3449,6 +3453,7 @@ const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id=
 }
 function showFinalPrep(){
  const g=game;g.paused=true;g.wave=99;g.intermission=true;g.waveActive=false;
+ const trio=$('finalChoicesMark');if(trio){trio.innerHTML='<span class="leafCurrencyIcon bbLeafIcon"></span>';const c=document.createElement('canvas');c.width=40;c.height=40;trio.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,(g.bugId||save.selected),22,false);const sword=document.createElementNS('http://www.w3.org/2000/svg','svg');sword.setAttribute('class','bbSwordSvg');sword.setAttribute('viewBox','0 0 48 48');sword.setAttribute('aria-hidden','true');sword.innerHTML='<path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/>';trio.appendChild(sword)}
  const mark=$('finalBuddyMark');if(mark){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,(g.bugId||save.selected),34,false)}
  $('finalPrep').classList.remove('hidden');$('finalPrep').style.display='flex';flashBanner('SOMETHING HUGE IS WAITING...',1.2);upgradePopSound();
 }
@@ -5318,7 +5323,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.87';
+const BB_BUILD_VERSION='19.0.88';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
