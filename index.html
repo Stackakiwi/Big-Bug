@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.58 GOLD CHALLENGE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.59 GOLD CHALLENGE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1338,8 +1338,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.58</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.58</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.59</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.59</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2267,6 +2267,7 @@ function startGoldWaves(testMode=false,startWave=1){
  if(!testMode&&!goldWavesUnlocked())return;
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
+ p.damage=30; // v19.0.59 — Gold Mode only: start at exactly 30 damage.
  game={p,bugId:'golden',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'gold',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldCorruptionStart:0,goldFinaleRevealStart:0};
  beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);titleMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
@@ -2436,7 +2437,7 @@ function beginWave(w){
    g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
    $('bossbar').style.display='none';
    flashBanner(bossWave?'GOLD BOSS '+w:'GOLD WAVE '+w,bossWave?1.45:1.0);
-   if(bossWave){const gb=goldBossFor(w),be=spawnEnemy('boss',gb.base,0);if(be){be.goldBossKey=gb.key;be.goldBossName=gb.name;be.goldElite=true;if(w===50){be.goldPhase=1;be.hp=20000;be.maxHp=20000;be.max=20000;bb22Trace('W50 PHASE 1 ??? SPAWN hp='+be.hp+'/'+be.max+' enemies='+g.enemies.length)}}g.spawnLeft=0;configureBossHud(w);updateBossHud()}
+   if(bossWave){const gb=goldBossFor(w),be=spawnEnemy('boss',gb.base,0);if(be){be.goldBossKey=gb.key;be.goldBossName=gb.name;be.goldElite=true;if(w===50){be.goldPhase=1;be.hp=4000;be.maxHp=4000;be.max=4000;bb22Trace('W50 PHASE 1 ??? SPAWN hp='+be.hp+'/'+be.max+' enemies='+g.enemies.length)}}g.spawnLeft=0;configureBossHud(w);updateBossHud()}
    updateHud();return;
  }
  if(w===100&&!g.finalPrepDone){showFinalPrep();return}
@@ -2616,7 +2617,7 @@ function damageEnemy(e,d,source='player'){
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
    bb22Trace('W50 LETHAL PROMOTION ACCEPTED key='+e.goldBossKey+' boss='+e.boss+' hp='+e.hp+' d='+d);
-   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=30000; // v19.0.58: BIG BIG finale HP
+   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=4500; // v19.0.59: BIG BIG finale HP
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
    g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
@@ -5240,7 +5241,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.58';
+const BB_BUILD_VERSION='19.0.59';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
@@ -5288,7 +5289,7 @@ function tick(e,dt){
  const dx=p.x-e.x,dy=p.y-e.y,dist=Math.hypot(dx,dy)||1,nx=dx/dist,ny=dy/dist,px=-ny,py=nx;
  const dam=e.damage,press=e._goldPressure||1;
  e._goldTrick-=dt;
- // v19.0.58 — light secondary Gold-only attack layer. This adds variety without
+ // v19.0.59 — light secondary Gold-only attack layer. This adds variety without
  // changing enemy HP or wave population, and is intentionally low-frequency.
  if(e._goldTrick<=0){
    const a=Math.atan2(dy,dx);
@@ -5359,12 +5360,12 @@ function bossTick(e,dt){
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
-   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?30000:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.58: Gold bosses 5-45 -15%; BIG BIG 30,000 HP
+   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?4500:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.59: Gold bosses 5-45 -15%; BIG BIG 4,500 HP
    // v19.0.30 — Wave 50's ??? is deliberately 50 HP for finale testing.
    // This must live here, after Gold boss initialization, because bossTick is the code
    // that owns/overwrites Gold boss HP on its first frame. BIG BIG finale keeps
    // the full tier-10 health calculated above.
-   if(game.wave===50&&(e.goldPhase||1)===1){e.goldPhase=1;e.maxHp=20000;e.max=20000;e.hp=20000;bb22Trace('bossTick W50 PHASE 1 forced 20000/20000')}
+   if(game.wave===50&&(e.goldPhase||1)===1){e.goldPhase=1;e.maxHp=4000;e.max=4000;e.hp=4000;bb22Trace('bossTick W50 PHASE 1 forced 4000/4000')}
    e.damage=14+tier*3.4;e.speed=0;e.vx=0;e.vy=0;
    e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;
  }
