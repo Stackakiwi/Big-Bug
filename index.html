@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.77 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.78 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -543,7 +543,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #endlessBtn.btn.dark:disabled{background:linear-gradient(180deg,#72806b,#596753 60%,#414e40);border-color:#94a28c;color:#e9eddf;opacity:.78;filter:none;box-shadow:inset 0 2px 0 #dce4d133,inset 0 -4px 0 #354137,0 5px 0 #263229;text-shadow:0 2px 0 #29342b}
 #globalSettingsBtn.btn.dark{background:linear-gradient(180deg,#8eaa70,#668952 62%,#496b43);border-color:#bed19c;color:#fffbe8;box-shadow:inset 0 2px 0 #eef9cf66,inset 0 -4px 0 #3a5c37,0 4px 0 #29472c,0 7px 12px #0004;text-shadow:0 2px 0 #355230}
 #settings .settingsHelpBtn{background:linear-gradient(180deg,#4ca8a1,#317c78 60%,#245e5c);border-color:#83d1c8;box-shadow:inset 0 2px 0 #d8fff666,inset 0 -4px 0 #1d4f4d,0 5px 0 #173b3a,0 8px 14px #0004;text-shadow:0 2px 0 #1a4b48}
-#settings .btn.dark[data-action="home"],#help .btn.dark[data-action="settings"],#bugs .btn.dark[data-action="home"],#base .btn.dark[data-action="home"],#goldShop .btn.dark[data-action="home"]{background:linear-gradient(180deg,#9b744d,#765337 60%,#563c2b);border-color:#c59a6d;box-shadow:inset 0 2px 0 #efd1a555,inset 0 -4px 0 #493126,0 5px 0 #2c251b,0 8px 14px #0004;text-shadow:0 2px 0 #493224}
+#settings .btn.dark[data-action="home"],#settings .btn.dark[data-action="settingsBack"],#help .btn.dark[data-action="settings"],#bugs .btn.dark[data-action="home"],#base .btn.dark[data-action="home"],#goldShop .btn.dark[data-action="home"]{background:linear-gradient(180deg,#9b744d,#765337 60%,#563c2b);border-color:#c59a6d;box-shadow:inset 0 2px 0 #efd1a555,inset 0 -4px 0 #493126,0 5px 0 #2c251b,0 8px 14px #0004;text-shadow:0 2px 0 #493224}
 #resetConfirm .btn.dark[data-action="cancelReset"]{background:linear-gradient(180deg,#7f9292,#5f7070 60%,#485757);border-color:#aabcbc;box-shadow:inset 0 2px 0 #e6ffff44,inset 0 -4px 0 #394646,0 4px 0 #293535;text-shadow:0 2px 0 #344141}
 .toggleBtn{background:linear-gradient(180deg,#8a9890,#65746b);border:1px solid #aebbb2;box-shadow:inset 0 2px 0 #fff4,inset 0 -4px 0 #4e5c53,0 3px 0 #26382d}
 .toggleBtn.on{background:linear-gradient(180deg,#78d85c,#4fad3b 62%,#378a30);border-color:#9ceb7e;box-shadow:inset 0 2px 0 #e4ffd566,inset 0 -4px 0 #2c7827,0 3px 0 #244c25}
@@ -1330,8 +1330,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.77</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.77</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.78</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.78</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1412,7 +1412,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    <button class="btn red" data-action="showResetConfirm">RESET PROGRESS</button>
    <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This will erase all BIG BUG progress and cannot be undone.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
   </div>
-  <button class="btn dark" data-action="home">BACK</button>
+  <button id="settingsBackBtn" class="btn dark" data-action="settingsBack">BACK</button>
  </div>
 </section>
 
@@ -1428,7 +1428,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Spend Leaves on permanent upgrades between runs.</div></div>
    <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 20 to unlock. Survive the swarm and earn Leaves.</div></div>
   </div>
-  <button class="btn dark helpBack" data-action="settings">BACK TO SETTINGS</button>
+  <button class="btn dark helpBack" data-action="settingsFromHelp">BACK TO SETTINGS</button>
  </div>
 </section>
 
@@ -1480,7 +1480,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <section id="pause" class="screen hidden">
  <div class="panel" style="text-align:center">
-  <div id="pauseMain"><h2>PAUSED</h2><p>Take a breather little bug.</p><div id="pauseStats" class="pauseStats"></div><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn red" data-action="showQuitConfirm">QUIT RUN</button></div>
+  <div id="pauseMain"><h2>PAUSED</h2><div id="pauseStats" class="pauseStats"></div><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="pauseSettings">SETTINGS</button><button class="btn red" data-action="showQuitConfirm">QUIT RUN</button></div>
   <div id="quitConfirm" class="hidden"><h2>QUIT THIS RUN?</h2><p>Your current run will end.</p><button class="btn red" data-action="confirmQuit">QUIT RUN</button><button class="btn green" data-action="cancelQuit">KEEP GOING</button></div>
  </div>
 </section>
@@ -1498,7 +1498,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
 // v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
-// v19.0.77 — Home Gold Waves button polish only: removed POST-GAME CHALLENGE subtitle, centered label, richer gold finish, and lightweight CSS sparkles.
+// v19.0.78 — Home Gold Waves button polish only: removed POST-GAME CHALLENGE subtitle, centered label, richer gold finish, and lightweight CSS sparkles.
+// v19.0.78 — Pause polish: removed the breather subtitle and added pause-safe Settings access that returns to the paused run.
 // v19.0.75 — Gold Leaf Shop: corrected the $2.99 pack from 700 to 70 Gold Leaves; display and pack value match.
 // v19.0.74 — Story Mode boss HUD only: BOSS text beside the wave number is always red; all other modes/HUD text unchanged.
 // v19.0.73 — Story Mode leaves are now banked only when the run ends (death, quit, or game clear); exact carried amount only. Mosquito Mode and Gold Leaves unchanged.
@@ -2007,6 +2008,7 @@ function resetGameProgress(){
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
+let settingsOpenedFromPause=false;
 function buildSettings(){
  const map={music:'musicToggle',sfx:'sfxToggle',damageNumbers:'damageToggle'};
  for(const [key,id] of Object.entries(map)){const b=$(id),on=save.settings[key]!==false;b.textContent=on?'ON':'OFF';b.classList.toggle('on',on);b.classList.toggle('off',!on)}
@@ -2016,6 +2018,7 @@ function buildSettings(){
  const pcRow=$('pcControlsRow');if(pcRow)pcRow.classList.toggle('hidden',!DESKTOP_PERF_RENDER);
  if($('pcMouseBtn'))$('pcMouseBtn').classList.toggle('selected',pcMode==='mouse');
  if($('pcWasdBtn'))$('pcWasdBtn').classList.toggle('selected',pcMode==='wasd');
+ const settingsBack=$('settingsBackBtn');if(settingsBack)settingsBack.textContent=settingsOpenedFromPause?'BACK TO PAUSE':'BACK';
  $('resetConfirm').classList.add('hidden');
 }
 function toggleSetting(key){
@@ -5032,8 +5035,11 @@ document.addEventListener('click',e=>{
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testEnding')previewFinalPurification(false)
  if(a==='testPurify')previewFinalPurification(true)
- if(a==='settings'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
- if(a==='help'){showGameUI(false);screen('help');titleMusicStart()}
+ if(a==='settings'){settingsOpenedFromPause=false;stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
+ if(a==='pauseSettings'){if(!game||game.over)return;settingsOpenedFromPause=true;game.paused=true;saveRunRecovery('pause-settings');showGameUI(false);bossMusicStop();endlessMusicStop(false);titleMusicStop(false);shopMusicStop();buildSettings();screen('settings')}
+ if(a==='settingsFromHelp'){showGameUI(false);shopMusicStop();buildSettings();screen('settings');if(!settingsOpenedFromPause)titleMusicStart()}
+ if(a==='settingsBack'){if(settingsOpenedFromPause&&game&&!game.over){settingsOpenedFromPause=false;game.paused=true;refreshPauseStats();showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');saveRunRecovery('pause')}else{settingsOpenedFromPause=false;enterHomeCleanly();setTimeout(bbApplyDeferredUpdate,120)}}
+ if(a==='help'){showGameUI(false);screen('help');if(!settingsOpenedFromPause)titleMusicStart()}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
