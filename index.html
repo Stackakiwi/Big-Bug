@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.94 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.95 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1350,7 +1350,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 </div>
 <div id="telegraph" class="telegraph hidden">WAVE 1</div>
 <button id="boostBtn" class="hidden"><span class="bbIcon bbBoltIcon" aria-hidden="true"></span> BOOST<small>100 LEAVES</small></button>
-<button id="endlessTripleBtn" class="hidden">2× BOOST<small>EMPTY</small></button>
+<button id="endlessTripleBtn" class="hidden">2x ATTACK BOOST<small>EMPTY</small></button>
 <button id="endlessRepelBtn" class="hidden">REPELLENT<small>EMPTY</small></button>
 <button id="pauseBtn" class="hidden">Ⅱ</button>
 
@@ -1375,8 +1375,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.94</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.94</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.95</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.95</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2431,7 +2431,7 @@ function useEndlessTriple(){
  if(!(game.endlessTripleCharge>0)){beep(145,.10,.020,'sawtooth');return}
  game.endlessTripleCharge--;game.endlessTripleUntil=game.time+6;
  beep(460,.06,.030,'triangle');setTimeout(()=>beep(700,.07,.026,'triangle'),55);setTimeout(()=>beep(980,.11,.020,'sine'),110);
- flashBanner('⚡ 2× BOOST! RAPID + DOUBLE DAMAGE + 2 SHOT',.9);updateHud();
+ flashBanner('⚡ 2x ATTACK BOOST! RAPID + DOUBLE DAMAGE + 2 SHOT',.9);updateHud();
 }
 function useEndlessRepel(){
  if(!game||game.mode!=='endless'||game.paused||game.over)return;initAudio();
@@ -3399,9 +3399,11 @@ function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgrad
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
 if(u.id==='endlessRepel'){
- // v19.0.94 — Repellent uses a dedicated mosquito canvas icon without touching the gameplay canvas context.
- // Never swap the main canvas context X here: X is const, and assigning to it throws during
- // the between-wave ability screen, leaving Mosquito Mode paused after the first swarm.
+ // v19.0.95 — purely decorative mosquito icon on this card's own tiny canvas.
+ // No enemy object is created, and the main gameplay canvas/context is never touched.
+ mark.innerHTML='';
+ const c=document.createElement('canvas');c.width=72;c.height=72;c.className='buddyUpgradeIcon';mark.appendChild(c);
+ const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.translate(36,36);drawUpgradeMosquitoIcon(q,46);
 }else if(u.id==='goldMove'){
  mark.innerHTML='';const c=document.createElement('canvas');c.width=72;c.height=72;c.className='buddyUpgradeIcon';mark.appendChild(c);
  const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.translate(36,36);
@@ -3555,7 +3557,7 @@ function updateHud(force=true,now=performance.now()){
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
  setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',(g.mode==='gold'||g.wave===100)?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
  const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
- const et=hudNode('endlessTripleBtn');if(et){const ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`2× BOOST<small>${left.toFixed(1)}s</small>`:`2× BOOST<small>x${charges} / 3</small>`;setHudClass(et,'tripleHidden','hidden',!endless);setHudClass(et,'tripleActive','active',ta);setHudDisabled(et,'tripleDisabled',!ta&&charges<=0);if(HUD_CACHE.tripleHtml!==html){HUD_CACHE.tripleHtml=html;et.innerHTML=html}}
+ const et=hudNode('endlessTripleBtn');if(et){const ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`2x ATTACK BOOST<small>${left.toFixed(1)}s</small>`:`2x ATTACK BOOST<small>x${charges} / 3</small>`;setHudClass(et,'tripleHidden','hidden',!endless);setHudClass(et,'tripleActive','active',ta);setHudDisabled(et,'tripleDisabled',!ta&&charges<=0);if(HUD_CACHE.tripleHtml!==html){HUD_CACHE.tripleHtml=html;et.innerHTML=html}}
  const er=hudNode('endlessRepelBtn');if(er){const ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charges=g.endlessRepelCharge||0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>x${charges} / 3</small>`;setHudClass(er,'repelHidden','hidden',!endless);setHudClass(er,'repelActive','active',ra);setHudDisabled(er,'repelDisabled',!ra&&charges<=0);if(HUD_CACHE.repelHtml!==html){HUD_CACHE.repelHtml=html;er.innerHTML=html}}
 }
 let endingTimers=[];
@@ -5404,7 +5406,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.94';
+const BB_BUILD_VERSION='19.0.95';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
