@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.66 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.67 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -920,7 +920,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #hud .hudWave #wave{margin-left:5px!important}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
 /* v19.0.65 — Story Mode boss-wave HUD only: BOSS matches the Wave/number size and is red. */
-/* v19.0.66 — regular Leaf icon stem removed; Story-only beetle heart drop increased to 20%. */
+/* v19.0.67 — regular Leaf icon stem removed; Story-only beetle heart drop increased to 20%. */
 #hud .hudWave.storyBossWave .waveProg{font-size:26px!important;line-height:1!important;margin-left:5px!important;letter-spacing:-1px!important;color:#e64d4d!important;text-shadow:0 2px 4px #000b!important}
 
 /* v18.0.58 — keep temporary wave tester higher and selectable */
@@ -1326,8 +1326,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.66</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.66</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.67</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.67</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2675,7 +2675,7 @@ function damageEnemy(e,d,source='player'){
      if(e.boss){val*=20;}
      else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
      game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
-     // v19.0.66 — Story Mode only: regular Armored Beetles have a 20% chance to drop a tiny +10 HP heart.
+     // v19.0.67 — Story Mode only: regular Armored Beetles have a 20% chance to drop a tiny +10 HP heart.
      // Keep this as a normal lightweight pickup in the existing drop array so Gold/Mosquito modes and wave logic are untouched.
      if(game.mode==='story'&&!e.boss&&e.kind==='beetle'&&Math.random()<.20)game.drops.push({x:e.x+10,y:e.y-6,v:0,r:7,age:0,phase:Math.random()*6.28,healDrop:true,healAmount:10});
       if(e.boss&&Math.random()<1/1000)game.drops.push({x:e.x+18,y:e.y-8,v:0,r:15,age:0,phase:Math.random()*6.28,goldLeaf:true});
@@ -3314,12 +3314,15 @@ function upgradeCardIconMarkup(u){
  if(['sharp','speed','triple','endlessTriple'].includes(u.id))return sword;
  if(['heart','endlessHealth'].includes(u.id))return '<span class="bbIcon bbHeartIcon"></span>';
  if(['magnet','greed','gold'].includes(u.id))return '<span class="leafCurrencyIcon bbLeafIcon"></span>';
+ if(u.id==='endlessRepel')return '<canvas class="mosquitoUpgradeIcon" width="72" height="72" aria-hidden="true"></canvas>';
  return upgradeIconSvg(u.id);
 }
 function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${u.desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`}
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
-if(u.id==='goldMove'){
+if(u.id==='endlessRepel'){
+ const c=mark.querySelector('.mosquitoUpgradeIcon');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(36,36);q.scale(1.75,1.75);const oldX=X;X=q;try{drawMosquitoBody(0,0)}finally{X=oldX;q.restore()}}
+}else if(u.id==='goldMove'){
  mark.innerHTML='';const c=document.createElement('canvas');c.width=72;c.height=72;c.className='buddyUpgradeIcon';mark.appendChild(c);
  const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.translate(36,36);
  // Render only the actual in-game Gold Ladybug onto the transparent canvas.
@@ -3342,6 +3345,7 @@ function openUpgrade(afterWave=false){
    if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:`Store 5 seconds of swarm slow + pushback  •  ${(g.endlessRepelCharge||0)}/3 stored`,rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
    if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
    $('choices').innerHTML=endlessUp.map(u=>upgradeChoiceHtml(u)).join('');
+   paintUpgradeBuddyIcons($('choices'),endlessUp);
    [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();endlessUp[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1)});
    $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
  }
@@ -3853,7 +3857,7 @@ function leafSprite(r){
  q.beginPath();q.moveTo(0,-r);q.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);q.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);q.closePath();q.fill();q.stroke();
  q.shadowBlur=0;q.strokeStyle='#3d792d';q.lineWidth=1.6;q.beginPath();q.moveTo(0,-r*.78);q.lineTo(0,r*.82);q.stroke();
  q.beginPath();q.moveTo(0,-r*.38);q.lineTo(r*.50,-r*.10);q.moveTo(0,-r*.05);q.lineTo(-r*.52,r*.20);q.moveTo(0,r*.25);q.lineTo(r*.45,r*.48);q.stroke();
- // v19.0.66 — regular Leaf silhouette ends cleanly at its tip; no protruding stem.
+ // v19.0.67 — regular Leaf silhouette ends cleanly at its tip; no protruding stem.
  const out={c,size};LEAF_SPRITE_CACHE.set(key,out);return out;
 }
 function drawLeaves(d){
@@ -5239,7 +5243,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.66';
+const BB_BUILD_VERSION='19.0.67';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
