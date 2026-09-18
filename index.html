@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.78 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.79 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1330,8 +1330,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.78</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.78</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.79</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.79</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1498,6 +1498,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
 // v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
+// v19.0.79 — Gold Waves intensity pass: visual-only 10× outgoing damage numbers and pause ATTACK display; real damage/health/enemy attacks/player health unchanged.
 // v19.0.78 — Home Gold Waves button polish only: removed POST-GAME CHALLENGE subtitle, centered label, richer gold finish, and lightweight CSS sparkles.
 // v19.0.78 — Pause polish: removed the breather subtitle and added pause-safe Settings access that returns to the paused run.
 // v19.0.75 — Gold Leaf Shop: corrected the $2.99 pack from 700 to 70 Gold Leaves; display and pack value match.
@@ -2668,7 +2669,7 @@ function damageEnemy(e,d,source='player'){
  if(game&&game.mode==='gold'&&e.goldPhase===2&&(game.goldFinaleRevealUntil||0)>game.time)return;
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  if(e.boss&&(e.invuln||0)>0)return;
- const shown=Math.max(1,Math.round(d)), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
+ const shown=Math.max(1,Math.round(d))*(game.mode==='gold'?10:1), heavy=d>game.p.damage*1.8, finishing=d>=e.hp;
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
  const damageTextCap=game.enemies.length>28?12:(game.enemies.length>18?18:24);if(source!=='helperArmy'&&game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',damageTextCap)<damageTextCap)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
@@ -3437,7 +3438,7 @@ function wave50BonusPick(){
 }
 function refreshPauseStats(){
  if(!game||!game.p||!$('pauseStats'))return;const p=game.p;
- const atk=Math.round(p.damage*10)/10, hp=Math.ceil(p.hp)+' / '+Math.ceil(p.maxHp), move=Math.round(p.speed), attacks=(1000/p.rate).toFixed(2)+'/sec';
+ const atk=Math.round(p.damage*(game.mode==='gold'?100:10))/10, hp=Math.ceil(p.hp)+' / '+Math.ceil(p.maxHp), move=Math.round(p.speed), attacks=(1000/p.rate).toFixed(2)+'/sec';
  $('pauseStats').innerHTML=`<div class="pauseStat"><small>ATTACK</small><b>${atk}</b></div><div class="pauseStat"><small>HEALTH</small><b>${hp}</b></div><div class="pauseStat"><small>MOVEMENT</small><b>${move}</b></div><div class="pauseStat"><small>ATTACK SPEED</small><b>${attacks}</b></div>`;
 }
 function closeUpgrade(){ $('upgrade').classList.add('hidden');$('upgrade').style.display='none' }
