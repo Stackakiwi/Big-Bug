@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.102 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.103 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1391,8 +1391,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.102</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.102</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.103</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.103</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4867,7 +4867,7 @@ function draw(now=performance.now()){
    }
    if(f.web){
      const q=Math.max(0,f.life/f.maxLife);X.save();X.globalAlpha=.30+.35*q;X.translate(f.x,f.y);X.strokeStyle='#e8d9f4';X.lineWidth=1.7;
-     const webRings=lowStoryFx()?2:3,webSpokes=lowStoryFx()?4:8;for(let ring=1;ring<=webRings;ring++){X.beginPath();for(let i=0;i<=webSpokes;i++){let a=i*6.283/webSpokes,rr=f.r*ring/webRings;if(i===0)X.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.stroke()}
+     const webRings=3,webSpokes=8;for(let ring=1;ring<=webRings;ring++){X.beginPath();for(let i=0;i<=webSpokes;i++){let a=i*6.283/webSpokes,rr=f.r*ring/webRings;if(i===0)X.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.stroke()}
      for(let i=0;i<webSpokes;i++){let a=i*6.283/webSpokes;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}X.restore();X.globalAlpha=1;continue
    }
    if(f.playerDamageText){
@@ -5426,7 +5426,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.102';
+const BB_BUILD_VERSION='19.0.103';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
