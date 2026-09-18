@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.97 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.98 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -599,7 +599,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #boostBtn{background:linear-gradient(180deg,#5f9f4d,#447f3d 58%,#2d6133);border-color:#86bb68}
 #endlessTripleBtn{background:linear-gradient(180deg,#8a65b4,#68458f 60%,#493367);border-color:#b493d7}
 #endlessRepelBtn{background:linear-gradient(180deg,#52a9a4,#327e7a 60%,#235c59);border-color:#86d4cc}
-/* v19.0.97 — Mosquito Mode ability order/layout only: 2x Attack, Health, Repellent. */
+/* v19.0.98 — Mosquito Mode ability order/layout only: 2x Attack, Health, Repellent. */
 body:has(#endlessTripleBtn:not(.hidden)) #endlessTripleBtn{left:12px!important;min-width:116px!important;width:116px!important;font-size:11px!important;padding:5px 7px!important;white-space:normal!important;line-height:1.05!important}
 body:has(#endlessTripleBtn:not(.hidden)) #boostBtn{left:136px!important;min-width:96px!important;width:96px!important}
 body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;min-width:104px!important;width:104px!important}
@@ -1385,8 +1385,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.97</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.97</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.98</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.98</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1999,7 +1999,7 @@ function syncBigBigHudFades(boss){
  if(pct<=20)startBigBigHudFade('bossbar');
 }
 const BB_LOW_FX_DEVICE=((navigator.hardwareConcurrency||8)<=4)||((navigator.deviceMemory||8)<=4);
-// v19.0.97 — low-end Story rendering pass. Presentation-only: no HP, damage, speed, spawn, collision, wave, boss, or timing changes.
+// v19.0.98 — low-end Story rendering pass. Presentation-only: no HP, damage, speed, spawn, collision, wave, boss, or timing changes.
 function lowStoryFx(){return !!(BB_LOW_FX_DEVICE&&game&&game.mode==='story'&&game.wave>=15)}
 
 // v17.9.84 — performance-only: coalesce rapid leaf pickup storage writes.
@@ -3412,7 +3412,7 @@ function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgrad
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
 if(u.id==='endlessRepel'){
- // v19.0.97 — purely decorative mosquito icon on this card's own tiny canvas.
+ // v19.0.98 — purely decorative mosquito icon on this card's own tiny canvas.
  // No enemy object is created, and the main gameplay canvas/context is never touched.
  mark.innerHTML='';
  const c=document.createElement('canvas');c.width=72;c.height=72;c.className='buddyUpgradeIcon';mark.appendChild(c);
@@ -5231,7 +5231,7 @@ C.addEventListener('touchend',()=>drag=false);
 // explicitly gated out of the iPhone/iPad/Android input path. WASD behavior is unchanged.
 addEventListener('keydown',e=>{
  const k=(e.key||'').toLowerCase();
- if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&game&&!game.paused&&!game.over){e.preventDefault();useBoost();return}
+ if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&game&&!game.paused&&!game.over){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
  if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}
 },{passive:false});
@@ -5420,7 +5420,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.97';
+const BB_BUILD_VERSION='19.0.98';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
