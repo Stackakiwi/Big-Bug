@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.70 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.71 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1326,8 +1326,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.70</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.70</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.71</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.71</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1493,7 +1493,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
-// v19.0.64 — Legendary Golden Ladybug regular-leaf purchase reduced from 1,000,000 to 100,000; 100 Gold Leaves alternative unchanged.
+// v19.0.70 — Legendary Golden Ladybug regular-leaf purchase is 500,000; 100 Gold Leaves alternative unchanged.
 // v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and 1/1000 boss drops.
 // v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
 // v18.0.81 — Mosquito Mode stationary detection is more tolerant of tiny movement jitter; stand-still firing bonus is a true 25% and stacks with existing faster attack-speed scaling and boosts.
@@ -3043,7 +3043,11 @@ function enemyMove(e,dt){
  }
  if(e.boss&&e.kind!=='gardenHeart'){
    e.addCd-=dt;
-   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal','wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
+   // v19.0.71 — Story Mode boss cleanup: once ANY living boss reaches its final 10% HP,
+   // stop spawning new regular enemy adds. Existing enemies are left alone so wave/death state stays intact.
+   // This is Story-only; Gold Waves and Mosquito Mode keep their existing behavior.
+   const storyBossClosing=game.mode==='story'&&(game.bosses||[]).some(b=>b&&!b.dead&&b.hp>0&&b.max>0&&b.hp<=b.max*.10);
+   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(!storyBossClosing&&countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal','wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
    if(e.hp<e.max*.65&&Math.random()<dt*.35)stingBurst(e,e.hp<e.max*.3?10:7,e.hp<e.max*.3?180:145);
  }
  if(e.state==='telegraph')return;
