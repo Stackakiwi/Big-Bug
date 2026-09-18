@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.83 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.86 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1304,6 +1304,15 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 #goldFinaleOutro.thanks #goldFinaleCongrats{opacity:1;transform:translateY(0)}
 
 
+
+/* v19.0.86 — upgrade readability pass: larger choice text while preserving handwritten description styling and existing icon sizing. */
+#upgrade .choice b{font-size:clamp(29px,2.65vw,38px)!important;line-height:1.04!important}
+#upgrade .choice p{font-size:clamp(21px,1.8vw,26px)!important;line-height:1.27!important}
+@media(max-width:760px){
+ #upgrade .choice{min-height:158px!important;grid-template-columns:minmax(0,1fr) 68px!important}
+ #upgrade .choice b{font-size:29px!important;line-height:1.04!important;margin-bottom:8px!important}
+ #upgrade .choice p{font-size:20px!important;line-height:1.25!important}
+}
 </style>
 </head>
 <body>
@@ -1347,8 +1356,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.83</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.83</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.86</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.86</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -5302,7 +5311,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.67';
+const BB_BUILD_VERSION='19.0.86';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
