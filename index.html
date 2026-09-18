@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.88 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.89 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1026,7 +1026,8 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 
 /* v18.0.108 — Steam-ready presentation polish. Visual/copy cleanup only; gameplay untouched. */
-.testJump,.creditsTestBtn,.purifyTestBtn{display:none!important}
+.creditsTestBtn,.purifyTestBtn{display:none!important}
+#home .testJump{display:flex!important}
 #help,#settings,#bugs,#base,#shop,#cosmetics{background:radial-gradient(ellipse at 50% 0%,#23482d55 0 22%,transparent 48%),linear-gradient(180deg,#081b10 0%,#041109 100%)}
 #help .panel,#settings .panel{width:min(760px,96vw);max-height:min(92vh,820px);border:1px solid #6f966f;border-radius:18px;background:linear-gradient(165deg,#12341f 0%,#0b2617 58%,#071b10 100%);box-shadow:0 8px 0 #031008,0 22px 60px #000b,inset 0 1px 0 #b9d6a322;padding:24px}
 #help .panel:before,#help .panel:after{display:none!important}
@@ -1167,7 +1168,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v19.0.88 — tighter upgrade cards; final 3-choice reward uses existing leaf + selected player + sword icons. */
+/* v19.0.89 — tighter upgrade cards; final 3-choice reward uses existing leaf + selected player + sword icons. */
 /* v18.0.188 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
@@ -1315,7 +1316,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 
 
-/* v19.0.88 — larger upgrade text retained; mobile cards tightened to remove excess empty space. */
+/* v19.0.89 — larger upgrade text retained; mobile cards tightened to remove excess empty space. */
 #upgrade .choice b{font-size:clamp(29px,2.65vw,38px)!important;line-height:1.04!important}
 #upgrade .choice p{font-size:clamp(21px,1.8vw,26px)!important;line-height:1.27!important}
 @media(max-width:760px){
@@ -1366,8 +1367,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.88</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.88</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.89</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.89</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3072,7 +3073,7 @@ function enemyMove(e,dt){
        bossHazard(e.x+Math.cos(a)*dist,e.y+Math.sin(a)*dist,38,2.8,'acid',9+game.wave*.17);
        let f=game.fx[game.fx.length-1];f.sprayAngle=a;f.spraySeed=Math.random()*6.283;
      }
-     flashBanner('ACID SPRAY!',.3)
+     flashBanner('FIRE SPRAY!',.3)
    }
    else if(e.kind==='mothBoss'){
      e.shotCd=2.9;bossHazard(p.x,p.y,115,2.4,'dark',8+game.wave*.14);
@@ -4748,7 +4749,23 @@ function draw(now=performance.now()){
    if(f.bossHazard){
      const q=Math.max(0,f.life/(f.maxLife||1)),pulse=.85+.15*Math.sin(game.time*9);X.save();X.translate(f.x,f.y);X.globalAlpha=.28+.42*q;
      const cols={acid:'#e58b3b',dark:'#7d5a91',ripple:'#a8e7df',thorn:'#b8d05b',webline:'#e8d9f4',root:'#9a6a42',rootFinal:'#b77a4d',spore:'#c879d1',clamp:'#d86b45'};X.strokeStyle=cols[f.style]||'#f0d16a';X.fillStyle=cols[f.style]||'#f0d16a';X.lineWidth=f.style==='webline'?3:2.5;
-     if(f.style==='thorn'){for(let i=0;i<7;i++){let a=i*6.283/7;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r*pulse,Math.sin(a)*f.r*pulse);X.stroke()}}
+     if(f.style==='acid'){
+       // v19.0.89 — Bombardier hazards keep the same gameplay radius/damage, but render as chunky hand-drawn fire instead of circles.
+       const age=(f.maxLife||1)-f.life,seed=f.spraySeed||0,ang=Number.isFinite(f.sprayAngle)?f.sprayAngle:-Math.PI/2;
+       X.rotate(ang+Math.PI/2);
+       X.globalAlpha=.42+.50*q;
+       for(let i=-2;i<=2;i++){
+         const sway=Math.sin(game.time*10+seed+i*1.7)*3.2,baseX=i*f.r*.18+sway;
+         const h=f.r*(.48+.10*((i+5)%3))*(.88+.12*Math.sin(game.time*8+seed+i));
+         const w=f.r*(.16+(i===0?.05:0));
+         X.fillStyle=i%2===0?'#e66d28':'#f39a32';
+         X.beginPath();X.moveTo(baseX-w,f.r*.34);X.quadraticCurveTo(baseX-w*.75,0,baseX+sway*.22,-h);X.quadraticCurveTo(baseX+w*.9,-h*.35,baseX+w,f.r*.34);X.closePath();X.fill();
+         X.fillStyle='#ffd35a';X.globalAlpha=.30+.42*q;X.beginPath();X.moveTo(baseX-w*.42,f.r*.28);X.quadraticCurveTo(baseX,-h*.12,baseX+sway*.12,-h*.58);X.quadraticCurveTo(baseX+w*.45,-h*.12,baseX+w*.42,f.r*.28);X.closePath();X.fill();X.globalAlpha=.42+.50*q;
+       }
+       // Small ember flecks make the spray read as flame without adding extra FX objects.
+       X.fillStyle='#ffd86a';for(let i=0;i<4;i++){const yy=-f.r*(.12+i*.18),xx=Math.sin(seed+i*2.1+game.time*7)*f.r*.32;X.beginPath();X.arc(xx,yy,1.5+(i%2),0,6.28);X.fill()}
+     }
+     else if(f.style==='thorn'){for(let i=0;i<7;i++){let a=i*6.283/7;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r*pulse,Math.sin(a)*f.r*pulse);X.stroke()}}
      else if(f.style==='rootFinal'){
        X.lineWidth=3.2;X.globalAlpha=.38+.46*q;
        for(let i=0;i<4;i++){
@@ -5323,7 +5340,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.88';
+const BB_BUILD_VERSION='19.0.89';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
