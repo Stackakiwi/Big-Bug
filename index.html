@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.82 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.83 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -310,7 +310,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 
 /* v17.8.3 — small layout polish only: center game-over actions and lower Best Wave slightly. */
 
-/* v19.0.82 — Gold Waves-only failure popup. Compact gold/black presentation; no olive game-over panel. */
+/* v19.0.83 — Gold Waves-only failure popup. Compact gold/black presentation; no olive game-over panel. */
 #goldFail{position:fixed;inset:0;z-index:1600;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(circle at 50% 42%,#3b2909aa 0%,#100b05ee 52%,#030201f5 100%)}
 #goldFail.hidden{display:none!important}
 #goldFail .goldFailPanel{position:relative;width:min(420px,92vw);padding:24px 20px 20px;text-align:center;overflow:hidden;border:2px solid #ffe38a;border-radius:18px;background:linear-gradient(165deg,#211708 0%,#120d06 58%,#080603 100%);box-shadow:0 8px 0 #4a2b05,0 20px 55px #000c,inset 0 0 28px #d89a1b22,0 0 28px #ffd84f55}
@@ -1347,8 +1347,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.82</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.82</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.83</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.83</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1528,7 +1528,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <script>
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
 // v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
-// v19.0.82 — Gold Waves difficulty pass: modest Gold enemy durability/speed bump, BIG BUG +25% HP, and unique GOLDEN CAGE attack; attack damage/player health unchanged.
+// v19.0.83 — Gold Waves difficulty pass: modest Gold enemy durability/speed bump, BIG BUG +25% HP, and unique GOLDEN CAGE attack; attack damage/player health unchanged.
 // v19.0.79 — Gold Waves intensity pass: visual-only 10× outgoing damage numbers and pause ATTACK display; real damage/health/enemy attacks/player health unchanged.
 // v19.0.78 — Home Gold Waves button polish only: removed POST-GAME CHALLENGE subtitle, centered label, richer gold finish, and lightweight CSS sparkles.
 // v19.0.78 — Pause polish: removed the breather subtitle and added pause-safe Settings access that returns to the paused run.
@@ -1875,25 +1875,25 @@ function makeBugPreview(id){
 }
 
 const GARDEN_STORY={
-5:{title:'First Big Fight',text:'The Hornet buzzes off. The garden grows quiet.'},
-10:{title:'Through the Thicket',text:'The Stag King falls. A path opens ahead.'},
-15:{title:'Sticky Situation',text:'The Venom Queen retreats. Best not to follow.'},
-20:{title:'A Way Through',text:'The Mole Thing retreats. One tunnel leads onward.'},
-25:{title:'Something Strange',text:'Purple dust clings to the Iron Scarab. Strange.'},
-30:{title:'A Purple Trail',text:'Purple dust continues beyond the creek. A trail.'},
-35:{title:'The Tyrant’s Ground',text:'Twisted roots lie beneath the Praying Tyrant.'},
-40:{title:'Beyond the Roses',text:'The purple trail continues past the garden wall.'},
-45:{title:'Tracks in the Grass',text:'The trail grows stronger. Nearby grass curls away.'},
-50:{title:'Threads in the Wood',text:'Purple strands twist through the rotten wood.'},
-55:{title:'The Bramble Moves',text:'The thorns move on their own. Something is spreading.'},
-60:{title:'Under the Stones',text:'Something large moves beneath the stones. The strands pulse.'},
-65:{title:'Spores in the Rain',text:'The rain cannot stop it. Spores rise from the puddles.'},
-70:{title:'The Far Bank',text:'The Pond Skater guarded this side of the water. Why?'},
-75:{title:'Empty Webs',text:'The old webs are empty. Even the spiders are gone.'},
-80:{title:'The Old Roots',text:'Purple growth covers the oldest roots. Something is awake.'},
-85:{title:'Sporeback',text:'Fungal growth covers the beetle. It was being controlled.'},
-90:{title:'Not Themselves',text:'The Hornet and Tyrant return corrupted. Something controls them.'},
-95:{title:'The Last Guardians',text:'The last guardians fall. Every infected root leads below.'},
+5:{title:'The First Obstacle',text:'You defeated the Hornet but it looks like his friends are here to stay.'},
+10:{title:'The “King”',text:'That one was tough but you still crushed him.'},
+15:{title:'Sticky Situation',text:'She almost trapped you in her webs but you escaped.'},
+20:{title:'What is that thing?',text:'You pushed the Mole Thing back in its hole.'},
+25:{title:'The Shield',text:'After defeating the Iron Scarab you noticed some purple dust on the ground.'},
+30:{title:'Attack from the sky',text:'The Sky Lancer almost surprise attacked you but you dodged last second.'},
+35:{title:'The Tyrant’s Ground',text:'Almost took your head right off, after defeating you noticed the garden has more purple dust on the ground.'},
+40:{title:'Too many legs',text:'Way too many legs!'},
+45:{title:'Pinch Pinch Pinch',text:'You almost lost your head again, narrowly escaping the pincher you pushed forward.'},
+50:{title:'Boom!',text:'You almost become a charred bug, instead the Thunder Cicada is no more.'},
+55:{title:'Hot Hot Hot',text:'After defeating the Bombardier you notice some leftover flames burning purple mushrooms away.'},
+60:{title:'Twister',text:'You defeated the Dusk Moth but are still trying to get your balance back.'},
+65:{title:'Pointy Prick',text:'You may have got poked a couple of times but the Thorn Weevil was no match.'},
+70:{title:'Friend or Foe?',text:'You defeated the Pond Skater but it almost seemed like it was trying to stop you for your own good.'},
+75:{title:'Venom Queens Grandfather',text:'The Old Webber tried to take its revenge for the Venom Queen but failed.'},
+80:{title:'Something is wrong…',text:'After defeating the Root Borer you noticed the garden is getting filled with purple mushrooms.'},
+85:{title:'Sporeback',text:'Fungal growth covered the bug, it seemed to have no mind of its own.'},
+90:{title:'Not Themselves',text:'The Hornet and Tyrant returned corrupted, something is controlling them.'},
+95:{title:'The Last Guardians',text:'They also were infected, you look ahead to see a poisoned garden.'},
 100:{title:'The Garden Is Quiet',text:'The Spore Behemoth is gone. The spores fade. The garden is safe again.'}
 };
 let pendingBossUpgrade=false;
@@ -2609,13 +2609,13 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(k==='spider'){baseHp*=1.05;sp*=.92;r*=1.05}
  if(k==='wasp'){baseHp*=.85;sp*=1.12;r*=.92}
  if(k==='stink'){baseHp*=1.35;sp*=.72;r*=1.08}
- if(game.mode==='gold'&&!boss){baseHp*=1.80;sp*=1.25;damage*=1.45} // v19.0.82 — Gold Waves only: slightly tougher/faster regular enemies; damage unchanged
+ if(game.mode==='gold'&&!boss){baseHp*=1.80;sp*=1.25;damage*=1.45} // v19.0.83 — Gold Waves only: slightly tougher/faster regular enemies; damage unchanged
  if(boss){
    const duo=bossKindsFor(w).length>1;
    // v18.0.81 — boss HP is progression-based only; player damage/attack-speed upgrades no longer increase boss max HP.
    baseHp=(80+w*15)*24*1.12*(duo?.62:1);
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
-   if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.82 — Gold Waves only: modest boss durability/speed bump; damage unchanged
+   if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
@@ -2657,7 +2657,7 @@ function damageEnemy(e,d,source='player'){
  // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
    bb22Trace('W50 LETHAL PROMOTION ACCEPTED key='+e.goldBossKey+' boss='+e.boss+' hp='+e.hp+' d='+d);
-   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.82: BIG BUG finale +25% HP (4,500 -> 5,625)
+   const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.83: BIG BUG finale +25% HP (4,500 -> 5,625)
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
    g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
@@ -3817,7 +3817,7 @@ function finish(won,quit=false){
    save.runs++;game.rewardsBanked=true;
    persist();refreshEndlessHome();refreshGoldWavesHome();
  }
- // v19.0.82 — Gold Waves failure uses its own compact gold/black continue popup.
+ // v19.0.83 — Gold Waves failure uses its own compact gold/black continue popup.
  if(game.mode==='gold'&&!won&&!game.testMode){
    const c=$('goldFailCount'),btn=$('goldFailContinueBtn');
    if(c)c.textContent=save.goldLeaves||0;
@@ -4875,38 +4875,38 @@ function startOrResume(){if(!game||game.over){startRun();return}if(game.mode==='
 // on the hidden arena canvas, so the book always matches the actual in-game artwork.
 const GARDEN_BOOK={
  playable:[
-  {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:"Small, sturdy, and ready to scurry."},
-  {key:'player:beetle',id:'beetle',name:'Beetle',desc:'Tough shell, strong bite, slow feet.'},
-  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Quick and light, with fast little hits.'},
-  {key:'player:golden',id:'golden',name:'Legendary Golden Ladybug',desc:'A legendary garden champion with golden attacks.'}
+  {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:'The original'},
+  {key:'player:beetle',id:'beetle',name:'Beetle',desc:'Tough shell and sloooow.'},
+  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Quick! Sting like a Butterfly.'},
+  {key:'player:golden',id:'golden',name:'Legendary Golden Ladybug',desc:'The legend.'}
  ],
  enemy:[
   {key:'enemy:ant',id:'ant',name:'Garden Ant',desc:'Small workers that get troublesome in groups.'},
-  {key:'enemy:mosquito',id:'mosquito',name:'Mosquito',desc:'A tiny pest that likes to stay close behind you.'},
-  {key:'enemy:beetle',id:'beetle',name:'Armored Beetle',desc:'A stubborn little bug with a lot of shell.'},
-  {key:'enemy:wasp',id:'wasp',name:'Garden Wasp',desc:'Fast, bold, and happiest right in your face.'},
-  {key:'enemy:stink',id:'stink',name:'Stink Bug',desc:'Chunky, smelly, and better kept at a little distance.'},
-  {key:'enemy:spider',id:'spider',name:'Garden Spider',desc:'Eight legs, two fangs, and very little patience.'}
+  {key:'enemy:mosquito',id:'mosquito',name:'Mosquito',desc:'A tiny pest that’s easy to squish.'},
+  {key:'enemy:beetle',id:'beetle',name:'Armored Beetle',desc:'A stubborn little bug with tons of health.'},
+  {key:'enemy:wasp',id:'wasp',name:'Garden Wasp',desc:'Fast and aggressive, don’t get stung!'},
+  {key:'enemy:stink',id:'stink',name:'Stink Bug',desc:'Smells disgusting and WILL poison you.'},
+  {key:'enemy:spider',id:'spider',name:'Garden Spider',desc:'Eight legs, Two fangs, and mean.'}
  ],
  boss:[
-  {key:'enemy:hornet',id:'hornet',name:'Hornet',desc:'The garden’s first big bully. Fast enough to crowd you quickly.'},
-  {key:'enemy:stagBeetle',id:'stagBeetle',name:'Stag King',desc:'Big shell, bigger ego, and a nasty straight-line rush.'},
-  {key:'enemy:queenSpider',id:'queenSpider',name:'Venom Queen',desc:'Webs and venom turn the ground into a bad place to linger.'},
-  {key:'enemy:moleCricket',id:'moleCricket',name:'Mole Thing',desc:'Nobody is quite sure what this thing is. Cracking dirt usually means trouble.'},
-  {key:'enemy:scarab',id:'scarab',name:'Iron Scarab',desc:'A shiny walking fortress that refuses to fall over quickly.'},
-  {key:'enemy:dragonflyBoss',id:'dragonflyBoss',name:'Sky Lancer',desc:'Fast, flashy, and fond of sudden passes through the arena.'},
+  {key:'enemy:hornet',id:'hornet',name:'Hornet',desc:'The garden’s first big fight. Fast enough to crowd you quickly.'},
+  {key:'enemy:stagBeetle',id:'stagBeetle',name:'Stag King',desc:'Big shell, likes to charge at its prey.'},
+  {key:'enemy:queenSpider',id:'queenSpider',name:'Venom Queen',desc:'Webs and venom turn the ground into a bad place to be.'},
+  {key:'enemy:moleCricket',id:'moleCricket',name:'Mole Thing',desc:'Nobody is quite sure what this thing is, some sort of bug rodent creature.'},
+  {key:'enemy:scarab',id:'scarab',name:'Iron Scarab',desc:'A shiny walking fortress.'},
+  {key:'enemy:dragonflyBoss',id:'dragonflyBoss',name:'Sky Lancer',desc:'Fast, flashy, and will surprise attack you.'},
   {key:'enemy:mantisBoss',id:'mantisBoss',name:'Praying Tyrant',desc:'Tall, sharp, and able to reach farther than you might expect.'},
   {key:'enemy:centipede',id:'centipede',name:'Red Centipede',desc:'A red blur with too many feet and a very quick rush.'},
-  {key:'enemy:earwig',id:'earwig',name:'Pincher',desc:'Garden pliers with legs. The big pinch is best avoided.'},
-  {key:'enemy:cicada',id:'cicada',name:'Thunder Cicada',desc:'A noisy show-off. Things get busy when the buzzing starts.'},
-  {key:'enemy:bombardier',id:'bombardier',name:'Bombardier',desc:'A chemistry experiment with fire and gas. Standing still rarely helps.'},
-  {key:'enemy:mothBoss',id:'mothBoss',name:'Dusk Moth',desc:'Soft wings, spooky vibes, and gusts that can shove you around.'},
-  {key:'enemy:waterStrider',id:'waterStrider',name:'Pond Skater',desc:'Long-legged and quick, it skates around the arena with ease.'},
-  {key:'enemy:weevil',id:'weevil',name:'Thorn Weevil',desc:'Small face, huge attitude, and thorns that make the ground matter.'},
-  {key:'enemy:tarantula',id:'tarantula',name:'Old Webber',desc:'Old, grumpy, and fond of webs that stick around for a while.'},
+  {key:'enemy:earwig',id:'earwig',name:'Pincher',desc:'Garden pliers with legs, watch out for the pinch!'},
+  {key:'enemy:cicada',id:'cicada',name:'Thunder Cicada',desc:'Loud, annoying, and very shocking.'},
+  {key:'enemy:bombardier',id:'bombardier',name:'Bombardier',desc:'A bizarre fire concoction comes out of his rear.'},
+  {key:'enemy:mothBoss',id:'mothBoss',name:'Dusk Moth',desc:'Fluttering wings, and gusts that can shove you around.'},
+  {key:'enemy:waterStrider',id:'waterStrider',name:'Pond Skater',desc:'Long-legged and quick, it skates around the garden with ease.'},
+  {key:'enemy:weevil',id:'weevil',name:'Thorn Weevil',desc:'Ugly and pointy, and he takes it out on you.'},
+  {key:'enemy:tarantula',id:'tarantula',name:'Old Webber',desc:'Old, grumpy, and leaves lasting webs.'},
   {key:'enemy:rootBorer',id:'rootBorer',name:'Root Borer',desc:'Slow, heavy, and much meaner than it first looks.'},
-  {key:'enemy:sporeBeetle',id:'sporeBeetle',name:'Sporeback',desc:'A beetle in rough shape. Its poison is not a good place to linger.'},
-  {key:'enemy:gardenHeart',id:'gardenHeart',name:'The Spore Behemoth',desc:'The garden’s biggest problem. Huge, fungal, and dangerous from almost every angle.'}
+  {key:'enemy:sporeBeetle',id:'sporeBeetle',name:'Sporeback',desc:'A bug in rough shape… it looks like it used to be a ladybug.'},
+  {key:'enemy:gardenHeart',id:'gardenHeart',name:'The Spore Behemoth',desc:'An evil living fungus that has cursed the garden.'}
  ]
 };
 let gardenBookTab='playable';
@@ -5428,7 +5428,7 @@ function bossTick(e,dt){
  if(!e._g163Init){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
-   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?5625:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.82: Gold bosses keep progression; BIG BUG phase 2 is 5,625 HP (+25%)
+   e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?5625:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.83: Gold bosses keep progression; BIG BUG phase 2 is 5,625 HP (+25%)
    // v19.0.30 — Wave 50's ??? is deliberately 50 HP for finale testing.
    // This must live here, after Gold boss initialization, because bossTick is the code
    // that owns/overwrites Gold boss HP on its first frame. BIG BIG finale keeps
@@ -5471,7 +5471,7 @@ function bossTick(e,dt){
 
  const tier=e._goldTier||1,aim=Math.atan2(p.y-e.y,p.x-e.x),dam=13+tier*2.2;
  e._goldCycle=(e._goldCycle||0)+1;
- const phaseCount=(tier>=10&&e.goldPhase===2)?10:tier>=9?9:tier>=7?8:tier>=5?7:tier>=3?6:5; // v19.0.82 — BIG BUG alone gains a tenth unique attack
+ const phaseCount=(tier>=10&&e.goldPhase===2)?10:tier>=9?9:tier>=7?8:tier>=5?7:tier>=3?6:5; // v19.0.83 — BIG BUG alone gains a tenth unique attack
  e._phase=(e._phase+1)%phaseCount;
 
  if(e._phase===0){
@@ -5510,7 +5510,7 @@ function bossTick(e,dt){
    if(tier>=10){const a=Math.atan2(p.y+(p.motionY||0)*.34*(p.motionScale125||1)-e.y,p.x+(p.motionX||0)*.34*(p.motionScale125||1)-e.x);for(const o of [-.11,0,.11])fire(e,a+o,430,dam*1.05,5)}
    e._bc=tier>=10?.24:.42;
  }else{
-   // v19.0.82 — BIG BUG unique attack: GOLDEN CAGE. Four inward shard walls
+   // v19.0.83 — BIG BUG unique attack: GOLDEN CAGE. Four inward shard walls
    // close around the player's current position, with one rotating lane left open to dodge through.
    // Uses the normal lightweight Gold projectile objects: no persistent hazards or extra damage scaling.
    const cageSp=430,gap=Math.abs(e._goldCycle||0)%5|0,step=42,edge=24;
