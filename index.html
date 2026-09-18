@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.51 GOLD FINALE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.52 GOLD FINALE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1274,7 +1274,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 #bigBigFallingName{position:fixed;z-index:10000;pointer-events:none;font-weight:1000;font-size:15px;letter-spacing:1px;color:#ffe15b;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e;transform:translate(-50%,-50%);animation:bigBigNameFall 1.45s cubic-bezier(.35,.02,.8,.45) forwards}
 @keyframes bigBigNameFall{0%{opacity:1;transform:translate(-50%,-50%) rotate(0deg)}18%{transform:translate(calc(-50% + 9px),calc(-50% - 3px)) rotate(8deg)}36%{transform:translate(calc(-50% - 8px),calc(-50% + 5px)) rotate(-11deg)}100%{opacity:.05;transform:translate(calc(-50% + 34px),calc(100vh + 80px)) rotate(145deg)}}
 
-/* v19.0.51 — dedicated Gold victory finale; replaces the normal game-over square after BIG BIG. */
+/* v19.0.52 — dedicated Gold victory finale; replaces the normal game-over square after BIG BIG. */
 #goldFinaleOutro{position:fixed;inset:0;z-index:1400;display:none;overflow:hidden;pointer-events:none;background:transparent;color:white}
 #goldFinaleOutro.play{display:block}
 #goldFinaleOutro.black{background:#000}
@@ -1338,8 +1338,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.51</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.51</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.52</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.52</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1887,7 +1887,7 @@ function makeArmyHelper(i=0){
 }
 let game=null, last=0, raf=0, audio=null;
 
-// v19.0.51 — BIG BIG HUD fade presentation.
+// v19.0.52 — BIG BIG HUD fade presentation.
 // Intentionally presentation-only: no combat pause, no boss movement changes, no damage/game-over guards.
 const BB_HUD_FADE_TARGETS={
  health:()=>document.querySelector('#hud .hudHealth'),
@@ -2633,7 +2633,7 @@ function damageEnemy(e,d,source='player'){
    bb22Trace('SAME-BOSS PHASE 2 BIG BIG hp='+e.hp+'/'+e.max+' enemies='+g.enemies.length+' wave='+g.wave);
    return;
  }
- // v19.0.51 — BIG BIG dies in place with a self-contained alien death sequence.
+ // v19.0.52 — BIG BIG dies in place with a self-contained alien death sequence.
  // No wave transition or replacement entity: combat freezes immediately, the same boss remains
  // drawable for the death animation, then the existing Gold victory flow runs.
  if(game&&game.mode==='gold'&&game.wave===50&&e.goldPhase===2&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp&&!e.goldDying){
@@ -3731,9 +3731,7 @@ function startGoldFinaleOutro(){
 
  endingTimers.push(setTimeout(()=>{
   if(!o.classList.contains('play'))return;
-  goldFinaleCreditsStop();
-  o.classList.remove('play','black','reveal','thanks');
-  enterHomeCleanly();
+  returnHomeAfterEnding();
  },14450));
 }
 
@@ -4922,13 +4920,59 @@ document.addEventListener('change',e=>{
 // v18.0.85 — one authoritative Home transition. A death can leave a stale RAF/canvas
 // or short-lived gameplay oscillator behind; rebuild the Home canvas after it is visible and
 // silence old voices before restarting the normal title soundtrack.
+function cleanupGoldFinaleForHome(){
+ // v19.0.52 — authoritative finale cleanup. The Gold outro must never be able to
+ // leave the Home screen partially hidden after its timers finish.
+ clearEndingTimers();
+ goldFinaleCreditsStop();
+ const go=$('goldFinaleOutro');
+ if(go){
+  go.classList.remove('play','black','reveal','thanks');
+  go.removeAttribute('style');
+ }
+ const ending=$('ending');
+ if(ending){
+  ending.dataset.phase='';
+  ending.classList.add('hidden');
+ }
+ $('continuePrompt')?.classList.remove('show');
+ const eb=$('endingBackdrop');if(eb)eb.style.opacity='1';
+ const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}
+ const cr=$('creditsRoll');if(cr)cr.style.visibility='';
+ document.body.classList.remove('g159','gold157');
+}
+function restoreCoreHomePresentation(){
+ const home=$('home');if(!home)return;
+ home.classList.remove('hidden');
+ // Only clear transient inline visibility/opacity. Keep intentional layout/display rules.
+ const core=[
+  home.querySelector('.logo'),
+  home.querySelector('.bugHero'),
+  home.querySelector('[data-action="play"]'),
+  home.querySelector('.homeMenuRow'),
+  home.querySelector('.homeBestFancy'),
+  home.querySelector('.homeGoldBalance'),
+  $('gardenBookBtn'),
+  $('globalSettingsBtn'),
+  $('titleGarden')
+ ];
+ for(const el of core){
+  if(!el)continue;
+  el.style.opacity='';
+  el.style.visibility='';
+  el.style.pointerEvents='';
+ }
+}
 function enterHomeCleanly(){
  resetBigBigHudFades();
-  document.body.classList.remove('g159');
-  if(game&&game.mode==='gold'){game.mode='home';game.over=true;}
+ cleanupGoldFinaleForHome();
+ if(game&&game.mode==='gold'){game.mode='home';game.over=true;}
  bossMusicStop();shopMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);
- showGameUI(false);stopTitleGardenLoop();screen('home');$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
+ showGameUI(false);stopTitleGardenLoop();screen('home');restoreCoreHomePresentation();
+ $('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
  requestAnimationFrame(()=>{
+  // Re-assert after layout so a stale ending timer/class cannot win the same frame.
+  cleanupGoldFinaleForHome();screen('home');restoreCoreHomePresentation();
   resizeTitleGarden();
   const w=titleGarden?.getBoundingClientRect().width||innerWidth;
   resetTitleScene(performance.now(),w);startTitleGardenLoop();
