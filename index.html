@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.128 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.130 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1408,7 +1408,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="tag homeTextLayoutKeeper" aria-hidden="true">Survive. Upgrade. Get BIGGER.</div>
   <div class="muted homeTextLayoutKeeper" aria-hidden="true" style="margin:-6px 0 10px;font-weight:750">Tap or drag to move — Attacks are automatic</div>
   <button class="btn green homeLowerLift" data-action="play">PLAY</button>
-  <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small></button>
+  <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 25 TO UNLOCK</small></button>
   <button id="goldWavesBtn" class="btn dark homeLowerLift goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> UPGRADES</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
@@ -1419,8 +1419,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.128</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.128</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.130</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.130</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1531,7 +1531,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">Standing still fires faster in Story and Mosquito Mode. In Story Mode, get close to an enemy to hit harder.</div></div>
    <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Learn its attacks and keep moving.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Upgrades</b><div class="muted">Spend Leaves on permanent upgrades between runs.</div></div>
-   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 20 to unlock. Survive the swarm and earn Leaves.</div></div>
+   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 25 to unlock. Survive the swarm and earn Leaves.</div></div>
   </div>
   <button class="btn dark helpBack" data-action="settingsFromHelp">BACK TO SETTINGS</button>
  </div>
@@ -1730,12 +1730,11 @@ if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
 // v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
 // v17.9.31 — Regular spider face/fangs now project forward from the head.
-// v17.9.30 — Endless button now explains the Wave 20 unlock requirement.
+// v19.0.129 — Mosquito Mode now unlocks after clearing Wave 25.
 // v17.9.30 performance-only pass: preserve gameplay, timings, audio, and graphics while reducing repeated late-wave work.
-// v17.9.30 — Mosquito Mode permanently unlocks after clearing Wave 20.
-// A best wave above 20 proves Wave 20 was cleared in older saves, so migrate those automatically.
-save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=21;
-function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;const html=unlocked?'MOSQUITO MODE':' MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 20 TO UNLOCK</small>';if(b.innerHTML!==html)b.innerHTML=html}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
+// Wave 25 must be cleared. A saved best wave of 26+ proves that clear happened in an older run.
+save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=26;
+function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;const html=unlocked?'MOSQUITO MODE':' MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 25 TO UNLOCK</small>';if(b.innerHTML!==html)b.innerHTML=html}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
 function goldWavesUnlocked(){return !!(save.mainGameBeaten&&save.legendaryGolden?.owned)}
 function refreshGoldWavesHome(){
  const b=$('goldWavesBtn'),m=$('endlessBtn');if(!b)return;
@@ -1778,6 +1777,8 @@ function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.crea
 // v19.0.126 — purple corruption visibility fix: dust begins after the Wave 25 reveal, is easier to see, and still ramps gradually toward Wave 100.
 // v19.0.127 — speed icon cleanup: moved the three black speed lines farther left so they read clearly and do not crowd the sword.
 // v19.0.128 — purple dust polish: made the corruption brighter and more powdery/dust-like in both Garden Updates and story backgrounds.
+// v19.0.129 — replaced Iron Scarab everywhere in Story Mode with BIG BLOOD SUCKER, added dedicated boss art/attack behavior, and moved Mosquito Mode unlock to clearing Wave 25.
+// v19.0.130 — reverted Dragonfly Reflexes / Quicker Reflexes sword-wing artwork; attack speed now uses the existing lightning-bolt symbol again.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
@@ -1977,7 +1978,7 @@ const GARDEN_STORY={
 10:{title:'The “King”',text:'That one was tough but you still crushed him.'},
 15:{title:'Sticky Situation',text:'She almost trapped you in her webs but you escaped.'},
 20:{title:'What is that thing?',text:'You pushed the Mole Thing back in its hole.'},
-25:{title:'The Shield',text:'After defeating the Iron Scarab you noticed some purple dust on the ground.'},
+25:{title:'Big Blood Sucker',text:'After defeating the Big Blood Sucker you noticed some purple dust on the ground.'},
 30:{title:'Attack from the sky',text:'The Sky Lancer almost surprise attacked you but you dodged last second.'},
 35:{title:'The Tyrant’s Ground',text:'Almost took your head right off, after defeating you noticed the garden has more purple dust on the ground.'},
 40:{title:'Too many legs',text:'Way too many legs!'},
@@ -2400,7 +2401,7 @@ function buildShop(){
  const rows=[
    ['<span class="bbIcon bbHeartIcon shopDrawn"></span>','Harder Shell',`+10% Base Health — ${s.hp}/10`,permanentUpgradeLeafCost('hp',s.hp),'hp'],
    ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Sharper Bite',`+10% Base Damage — ${s.dmg}/10`,permanentUpgradeLeafCost('dmg',s.dmg),'dmg'],
-   ['<svg class="bbSwordSvg shopDrawn" viewBox="0 0 48 48" aria-hidden="true"><path d="M18.9 22.6 C10.8 18.2 6.1 20 5.2 26.7 C10.6 25.8 15.1 26.8 19.8 29.9 Z" fill="#eef4df" stroke="#29322d" stroke-width="1.25" stroke-linejoin="round"/><path d="M21.1 18.8 C13.8 12 8.8 12 8.3 18.8 C13.3 18.7 17.4 19.9 22 23.1 Z" fill="#dfe8d0" stroke="#29322d" stroke-width="1.15" stroke-linejoin="round"/><path d="M17.4 24.7 C12.8 23.3 9.9 23.3 7.3 24.6" fill="none" stroke="#9eaf9b" stroke-width="1" stroke-linecap="round"/><path d="M19.3 20.8 C15.5 18.4 12.6 17.8 10.3 17.9" fill="none" stroke="#9eaf9b" stroke-width="1" stroke-linecap="round"/><path d="M0.7 16.9 Q3.4 15.6 6.6 16.4" fill="none" stroke="#1f221d" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/><path d="M0.0 22.1 Q3.9 21.2 7.5 21.9" fill="none" stroke="#1f221d" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/><path d="M0.9 27.4 Q4.0 28.8 7.2 27.9" fill="none" stroke="#1f221d" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/><path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>','Quicker Reflexes',`+10% Attack Speed — ${s.magnet}/10`,permanentUpgradeLeafCost('magnet',s.magnet),'magnet'],
+   ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% Attack Speed — ${s.magnet}/10`,permanentUpgradeLeafCost('magnet',s.magnet),'magnet'],
    ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% Pickup Range & Leaves — ${s.coins}/10`,permanentUpgradeLeafCost('coins',s.coins),'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${save.goldLeaves||0}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
@@ -2523,12 +2524,12 @@ const BOOST_COSTS=[100,300,500,700,900,1200,1600,2200,3000,4500,6500,9000,12500,
 function boostCost(w=game?.wave||1){return BOOST_COSTS[Math.min(BOOST_COSTS.length-1,arenaNumber(w)-1)]}
 function activeEnemyCap(w=game?.wave||1){return w<30?22:w<50?24:w<70?26:w<90?28:30}
 const BOSS_ROSTER={
- 5:['hornet'],10:['stagBeetle'],15:['queenSpider'],20:['moleCricket'],25:['scarab'],
+ 5:['hornet'],10:['stagBeetle'],15:['queenSpider'],20:['moleCricket'],25:['bigBloodSucker'],
  30:['dragonflyBoss'],35:['mantisBoss'],40:['centipede'],45:['earwig'],50:['cicada'],
  55:['bombardier'],60:['mothBoss'],65:['waterStrider'],70:['weevil'],75:['tarantula'],
- 80:['rootBorer'],85:['sporeBeetle'],90:['hornet','mantisBoss'],95:['queenSpider','scarab'],100:['gardenHeart']
+ 80:['rootBorer'],85:['sporeBeetle'],90:['hornet','mantisBoss'],95:['queenSpider','bigBloodSucker'],100:['gardenHeart']
 };
-const BOSS_NAMES={hornet:'HORNET',stagBeetle:'STAG KING',queenSpider:'VENOM QUEEN',moleCricket:'MOLE THING',scarab:'IRON SCARAB',dragonflyBoss:'SKY LANCER',mantisBoss:'PRAYING TYRANT',centipede:'RED CENTIPEDE',earwig:'PINCHER',cicada:'THUNDER CICADA',bombardier:'BOMBARDIER',mothBoss:'DUSK MOTH',waterStrider:'POND SKATER',weevil:'THORN WEEVIL',tarantula:'OLD WEBBER',rootBorer:'ROOT BORER',sporeBeetle:'SPOREBACK',gardenHeart:'THE SPORE BEHEMOTH'};
+const BOSS_NAMES={hornet:'HORNET',stagBeetle:'STAG KING',queenSpider:'VENOM QUEEN',moleCricket:'MOLE THING',bigBloodSucker:'BIG BLOOD SUCKER',dragonflyBoss:'SKY LANCER',mantisBoss:'PRAYING TYRANT',centipede:'RED CENTIPEDE',earwig:'PINCHER',cicada:'THUNDER CICADA',bombardier:'BOMBARDIER',mothBoss:'DUSK MOTH',waterStrider:'POND SKATER',weevil:'THORN WEEVIL',tarantula:'OLD WEBBER',rootBorer:'ROOT BORER',sporeBeetle:'SPOREBACK',gardenHeart:'THE SPORE BEHEMOTH'};
 function bossKindsFor(w=game?.wave||5){return BOSS_ROSTER[w]||['sporeBeetle']}
 function bossDisplayName(k,w=game?.wave||5){const base=BOSS_NAMES[k]||'BIG BUG';return (w===90||w===95)?'SPORED '+base:base}
 function bossKindFor(w=game?.wave||5){return bossKindsFor(w)[0]}
@@ -2703,10 +2704,10 @@ function completeWave(){
    setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return
  }
  const bossClear=g.wave%5===0;
- if(g.wave>=20&&!save.endlessUnlocked){
+ if(g.wave>=25&&!save.endlessUnlocked){
    save.endlessUnlocked=true;
    persist();
-   if(g.wave===20)setTimeout(()=>flashBanner('MOSQUITO MODE UNLOCKED!',1.8),1250);
+   if(g.wave===25)setTimeout(()=>flashBanner('MOSQUITO MODE UNLOCKED!',1.8),1250);
  }
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
@@ -2761,11 +2762,11 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    const duo=bossKindsFor(w).length>1;
    // v18.0.81 — boss HP is progression-based only; player damage/attack-speed upgrades no longer increase boss max HP.
    baseHp=(80+w*15)*24*1.12*(duo?.62:1);
-   sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
+   sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='bigBloodSucker'?45:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
-   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.68],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
+   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,1.28],dragonflyBoss:[.82,1.35],centipede:[1.0,1.68],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart')baseHp*=1.25;
@@ -2853,7 +2854,7 @@ function damageEnemy(e,d,source='player'){
  e.hp-=d;e.hit=.10;
  // floating damage numbers: readable, quick, and slightly scattered so rapid hits don't overlap
  const damageTextCap=lowStoryFx()?8:(game.enemies.length>28?12:(game.enemies.length>18?18:24));if(source!=='helperArmy'&&game.mode!=='endless'&&save.settings.damageNumbers!==false&&countFxFlag('damageText',damageTextCap)<damageTextCap)game.fx.push({x:e.x+(Math.random()-.5)*10,y:e.y-e.r-7,vx:(Math.random()-.5)*12,vy:heavy?-42:-30,life:heavy?.88:.72,maxLife:heavy?.88:.72,r:0,damageText:shown,heavy,finishing,source});
- let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(e.kind==='beetle'){e.knockX=0;e.knockY=0}else if(!(e.boss&&e.kind==='scarab')){e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
+ let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(e.kind==='beetle'){e.knockX=0;e.knockY=0}else{e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
  if(game.mode==='endless'&&e.kind==='mosquito')burst(e.x,e.y,1,.16,'#d7d1b7');else burst(e.x,e.y,game.enemies.length>28?2:3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
    // v18.0.65 — the Spore Behemoth dies on the actual gameplay field. Keep its body
@@ -3222,6 +3223,11 @@ function enemyMove(e,dt){
        else{for(let a of [-.42,.42])shoot(aim+a,235);}
      }
    }
+   else if(e.kind==='bigBloodSucker'){
+     e.shotCd=2.35;
+     for(const a of [-.22,0,.22])shoot(aim+a,255,8+game.wave*.18,false,5.2);
+     flashBanner('BLOOD BURST!',.32)
+   }
    else if(e.kind==='cicada'){e.shotCd=2.8;bossRing(e,14,145,8+game.wave*.16,0,'sonic');flashBanner('THUNDER CHORUS!',.38)}
    else if(e.kind==='bombardier'){
      e.shotCd=2.15;let back=aim+Math.PI;
@@ -3452,7 +3458,7 @@ function update(dt,now){
    if(e.poison&&playerCanTargetEnemy(e))damageEnemy(e,e.poison*dt*.8);
    enemyMove(e,dt);
    if(e.kind==='moleCricket'&&e.state==='burrowWait')continue;
-   if(e.boss&&e.kind==='scarab'){e.knockX=0;e.knockY=0}else{e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=knockDecay;e.knockY*=knockDecay;}
+   e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=knockDecay;e.knockY*=knockDecay;
    const cdx=p.x-e.x,cdy=p.y-e.y,cr=e.r+p.r;
    if(cdx*cdx+cdy*cdy<cr*cr){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns&&playerCanTargetEnemy(e))damageEnemy(e,e.damage*dt*p.thorns)}
  }
@@ -3542,11 +3548,10 @@ function upgradeIconSvg(id){
 }
 function upgradeCardIconMarkup(u){
  const sword='<svg class="bbSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>';
- const wingedSword='<svg class="bbSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M18.9 22.6 C10.8 18.2 6.1 20 5.2 26.7 C10.6 25.8 15.1 26.8 19.8 29.9 Z" fill="#eef4df" stroke="#29322d" stroke-width="1.25" stroke-linejoin="round"/><path d="M21.1 18.8 C13.8 12 8.8 12 8.3 18.8 C13.3 18.7 17.4 19.9 22 23.1 Z" fill="#dfe8d0" stroke="#29322d" stroke-width="1.15" stroke-linejoin="round"/><path d="M17.4 24.7 C12.8 23.3 9.9 23.3 7.3 24.6" fill="none" stroke="#9eaf9b" stroke-width="1" stroke-linecap="round"/><path d="M19.3 20.8 C15.5 18.4 12.6 17.8 10.3 17.9" fill="none" stroke="#9eaf9b" stroke-width="1" stroke-linecap="round"/><path d="M0.7 16.9 Q3.4 15.6 6.6 16.4" fill="none" stroke="#1f221d" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/><path d="M0.0 22.1 Q3.9 21.2 7.5 21.9" fill="none" stroke="#1f221d" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/><path d="M0.9 27.4 Q4.0 28.8 7.2 27.9" fill="none" stroke="#1f221d" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/><path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg>';
  if(!u)return '';
  if(u.id==='goldMove')return '';
  if(u.id==='clone'||u.id==='helperArmy'||u.id==='crit')return '';
- if(u.id==='speed')return wingedSword;
+ if(u.id==='speed')return '<span class="bbIcon bbBoltIcon"></span>';
  if(['sharp','triple','endlessTriple'].includes(u.id))return sword;
  if(['heart','endlessHealth'].includes(u.id))return '<span class="bbIcon bbHeartIcon"></span>';
  if(['magnet','greed','gold'].includes(u.id))return '<span class="leafCurrencyIcon bbLeafIcon"></span>';
@@ -4247,7 +4252,7 @@ function drawMedievalEnemyOverlay(ctx,e){
    for(let y=-7;y<=8;y+=4){ctx.beginPath();ctx.moveTo(-5,y);ctx.quadraticCurveTo(0,y+1.5,5,y);ctx.stroke()}
    ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.2;
    ctx.beginPath();ctx.moveTo(-5,-10);ctx.quadraticCurveTo(0,-13,5,-10);ctx.lineTo(4,-7);ctx.lineTo(-4,-7);ctx.closePath();ctx.fill();ctx.stroke();
- }else if(e.kind==='stink'||e.kind==='scarab'){
+ }else if(e.kind==='stink'){
    // shell rim + small visor
    ctx.strokeStyle=gold;ctx.lineWidth=1.4;ctx.beginPath();ctx.ellipse(0,2,8.5,10.5,0,0,6.283);ctx.stroke();
    ctx.fillStyle=metal;ctx.strokeStyle=dark;ctx.lineWidth=1.25;
@@ -4340,6 +4345,31 @@ function drawEnemy(e){
  else{X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5}
  if(e.kind==='mosquito'){
   drawMosquitoBody(step,step2);
+ }else if(e.kind==='bigBloodSucker'){
+  // BIG BLOOD SUCKER: an oversized mosquito boss with a swollen blood-red abdomen.
+  const rr=r*1.02,wingFlap=Math.sin(t*18)*.08;
+  X.save();X.globalAlpha=.42;X.fillStyle='#dbe8e4';X.strokeStyle='#5d6b66';X.lineWidth=1.5;
+  for(const side of [-1,1]){
+    X.beginPath();X.ellipse(side*rr*.72,-rr*.16,rr*.86,rr*.28,side*(.34+wingFlap),0,6.28);X.fill();X.stroke();
+    X.beginPath();X.ellipse(side*rr*.66,rr*.22,rr*.72,rr*.23,-side*(.28-wingFlap),0,6.28);X.fill();X.stroke();
+  }
+  X.restore();
+  for(const side of [-1,1]){
+    line(side*rr*.20,-rr*.05,side*rr*.92,rr*.34+step*.15,3,'#2b2d28');
+    line(side*rr*.22,rr*.16,side*rr*1.04,rr*.68-step2*.13,3,'#2b2d28');
+    line(side*rr*.18,rr*.36,side*rr*.78,rr*1.00+step*.12,2.6,'#2b2d28');
+  }
+  // Thorax and long, visibly blood-filled abdomen.
+  X.fillStyle='#353a34';X.beginPath();X.ellipse(0,-rr*.02,rr*.48,rr*.55,0,0,6.28);X.fill();X.strokeStyle='#20231f';X.lineWidth=2.2;X.stroke();
+  X.fillStyle='#8f2727';X.beginPath();X.ellipse(0,rr*.68,rr*.43,rr*.82,0,0,6.28);X.fill();X.strokeStyle='#4d1718';X.lineWidth=2.2;X.stroke();
+  X.fillStyle='#bc3c38';X.beginPath();X.ellipse(-rr*.10,rr*.47,rr*.15,rr*.40,-.18,0,6.28);X.fill();
+  for(let j=0;j<3;j++)line(-rr*.34,rr*(.34+j*.34),rr*.34,rr*(.34+j*.34),1.5,'#5e1c1d');
+  // Large head, red eyes, antennae, and an unmistakable needle-like proboscis.
+  X.fillStyle='#444a42';X.beginPath();X.arc(0,-rr*.66,rr*.42,0,6.28);X.fill();X.strokeStyle='#252923';X.lineWidth=2;X.stroke();
+  X.fillStyle='#d6403b';for(const side of [-1,1]){X.beginPath();X.arc(side*rr*.20,-rr*.72,rr*.13,0,6.28);X.fill();X.fillStyle='#ff9a82';X.beginPath();X.arc(side*rr*.23,-rr*.76,rr*.045,0,6.28);X.fill();X.fillStyle='#d6403b'}
+  line(-rr*.13,-rr*.91,-rr*.40,-rr*1.30,1.6,'#2b2d28');line(rr*.13,-rr*.91,rr*.40,-rr*1.30,1.6,'#2b2d28');
+  X.strokeStyle='#2a2c27';X.lineWidth=4;X.lineCap='round';X.beginPath();X.moveTo(0,-rr*.82);X.lineTo(0,-rr*1.72);X.stroke();
+  X.strokeStyle='#7e2927';X.lineWidth=1.2;X.beginPath();X.moveTo(0,-rr*1.18);X.lineTo(0,-rr*1.66);X.stroke();X.lineCap='butt';
  }else if(e.kind==='ant'){
   for(let side of [-1,1]){line(side*3,-2,side*13,-8+step,2);line(side*4,3,side*14,5-step,2);line(side*2,8,side*12,14+step2,2)}
   X.fillStyle='#6d281f';X.beginPath();X.ellipse(0,8,r*.66,r*.72,0,0,6.28);X.fill();X.fillStyle='#9b3328';X.beginPath();X.arc(0,-3,r*.5,0,6.28);X.fill();X.fillStyle='#722018';X.beginPath();X.arc(0,-r*.85,r*.46,0,6.28);X.fill();line(-3,-r*1.15,-8,-r*1.7,1.5);line(3,-r*1.15,8,-r*1.7,1.5);eye(-r*.18,-r*.92,2);eye(r*.18,-r*.92,2);
@@ -4767,9 +4797,9 @@ function drawEnemy(e){
   }
   // Small royal shell marks add identity without extra animation cost.
   X.fillStyle='#d0a84e';for(const q of [[-.34,.18],[.34,.18],[-.26,.48],[.26,.48]]){X.beginPath();X.arc(q[0]*r,q[1]*r,Math.max(2,r*.07),0,6.28);X.fill()}
- }else if(e.kind==='stink'||e.kind==='scarab'){
+ }else if(e.kind==='stink'){
   for(let side of [-1,1]){line(side*6,-4,side*(r+7),-10+step,2);line(side*7,3,side*(r+9),4-step,2);line(side*5,10,side*(r+7),17+step2,2)}
-  X.fillStyle=e.kind==='scarab'?'#71898d':'#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
+  X.fillStyle='#728f3f';X.beginPath();X.moveTo(0,-r);X.quadraticCurveTo(r*.95,-r*.45,r*.8,r*.55);X.quadraticCurveTo(0,r*1.1,-r*.8,r*.55);X.quadraticCurveTo(-r*.95,-r*.45,0,-r);X.fill();X.strokeStyle='#42572b';X.lineWidth=2;X.stroke();line(0,-r*.7,0,r*.6,1.4,'#a6b96b');eye(-r*.22,-r*.55,2);eye(r*.22,-r*.55,2);X.fillStyle='#273018';X.beginPath();X.moveTo(-4,-r*.25);X.lineTo(0,-r*.05);X.lineTo(4,-r*.25);X.fill();line(-3,-r*.82,-8,-r*1.35,1.4);line(3,-r*.82,8,-r*1.35,1.4);
  }else{
   for(let side of [-1,1]){line(side*6,-5,side*(r+7),-10+step,2.3);line(side*7,2,side*(r+9),4-step,2.3);line(side*5,10,side*(r+7),17+step2,2.3)}
   X.fillStyle='#39473d';X.beginPath();X.ellipse(0,5,r*.82,r*1.02,0,0,6.28);X.fill();X.strokeStyle='#65786b';X.lineWidth=2;X.beginPath();X.moveTo(0,-r*.8);X.lineTo(0,r*.92);X.stroke();X.fillStyle='#4b5e50';X.beginPath();X.arc(0,-r*.65,r*.58,0,6.28);X.fill();eye(-r*.2,-r*.74,2.2);eye(r*.2,-r*.74,2.2);X.fillStyle='#1c211d';X.beginPath();X.moveTo(-4,-r*.98);X.lineTo(-9,-r*1.35);X.lineTo(-2,-r*1.14);X.moveTo(4,-r*.98);X.lineTo(9,-r*1.35);X.lineTo(2,-r*1.14);X.fill();
@@ -5207,7 +5237,7 @@ const GARDEN_BOOK={
   {key:'enemy:stagBeetle',id:'stagBeetle',name:'Stag King',desc:'Big shell, likes to charge at its prey.'},
   {key:'enemy:queenSpider',id:'queenSpider',name:'Venom Queen',desc:'Webs and venom turn the ground into a bad place to be.'},
   {key:'enemy:moleCricket',id:'moleCricket',name:'Mole Thing',desc:'Nobody is quite sure what this thing is, some sort of bug rodent creature.'},
-  {key:'enemy:scarab',id:'scarab',name:'Iron Scarab',desc:'A shiny walking fortress.'},
+  {key:'enemy:bigBloodSucker',id:'bigBloodSucker',name:'Big Blood Sucker',desc:'A giant mosquito with a huge appetite. Fast, aggressive, and hard to ignore.'},
   {key:'enemy:dragonflyBoss',id:'dragonflyBoss',name:'Sky Lancer',desc:'Fast, flashy, and will surprise attack you.'},
   {key:'enemy:mantisBoss',id:'mantisBoss',name:'Praying Tyrant',desc:'Tall, sharp, and able to reach farther than you might expect.'},
   {key:'enemy:centipede',id:'centipede',name:'Red Centipede',desc:'A red blur with too many feet and a very quick rush.'},
@@ -5232,7 +5262,7 @@ function gardenDiscover(key){
  save.discovered.push(key);persist();
 }
 function syncGardenDiscoveryFromProgress(){
- save.discovered=Array.isArray(save.discovered)?save.discovered:[];
+ save.discovered=Array.isArray(save.discovered)?save.discovered.filter(k=>k!=='enemy:scarab'):[];
  const add=k=>{if(!save.discovered.includes(k))save.discovered.push(k)};
  add('player:ladybug');
  for(const id of (save.unlocked||[]))if(BUGS[id])add('player:'+id);
@@ -5248,7 +5278,7 @@ function syncGardenDiscoveryFromProgress(){
  persist();
 }
 function gardenBookBossRadius(k){
- return k==='gardenHeart'?58:k==='scarab'?46:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;
+ return k==='gardenHeart'?58:k==='bigBloodSucker'?45:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;
 }
 function renderGardenPlayable(canvas,id){
  const q=canvas.getContext('2d');q.clearRect(0,0,canvas.width,canvas.height);
