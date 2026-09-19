@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.131 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.132 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1443,8 +1443,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.131</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.131</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.132</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.132</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -5484,6 +5484,17 @@ addEventListener('keydown',e=>{
  const k=(e.key||'').toLowerCase();
  if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&game&&!game.paused&&!game.over){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
+ // v19.0.132 — while the upgrade picker is visibly open in WASD mode, 1/2/3
+ // activate the matching card from left-to-right/top-to-bottom. Repeats are ignored
+ // so holding a number cannot accidentally choose again on a multi-pick screen.
+ if(!e.repeat&&(k==='1'||k==='2'||k==='3')){
+   const up=$('upgrade');
+   if(up&&!up.classList.contains('hidden')&&up.style.display!=='none'){
+     const cards=[...$('choices').children],idx=(k.charCodeAt(0)-49);
+     const card=cards[idx];
+     if(card&&typeof card.onclick==='function'){e.preventDefault();card.onclick();return}
+   }
+ }
  if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}
 },{passive:false});
 addEventListener('keyup',e=>{const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=false;if(pcUsingWASD()&&game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
