@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.130 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.131 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -807,11 +807,35 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 #bugs .card b{font-size:22px!important;line-height:1.12!important}
 #bugs .card p,#bugs .card .muted{font-size:15.5px!important;line-height:1.3!important}
 #bugs .card .btn{font-size:17px!important;padding:11px 15px!important}
+
+/* v19.0.131 — Bug Parade desktop cleanup */
+#bugs .panel{width:min(760px,96vw)!important}
+#bugs .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:stretch!important;gap:12px!important}
+#bugs .card{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;min-height:292px!important;padding:15px 15px 13px!important;overflow:hidden!important}
+#bugs .card .bugPreview{height:74px!important;min-height:74px!important;margin-bottom:8px!important;overflow:visible!important}
+#bugs .card .bugPreview canvas{width:74px!important;height:74px!important}
+#bugs .card b{font-size:21px!important;line-height:1.02!important;margin-bottom:4px!important}
+#bugs .card p,#bugs .card .muted{font-size:15px!important;line-height:1.22!important;margin:4px 0 0!important}
+#bugs .card .btn{margin-top:auto!important}
+#bugs .bugUnlockChoices,#bugs .legendaryPrice{margin-top:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;gap:7px!important}
+#bugs .bugUnlockChoices .btn,#bugs .legendaryPrice .btn{width:100%!important;min-width:0!important;margin:0!important;padding:10px 8px!important;font-size:15px!important}
+#bugs .bugUnlockChoices>span,#bugs .legendaryPrice>span{font-size:11px!important;line-height:1!important;font-weight:1000!important;opacity:.7!important;align-self:center!important}
+#bugs .legendaryBugCard{min-height:292px!important}
+#bugs .legendaryKicker{font-size:11px!important;letter-spacing:1.2px!important;margin-bottom:4px!important}
+#bugs .legendaryBugCard .bugPreview{height:88px!important;min-height:88px!important}
+#bugs .legendaryBugCard .bugPreview canvas{width:88px!important;height:88px!important}
+#bugs .legendaryBugCard b{font-size:16px!important;line-height:1.03!important;max-width:190px!important}
+#bugs .legendaryBugCard p{font-size:14px!important;margin-top:5px!important}
+#bugs .legendarySelect,#bugs .legendaryGoldBuy,#bugs .legendaryLeafBuy{font-size:15px!important}
+
 @media(max-width:430px){
  #bugs .panel h2{font-size:30px!important}
  #bugs .panel>p{font-size:17px!important}
+ #bugs .grid{grid-template-columns:1fr!important}
+ #bugs .card{min-height:0!important;padding:13px 14px 12px!important}
  #bugs .card b{font-size:21px!important}
  #bugs .card p,#bugs .card .muted{font-size:15px!important}
+ #bugs .legendaryBugCard b{font-size:20px!important;max-width:none!important}
 }
 
 
@@ -1411,7 +1435,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <button id="endlessBtn" class="btn dark homeLowerLift" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 25 TO UNLOCK</small></button>
   <button id="goldWavesBtn" class="btn dark homeLowerLift goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> UPGRADES</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
-  <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; ENDLESS&nbsp; <b id="homeEndlessBest">0</b></span></div>
+  <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
   <button class="btn dark small purifyTestBtn" data-action="testPurify">TEMP PURIFY</button>
@@ -1419,8 +1443,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.130</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.130</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.131</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.131</div>
 </section>
 
 <section id="bugs" class="screen hidden">
