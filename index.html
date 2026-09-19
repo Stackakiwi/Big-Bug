@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.127 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.128 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1419,8 +1419,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.127</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.127</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.128</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.128</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1777,6 +1777,7 @@ function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.crea
 // v19.0.125 — speed icon polish: replaced the gray motion marks with three black curved speed lines farther to the left.
 // v19.0.126 — purple corruption visibility fix: dust begins after the Wave 25 reveal, is easier to see, and still ramps gradually toward Wave 100.
 // v19.0.127 — speed icon cleanup: moved the three black speed lines farther left so they read clearly and do not crowd the sword.
+// v19.0.128 — purple dust polish: made the corruption brighter and more powdery/dust-like in both Garden Updates and story backgrounds.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
@@ -2009,18 +2010,22 @@ function applyStoryLeafCorruption(w=0){
  if(!leaf)return;
  const c=storyCorruptionLevelFromWave(w);
  if(c<=0){leaf.style.background='';leaf.style.borderColor='';leaf.style.boxShadow='';return}
- const speck=.16+.26*c,smudge=.055+.12*c,edge=.10+.18*c;
+ const speck=.20+.29*c,smudge=.04+.08*c,edge=.11+.19*c,dust=.11+.17*c;
  leaf.style.background=`
-  radial-gradient(circle at 13% 20%, rgba(143,89,151,${(.75*speck).toFixed(3)}) 0 4px, transparent 5px),
-  radial-gradient(circle at 26% 72%, rgba(174,114,183,${(1.0*speck).toFixed(3)}) 0 3px, transparent 4px),
-  radial-gradient(circle at 71% 24%, rgba(126,71,136,${(.9*speck).toFixed(3)}) 0 5px, transparent 6px),
-  radial-gradient(circle at 82% 64%, rgba(160,101,171,${(.95*speck).toFixed(3)}) 0 4px, transparent 5px),
-  radial-gradient(circle at 61% 82%, rgba(132,78,144,${(.78*speck).toFixed(3)}) 0 3px, transparent 4px),
-  radial-gradient(ellipse at 18% 84%, rgba(114,62,123,${(.7*smudge).toFixed(3)}) 0 14%, transparent 55%),
-  radial-gradient(ellipse at 86% 18%, rgba(145,86,154,${(1.1*smudge).toFixed(3)}) 0 13%, transparent 50%),
+  radial-gradient(circle at 12% 18%, rgba(187,126,196,${(.95*speck).toFixed(3)}) 0 2.2px, transparent 3.8px),
+  radial-gradient(circle at 21% 30%, rgba(227,186,234,${(.72*dust).toFixed(3)}) 0 1.05px, transparent 2.2px),
+  radial-gradient(circle at 28% 72%, rgba(203,141,214,${(1.0*speck).toFixed(3)}) 0 2.4px, transparent 4px),
+  radial-gradient(circle at 39% 58%, rgba(236,196,243,${(.75*dust).toFixed(3)}) 0 .95px, transparent 2px),
+  radial-gradient(circle at 70% 23%, rgba(167,103,181,${(.92*speck).toFixed(3)}) 0 2.8px, transparent 4.7px),
+  radial-gradient(circle at 82% 63%, rgba(197,130,209,${(.95*speck).toFixed(3)}) 0 2.4px, transparent 4.2px),
+  radial-gradient(circle at 61% 82%, rgba(174,114,188,${(.86*speck).toFixed(3)}) 0 2.1px, transparent 3.5px),
+  radial-gradient(circle at 76% 36%, rgba(238,203,244,${(.72*dust).toFixed(3)}) 0 1px, transparent 2.1px),
+  radial-gradient(circle at 52% 16%, rgba(228,184,236,${(.68*dust).toFixed(3)}) 0 1.1px, transparent 2.4px),
+  radial-gradient(ellipse at 18% 84%, rgba(131,76,142,${(.72*smudge).toFixed(3)}) 0 11%, transparent 42%),
+  radial-gradient(ellipse at 86% 18%, rgba(171,103,182,${(1.02*smudge).toFixed(3)}) 0 10%, transparent 40%),
   linear-gradient(155deg,#f5e9b9 0%,#eadba3 58%,#d8c787 100%)`;
- leaf.style.borderColor=`rgba(${Math.round(127+28*c)},${Math.round(157-28*c)},${Math.round(87+58*c)},.96)`;
- leaf.style.boxShadow=`0 10px 0 #1c3820,0 24px 55px #000a,inset 0 0 0 4px #fff4c966,inset 0 0 ${Math.round(18+30*c)}px rgba(121,67,128,${edge.toFixed(3)})`;
+ leaf.style.borderColor=`rgba(${Math.round(137+28*c)},${Math.round(170-20*c)},${Math.round(98+62*c)},.97)`;
+ leaf.style.boxShadow=`0 10px 0 #1c3820,0 24px 55px #000a,inset 0 0 0 4px #fff4c966,inset 0 0 ${Math.round(20+32*c)}px rgba(151,92,163,${edge.toFixed(3)})`;
 }
 let pendingBossUpgrade=false;
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;applyStoryLeafCorruption(w);$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
@@ -4122,26 +4127,26 @@ function drawStoryCorruptionDust(ai){
  if(c<=0)return;
  X.save();
  // Keep the first infected area subtle, but visible enough that players can actually notice it.
- const hazeAlpha=.018+.06*c;
- X.globalAlpha=hazeAlpha;X.fillStyle='#673868';X.fillRect(0,0,W,H);
- const smudges=2+Math.round(c*5);
+ const hazeAlpha=.02+.065*c;
+ X.globalAlpha=hazeAlpha;X.fillStyle='#744179';X.fillRect(0,0,W,H);
+ const smudges=2+Math.round(c*4);
  for(let i=0;i<smudges;i++){
-   const x=(i*173+ai*47+58)%W,y=(i*131+ai*73+91)%H,rx=34+(i%3)*16+34*c,ry=14+(i%2)*8+14*c;
-   X.globalAlpha=(.04+.065*c)*(1-(i/(smudges+1))*0.12);
-   X.fillStyle=i%2?'#844786':'#6b3a71';
+   const x=(i*173+ai*47+58)%W,y=(i*131+ai*73+91)%H,rx=28+(i%3)*13+24*c,ry=11+(i%2)*6+10*c;
+   X.globalAlpha=(.03+.05*c)*(1-(i/(smudges+1))*0.12);
+   X.fillStyle=i%2?'#8f5394':'#77417d';
    X.beginPath();X.ellipse(x,y,rx,ry,(i*.67)+ai*.08,0,6.28);X.fill();
  }
- const dustCount=10+Math.round(c*34);
+ const dustCount=18+Math.round(c*42);
  for(let i=0;i<dustCount;i++){
-   const x=(i*97+ai*61+37)%W,y=(i*149+ai*43+69)%H,r=1.35+(i%3)*.6+(c>.68&&i%6===0?.55:0);
-   X.globalAlpha=(.23+.20*((i%4)/3))*(.58+.72*c);
-   X.fillStyle=i%3===0?'#d0a2d7':i%3===1?'#a966af':'#8c5b97';
+   const x=(i*97+ai*61+37)%W,y=(i*149+ai*43+69)%H,r=.85+(i%4)*.38+(c>.68&&i%7===0?.38:0);
+   X.globalAlpha=(.28+.18*((i%4)/3))*(.62+.70*c);
+   X.fillStyle=i%4===0?'#efcef4':i%4===1?'#d9a8e4':i%4===2?'#bb7ecb':'#9d66ad';
    X.beginPath();X.arc(x,y,r,0,6.28);X.fill();
-   if(i%4===0){X.globalAlpha=(.15+.11*c);X.fillStyle='#f4d4f7';X.beginPath();X.arc(x-.4,y-.5,Math.max(.5,r*.38),0,6.28);X.fill()}
+   if(i%3===0){X.globalAlpha=(.17+.11*c);X.fillStyle='#fff1ff';X.beginPath();X.arc(x-.25,y-.3,Math.max(.4,r*.33),0,6.28);X.fill()}
  }
- if(c>.28){
-   const streaks=1+Math.round(c*5);X.strokeStyle='#9966a2';X.lineWidth=1.1;X.lineCap='round';
-   for(let i=0;i<streaks;i++){const x=(i*211+ai*57+84)%W,y=(i*167+ai*33+118)%H;X.globalAlpha=(.09+.10*c);X.beginPath();X.moveTo(x-7,y+4);X.lineTo(x+8,y-3);X.stroke()}
+ if(c>.26){
+   const streaks=1+Math.round(c*4);X.strokeStyle='#b57cc0';X.lineWidth=1;X.lineCap='round';
+   for(let i=0;i<streaks;i++){const x=(i*211+ai*57+84)%W,y=(i*167+ai*33+118)%H;X.globalAlpha=(.06+.07*c);X.beginPath();X.moveTo(x-5,y+3);X.lineTo(x+5,y-2);X.stroke()}
  }
  X.restore();X.globalAlpha=1;
 }
