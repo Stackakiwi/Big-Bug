@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.142 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.143 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1448,8 +1448,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.142</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.142</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.143</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.143</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3238,7 +3238,29 @@ function enemyMove(e,dt){
    if(e.stateT<=0){e.state='chase';e.cool=.75}
    return;
  }
- if(e.kind==='wasp'||(e.boss&&e.kind!=='moleCricket'&&e.kind!=='dragonflyBoss'&&e.kind!=='centipede'&&e.kind!=='bigBloodSucker')){
+ // v19.0.143 — Praying Tyrant jump retune.
+ // He attacks more often and commits each jump to either the player's live position
+ // or a point just behind the player's current movement, instead of inheriting the generic boss dash.
+ if(e.boss&&e.kind==='mantisBoss'){
+   if(e.state==='chase'&&e.cool<=0){
+     e.state='mantisWindup';e.stateT=.28;e.cool=.95;
+   }else if(e.state==='mantisWindup'&&e.stateT<=0){
+     let mvx=p.motionX||0,mvy=p.motionY||0,mm=Math.hypot(mvx,mvy);
+     if(mm<20){mvx=(p.moveX??p.x)-p.x;mvy=(p.moveY??p.y)-p.y;mm=Math.hypot(mvx,mvy)}
+     let tx=p.x,ty=p.y;
+     if(mm>20&&Math.random()<.50){const back=54;tx-=mvx/mm*back;ty-=mvy/mm*back}
+     tx=Math.max(p.r,Math.min(W-p.r,tx));ty=Math.max(p.r,Math.min(H-p.r,ty));
+     e.mantisJumpX=tx;e.mantisJumpY=ty;
+     const jx=tx-e.x,jy=ty-e.y,jd=Math.hypot(jx,jy)||1,jumpT=Math.max(.34,Math.min(.62,jd/620));
+     e.vx=jx/jumpT;e.vy=jy/jumpT;e.state='dash';e.stateT=jumpT;
+     burst(e.x,e.y,5,.22,'#a9d45c');
+   }else if(e.state==='dash'){
+     e.x+=e.vx*dt;e.y+=e.vy*dt;
+     if(e.stateT<=0){e.x=e.mantisJumpX??e.x;e.y=e.mantisJumpY??e.y;e.state='chase'}
+     return;
+   }
+ }
+ if(e.kind==='wasp'||(e.boss&&e.kind!=='moleCricket'&&e.kind!=='dragonflyBoss'&&e.kind!=='centipede'&&e.kind!=='bigBloodSucker'&&e.kind!=='mantisBoss')){
    if(e.state==='chase'&&e.cool<=0){
       e.state='telegraph';e.stateT=e.boss?.42:.55;e.cool=e.boss?1.55:2.4;
    }else if(e.state==='telegraph'&&e.stateT<=0){
@@ -3348,7 +3370,7 @@ function enemyMove(e,dt){
      if(!storyBossClosing&&countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){
        const mosquitoBossRound=game.mode==='story'&&bossKindsFor(game.wave).includes('bigBloodSucker');
        if(mosquitoBossRound){
-         // v19.0.142 — Big Blood Sucker support enemies stay mosquito-only on Wave 25.
+         // v19.0.143 — Big Blood Sucker support enemies stay mosquito-only on Wave 25.
          // On the Wave 95 duo fight, the ONLY normal enemies allowed are mosquitoes and spiders.
          const supportKind=game.wave===95?(Math.random()<.5?'mosquito':'spider'):'mosquito';
          spawnEnemy('normal',supportKind);
