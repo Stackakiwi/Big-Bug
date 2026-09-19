@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.111 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.112 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1418,8 +1418,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.111</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.111</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.112</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.112</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2728,7 +2728,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
           invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,faceOn:k==='mosquito'&&Math.random()<.25,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025,_aiPhase:game.enemies.length&1};
  if(e.sprinter)e.speed*=1.8;
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
- if(boss&&k==='cicada')e.lightningCd=2.2+Math.random()*1.8; // v19.0.111 — independent low-cost ground lightning timer
+ if(boss&&k==='cicada')e.lightningCd=2.2+Math.random()*1.8; // v19.0.112 — independent low-cost ground lightning timer
  if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
  gardenDiscover('enemy:'+k);
  game.enemies.push(e);
@@ -2834,14 +2834,14 @@ function shootAt(target){
  let p=game.p,eb=game.mode==='endless'&&endlessFiveActive();p.faceTarget=Math.atan2(target.y-p.y,target.x-p.x)+Math.PI/2;let boost=(boostActive()||eb)?2:1,closeMult=1;if(game.mode==='story'){const cdx=target.x-p.x,cdy=target.y-p.y;if(cdx*cdx+cdy*cdy<=9025){closeMult=1.25;p.closeBonusUntil=game.time+.18}}let d=p.damage*boost*closeMult*(Math.random()<p.crit?3:1);damageEnemy(target,d);p.attackCount++;
  if(eb){
    let second=null,best=Infinity;
-   for(const e of game.enemies)if(!e.dead&&e!==target&&e.state!=='burrowWait'){
+   for(const e of game.enemies)if(e!==target&&playerCanTargetEnemy(e)){
      const dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<best){best=ds;second=e}
    }
    if(second){const dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd)}
    game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:(game.bugId||save.selected)==='golden',ax:target.x,ay:target.y,bx:second?second.x:null,by:second?second.y:null,cx:null,cy:null});
  }else if(tripleShotActive(p)){
    let first=null,second=null,d1=Infinity,d2=Infinity;
-   for(const e of game.enemies)if(!e.dead&&e!==target&&e.state!=='burrowWait'){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<d1){second=first;d2=d1;first=e;d1=ds}else if(ds<d2){second=e;d2=ds}}
+   for(const e of game.enemies)if(e!==target&&playerCanTargetEnemy(e)){let dx=e.x-p.x,dy=e.y-p.y,ds=dx*dx+dy*dy;if(ds<d1){second=first;d2=d1;first=e;d1=ds}else if(ds<d2){second=e;d2=ds}}
    if(first){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(first,dd)}
    if(second){let dd=p.damage*boost*(Math.random()<p.crit?3:1);damageEnemy(second,dd)}
    game.fx.push({x:p.x,y:p.y,life:.16,maxLife:.16,r:3.5,tripleShotFx:true,goldenShot:(game.bugId||save.selected)==='golden',ax:target.x,ay:target.y,bx:first?first.x:null,by:first?first.y:null,cx:second?second.x:null,cy:second?second.y:null});
@@ -2852,6 +2852,14 @@ function shootAt(target){
  if(p.poison)target.poison=(target.poison||0)+p.poison;
  beep(d>p.damage*2?880:520,.025,.012,'square');
 }
+// v19.0.112 — Story Mode attack-entry gate. An enemy becomes player-targetable only once
+// its center has crossed onto the playfield, which corresponds to at least half of its body
+// being visible at a screen edge. Other modes are intentionally unchanged.
+function playerCanTargetEnemy(e){
+ if(!e||e.dead||e.state==='burrowWait')return false;
+ if(game.mode!=='story')return true;
+ return e.x>=0&&e.x<=W&&e.y>=0&&e.y<=H;
+}
 function nearestEnemy(x=game.p.x,y=game.p.y){
  // v18.0.41 — Story Mode uses the existing spatial buckets first. If nothing is within
  // 320px we fall back to the full list, preserving long-range targeting exactly.
@@ -2861,13 +2869,13 @@ function nearestEnemy(x=game.p.x,y=game.p.y){
      const radius=320,r2=radius*radius,cx=Math.max(0,Math.min(cols-1,Math.floor(x/cell)+1)),cy=Math.max(0,Math.min(rows-1,Math.floor(y/cell)+1)),reach=3;
      let best=null,bd=r2;
      for(let oy=-reach;oy<=reach;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-reach;ox<=reach;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j]){
-       const e=game.enemies[j];if(!e||e.dead||e.state==='burrowWait')continue;const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}
+       const e=game.enemies[j];if(!playerCanTargetEnemy(e))continue;const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}
      }}}
      if(best)return best;
    }
  }
  // Full-list fallback keeps the same target choice when every enemy is farther away.
- let best=null,bd=Infinity;for(const e of game.enemies)if(!e.dead&&e.state!=='burrowWait'){const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}}return best;
+ let best=null,bd=Infinity;for(const e of game.enemies)if(playerCanTargetEnemy(e)){const dx=e.x-x,dy=e.y-y,d2=dx*dx+dy*dy;if(d2<bd){bd=d2;best=e}}return best;
 }
 function countActiveEnemies(nonBossOnly=false){
  let n=0;for(const e of game.enemies)if(!e.dead&&(!nonBossOnly||!e.boss))n++;return n;
@@ -2917,7 +2925,7 @@ function fireball(){
  let dx=t.x-game.p.x,dy=t.y-game.p.y,dd=Math.hypot(dx,dy)||1;
  game.fx.push({x:game.p.x,y:game.p.y,vx:dx/dd*330,vy:dy/dd*330,life:1.15,r:8,orb:true,damage:game.p.damage*2.3});
 }
-function meteor(){burst(game.p.x,game.p.y,45,1,'#f2cc7b');for(const e of game.enemies)if(!e.dead){const dx=e.x-game.p.x,dy=e.y-game.p.y;if(dx*dx+dy*dy<36100)damageEnemy(e,game.p.damage*7)}}
+function meteor(){burst(game.p.x,game.p.y,45,1,'#f2cc7b');for(const e of game.enemies)if(playerCanTargetEnemy(e)){const dx=e.x-game.p.x,dy=e.y-game.p.y;if(dx*dx+dy*dy<36100)damageEnemy(e,game.p.damage*7)}}
 function toxicCloud(x,y,r=46,life=2.5,damage=6){
  game.fx.push({x,y,vx:0,vy:0,life,maxLife:life,r,toxic:true,damage,tick:0});
 }
@@ -3012,7 +3020,7 @@ function enemyMove(e,dt){
  const duoBossRate=(e.boss&&game.mode==='story'&&(game.wave===90||game.wave===95))?1.16:1;
  e.cool-=dt*duoBossRate;e.stateT-=dt;
  e.shotCd=(e.shotCd||2)-dt*duoBossRate;
- // v19.0.111 — Thunder Cicada: lightweight random ground lightning.
+ // v19.0.112 — Thunder Cicada: lightweight random ground lightning.
  // One single FX object per strike, never more than one active strike from this boss at a time.
  // It runs independently of Thunder Chorus so the timing feels unpredictable without adding projectile spam.
  if(e.boss&&e.kind==='cicada'){
@@ -3311,7 +3319,7 @@ function update(dt,now){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
    const ringR=88,ringSpin=p.helperArmyFormedAt>0?g.time*1.8:0;
-   const live=g.armyLiveScratch||(g.armyLiveScratch=[]);live.length=0;for(const e of g.enemies)if(!e.dead&&!e.boss&&e.state!=='burrowWait')live.push(e);
+   const live=g.armyLiveScratch||(g.armyLiveScratch=[]);live.length=0;for(const e of g.enemies)if(!e.boss&&playerCanTargetEnemy(e))live.push(e);
    let allEntered=true;
    // Use stationary slots during entry so every buddy can actually finish formation.
    // Once all ten have arrived, latch the formation, wait one second, then switch
@@ -3342,7 +3350,7 @@ function update(dt,now){
      for(let i=0;i<p.helperArmyHelpers.length;i++){
        const h=p.helperArmyHelpers[i];if(!h.entered||h.attackCd>0)continue;
        let best=null,bestD=1e9;
-       // Army shots can target any live non-boss enemy anywhere on the field.
+       // Army shots obey the same Story Mode half-body-on-screen target gate as the player.
        for(const e of live){if(e.dead||e._armyClaimStamp===claimStamp)continue;const dx=e.x-h.x,dy=e.y-h.y,d2=dx*dx+dy*dy;if(d2<bestD){best=e;bestD=d2}}
        if(best){
          best._armyClaimStamp=claimStamp;h.target=best;h.attackCd=.26+((i%3)*.015);
@@ -3383,12 +3391,12 @@ function update(dt,now){
  for(const e of g.enemies)if(!e.dead){
    if(g.mode==='gold'&&e.goldBossKey)goldBossMechanics(e,dt);
    e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,e.hit-dt);
-   if(e.poison)damageEnemy(e,e.poison*dt*.8);
+   if(e.poison&&playerCanTargetEnemy(e))damageEnemy(e,e.poison*dt*.8);
    enemyMove(e,dt);
    if(e.kind==='moleCricket'&&e.state==='burrowWait')continue;
    if(e.boss&&e.kind==='scarab'){e.knockX=0;e.knockY=0}else{e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=knockDecay;e.knockY*=knockDecay;}
    const cdx=p.x-e.x,cdy=p.y-e.y,cr=e.r+p.r;
-   if(cdx*cdx+cdy*cdy<cr*cr){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns)damageEnemy(e,e.damage*dt*p.thorns)}
+   if(cdx*cdx+cdy*cdy<cr*cr){hurtPlayer(e.damage*dt*(e.state==='dash'||e.state==='pounce'?1.7:1));if(p.thorns&&playerCanTargetEnemy(e))damageEnemy(e,e.damage*dt*p.thorns)}
  }
  if(g.mode==='endless'){g.mosquitoSepTick=(g.mosquitoSepTick||0)+1;if((g.mosquitoSepTick&1)===0)separateMosquitoes()}else separateEnemies();
  for(const d of g.drops){
@@ -3437,7 +3445,7 @@ function update(dt,now){
      let hit=null;
      if(g.mode==='story'&&g.storyGridHead){
        const head=g.storyGridHead,stamp=g.storyGridStamp,next=g.storyGridNext,gen=g.storyGridGen,cols=g.storyGridCols,rows=g.storyGridRows,cell=128,cx=Math.max(0,Math.min(cols-1,Math.floor(f.x/cell)+1)),cy=Math.max(0,Math.min(rows-1,Math.floor(f.y/cell)+1));
-       outer:for(let oy=-1;oy<=1;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-1;ox<=1;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j]){const e=g.enemies[j];if(!e||e.dead)continue;const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){hit=e;break outer}}}}
+       outer:for(let oy=-1;oy<=1;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-1;ox<=1;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j]){const e=g.enemies[j];if(!playerCanTargetEnemy(e))continue;const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){hit=e;break outer}}}}
      }else{for(const e of g.enemies)if(!e.dead){const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){hit=e;break}}}
      if(hit){damageEnemy(hit,f.damage);f.life=0}
    }
