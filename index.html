@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.108 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.109 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -528,6 +528,25 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
 @media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}}
+/* v19.0.109 — first-launch garden guide. Isolated menu-only presentation; gameplay untouched. */
+#firstHelp{background:radial-gradient(ellipse at 50% 0%,#2b573566 0 20%,transparent 48%),linear-gradient(180deg,#081b10 0%,#031008 100%);padding:18px}
+#firstHelp .firstHelpPanel{position:relative;width:min(560px,94vw);max-height:94vh;overflow:auto;padding:25px 20px 20px;border:2px solid #719369;border-radius:24px;background:radial-gradient(ellipse at 14% 10%,#2a56345a 0 13%,transparent 14%),radial-gradient(ellipse at 88% 88%,#214a2c55 0 12%,transparent 13%),linear-gradient(160deg,#12351f,#092317 68%,#05170d);box-shadow:0 9px 0 #021008,0 24px 60px #000c,inset 0 1px 0 #d9efbf33;color:#f8f3df}
+#firstHelp .firstHelpPanel:before,#firstHelp .firstHelpPanel:after{content:"";position:absolute;width:68px;height:24px;border-radius:90% 10% 90% 10%;background:#46724655;pointer-events:none}
+#firstHelp .firstHelpPanel:before{left:-24px;top:96px;transform:rotate(-25deg)}#firstHelp .firstHelpPanel:after{right:-25px;bottom:86px;transform:rotate(29deg)}
+#firstHelp .firstHelpKicker{text-align:center;font:800 11px/1.2 system-ui,-apple-system,sans-serif;letter-spacing:2.1px;color:#9fd17c;margin:0 0 6px;text-transform:uppercase}
+#firstHelp h2{text-align:center;margin:0 0 8px;font:800 clamp(34px,8vw,46px)/.95 "Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand",system-ui,sans-serif;color:#fff7df;text-shadow:0 3px 0 #06140b;letter-spacing:.4px}
+#firstHelp .firstHelpIntro{text-align:center;margin:0 auto 18px;max-width:430px;color:#c7d4c5;font-size:15px;line-height:1.35}
+#firstHelp .firstHelpSteps{display:grid;gap:10px;margin:0}
+#firstHelp .firstHelpStep{display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:center;min-height:82px;padding:12px 14px;border:1px solid #4c7650;border-radius:16px;background:linear-gradient(145deg,#19442a,#123621);box-shadow:inset 0 1px 0 #d9efbf18,0 3px 0 #04160c}
+#firstHelp .firstHelpStep:nth-child(even){border-radius:12px 19px 14px 17px}
+#firstHelp .firstHelpNum{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#7dbb53;color:#132316;font:1000 20px/1 system-ui,-apple-system,sans-serif;box-shadow:inset 0 -3px #4f8538,0 3px 0 #061a0e}
+#firstHelp .firstHelpStep strong{display:block;margin:0 0 3px;font:800 19px/1.1 "Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand",system-ui,sans-serif;color:#fff6db}
+#firstHelp .firstHelpStep p{margin:0;color:#c9d2c7;font-size:14px;line-height:1.32}
+#firstHelp .firstHelpStep .leafCurrencyIcon{margin-left:2px;margin-right:4px}
+#firstHelp .firstHelpImportant{color:#f5d77c;font-weight:850}
+#firstHelp .firstHelpGo{display:block;width:100%;margin:17px 0 0!important;min-height:58px;border-radius:19px!important;font-size:20px!important}
+#firstHelp .firstHelpFooter{text-align:center;margin:12px 4px 0;color:#8faa90;font-size:12px;line-height:1.3}
+@media(max-width:430px){#firstHelp{padding:11px}#firstHelp .firstHelpPanel{padding:21px 13px 16px}#firstHelp .firstHelpStep{grid-template-columns:40px 1fr;padding:11px 12px;gap:10px;min-height:78px}#firstHelp .firstHelpNum{width:38px;height:38px;font-size:18px}#firstHelp .firstHelpStep strong{font-size:18px}#firstHelp .firstHelpStep p{font-size:13.5px}}
 /* v17.9.52 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
 #help .panel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 12% 8%,#21472b55 0 14%,transparent 15%),radial-gradient(ellipse at 92% 20%,#173e2655 0 12%,transparent 13%),linear-gradient(165deg,#102f1d,#071b10 72%,#04130b)}
 #help .panel:before,#help .panel:after{content:"";position:absolute;width:90px;height:34px;border-radius:70% 30% 70% 30%;background:#315c3570;pointer-events:none;z-index:0}
@@ -1399,8 +1418,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.108</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.108</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.109</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.109</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1463,6 +1482,22 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <p class="goldStoreNote">Gold Leaves are permanent and are never erased by Reset Progress. Real-money checkout will activate when the payment system is connected.</p>
   <div class="goldDevTools" aria-label="Temporary Gold Leaf testing controls"><button class="btn small" data-action="tempAddGold">TEMP +100 GOLD</button><button class="btn small goldDevClear" data-action="tempClearGold">TEMP CLEAR GOLD</button></div>
   <button class="btn dark" data-action="home">BACK</button>
+ </div>
+</section>
+
+<section id="firstHelp" class="screen hidden" aria-label="First time how to play">
+ <div class="firstHelpPanel">
+  <div class="firstHelpKicker">WELCOME TO THE GARDEN</div>
+  <h2>HOW TO PLAY</h2>
+  <p class="firstHelpIntro">A few things to know before your first run.</p>
+  <div class="firstHelpSteps">
+   <div class="firstHelpStep"><div class="firstHelpNum">1</div><div><strong>Move &amp; Dodge</strong><p>Tap or drag to move your bug. Keep moving when enemies close in.</p></div></div>
+   <div class="firstHelpStep"><div class="firstHelpNum">2</div><div><strong>Attacks Are Automatic</strong><p>Your bug automatically attacks the <b>closest enemy</b>, so focus on positioning and staying alive.</p></div></div>
+   <div class="firstHelpStep"><div class="firstHelpNum">3</div><div><strong>Collect &amp; Save Leaves</strong><p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves carry over between runs. Pick them up and save them — you will need a lot of them.</p></div></div>
+   <div class="firstHelpStep"><div class="firstHelpNum">4</div><div><strong>Permanent Upgrades Matter</strong><p>Spend saved Leaves on <span class="firstHelpImportant">Permanent Upgrades</span> between runs. They are a big part of getting farther.</p></div></div>
+  </div>
+  <button class="btn green firstHelpGo" data-action="firstHelpDone">GOT IT</button>
+  <div class="firstHelpFooter">You can read the full How to Play guide anytime in Settings.</div>
  </div>
 </section>
 
@@ -1625,7 +1660,7 @@ function resize(){
 } addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
-const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','settings','help','upgrade','pause','goldFail','gameover','finalPrep','ending'];
+const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','settings','help','firstHelp','upgrade','pause','goldFail','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
@@ -1637,6 +1672,7 @@ function screen(id){
 const SAVEKEY='big_bug_save_v1';
 const GOLDKEY='big_bug_gold_v1';
 const GOLDUNLOCKKEY='big_bug_gold_unlocks_v1';
+const FIRSTHELPKEY='big_bug_first_help_seen_v1';
 let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,endlessUnlocked:false};
 if(save.selected==='dragonfly')save.selected='butterfly';
 save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeaves||0);localStorage.setItem(GOLDKEY,String(save.goldLeaves));
@@ -2165,7 +2201,7 @@ function quietButtonClick(){if(save.settings.sfx===false)return;initAudio();setT
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
-function isMenuMusicScreen(){return ['home','bugs','cosmetics','base','gardenBook','settings','help','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
+function isMenuMusicScreen(){return ['home','bugs','cosmetics','base','gardenBook','settings','help','firstHelp','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
 // v18.0.75 — purification owns the soundtrack; normal Story/Home music must stay silent until it ends.
 function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&!game.finalPurify&&(!game.boss||game.boss.dead))}
 function shouldTitleMusicPlay(){if(game&&game.finalPurify)return false;const end=$('ending');if(end&&!end.classList.contains('hidden'))return false;return isMenuMusicScreen()||isQuietStoryMusic()}
@@ -5210,6 +5246,7 @@ document.addEventListener('click',e=>{
  if(a==='settingsFromHelp'){showGameUI(false);shopMusicStop();buildSettings();screen('settings');if(!settingsOpenedFromPause)titleMusicStart()}
  if(a==='settingsBack'){if(settingsOpenedFromPause&&game&&!game.over){settingsOpenedFromPause=false;game.paused=true;refreshPauseStats();showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');saveRunRecovery('pause')}else{settingsOpenedFromPause=false;enterHomeCleanly();setTimeout(bbApplyDeferredUpdate,120)}}
  if(a==='help'){showGameUI(false);screen('help');if(!settingsOpenedFromPause)titleMusicStart()}
+ if(a==='firstHelpDone'){try{localStorage.setItem(FIRSTHELPKEY,'1')}catch(e){}enterHomeCleanly()}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
@@ -5429,11 +5466,12 @@ function paintHelpGameIcons(){
  }
  q.restore()})}
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
-if(loadRunRecovery()){restoreRecoveredRun()}
+const bbHasRecovery=!!loadRunRecovery();
+if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFirstHelpSeen=localStorage.getItem(FIRSTHELPKEY)==='1'}catch(e){}if(!bbFirstHelpSeen){stopTitleGardenLoop();showGameUI(false);screen('firstHelp')}}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.107';
+const BB_BUILD_VERSION='19.0.109';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
