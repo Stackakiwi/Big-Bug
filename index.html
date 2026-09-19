@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.122 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.123 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1419,8 +1419,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.122</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.122</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.123</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.123</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1772,6 +1772,7 @@ function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.crea
 // v19.0.119 — sword icon polish only: preserve the existing sword look and add a subtle pointed blade tip.
 // v19.0.120 — Dragonfly Reflexes / Quicker Reflexes now use the same pointed sword with small bug wings.
 // v19.0.122 — Dragonfly wings enlarged and redrawn so the speed sword reads clearly at game size.
+// v19.0.123 — story corruption pass: purple dust now slowly builds on Garden Updates and story-mode backgrounds from Wave 25 to the final boss.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
@@ -1988,8 +1989,36 @@ const GARDEN_STORY={
 95:{title:'The Last Guardians',text:'They also were infected, you look ahead to see a poisoned garden.'},
 100:{title:'The Garden Is Quiet',text:'The Spore Behemoth is gone. The spores fade. The garden is safe again.'}
 };
+function storyCorruptionLevelFromWave(w=0){
+ if(w<25)return 0;
+ const t=Math.max(0,Math.min(1,(Math.min(95,w)-25)/70));
+ return .08+.92*(1-Math.pow(1-t,1.35));
+}
+function storyCorruptionLevelFromArea(ai=0){
+ if(ai<4)return 0;
+ if(ai>=19)return 1;
+ return storyCorruptionLevelFromWave((ai+1)*5);
+}
+function applyStoryLeafCorruption(w=0){
+ const leaf=document.querySelector('#story .storyLeaf');
+ if(!leaf)return;
+ const c=storyCorruptionLevelFromWave(w);
+ if(c<=0){leaf.style.background='';leaf.style.borderColor='';leaf.style.boxShadow='';return}
+ const speck=.10+.22*c,smudge=.04+.10*c,edge=.08+.16*c;
+ leaf.style.background=`
+  radial-gradient(circle at 13% 20%, rgba(143,89,151,${(.75*speck).toFixed(3)}) 0 4px, transparent 5px),
+  radial-gradient(circle at 26% 72%, rgba(174,114,183,${(1.0*speck).toFixed(3)}) 0 3px, transparent 4px),
+  radial-gradient(circle at 71% 24%, rgba(126,71,136,${(.9*speck).toFixed(3)}) 0 5px, transparent 6px),
+  radial-gradient(circle at 82% 64%, rgba(160,101,171,${(.95*speck).toFixed(3)}) 0 4px, transparent 5px),
+  radial-gradient(circle at 61% 82%, rgba(132,78,144,${(.78*speck).toFixed(3)}) 0 3px, transparent 4px),
+  radial-gradient(ellipse at 18% 84%, rgba(114,62,123,${(.7*smudge).toFixed(3)}) 0 14%, transparent 55%),
+  radial-gradient(ellipse at 86% 18%, rgba(145,86,154,${(1.1*smudge).toFixed(3)}) 0 13%, transparent 50%),
+  linear-gradient(155deg,#f5e9b9 0%,#eadba3 58%,#d8c787 100%)`;
+ leaf.style.borderColor=`rgba(${Math.round(127+28*c)},${Math.round(157-28*c)},${Math.round(87+58*c)},.96)`;
+ leaf.style.boxShadow=`0 10px 0 #1c3820,0 24px 55px #000a,inset 0 0 0 4px #fff4c966,inset 0 0 ${Math.round(18+30*c)}px rgba(121,67,128,${edge.toFixed(3)})`;
+}
 let pendingBossUpgrade=false;
-function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
+function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;applyStoryLeafCorruption(w);$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
@@ -4082,6 +4111,34 @@ function drawAreaIdentity(ai,area){
  }
  X.restore();X.globalAlpha=1;
 }
+function drawStoryCorruptionDust(ai){
+ if(game?.mode!=='story')return;
+ const c=storyCorruptionLevelFromArea(ai);
+ if(c<=0)return;
+ X.save();
+ const hazeAlpha=.012+.05*c;
+ X.globalAlpha=hazeAlpha;X.fillStyle='#673868';X.fillRect(0,0,W,H);
+ const smudges=1+Math.round(c*4);
+ for(let i=0;i<smudges;i++){
+   const x=(i*173+ai*47+58)%W,y=(i*131+ai*73+91)%H,rx=38+(i%3)*17+28*c,ry=16+(i%2)*8+12*c;
+   X.globalAlpha=(.025+.05*c)*(1-(i/(smudges+1))*0.14);
+   X.fillStyle=i%2?'#844786':'#6b3a71';
+   X.beginPath();X.ellipse(x,y,rx,ry,(i*.67)+ai*.08,0,6.28);X.fill();
+ }
+ const dustCount=6+Math.round(c*26);
+ for(let i=0;i<dustCount;i++){
+   const x=(i*97+ai*61+37)%W,y=(i*149+ai*43+69)%H,r=1.1+(i%3)*.55+(c>.72&&i%6===0?.45:0);
+   X.globalAlpha=(.16+.18*((i%4)/3))*(.45+.75*c);
+   X.fillStyle=i%3===0?'#d0a2d7':i%3===1?'#a966af':'#8c5b97';
+   X.beginPath();X.arc(x,y,r,0,6.28);X.fill();
+   if(i%4===0){X.globalAlpha=(.10+.10*c);X.fillStyle='#f4d4f7';X.beginPath();X.arc(x-.4,y-.5,Math.max(.45,r*.38),0,6.28);X.fill()}
+ }
+ if(c>.4){
+   const streaks=1+Math.round(c*4);X.strokeStyle='#9966a2';X.lineWidth=1.1;X.lineCap='round';
+   for(let i=0;i<streaks;i++){const x=(i*211+ai*57+84)%W,y=(i*167+ai*33+118)%H;X.globalAlpha=(.08+.08*c);X.beginPath();X.moveTo(x-7,y+4);X.lineTo(x+8,y-3);X.stroke()}
+ }
+ X.restore();X.globalAlpha=1;
+}
 
 // v18.0.24 — story-mode performance: normal Leaves are rendered once per size and reused.
 // By Venom Queen and later, uncollected Leaves can number in the hundreds; rebuilding
@@ -4843,6 +4900,7 @@ function draw(now=performance.now()){
    X.globalAlpha=.82;for(let i=0;i<8;i++){const x=(i*157+55)%W,y=(i*113+120)%H;X.strokeStyle='#ad8a94';X.lineWidth=3;X.beginPath();X.moveTo(x,y+7);X.lineTo(x,y-5);X.stroke();X.fillStyle='#8b5182';X.beginPath();X.ellipse(x,y-8,9+(i%3)*2,4.5,0,0,6.28);X.fill()}
    X.restore();
  }
+ drawStoryCorruptionDust(ai);
 
  // area-aware leaf litter: quantity and placement now change with each map
  const leafCounts=[28,24,12,10,18,10,8,14,26,18,16,6,8,5,4,14,8,12,4,2];
