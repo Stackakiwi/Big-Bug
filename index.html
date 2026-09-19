@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.140 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.142 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1448,8 +1448,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.140</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.140</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.142</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.142</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2690,6 +2690,16 @@ function beginWave(w){
  if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0;spawnBigBloodSuckerBossMosquitos();configureBossHud(w);updateBossHud()}
  updateHud();saveRunRecovery('wave-start');
 }
+function showMosquitoModeUnlockPopup(onDone){
+ let d=document.getElementById('mosquitoUnlockPopup');
+ if(d)d.remove();
+ d=document.createElement('div');d.id='mosquitoUnlockPopup';
+ d.style.cssText='position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:20px;background:#031009d9;backdrop-filter:blur(3px)';
+ d.innerHTML='<div style="width:min(430px,100%);background:linear-gradient(160deg,#123a2f,#0b2922 72%,#071b16);border:2px solid #7fc7c0;border-radius:18px;padding:22px 18px 18px;text-align:center;box-shadow:0 10px 0 #03100d,0 24px 55px #000b,inset 0 0 30px #69bcb522"><div style="font:1000 13px ui-rounded,system-ui,sans-serif;letter-spacing:1.5px;color:#bff7ef;margin-bottom:7px">NEW MODE UNLOCKED</div><h2 style="margin:0 0 10px;font:1000 34px/1.02 Marker Felt,Chalkboard SE,Noteworthy,system-ui,sans-serif;color:#f5f1df;text-shadow:0 3px #06130f">MOSQUITO MODE</h2><p style="margin:0 0 18px;font:800 16px/1.35 ui-rounded,system-ui,sans-serif;color:#d8e9df">You defeated Big Blood Sucker and unlocked Mosquito Mode on the Home Screen.</p><button id="mosquitoUnlockOkay" class="btn green" style="width:100%;margin:0">GOT IT</button></div>';
+ document.body.appendChild(d);
+ const finish=()=>{if(!d.isConnected)return;d.remove();if(typeof onDone==='function')onDone()};
+ d.querySelector('#mosquitoUnlockOkay').onclick=()=>{initAudio();beep(760,.08,.02,'triangle');finish()};
+}
 function completeWave(){
  const g=game;
  if(g&&g.mode==='gold'&&g.wave>=50)bb22Trace('completeWave ENTER wave='+g.wave+' active='+g.waveActive+' inter='+g.intermission+' enemies='+(g.enemies?g.enemies.length:'?'));
@@ -2756,10 +2766,11 @@ function completeWave(){
    setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return
  }
  const bossClear=g.wave%5===0;
+ let mosquitoModeJustUnlocked=false;
  if(g.wave>=25&&!save.endlessUnlocked){
    save.endlessUnlocked=true;
+   mosquitoModeJustUnlocked=g.wave===25;
    persist();
-   if(g.wave===25)setTimeout(()=>flashBanner('MOSQUITO MODE UNLOCKED!',1.8),1250);
  }
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
@@ -2781,6 +2792,7 @@ function completeWave(){
  // while waiting on a timer. This prevents iOS from getting stranded on "WAVE CLEAR".
  if(bossClear){
    if(g.wave>=100)completeGameEnding();
+   else if(mosquitoModeJustUnlocked)showMosquitoModeUnlockPopup(()=>{if(game===g&&!g.over)showGardenUpdate(g.wave)});
    else showGardenUpdate(g.wave);
  }else{
    setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},420);
@@ -2794,7 +2806,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  let k=boss?(forcedKind||bossKindFor(w)):(forcedKind||kinds[Math.floor(Math.random()*kinds.length)]);
  if(!boss&&game.mode!=='endless'&&game.mode!=='gold'){
    game.normalSpawned=game.normalSpawned||0;
-   if(k==='mosquito'&&game.normalSpawned<5){
+   if(!forcedKind&&k==='mosquito'&&game.normalSpawned<5){
      // Avoid a temporary array allocation during spawning; preserve the same early-wave rule.
      if(w<5)k=Math.random()<.97?'ant':'beetle';
      else if(w<11){k=Math.random()<.64?'ant':'wasp'}
@@ -3331,7 +3343,25 @@ function enemyMove(e,dt){
    // stop spawning new regular enemy adds. Existing enemies are left alone so wave/death state stays intact.
    // This is Story-only; Gold Waves and Mosquito Mode keep their existing behavior.
    const storyBossClosing=game.mode==='story'&&(game.bosses||[]).some(b=>b&&!b.dead&&b.hp>0&&b.max>0&&b.hp<=b.max*.10);
-   if(e.addCd<=0){e.addCd=Math.max(3.2,5.5-game.wave*.025);if(!storyBossClosing&&countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){spawnEnemy('normal','wasp');if(e.hp<e.max*.45)spawnEnemy('normal','ant')}}
+   if(e.addCd<=0){
+     e.addCd=Math.max(3.2,5.5-game.wave*.025);
+     if(!storyBossClosing&&countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){
+       const mosquitoBossRound=game.mode==='story'&&bossKindsFor(game.wave).includes('bigBloodSucker');
+       if(mosquitoBossRound){
+         // v19.0.142 — Big Blood Sucker support enemies stay mosquito-only on Wave 25.
+         // On the Wave 95 duo fight, the ONLY normal enemies allowed are mosquitoes and spiders.
+         const supportKind=game.wave===95?(Math.random()<.5?'mosquito':'spider'):'mosquito';
+         spawnEnemy('normal',supportKind);
+         if(e.hp<e.max*.45){
+           const extraKind=game.wave===95?(Math.random()<.5?'mosquito':'spider'):'mosquito';
+           spawnEnemy('normal',extraKind);
+         }
+       }else{
+         spawnEnemy('normal','wasp');
+         if(e.hp<e.max*.45)spawnEnemy('normal','ant');
+       }
+     }
+   }
    if(e.hp<e.max*.65&&Math.random()<dt*.35)stingBurst(e,e.hp<e.max*.3?10:7,e.hp<e.max*.3?180:145);
  }
  if(e.state==='telegraph')return;
