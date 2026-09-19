@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.110 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.111 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1418,8 +1418,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.110</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.110</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.111</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.111</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2728,6 +2728,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
           invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,faceOn:k==='mosquito'&&Math.random()<.25,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025,_aiPhase:game.enemies.length&1};
  if(e.sprinter)e.speed*=1.8;
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
+ if(boss&&k==='cicada')e.lightningCd=2.2+Math.random()*1.8; // v19.0.111 — independent low-cost ground lightning timer
  if(boss){const slots=bossKindsFor(w).length;e.x=slots>1?(bossSlot===0?W*.34:W*.66):W/2;e.y=-e.r-18;e.enterX=e.x;e.enterY=Math.max(125,H*.20)}
  gardenDiscover('enemy:'+k);
  game.enemies.push(e);
@@ -3011,6 +3012,19 @@ function enemyMove(e,dt){
  const duoBossRate=(e.boss&&game.mode==='story'&&(game.wave===90||game.wave===95))?1.16:1;
  e.cool-=dt*duoBossRate;e.stateT-=dt;
  e.shotCd=(e.shotCd||2)-dt*duoBossRate;
+ // v19.0.111 — Thunder Cicada: lightweight random ground lightning.
+ // One single FX object per strike, never more than one active strike from this boss at a time.
+ // It runs independently of Thunder Chorus so the timing feels unpredictable without adding projectile spam.
+ if(e.boss&&e.kind==='cicada'){
+   e.lightningCd=(e.lightningCd??(2.2+Math.random()*1.8))-dt*duoBossRate;
+   if(e.lightningCd<=0&&!game.fx.some(f=>f.lightningStrike)){
+     const nearPlayer=Math.random()<.58;
+     const lx=Math.max(42,Math.min(W-42,nearPlayer?p.x+(Math.random()-.5)*250:42+Math.random()*Math.max(1,W-84)));
+     const ly=Math.max(112,Math.min(H-45,nearPlayer?p.y+(Math.random()-.5)*220:112+Math.random()*Math.max(1,H-157)));
+     game.fx.push({x:lx,y:ly,vx:0,vy:0,life:.92,maxLife:.92,r:31,lightningStrike:true,damage:10+game.wave*.15,struck:false,seed:Math.random()*6.283});
+     e.lightningCd=2.35+Math.random()*2.15;
+   }
+ }
  // Mole Thing fully disappears underground, then pops up exactly at the crack after a 2-second warning.
  if(e.boss&&e.kind==='moleCricket'&&e.state==='burrowWait'){
    if(e.stateT<=0){e.x=e.burrowX;e.y=e.burrowY;e.state='chase';e.stateT=0;e.cool=.28;burst(e.x,e.y,10,.48,'#8b6a45')}
@@ -3384,6 +3398,18 @@ function update(dt,now){
  }
  for(const f of g.fx){
    f.life-=dt;
+   if(f.lightningStrike){
+      const age=(f.maxLife||.92)-f.life;
+      // Long readable warning, then one brief damaging strike. No looping collision ticks.
+      if(!f.struck&&age>=.66){
+        f.struck=true;
+        const dx=p.x-f.x,dy=p.y-f.y,rr=(f.r||31)+p.r*.45;
+        if(dx*dx+dy*dy<rr*rr)hurtPlayer(f.damage||17);
+        game.shake=Math.max(game.shake||0,1.8);
+        beep(118,.055,.018,'sawtooth');setTimeout(()=>beep(840,.035,.010,'triangle'),18);
+      }
+      continue;
+   }
    if(f.bossHazard){
       f.tick=(f.tick||0)-dt;
       const hitR=f.style==='rootFinal'?f.r*.72:f.r,dx=p.x-f.x,dy=p.y-f.y,rr=hitR+p.r*.35;const inside=dx*dx+dy*dy<rr*rr;
@@ -4873,6 +4899,27 @@ function draw(now=performance.now()){
        const x3=x2+Math.cos(a-k*.16)*len*.44,y3=y2+Math.sin(a-k*.16)*len*.44;
        X.globalAlpha=(.48+.38*fade);X.beginPath();X.moveTo(0,0);X.lineTo(x1,y1);X.lineTo(x2,y2);X.lineTo(x3,y3);X.stroke();
        if(grow>.45&&i<4){const ba=a+k*.68,bl=len*.20;X.globalAlpha=.28+.34*fade;X.beginPath();X.moveTo(x2,y2);X.lineTo(x2+Math.cos(ba)*bl,y2+Math.sin(ba)*bl);X.stroke()}
+     }
+     X.restore();X.globalAlpha=1;continue
+   }
+   if(f.lightningStrike){
+     const max=f.maxLife||.92,age=max-f.life,warn=.66,seed=f.seed||0;
+     X.save();X.translate(f.x,f.y);
+     if(age<warn){
+       // Cheap warning only: two rings + a tiny center mark, no particle objects.
+       const q=Math.max(0,Math.min(1,age/warn)),pulse=.88+.12*Math.sin(game.time*13+seed);
+       X.globalAlpha=.28+.34*q;X.strokeStyle='#e8ef8d';X.lineWidth=2.2;
+       X.beginPath();X.arc(0,0,(f.r||31)*pulse,0,6.283);X.stroke();
+       X.globalAlpha=.18+.24*q;X.beginPath();X.arc(0,0,(f.r||31)*.58*pulse,0,6.283);X.stroke();
+       X.globalAlpha=.55;X.fillStyle='#f5f1a6';X.beginPath();X.arc(0,0,2.5,0,6.283);X.fill();
+     }else{
+       // The bolt exists only for the final ~0.26 s and is drawn directly, so it creates no extra FX load.
+       const q=Math.max(0,f.life/Math.max(.001,max-warn)),topY=-f.y-18;
+       X.globalAlpha=.38+.62*q;X.strokeStyle='#fff7ad';X.lineWidth=5;X.lineCap='round';X.lineJoin='round';
+       X.shadowColor='#e7ef73';X.shadowBlur=10;
+       X.beginPath();X.moveTo(Math.sin(seed)*7,topY);X.lineTo(-8,topY*.66);X.lineTo(8,topY*.42);X.lineTo(-5,topY*.20);X.lineTo(0,0);X.stroke();
+       X.shadowBlur=0;X.strokeStyle='#fffde0';X.lineWidth=2;X.stroke();
+       X.globalAlpha=.42*q;X.fillStyle='#e9ef79';X.beginPath();X.arc(0,0,(f.r||31)*(.72+.18*q),0,6.283);X.fill();
      }
      X.restore();X.globalAlpha=1;continue
    }
