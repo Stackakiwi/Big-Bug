@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.133 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.134 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1447,8 +1447,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.133</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.133</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.134</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.134</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1693,6 +1693,7 @@ const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','setting
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
+ if(id==='home')paintHomeHero();
  // v18.0.44 — transient gameplay banners should never bleed over menus/pause/end screens.
  if(id!=='none'){
   const t=$('telegraph');if(t){t.classList.add('hidden');clearTimeout(flashBanner._t)}
@@ -1974,7 +1975,7 @@ function buildCosmetics(){
  if(toggle){
   const on=save.cosmetics.enabled!==false;
   toggle.textContent=on?'ON':'OFF';toggle.classList.toggle('on',on);toggle.classList.toggle('off',!on);
-  toggle.onclick=()=>{initAudio();save.cosmetics.enabled=save.cosmetics.enabled===false;persist();buildCosmetics();buildBugScreen();beep(save.cosmetics.enabled?760:260,.07,.018,'triangle')};
+  toggle.onclick=()=>{initAudio();save.cosmetics.enabled=save.cosmetics.enabled===false;persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(save.cosmetics.enabled?760:260,.07,.018,'triangle')};
  }
  const flavor={ladybug:'Royal Garden Knight — plated shell, mantle & shield',beetle:'Iron Guard — reinforced horn & shell',butterfly:'Winged Herald — surcoat & banner wings'};
  ['ladybug','beetle','butterfly'].forEach(id=>{
@@ -1985,16 +1986,16 @@ function buildCosmetics(){
   const btn=document.createElement('button');btn.className='btn small '+(equipped?'dark':owned?'green':'');
   btn.innerHTML=equipped?'EQUIPPED':owned?'EQUIP':`<span class="goldLeafIcon" aria-hidden="true"></span> BUY — ${MEDIEVAL_COST}`;
   btn.onclick=()=>{initAudio();if(!medievalOwned(id)){if((save.goldLeaves||0)<MEDIEVAL_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_COST;save.cosmetics.owned.push(medievalKey(id));}
-   save.cosmetics.equipped[id]=medievalEquipped(id)?'':'medieval';persist();buildCosmetics();buildBugScreen();beep(880,.11,.025,'triangle');};
+   save.cosmetics.equipped[id]=medievalEquipped(id)?'':'medieval';persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(880,.11,.025,'triangle');};
   card.appendChild(btn);g.appendChild(card);
  });
  const bb=$('medievalBundleBtn');
  if(bb){
   if(medievalBundlePurchased()){bb.disabled=true;bb.textContent='PURCHASED'}
-  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if((save.goldLeaves||0)<MEDIEVAL_BUNDLE_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();beep(920,.13,.03,'triangle');setTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
+  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if((save.goldLeaves||0)<MEDIEVAL_BUNDLE_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(920,.13,.03,'triangle');setTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
  }
 }
-function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}const gb=$('gardenBookBugCanvas');if(gb){const q=gb.getContext('2d');q.clearRect(0,0,gb.width,gb.height);q.save();q.translate(gb.width/2,gb.height/2+1);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
+function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);if(medievalEquipped('ladybug'))drawMedievalArmor(q,'ladybug',76);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}const gb=$('gardenBookBugCanvas');if(gb){const q=gb.getContext('2d');q.clearRect(0,0,gb.width,gb.height);q.save();q.translate(gb.width/2,gb.height/2+1);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
 
 function makeBugPreview(id){
  const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
