@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.138 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.140 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1448,8 +1448,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.138</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.138</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.140</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.140</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2049,11 +2049,12 @@ function storyDustStepFromArea(ai=0){
 function applyStoryLeafCorruption(w=0){
  const leaf=document.querySelector('#story .storyLeaf');
  if(!leaf)return;
+ if(w>=100){leaf.style.background='';leaf.style.borderColor='';leaf.style.boxShadow='';return}
  const c=storyCorruptionLevelFromWave(w);
  if(c<=0){leaf.style.background='';leaf.style.borderColor='';leaf.style.boxShadow='';return}
- const step=storyDustStepFromWave(w),pileCount=3+step,sizeScale=1+step*.10;
+ const step=storyDustStepFromWave(w),pileCount=6+step*2,sizeScale=1+step*.10;
  const pile=.18+.28*c,glow=.08+.14*c,edge=.12+.18*c,shadow=.03+.06*c;
- const spots=[[18,78],[78,21],[62,86],[34,18],[87,67],[47,55],[12,38],[72,47],[28,88],[91,31]];
+ const spots=[[18,78],[78,21],[62,86],[34,18],[87,67],[47,55],[12,38],[72,47],[28,88],[91,31],[8,63],[55,27],[38,77],[82,84],[22,29],[67,69],[43,9],[94,53],[57,94],[6,16]];
  const layers=[];
  for(let i=0;i<pileCount;i++){
   const [px,py]=spots[i%spots.length],s=sizeScale*(.92+(i%3)*.07),dx=(i%2?2:-1),dy=(i%3)-1;
@@ -2644,6 +2645,15 @@ function dropQuestionName(){
  setTimeout(()=>{try{if(f&&f.remove)f.remove()}catch(_){ }},1550);
  return true;
 }
+function spawnBigBloodSuckerBossMosquitos(){
+ if(!game||game.mode!=='story')return;
+ const kinds=bossKindsFor(game.wave);
+ if(!kinds.includes('bigBloodSucker'))return;
+ // Boss-specific atmosphere/pressure only: normal mosquitoes accompany Big Blood Sucker.
+ // They are ordinary Story mosquitoes and must be cleared before the boss wave can end.
+ const extra=8;
+ for(let i=0;i<extra;i++)spawnEnemy('normal','mosquito');
+}
 function beginWave(w){
  const g=game;
  if(g&&g.mode==='gold'&&w>=50)bb22Trace('beginWave('+w+') ENTER oldWave='+g.wave);
@@ -2677,7 +2687,7 @@ function beginWave(w){
  const enteringArea=w>1&&(w-1)%5===0;
  if(enteringArea){const a=areaFor(w);flashBanner(a.icon+' NEW AREA: '+a.name.toUpperCase(),1.8)}
  else flashBanner(bossWave?'⚠ BOSS WAVE '+w:'WAVE '+w, bossWave?1.6:1.0);
- if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0;configureBossHud(w);updateBossHud()}
+ if(bossWave){bossKindsFor(w).forEach((k,i)=>spawnEnemy('boss',k,i));g.spawnLeft=0;spawnBigBloodSuckerBossMosquitos();configureBossHud(w);updateBossHud()}
  updateHud();saveRunRecovery('wave-start');
 }
 function completeWave(){
@@ -2808,7 +2818,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
-   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,1.75],dragonflyBoss:[.82,1.35],centipede:[1.0,1.68],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
+   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.68],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart')baseHp*=1.25;
@@ -3059,7 +3069,7 @@ function hurtPlayer(amount){
 }
 function healBigBloodSucker(e,dealt){
  if(!e||e.dead||e.kind!=='bigBloodSucker'||dealt<=0||!Number.isFinite(dealt))return;
- e.hp=Math.min(e.max,e.hp+dealt*5);
+ e.hp=Math.min(e.max,e.hp+dealt*10);
 }
 function webPatch(x,y,r=52,life=3.6){
  game.fx.push({x,y,vx:0,vy:0,life,maxLife:life,r,web:true});
