@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.105 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.107 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -770,6 +770,13 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 }
 
 
+
+/* v19.0.107 — standard bug purchase choices */
+#bugs .bugUnlockChoices{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:9px}
+#bugs .bugUnlockChoices .btn{min-width:0!important;flex:1;margin:0!important}
+#bugs .bugUnlockChoices>span{font-size:12px;font-weight:900;opacity:.65}
+#bugs .leafBugUnlock{background:linear-gradient(#72c84b,#4ea936)!important}
+
 /* v17.9.84 — Bug Parade readability cleanup, same version. */
 #bugs .panel{width:min(520px,100%)!important}
 #bugs .panel h2{font-size:32px!important;margin-bottom:9px!important}
@@ -1392,8 +1399,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.105</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.105</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.107</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.107</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1487,7 +1494,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">Standing still fires faster in Story and Mosquito Mode. In Story Mode, get close to an enemy to hit harder.</div></div>
    <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Learn its attacks and keep moving.</div></div>
-   <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Power Ups</b><div class="muted">Spend Leaves on permanent upgrades between runs.</div></div>
+   <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Upgrades</b><div class="muted">Spend Leaves on permanent upgrades between runs.</div></div>
    <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 20 to unlock. Survive the swarm and earn Leaves.</div></div>
   </div>
   <button class="btn dark helpBack" data-action="settingsFromHelp">BACK TO SETTINGS</button>
@@ -1673,12 +1680,12 @@ if(save.legendaryGolden?.owned&&!save.discovered.includes('player:golden'))save.
 // No gameplay or visual changes; this only removes invisible background work.
 // v17.5.13 — late-wave performance pass + 25% larger player attack visual.
 // Gameplay values, enemy counts, damage, speed, and arena visuals are unchanged.
-// v17.5.2 — Beetle and Butterfly are post-game rewards. Existing clears still count.
+// v19.0.107 — Beetle/Butterfly are no longer free wave rewards. Reaching Wave 25/35 only makes them purchasable; ownership costs 10 Gold Leaves or 10,000 regular Leaves.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
+save.bugPurchases=Array.isArray(save.bugPurchases)?save.bugPurchases:[];
 save.unlocked=['ladybug'];
-if(save.best>=40||save.goldUnlocks.includes('beetle'))save.unlocked.push('beetle');
-if(save.best>=50||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
-if(save.mainGameBeaten||save.goldUnlocks.includes('butterfly'))save.unlocked.push('butterfly');
+if(save.goldUnlocks.includes('beetle')||save.bugPurchases.includes('beetle'))save.unlocked.push('beetle');
+if(save.goldUnlocks.includes('butterfly')||save.bugPurchases.includes('butterfly'))save.unlocked.push('butterfly');
 // v18.0.129 — Legendary Golden Ladybug ownership must survive every reload/resume.
 if(save.legendaryGolden&&save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
@@ -2283,9 +2290,10 @@ function buildBugScreen(){
  for(const id of (save.unlocked||[]))if(BUGS[id])gardenDiscover('player:'+id);
  const grid=$('bugGrid');grid.innerHTML='';
  const normalIds=['ladybug','beetle','butterfly'];
- normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?40:50;const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">Free after beating Wave ${unlockWave}.<br>Or unlock early for 10 Gold Leaves.</div>`:'';el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}<button class="btn small ${unlocked?'green':'goldUnlockBtn'}">${selected?'SELECTED':unlocked?'SELECT':`<span class="goldLeafIcon" aria-hidden="true"></span> UNLOCK — 10`}</button>`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);el.querySelector('button').onclick=()=>{initAudio();if(unlocked){save.selected=id;persist();buildBugScreen()}else if(save.goldLeaves>=10){save.goldLeaves-=10;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id);if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}else beep(155,.10,.022,'triangle')};grid.appendChild(el)});
+ normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?25:35,eligible=starter||save.best>=unlockWave;const lockNote=!unlocked&&!starter?`<div class="muted" style="margin-top:8px">${eligible?`Available now — unlock for 10 Gold Leaves or 10,000 regular Leaves.`:`Purchasable after reaching Wave ${unlockWave}.<br>Then unlock for 10 Gold Leaves or 10,000 regular Leaves.`}</div>`:'';const actions=unlocked?`<button class="btn small green">${selected?'SELECTED':'SELECT'}</button>`:starter?'':eligible?`<div class="bugUnlockChoices"><button class="btn small leafBugUnlock"><span class="leafCurrencyIcon bbLeafIcon"></span>10,000</button><span>OR</span><button class="btn small goldUnlockBtn"><span class="goldLeafIcon" aria-hidden="true"></span>10</button></div>`:`<button class="btn small dark" disabled>REACH WAVE ${unlockWave}</button>`;el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}${actions}`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);if(unlocked){el.querySelector('button').onclick=()=>{initAudio();save.selected=id;persist();buildBugScreen()}}else if(eligible){el.querySelector('.goldUnlockBtn').onclick=()=>buyStandardBug(id,'gold');el.querySelector('.leafBugUnlock').onclick=()=>buyStandardBug(id,'leaf')}grid.appendChild(el)});
  if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>500,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
 }
+function buyStandardBug(id,kind){if(save.unlocked.includes(id))return;const unlockWave=id==='beetle'?25:35;if((save.best||0)<unlockWave){beep(155,.10,.022,'triangle');return}const ok=kind==='leaf'?save.scrap>=10000:save.goldLeaves>=10;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf'){save.scrap-=10000;if(!save.bugPurchases.includes(id))save.bugPurchases.push(id)}else{save.goldLeaves-=10;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id)}if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}
 function buyLegendary(kind){if(save.legendaryGolden.owned)return;const ok=kind==='leaf'?save.scrap>=500000:save.goldLeaves>=100;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf')save.scrap-=500000;else save.goldLeaves-=100;save.legendaryGolden.owned=true;if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210)}
 function permanentUpgradeLeafCost(k,level){
  // v18.0.34 — same simple leaf-price ladder for every permanent upgrade.
@@ -2608,9 +2616,7 @@ function completeWave(){
  }
  if(bossClear&&g.wave>=100&&!save.mainGameBeaten){
    save.mainGameBeaten=true;
-   save.unlocked=['ladybug','beetle','butterfly'];
    persist();
-   setTimeout(()=>flashBanner('BEETLE + BUTTERFLY UNLOCKED!',2.2),1900);
  }
  let heal;
  if(bossClear){
@@ -3719,7 +3725,7 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  // v18.0.77 — credits are visual-only. Freeze the real gameplay simulation so the
  // player cannot auto-attack any lingering game enemy and fire gameplay SFX under the credits music.
  if(game)game.paused=true;
- if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0;if(!game.testMode&&game.mode==='story'&&coins>0){save.scrap+=coins;game.coins=0}if(!game.testMode){save.best=Math.max(save.best,100);if(!game.rewardsBanked)save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+10;game.rewardsBanked=true;if(!save.unlocked.includes('butterfly'))save.unlocked.push('butterfly');persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +10 GOLD LEAVES ✦',1.8),350)}}
+ if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0;if(!game.testMode&&game.mode==='story'&&coins>0){save.scrap+=coins;game.coins=0}if(!game.testMode){save.best=Math.max(save.best,100);if(!game.rewardsBanked)save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+10;game.rewardsBanked=true;persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +10 GOLD LEAVES ✦',1.8),350)}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt'),scene=$('victoryScene');
  end.dataset.phase='credits';end.dataset.skipAfter=String(performance.now()+700);
  screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');if(scene){scene.classList.remove('play','cleaning');scene.style.display='none'}roll.style.visibility='';
@@ -5427,7 +5433,7 @@ if(loadRunRecovery()){restoreRecoveredRun()}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.105';
+const BB_BUILD_VERSION='19.0.107';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
