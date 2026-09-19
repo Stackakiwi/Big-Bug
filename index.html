@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.125 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.126 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1419,8 +1419,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.125</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.125</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.126</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.126</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1775,6 +1775,7 @@ function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.crea
 // v19.0.123 — story corruption pass: purple dust now slowly builds on Garden Updates and story-mode backgrounds from Wave 25 to the final boss.
 // v19.0.124 — speed sword cleanup: removed the right-side wing clutter and switched to left-side motion lines for a cleaner fast icon.
 // v19.0.125 — speed icon polish: replaced the gray motion marks with three black curved speed lines farther to the left.
+// v19.0.126 — purple corruption visibility fix: dust begins after the Wave 25 reveal, is easier to see, and still ramps gradually toward Wave 100.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
 // v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
 // v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
@@ -1997,16 +1998,17 @@ function storyCorruptionLevelFromWave(w=0){
  return .08+.92*(1-Math.pow(1-t,1.35));
 }
 function storyCorruptionLevelFromArea(ai=0){
- if(ai<4)return 0;
+ // Area 5 is Waves 26-30, immediately after the Wave 25 Garden Update first mentions purple dust.
+ if(ai<5)return 0;
  if(ai>=19)return 1;
- return storyCorruptionLevelFromWave((ai+1)*5);
+ return storyCorruptionLevelFromWave(ai*5);
 }
 function applyStoryLeafCorruption(w=0){
  const leaf=document.querySelector('#story .storyLeaf');
  if(!leaf)return;
  const c=storyCorruptionLevelFromWave(w);
  if(c<=0){leaf.style.background='';leaf.style.borderColor='';leaf.style.boxShadow='';return}
- const speck=.10+.22*c,smudge=.04+.10*c,edge=.08+.16*c;
+ const speck=.16+.26*c,smudge=.055+.12*c,edge=.10+.18*c;
  leaf.style.background=`
   radial-gradient(circle at 13% 20%, rgba(143,89,151,${(.75*speck).toFixed(3)}) 0 4px, transparent 5px),
   radial-gradient(circle at 26% 72%, rgba(174,114,183,${(1.0*speck).toFixed(3)}) 0 3px, transparent 4px),
@@ -4118,26 +4120,27 @@ function drawStoryCorruptionDust(ai){
  const c=storyCorruptionLevelFromArea(ai);
  if(c<=0)return;
  X.save();
- const hazeAlpha=.012+.05*c;
+ // Keep the first infected area subtle, but visible enough that players can actually notice it.
+ const hazeAlpha=.018+.06*c;
  X.globalAlpha=hazeAlpha;X.fillStyle='#673868';X.fillRect(0,0,W,H);
- const smudges=1+Math.round(c*4);
+ const smudges=2+Math.round(c*5);
  for(let i=0;i<smudges;i++){
-   const x=(i*173+ai*47+58)%W,y=(i*131+ai*73+91)%H,rx=38+(i%3)*17+28*c,ry=16+(i%2)*8+12*c;
-   X.globalAlpha=(.025+.05*c)*(1-(i/(smudges+1))*0.14);
+   const x=(i*173+ai*47+58)%W,y=(i*131+ai*73+91)%H,rx=34+(i%3)*16+34*c,ry=14+(i%2)*8+14*c;
+   X.globalAlpha=(.04+.065*c)*(1-(i/(smudges+1))*0.12);
    X.fillStyle=i%2?'#844786':'#6b3a71';
    X.beginPath();X.ellipse(x,y,rx,ry,(i*.67)+ai*.08,0,6.28);X.fill();
  }
- const dustCount=6+Math.round(c*26);
+ const dustCount=10+Math.round(c*34);
  for(let i=0;i<dustCount;i++){
-   const x=(i*97+ai*61+37)%W,y=(i*149+ai*43+69)%H,r=1.1+(i%3)*.55+(c>.72&&i%6===0?.45:0);
-   X.globalAlpha=(.16+.18*((i%4)/3))*(.45+.75*c);
+   const x=(i*97+ai*61+37)%W,y=(i*149+ai*43+69)%H,r=1.35+(i%3)*.6+(c>.68&&i%6===0?.55:0);
+   X.globalAlpha=(.23+.20*((i%4)/3))*(.58+.72*c);
    X.fillStyle=i%3===0?'#d0a2d7':i%3===1?'#a966af':'#8c5b97';
    X.beginPath();X.arc(x,y,r,0,6.28);X.fill();
-   if(i%4===0){X.globalAlpha=(.10+.10*c);X.fillStyle='#f4d4f7';X.beginPath();X.arc(x-.4,y-.5,Math.max(.45,r*.38),0,6.28);X.fill()}
+   if(i%4===0){X.globalAlpha=(.15+.11*c);X.fillStyle='#f4d4f7';X.beginPath();X.arc(x-.4,y-.5,Math.max(.5,r*.38),0,6.28);X.fill()}
  }
- if(c>.4){
-   const streaks=1+Math.round(c*4);X.strokeStyle='#9966a2';X.lineWidth=1.1;X.lineCap='round';
-   for(let i=0;i<streaks;i++){const x=(i*211+ai*57+84)%W,y=(i*167+ai*33+118)%H;X.globalAlpha=(.08+.08*c);X.beginPath();X.moveTo(x-7,y+4);X.lineTo(x+8,y-3);X.stroke()}
+ if(c>.28){
+   const streaks=1+Math.round(c*5);X.strokeStyle='#9966a2';X.lineWidth=1.1;X.lineCap='round';
+   for(let i=0;i<streaks;i++){const x=(i*211+ai*57+84)%W,y=(i*167+ai*33+118)%H;X.globalAlpha=(.09+.10*c);X.beginPath();X.moveTo(x-7,y+4);X.lineTo(x+8,y-3);X.stroke()}
  }
  X.restore();X.globalAlpha=1;
 }
