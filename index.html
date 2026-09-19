@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.112 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.114 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -442,6 +442,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .goldCurrency{border-color:#a77c24!important;background:linear-gradient(145deg,#3a3218,#27240f)!important;color:#fff2b0}.goldCount{font-size:25px;color:#ffd94d;font-weight:1000}
 .goldUnlockBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #1f3b20!important}.continueGold{background:#e7b72e!important;box-shadow:inset 0 -4px #9b6c13,0 5px 0 #1f3b20!important}
 #gameover #goldContinueBtn{display:block;margin:14px auto;width:min(100%,470px)}.continueGold:disabled{opacity:.48;filter:saturate(.55);cursor:default}
+#gameover .bankedLeavesNotice{display:flex;align-items:center;justify-content:center;gap:12px;margin:18px auto 10px;padding:16px 18px;width:min(100%,470px);border-radius:18px;border:2px solid #b8a139;background:linear-gradient(180deg,#504116 0%,#352a10 100%);box-shadow:inset 0 2px 0 #fff3b566,inset 0 -4px 0 #221b09,0 0 0 1px #ffe07133,0 8px 18px #0006;color:#ffe071;font-weight:1000;font-size:clamp(25px,5.6vw,38px);line-height:1.1;text-align:center;text-shadow:0 2px 0 #4e3a07,0 0 12px #ffd84f33}#gameover .bankedLeavesNotice .leafCurrencyIcon.bbLeafIcon{width:34px;height:34px;flex:0 0 34px;filter:drop-shadow(0 0 8px #dfff63) drop-shadow(0 1px 0 #203212)}#gameover .bankedLeavesNotice #earnedLeaves{font-size:1.18em;line-height:1;color:#fff7c8;text-shadow:0 2px 0 #5b470d,0 0 14px #ffe27a77}#gameover .bankedLeavesNotice .bankedText{display:block}#gameover .bankedLeavesNotice .bankedLabel{display:block}#gameover .bankedLeavesNotice .bankedSub{display:block;font-size:.62em;line-height:1.06;letter-spacing:.15px;color:#fff3b5;opacity:.98;margin-top:5px;text-shadow:0 1px 0 #4e3a07}@media(max-width:430px){#gameover .bankedLeavesNotice{font-size:clamp(22px,7vw,31px);padding:14px 14px;gap:9px}#gameover .bankedLeavesNotice .leafCurrencyIcon.bbLeafIcon{width:30px;height:30px;flex-basis:30px}}
 
 .shopDrawn{font-size:34px;margin:0 7px}.shopIcon{display:flex;align-items:center;justify-content:center}
 #bugs .panel,#base .panel{background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border-color:#557354}
@@ -1418,8 +1419,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.112</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.112</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.114</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.114</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1607,7 +1608,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <h2 id="overTitle">RUN COMPLETE!</h2>
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
-  <p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><b id="earnedLeaves">0</b> Leaves secured at Bug Camp</p>
+  <p class="bankedLeavesNotice"><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span class="bankedText"><span class="bankedLabel"><b id="earnedLeaves">0</b> Leaves secured at Bug Camp</span><span class="bankedSub">Your collected Leaves are safely stored.</span></span></p>
   <button id="goldContinueBtn" class="btn continueGold hidden" data-action="goldContinue"><span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1</button><button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="base">POWER UPS</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
