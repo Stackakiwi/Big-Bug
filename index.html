@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.136 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.137 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1443,12 +1443,13 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
   <button class="btn dark small purifyTestBtn" data-action="testPurify">TEMP PURIFY</button>
-  <div class="testJump" aria-label="Temporary wave and boss tester">
+  <div class="testJump" aria-label="Temporary wave, boss, and Garden Update tester">
+    <button class="btn dark small" data-action="testStoryNotes">STORY NOTES</button>
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.136</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.136</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.137</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.137</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1807,6 +1808,7 @@ function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.crea
 // v19.0.127 — speed icon cleanup: moved the three black speed lines farther left so they read clearly and do not crowd the sword.
 // v19.0.128 — purple dust polish: made the corruption brighter and more powdery/dust-like in both Garden Updates and story backgrounds.
 // v19.0.136 — purple dust piles now grow larger and increase in count every 10 waves after Wave 25, both in the arena and Garden Updates.
+// v19.0.137 — added temporary Home test button that previews every Garden Update note in order without affecting runs, upgrades, or saves.
 // v19.0.129 — replaced Iron Scarab everywhere in Story Mode with BIG BLOOD SUCKER, added dedicated boss art/attack behavior, and moved Mosquito Mode unlock to clearing Wave 25.
 // v19.0.130 — reverted Dragonfly Reflexes / Quicker Reflexes sword-wing artwork; attack speed now uses the existing lightning-bolt symbol again.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
@@ -2066,9 +2068,11 @@ function applyStoryLeafCorruption(w=0){
  leaf.style.borderColor=`rgba(${Math.round(138+26*c)},${Math.round(170-18*c)},${Math.round(99+60*c)},.97)`;
  leaf.style.boxShadow=`0 10px 0 #1c3820,0 24px 55px #000a,inset 0 0 0 4px #fff4c966,inset 0 0 ${Math.round(22+28*c)}px rgba(154,93,170,${edge.toFixed(3)})`;
 }
-let pendingBossUpgrade=false;
-function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;applyStoryLeafCorruption(w);$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
-$('storyContinue').onclick=()=>{initAudio();const story=$('story');story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
+let pendingBossUpgrade=false,storyNoteTestWaves=null,storyNoteTestIndex=0;
+function presentGardenUpdateNote(w){const beat=GARDEN_STORY[w];if(!beat)return false;applyStoryLeafCorruption(w);$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');return true}
+function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
+function startGardenStoryNotesTest(){storyNoteTestWaves=Object.keys(GARDEN_STORY).map(Number).sort((a,b)=>a-b);storyNoteTestIndex=0;pendingBossUpgrade=false;if(!storyNoteTestWaves.length)return;if(presentGardenUpdateNote(storyNoteTestWaves[0])){const b=$('storyContinue');if(b)b.textContent='NEXT NOTE →';beep(392,.08,.012,'triangle')}}
+$('storyContinue').onclick=()=>{initAudio();const story=$('story');if(storyNoteTestWaves){storyNoteTestIndex++;if(storyNoteTestIndex<storyNoteTestWaves.length){presentGardenUpdateNote(storyNoteTestWaves[storyNoteTestIndex]);beep(620,.06,.01,'triangle');return}storyNoteTestWaves=null;storyNoteTestIndex=0;story.classList.add('hidden');story.style.display='';applyStoryLeafCorruption(0);$('storyContinue').textContent='Follow the trail →';beep(620,.07,.012,'triangle');return}story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
  {id:'heart',icon:'',name:'Clover Heart',desc:'+20 max HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
@@ -5462,6 +5466,7 @@ document.addEventListener('click',e=>{
  if(a==='endless')startEndless();
  if(a==='goldWaves')startGoldWaves(false);
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
+ if(a==='testStoryNotes')startGardenStoryNotesTest()
  if(a==='testEnding')previewFinalPurification(false)
  if(a==='testPurify')previewFinalPurification(true)
  if(a==='settings'){settingsOpenedFromPause=false;stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
