@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.135 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.136 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1447,8 +1447,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.135</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.135</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.136</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.136</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1806,6 +1806,7 @@ function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.crea
 // v19.0.126 — purple corruption visibility fix: dust begins after the Wave 25 reveal, is easier to see, and still ramps gradually toward Wave 100.
 // v19.0.127 — speed icon cleanup: moved the three black speed lines farther left so they read clearly and do not crowd the sword.
 // v19.0.128 — purple dust polish: made the corruption brighter and more powdery/dust-like in both Garden Updates and story backgrounds.
+// v19.0.136 — purple dust piles now grow larger and increase in count every 10 waves after Wave 25, both in the arena and Garden Updates.
 // v19.0.129 — replaced Iron Scarab everywhere in Story Mode with BIG BLOOD SUCKER, added dedicated boss art/attack behavior, and moved Mosquito Mode unlock to clearing Wave 25.
 // v19.0.130 — reverted Dragonfly Reflexes / Quicker Reflexes sword-wing artwork; attack speed now uses the existing lightning-bolt symbol again.
 // v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
@@ -2035,30 +2036,33 @@ function storyCorruptionLevelFromArea(ai=0){
  if(ai>=19)return 1;
  return storyCorruptionLevelFromWave(ai*5);
 }
+function storyDustStepFromWave(w=0){
+ if(w<25)return 0;
+ return Math.max(0,Math.min(7,Math.floor((Math.min(95,w)-25)/10)));
+}
+function storyDustStepFromArea(ai=0){
+ if(ai<5)return 0;
+ return storyDustStepFromWave(ai*5);
+}
 function applyStoryLeafCorruption(w=0){
  const leaf=document.querySelector('#story .storyLeaf');
  if(!leaf)return;
  const c=storyCorruptionLevelFromWave(w);
  if(c<=0){leaf.style.background='';leaf.style.borderColor='';leaf.style.boxShadow='';return}
+ const step=storyDustStepFromWave(w),pileCount=3+step,sizeScale=1+step*.10;
  const pile=.18+.28*c,glow=.08+.14*c,edge=.12+.18*c,shadow=.03+.06*c;
- leaf.style.background=`
-  radial-gradient(ellipse at 18% 78%, rgba(111,55,128,${(.95*shadow).toFixed(3)}) 0 8%, transparent 32%),
-  radial-gradient(circle at 14% 76%, rgba(201,138,220,${(.95*pile).toFixed(3)}) 0 2.3px, transparent 4.2px),
-  radial-gradient(circle at 18% 73%, rgba(227,183,241,${(.72*glow).toFixed(3)}) 0 1.1px, transparent 2.4px),
-  radial-gradient(circle at 21% 79%, rgba(177,103,194,${(.90*pile).toFixed(3)}) 0 2.0px, transparent 3.8px),
-  radial-gradient(circle at 23% 83%, rgba(214,157,232,${(.78*pile).toFixed(3)}) 0 1.8px, transparent 3.2px),
-  radial-gradient(circle at 11% 82%, rgba(242,218,248,${(.78*glow).toFixed(3)}) 0 .85px, transparent 1.9px),
-  radial-gradient(ellipse at 78% 21%, rgba(111,55,128,${(1.03*shadow).toFixed(3)}) 0 8%, transparent 32%),
-  radial-gradient(circle at 74% 21%, rgba(192,126,211,${(.98*pile).toFixed(3)}) 0 2.2px, transparent 4px),
-  radial-gradient(circle at 79% 18%, rgba(236,197,245,${(.72*glow).toFixed(3)}) 0 1.05px, transparent 2.2px),
-  radial-gradient(circle at 82% 23%, rgba(170,96,188,${(.88*pile).toFixed(3)}) 0 1.9px, transparent 3.5px),
-  radial-gradient(circle at 85% 27%, rgba(214,154,230,${(.75*pile).toFixed(3)}) 0 1.7px, transparent 3px),
-  radial-gradient(circle at 71% 26%, rgba(247,228,251,${(.76*glow).toFixed(3)}) 0 .8px, transparent 1.8px),
-  radial-gradient(ellipse at 62% 86%, rgba(111,55,128,${(.8*shadow).toFixed(3)}) 0 7%, transparent 30%),
-  radial-gradient(circle at 58% 84%, rgba(192,127,210,${(.84*pile).toFixed(3)}) 0 1.9px, transparent 3.4px),
-  radial-gradient(circle at 61% 88%, rgba(231,191,243,${(.65*glow).toFixed(3)}) 0 .95px, transparent 2.1px),
-  radial-gradient(circle at 65% 84%, rgba(169,95,185,${(.76*pile).toFixed(3)}) 0 1.6px, transparent 3px),
-  linear-gradient(155deg,#f5e9b9 0%,#eadba3 58%,#d8c787 100%)`;
+ const spots=[[18,78],[78,21],[62,86],[34,18],[87,67],[47,55],[12,38],[72,47],[28,88],[91,31]];
+ const layers=[];
+ for(let i=0;i<pileCount;i++){
+  const [px,py]=spots[i%spots.length],s=sizeScale*(.92+(i%3)*.07),dx=(i%2?2:-1),dy=(i%3)-1;
+  layers.push(`radial-gradient(ellipse at ${px}% ${py}%, rgba(111,55,128,${(.92*shadow).toFixed(3)}) 0 ${Math.round(7*s*10)/10}%, transparent ${Math.round(27*s*10)/10}%)`);
+  layers.push(`radial-gradient(circle at ${px-4*dx}% ${py-2*dy}%, rgba(201,138,220,${(.95*pile).toFixed(3)}) 0 ${(2.2*s).toFixed(2)}px, transparent ${(4.1*s).toFixed(2)}px)`);
+  layers.push(`radial-gradient(circle at ${px+2*dx}% ${py-5}%, rgba(235,195,246,${(.72*glow).toFixed(3)}) 0 ${(1.0*s).toFixed(2)}px, transparent ${(2.2*s).toFixed(2)}px)`);
+  layers.push(`radial-gradient(circle at ${px+5}% ${py+3}%, rgba(175,101,193,${(.88*pile).toFixed(3)}) 0 ${(1.8*s).toFixed(2)}px, transparent ${(3.4*s).toFixed(2)}px)`);
+  layers.push(`radial-gradient(circle at ${px-6}% ${py+4}%, rgba(246,223,250,${(.76*glow).toFixed(3)}) 0 ${(0.8*s).toFixed(2)}px, transparent ${(1.8*s).toFixed(2)}px)`);
+ }
+ layers.push('linear-gradient(155deg,#f5e9b9 0%,#eadba3 58%,#d8c787 100%)');
+ leaf.style.background=layers.join(',');
  leaf.style.borderColor=`rgba(${Math.round(138+26*c)},${Math.round(170-18*c)},${Math.round(99+60*c)},.97)`;
  leaf.style.boxShadow=`0 10px 0 #1c3820,0 24px 55px #000a,inset 0 0 0 4px #fff4c966,inset 0 0 ${Math.round(22+28*c)}px rgba(154,93,170,${edge.toFixed(3)})`;
 }
@@ -4164,35 +4168,33 @@ function drawStoryCorruptionDust(ai){
  if(game?.mode!=='story')return;
  const c=storyCorruptionLevelFromArea(ai);
  if(c<=0)return;
+ const step=storyDustStepFromArea(ai),pileCount=3+step,sizeScale=1+step*.12;
  X.save();
- // Small dusty piles that start after Wave 25 and build up as the garden gets more corrupted.
+ // Small dusty piles start after Wave 25. Every 10 waves, both their count and physical size increase.
  const hazeAlpha=.008+.022*c;
  X.globalAlpha=hazeAlpha;X.fillStyle='#7a4481';X.fillRect(0,0,W,H);
- const pileCount=3+Math.round(c*7);
  for(let i=0;i<pileCount;i++){
    const x=((i*163+ai*59+92)%(W-90))+45;
    const y=((i*127+ai*41+74)%(H-80))+40;
-   const rx=8+(i%3)*3+7*c,ry=4+(i%2)*1.7+3*c;
+   const rx=(8+(i%3)*3+5*c)*sizeScale,ry=(4+(i%2)*1.7+2*c)*sizeScale;
    X.globalAlpha=.11+.10*c;
    X.fillStyle=i%2?'#6f3a78':'#87508e';
    X.beginPath();X.ellipse(x,y,rx*1.25,ry*1.1,(i*.31)+ai*.05,0,6.28);X.fill();
-   const dots=9+Math.round(c*12)+(i%3)*2;
+   const dots=9+step*2+Math.round(c*7)+(i%3)*2;
    for(let j=0;j<dots;j++){
      const ang=(j*2.399963+i*.7)%6.283185307179586;
      const dist=((j*17+i*11)%100)/100;
      const ox=Math.cos(ang)*(rx*.25+dist*rx*.95);
      const oy=Math.sin(ang)*(ry*.2+dist*ry*.9);
-     const r=.55+((j+i)%4)*.24+(c*.24);
+     const r=(.55+((j+i)%4)*.24+(c*.18))*(1+step*.035);
      X.globalAlpha=(.34+.24*((j%3)/2))*(.6+.5*c);
      X.fillStyle=j%4===0?'#f0d0f4':j%4===1?'#d8a0e5':j%4===2?'#bb79cb':'#9759a8';
      X.beginPath();X.arc(x+ox,y+oy,r,0,6.28);X.fill();
-     if((j+i)%5===0){
-       X.globalAlpha=.16+.16*c;X.fillStyle='#fff2ff';X.beginPath();X.arc(x+ox-.18,y+oy-.18,Math.max(.28,r*.3),0,6.28);X.fill();
-     }
+     if((j+i)%5===0){X.globalAlpha=.16+.16*c;X.fillStyle='#fff2ff';X.beginPath();X.arc(x+ox-.18,y+oy-.18,Math.max(.28,r*.3),0,6.28);X.fill()}
    }
-   const sparkleCount=(i%2===0?1:0)+(c>.38?1:0)+(c>.72&&i%3===0?1:0);
+   const sparkleCount=(i%2===0?1:0)+(step>=2?1:0)+(step>=5&&i%3===0?1:0);
    for(let s=0;s<sparkleCount;s++){
-     const sx=x-rx*.45+s*rx*.55,sy=y-ry*.2+(s%2?ry*.55:-ry*.35),len=1.5+.9*c+.35*s;
+     const sx=x-rx*.45+s*rx*.55,sy=y-ry*.2+(s%2?ry*.55:-ry*.35),len=(1.5+.7*c+.28*s)*(1+step*.05);
      X.globalAlpha=.28+.18*c;X.strokeStyle=s%2===0?'#ffe7ff':'#f3c8ff';X.lineWidth=1.05;X.lineCap='round';
      X.beginPath();X.moveTo(sx-len,sy);X.lineTo(sx+len,sy);X.moveTo(sx,sy-len);X.lineTo(sx,sy+len);X.stroke();
    }
