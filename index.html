@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.109 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.110 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -528,7 +528,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
 @media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}}
-/* v19.0.109 — first-launch garden guide. Isolated menu-only presentation; gameplay untouched. */
+/* v19.0.110 — first-launch garden guide. Isolated menu-only presentation; gameplay untouched. */
 #firstHelp{background:radial-gradient(ellipse at 50% 0%,#2b573566 0 20%,transparent 48%),linear-gradient(180deg,#081b10 0%,#031008 100%);padding:18px}
 #firstHelp .firstHelpPanel{position:relative;width:min(560px,94vw);max-height:94vh;overflow:auto;padding:25px 20px 20px;border:2px solid #719369;border-radius:24px;background:radial-gradient(ellipse at 14% 10%,#2a56345a 0 13%,transparent 14%),radial-gradient(ellipse at 88% 88%,#214a2c55 0 12%,transparent 13%),linear-gradient(160deg,#12351f,#092317 68%,#05170d);box-shadow:0 9px 0 #021008,0 24px 60px #000c,inset 0 1px 0 #d9efbf33;color:#f8f3df}
 #firstHelp .firstHelpPanel:before,#firstHelp .firstHelpPanel:after{content:"";position:absolute;width:68px;height:24px;border-radius:90% 10% 90% 10%;background:#46724655;pointer-events:none}
@@ -1418,8 +1418,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.109</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.109</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.110</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.110</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2707,7 +2707,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
-   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.18],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
+   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],dragonflyBoss:[.82,1.35],centipede:[1.0,1.68],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart')baseHp*=1.25;
@@ -3066,10 +3066,12 @@ function enemyMove(e,dt){
      return;
    }
  }
- if(e.boss&&e.kind==='centipede'&&e.state==='centiRush'){
-   if(e.rushPause>0){e.rushPause-=dt;if(e.rushPause<=0&&e.rushes>0){let a=Math.atan2(p.y-e.y,p.x-e.x);e.vx=Math.cos(a)*430;e.vy=Math.sin(a)*430;e.stateT=.22}return}
-   e.x+=e.vx*dt;e.y+=e.vy*dt;
-   if(e.stateT<=0){e.rushes--;if(e.rushes>0){e.rushPause=.14;e.stateT=.12}else{e.state='chase';e.cool=.72}}
+ // v19.0.110 — Red Centipede runs instead of doing the usual boss hop/dash.
+ // It stays grounded, tracks the player continuously, and its special is one sustained sprint.
+ if(e.boss&&e.kind==='centipede'&&e.state==='centiRun'){
+   const rd=Math.hypot(dx,dy)||1,runSpeed=Math.max(245,e.speed*2.55);
+   e.x+=dx/rd*runSpeed*slow*dt;e.y+=dy/rd*runSpeed*slow*dt;
+   if(e.stateT<=0){e.state='chase';e.cool=.48}
    return;
  }
  if(e.boss&&e.kind==='earwig'&&e.state==='pinchWindup'){
@@ -3087,7 +3089,7 @@ function enemyMove(e,dt){
    if(e.stateT<=0){e.state='chase';e.cool=.75}
    return;
  }
- if(e.kind==='wasp'||(e.boss&&e.kind!=='moleCricket'&&e.kind!=='dragonflyBoss')){
+ if(e.kind==='wasp'||(e.boss&&e.kind!=='moleCricket'&&e.kind!=='dragonflyBoss'&&e.kind!=='centipede')){
    if(e.state==='chase'&&e.cool<=0){
       e.state='telegraph';e.stateT=e.boss?.42:.55;e.cool=e.boss?1.55:2.4;
    }else if(e.state==='telegraph'&&e.stateT<=0){
@@ -3129,7 +3131,7 @@ function enemyMove(e,dt){
    if(e.kind==='stagBeetle'){e.shotCd=2.5;e.state='dash';e.stateT=.72;e.vx=Math.cos(aim)*285;e.vy=Math.sin(aim)*285;flashBanner('ANTLER CHARGE!',.28)}
    else if(e.kind==='moleCricket'){e.shotCd=5.8+Math.random()*1.0;const digX=e.x,digY=e.y;e.burrowX=Math.max(45,Math.min(W-45,p.x));e.burrowY=Math.max(120,Math.min(H-55,p.y));e.state='burrowWait';e.stateT=2.0;game.fx.push({x:digX,y:digY,vx:0,vy:0,life:1.65,maxLife:1.65,r:29,earthCrack:true,seed:Math.random()*6.283});game.fx.push({x:e.burrowX,y:e.burrowY,vx:0,vy:0,life:3.0,maxLife:3.0,r:32,earthCrack:true,seed:Math.random()*6.283});flashBanner('BURROW!',.38)}
    else if(e.kind==='dragonflyBoss'){e.shotCd=999;e.state='skyExit';e.stateT=0;e.skyExitDir=e.x<W/2?-1:1;const exitSpeed=Math.max(105,e.speed*1.05);e.vx=e.skyExitDir*exitSpeed;e.vy=Math.max(-42,Math.min(42,(p.y-e.y)*.12));flashBanner('SKY LANCER BREAKS AWAY!',.3)}
-   else if(e.kind==='centipede'){e.shotCd=2.75;e.state='centiRush';e.stateT=.22;e.rushes=3;e.rushPause=.18;e.vx=Math.cos(aim)*430;e.vy=Math.sin(aim)*430;flashBanner('RAZOR RUSH!',.42)}
+   else if(e.kind==='centipede'){e.shotCd=2.9;e.state='centiRun';e.stateT=1.22;flashBanner('RAZOR RUN!',.38)}
    else if(e.kind==='earwig'){
      if(d<210&&Math.random()<.13){
        e.shotCd=4.6;e.state='pinchWindup';e.stateT=.58;
@@ -4202,7 +4204,7 @@ function drawEnemy(e){
  }
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  const margin=e.r*2.7+24;if(e.x+margin<0||e.x-margin>W||e.y+margin<0||e.y-margin>H)return;
- const r=e.r,t=FRAME_NOW/1000+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+Math.sin(t*8)*1.2);X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+(e.kind==='hornet'?Math.PI:0)+Math.sin(t*5)*.025);
+ const r=e.r,centiRun=e.kind==='centipede'&&e.state==='centiRun',animMul=e.kind==='centipede'?(centiRun?2.25:1.55):1,t=FRAME_NOW/1000*animMul+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+(e.kind==='centipede'?Math.sin(t*10)*.25:Math.sin(t*8)*1.2));X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+(e.kind==='hornet'?Math.PI:0)+(e.kind==='centipede'?Math.sin(t*7)*.008:Math.sin(t*5)*.025));
  if(e.dying&&e.kind==='gardenHeart'){
    const q=Math.max(0,Math.min(1,(game.finalPurify?.elapsed||0)/6.4)),sink=q*q;
    X.rotate(q*1.30);X.translate(0,44*sink);X.scale(1-q*.20,1-q*.58);X.globalAlpha=Math.max(.025,1-q*.975);X.filter=`saturate(${Math.max(.08,1-q*.92)}) brightness(${Math.max(.58,1-q*.34)})`;
