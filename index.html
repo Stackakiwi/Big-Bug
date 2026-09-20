@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.147 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.149 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1448,8 +1448,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.147</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.147</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.149</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.149</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2830,7 +2830,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
-   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.68],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
+   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.82],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart')baseHp*=1.25;
@@ -3218,7 +3218,7 @@ function enemyMove(e,dt){
  // v19.0.110 — Red Centipede runs instead of doing the usual boss hop/dash.
  // It stays grounded, tracks the player continuously, and its special is one sustained sprint.
  if(e.boss&&e.kind==='centipede'&&e.state==='centiRun'){
-   const rd=Math.hypot(dx,dy)||1,runSpeed=Math.max(245,e.speed*2.55);
+   const rd=Math.hypot(dx,dy)||1,runSpeed=Math.max(270,e.speed*2.72);
    e.x+=dx/rd*runSpeed*slow*dt;e.y+=dy/rd*runSpeed*slow*dt;
    if(e.stateT<=0){e.state='chase';e.cool=.48}
    return;
@@ -3228,7 +3228,7 @@ function enemyMove(e,dt){
      e.state='pinchStrike';e.stateT=.22;
      let ax=e.pinchX-e.x,ay=e.pinchY-e.y,ad=Math.hypot(ax,ay)||1;
      e.vx=ax/ad*340;e.vy=ay/ad*340;
-     // v19.0.147 — Pincher's signature clamp is intentionally catastrophic.
+     // v19.0.149 — Pincher's signature clamp is intentionally catastrophic.
      // This only changes the BIG PINCH/CRUSH hazard; contact damage and every other attack stay untouched.
      bossHazard(e.pinchX,e.pinchY,42,.34,'clamp',9999);
      flashBanner('CRUSH!',.22)
@@ -3304,7 +3304,7 @@ function enemyMove(e,dt){
    if(e.kind==='stagBeetle'){e.shotCd=2.5;e.state='dash';e.stateT=.72;e.vx=Math.cos(aim)*285;e.vy=Math.sin(aim)*285;flashBanner('ANTLER CHARGE!',.28)}
    else if(e.kind==='moleCricket'){e.shotCd=5.8+Math.random()*1.0;const digX=e.x,digY=e.y;e.burrowX=Math.max(45,Math.min(W-45,p.x));e.burrowY=Math.max(120,Math.min(H-55,p.y));e.state='burrowWait';e.stateT=2.0;game.fx.push({x:digX,y:digY,vx:0,vy:0,life:1.65,maxLife:1.65,r:29,earthCrack:true,seed:Math.random()*6.283});game.fx.push({x:e.burrowX,y:e.burrowY,vx:0,vy:0,life:3.0,maxLife:3.0,r:32,earthCrack:true,seed:Math.random()*6.283});flashBanner('BURROW!',.38)}
    else if(e.kind==='dragonflyBoss'){e.shotCd=999;e.state='skyExit';e.stateT=0;e.skyExitDir=e.x<W/2?-1:1;const exitSpeed=Math.max(105,e.speed*1.05);e.vx=e.skyExitDir*exitSpeed;e.vy=Math.max(-42,Math.min(42,(p.y-e.y)*.12));flashBanner('SKY LANCER BREAKS AWAY!',.3)}
-   else if(e.kind==='centipede'){e.shotCd=2.9;e.state='centiRun';e.stateT=1.22;flashBanner('RAZOR RUN!',.38)}
+   else if(e.kind==='centipede'){e.shotCd=2.55;e.state='centiRun';e.stateT=1.32;flashBanner('RAZOR RUN!',.38)}
    else if(e.kind==='earwig'){
      if(d<210&&Math.random()<.13){
        e.shotCd=4.6;e.state='pinchWindup';e.stateT=.58;
@@ -4250,7 +4250,7 @@ function drawStoryCorruptionDust(ai){
  if(c<=0)return;
  const step=storyDustStepFromArea(ai),pileCount=3+step,sizeScale=(1.38+step*.16);
  X.save();
- // v19.0.147 — larger physical dust piles with no floating/dotted purple circles.
+ // v19.0.149 — larger physical dust piles with no floating/dotted purple circles.
  // The corruption reads as grounded dusty smears/flecks instead of round particles.
  const hazeAlpha=.008+.022*c;
  X.globalAlpha=hazeAlpha;X.fillStyle='#7a4481';X.fillRect(0,0,W,H);
@@ -4674,7 +4674,7 @@ function drawEnemy(e){
   eye(-r*.22,-r*.82,2.6);eye(r*.22,-r*.82,2.6);
   line(-r*.2,-r*1.02,-r*.62,-r*1.48,2,'#63251f');line(r*.2,-r*1.02,r*.62,-r*1.48,2,'#63251f');
  }else if(e.kind==='earwig'){
-  // v19.0.147 — PINCHER identity pass. Visual only: hitbox/radius stays exactly the same.
+  // v19.0.149 — PINCHER identity pass. Visual only: hitbox/radius stays exactly the same.
   // Low, plated rust-red body, jagged shoulder guards, and oversized ivory-tipped clamp arms.
   for(let side of [-1,1]){
     line(side*5,-2,side*(r+10),-12+step,3.2,'#40251f');
@@ -4879,31 +4879,36 @@ function drawEnemy(e){
   X.fillStyle='#9a704b';
   for(let side of [-1,1]){X.beginPath();X.moveTo(side*rr*.42,-rr*.95);X.lineTo(side*rr*.68,-rr*1.16);X.lineTo(side*rr*.55,-rr*.88);X.fill()}
  }else if(e.kind==='sporeBeetle'){
-  // SPORE BACK: mutated ladybug/beetle overtaken by visible fungal growths.
+  // v19.0.149 — SPOREBACK now shares the same purple corruption language as the Spored double bosses.
+  // No ordinary beige mushrooms: the infection is fused purple fungal tissue plus grounded dust/flecks.
   const rr=r*1.12;
   for(let side of [-1,1]){
-    for(let i=0;i<3;i++){const sy=-rr*.25+i*rr*.42,k=(i%2?step2:step)*.22;line(side*rr*.35,sy,side*rr*1.04,sy+rr*.22+k,4.2,'#3c3328')}
+    for(let i=0;i<3;i++){const sy=-rr*.25+i*rr*.42,k=(i%2?step2:step)*.22;line(side*rr*.35,sy,side*rr*1.04,sy+rr*.22+k,4.2,'#453047')}
   }
-  // Split red ladybug-like shell.
-  X.fillStyle='#9e4338';X.beginPath();X.ellipse(0,rr*.20,rr*.78,rr*.94,0,0,6.28);X.fill();
-  X.strokeStyle='#492d29';X.lineWidth=2.3;X.stroke();line(0,-rr*.54,0,rr*.92,2.2,'#4b2928');
-  // Dark mutated shell spots.
-  X.fillStyle='#352c29';
+  // Sickened ladybug shell, pushed toward the same violet palette used by the Spored bosses.
+  X.fillStyle='#6f426f';X.beginPath();X.ellipse(0,rr*.20,rr*.78,rr*.94,0,0,6.28);X.fill();
+  X.strokeStyle='#3d2942';X.lineWidth=2.3;X.stroke();line(0,-rr*.54,0,rr*.92,2.2,'#4e3157');
+  X.fillStyle='#8f5a93';
+  for(const q of [[-.42,-.16,.22],[.35,.15,.18],[-.15,.48,.17]]){X.beginPath();X.ellipse(q[0]*rr,q[1]*rr,q[2]*rr,q[2]*rr*.72,.25,0,6.28);X.fill()}
+  // Dark corrupted shell spots.
+  X.fillStyle='#35293a';
   for(let side of [-1,1])for(let i=0;i<3;i++){let yy=-rr*.18+i*rr*.38;X.beginPath();X.arc(side*rr*(.34+(i%2)*.08),yy,rr*(.12+(i===1?.035:0)),0,6.28);X.fill()}
-  // Black-brown beetle head.
-  X.fillStyle='#39342c';X.beginPath();X.ellipse(0,-rr*.67,rr*.58,rr*.43,0,0,6.28);X.fill();
+  // Purple-black head.
+  X.fillStyle='#403142';X.beginPath();X.ellipse(0,-rr*.67,rr*.58,rr*.43,0,0,6.28);X.fill();
   eye(-rr*.20,-rr*.72,2.8);eye(rr*.20,-rr*.72,2.8);
-  // Static fungal stalks and caps growing directly from the shell.
-  const fungi=[[-.38,-.42,.25],[.30,-.25,.34],[-.12,.05,.29],[.43,.27,.22],[-.36,.45,.20]];
-  for(const m of fungi){
-    const mx=m[0]*rr,my=m[1]*rr,s=m[2]*rr;
-    X.strokeStyle='#c2b18a';X.lineWidth=Math.max(2,s*.22);X.beginPath();X.moveTo(mx,my+s*.25);X.lineTo(mx,my-s*.35);X.stroke();
-    X.fillStyle='#d5c49a';X.beginPath();X.ellipse(mx,my-s*.38,s*.55,s*.28,0,0,6.28);X.fill();
-    X.strokeStyle='#76694f';X.lineWidth=1;X.stroke();
+  // Fused purple fungal ridges replace the old normal-looking mushroom stalks/caps.
+  X.strokeStyle='#a56fa5';X.lineCap='round';
+  for(const f of [[-.45,-.42,-.62,-.70],[.28,-.30,.43,-.62],[-.08,.02,-.18,-.31],[.42,.30,.63,.08],[-.34,.48,-.54,.28]]){
+    X.lineWidth=Math.max(3,rr*.10);X.beginPath();X.moveTo(f[0]*rr,f[1]*rr);X.quadraticCurveTo((f[0]+f[2])*.55*rr,(f[1]+f[3])*.55*rr,f[2]*rr,f[3]*rr);X.stroke();
   }
-  // Bulging spore sacs.
-  X.fillStyle='#9eb35b';
-  for(const s of [[-.58,.12,.12],[.56,-.05,.10],[.12,.57,.13]]){X.beginPath();X.arc(s[0]*rr,s[1]*rr,s[2]*rr,0,6.28);X.fill()}
+  X.lineCap='butt';
+  // Purple dust stuck to the body: irregular smears and angular flecks, never round particle circles.
+  X.save();X.globalAlpha=.86;X.fillStyle='#a96caf';
+  for(const d of [[-.58,.06,.16,.07,.18],[.53,-.02,.14,.06,-.22],[.18,.66,.18,.07,.12],[-.30,-.58,.13,.055,-.28]]){
+    X.save();X.translate(d[0]*rr,d[1]*rr);X.rotate(d[4]);X.beginPath();X.ellipse(0,0,d[2]*rr,d[3]*rr,0,0,6.28);X.fill();
+    X.fillStyle='#d59ad1';X.beginPath();X.moveTo(-d[2]*rr*.35,-d[3]*rr*.2);X.lineTo(0,-d[3]*rr*.8);X.lineTo(d[2]*rr*.25,d[3]*rr*.15);X.closePath();X.fill();X.restore();X.fillStyle='#a96caf';
+  }
+  X.restore();
  }else if(e.kind==='moleCricket'){
   // Mole Thing — compact furry digger with mouse-like ears, pointed snout and oversized digging paws.
   X.fillStyle='#6f5b47';X.beginPath();X.ellipse(0,5,r*.76,r*.98,0,0,6.28);X.fill();
@@ -4961,12 +4966,17 @@ function drawEnemy(e){
        X.beginPath();X.arc(q[0]*rr,q[1]*rr,Math.max(3,q[2]*rr),0,6.28);X.fill();X.stroke();
        X.fillStyle='#d498d0';X.beginPath();X.arc(q[0]*rr-1.2,q[1]*rr-1.5,Math.max(1.5,q[2]*rr*.34),0,6.28);X.fill();
      }
-     // Two tiny mushroom growths keep the corruption readable without hiding the original boss art.
-     for(const m of [[-.58,-.48,.12],[.48,-.34,.10]]){
-       const mx=m[0]*rr,my=m[1]*rr,sz=Math.max(4,m[2]*rr);
-       X.strokeStyle='#c7b695';X.lineWidth=Math.max(1.5,sz*.24);X.beginPath();X.moveTo(mx,my+sz*.25);X.lineTo(mx,my-sz*.42);X.stroke();
-       X.fillStyle='#9a6399';X.beginPath();X.ellipse(mx,my-sz*.48,sz*.72,sz*.34,0,0,6.28);X.fill();
-       X.strokeStyle='#5d3d62';X.lineWidth=1;X.stroke();
+     // v19.0.149 — fused purple fungal growths plus dust stuck directly to the Spored bosses.
+     // Keep these static/lightweight and avoid round floating particles.
+     X.strokeStyle='#a56fa5';X.lineCap='round';
+     for(const f of [[-.55,-.42,-.72,-.67],[.45,-.30,.61,-.53]]){
+       X.lineWidth=Math.max(3,rr*.09);X.beginPath();X.moveTo(f[0]*rr,f[1]*rr);X.quadraticCurveTo((f[0]+f[2])*.55*rr,(f[1]+f[3])*.55*rr,f[2]*rr,f[3]*rr);X.stroke();
+     }
+     X.lineCap='butt';
+     X.fillStyle='#a96caf';
+     for(const d of [[-.62,.18,.18,.065,.18],[.52,.35,.15,.055,-.24],[-.08,-.62,.13,.05,.08]]){
+       X.save();X.translate(d[0]*rr,d[1]*rr);X.rotate(d[4]);X.beginPath();X.ellipse(0,0,d[2]*rr,d[3]*rr,0,0,6.28);X.fill();
+       X.fillStyle='#d59ad1';X.beginPath();X.moveTo(-d[2]*rr*.3,0);X.lineTo(0,-d[3]*rr*.9);X.lineTo(d[2]*rr*.28,d[3]*rr*.2);X.closePath();X.fill();X.restore();X.fillStyle='#a96caf';
      }
      // v19.0.70 — no surrounding infection ring on the Waves 90/95 double bosses.
      X.restore();
