@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.172 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.173 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -287,6 +287,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
    The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;right:12px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
+/* v19.0.173 — post-game Credits button sits immediately left of Settings and appears only after the main game is beaten. */
+#home #homeCreditsBtn{position:absolute;right:118px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
 #home .logoMain{display:block}
 /* v17.8.3 — preserve the exact title/logo layout while simplifying only the lower Home controls. */
@@ -1467,6 +1469,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button class="homeGoldBalance" data-action="goldShop" aria-label="Open Gold Leaf Shop"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span><small> SHOP</small></button>
+  <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><canvas id="gardenBookBugCanvas" class="bookBugCanvas" width="58" height="58"></canvas></span></button>
   <div class="bugHero"><canvas id="homeBugHero" width="120" height="120" aria-hidden="true"></canvas></div>
@@ -1486,8 +1489,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.172</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.172</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.173</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.173</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1803,6 +1806,7 @@ if(!save.unlocked.includes(save.selected))save.selected='ladybug';
 // Wave 25 must be cleared. A saved best wave of 26+ proves that clear happened in an older run.
 save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=26;
 function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;const html=unlocked?'MOSQUITO MODE':' MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 25 TO UNLOCK</small>';if(b.innerHTML!==html)b.innerHTML=html}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
+function refreshCreditsHome(){const b=$('homeCreditsBtn');if(b)b.classList.toggle('hidden',!save.mainGameBeaten)}
 function goldWavesUnlocked(){return !!(save.mainGameBeaten&&save.legendaryGolden?.owned)}
 function refreshGoldWavesHome(){
  const b=$('goldWavesBtn'),m=$('endlessBtn');if(!b)return;
@@ -2252,7 +2256,7 @@ function resetGameProgress(){
  bossMusicStop();showGameUI(false);game=null;
  localStorage.removeItem(SAVEKEY);clearRunRecovery();
  save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],legendaryGolden:{revealed:false,owned:false},settings:keptSettings,cosmetics:keptCosmetics};
- persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
+ persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();refreshCreditsHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
 let settingsOpenedFromPause=false;
@@ -5657,6 +5661,7 @@ function restoreCoreHomePresentation(){
   home.querySelector('.homeGoldBalance'),
   $('gardenBookBtn'),
   $('globalSettingsBtn'),
+  $('homeCreditsBtn'),
   $('titleGarden')
  ];
  for(const el of core){
@@ -5672,7 +5677,7 @@ function enterHomeCleanly(){
  if(game&&game.mode==='gold'){game.mode='home';game.over=true;}
  bossMusicStop();shopMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);
  showGameUI(false);stopTitleGardenLoop();screen('home');restoreCoreHomePresentation();
- $('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
+ $('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();refreshGoldUI();
  requestAnimationFrame(()=>{
   // Re-assert after layout so a stale ending timer/class cannot win the same frame.
   cleanupGoldFinaleForHome();screen('home');restoreCoreHomePresentation();
@@ -5698,6 +5703,7 @@ document.addEventListener('click',e=>{
  if(a==='goldWaves')startGoldWaves(false);
  if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
  if(a==='testStoryNotes')startGardenStoryNotesTest()
+ if(a==='credits'){stopTitleGardenLoop();showGameUI(false);playEndingCredits(true)}
  if(a==='testEnding')previewFinalPurification(false)
  if(a==='testPurify')previewFinalPurification(true)
  if(a==='settings'){settingsOpenedFromPause=false;stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
@@ -5944,7 +5950,7 @@ function paintHelpGameIcons(){
   q.fillStyle='#6c5d4d';q.beginPath();q.ellipse(0,8,7,15,0,0,Math.PI*2);q.fill();q.fillStyle='#3b3028';q.beginPath();q.arc(0,-8,7,0,Math.PI*2);q.fill();eye(-2.5,-9,1.7);eye(2.5,-9,1.7);ln(-2,-14,-7,-21,1.5);ln(2,-14,7,-21,1.5);ln(0,-15,0,-28,2,'#30251b');
  }
  q.restore()})}
-paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshGoldUI();
+paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();refreshGoldUI();
 const bbHasRecovery=!!loadRunRecovery();
 if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFirstHelpSeen=localStorage.getItem(FIRSTHELPKEY)==='1'}catch(e){}if(!bbFirstHelpSeen){stopTitleGardenLoop();showGameUI(false);screen('firstHelp')}}
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
