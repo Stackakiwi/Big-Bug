@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.170 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.171 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1486,8 +1486,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.170</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.170</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.171</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.171</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2874,7 +2874,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.82],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.90],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.567]}; // v19.0.170 — Spore Behemoth movement +35%; HP unchanged.
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
-   if(k==='gardenHeart')baseHp*=1.25;
+   if(k==='gardenHeart'){baseHp*=1.25;damage*=1.30;} // v19.0.171 — Spore Behemoth: all contact damage +30%; HP unchanged.
    // v17.8.34 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
     // v17.4.4 — early boss HP tuning after upgrade power reduction
@@ -3419,14 +3419,14 @@ function enemyMove(e,dt){
    else if(e.kind==='gardenHeart'){
     // v19.0.166 — replace the old brown root strike with a readable, dodgeable purple spore fan.
     e.shotCd=1.85;
-    bossRing(e,12,165,10+game.wave*.18,t*.12,'spore');
+    bossRing(e,12,165,(10+game.wave*.18)*1.30,t*.12,'spore'); // v19.0.171 — Spore Behemoth projectile damage +30%
     if(Math.random()<.7){
-      const aim=Math.atan2(p.y-e.y,p.x-e.x),fanDamage=12+game.wave*.18;
+      const aim=Math.atan2(p.y-e.y,p.x-e.x),fanDamage=(12+game.wave*.18)*1.30; // v19.0.171 — +30%
       for(const off of [-.42,-.21,0,.21,.42]){
         const a=aim+off;
         game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*118,vy:Math.sin(a)*118,life:3.2,r:6.2,sting:true,venom:true,damage:fanDamage,behemothSporeFan:true});
       }
-      bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16);
+      bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',(11+game.wave*.16)*1.30); // v19.0.171 — +30%
       flashBanner('SPORE SWEEP!',.34)
     }else flashBanner('HEART PULSE!',.34)
   }
