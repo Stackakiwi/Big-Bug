@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.175 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.176 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -287,7 +287,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
    The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;right:12px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
-/* v19.0.175 — post-game Credits button shifted farther left of Settings and appears only after the main game is beaten. */
+/* v19.0.176 — post-game Credits button shifted farther left of Settings and appears only after the main game is beaten. */
 #home #homeCreditsBtn{position:absolute;right:146px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
 #home .logoMain{display:block}
@@ -359,7 +359,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .creditName:nth-of-type(2n+1){transform:translateX(72vw) rotate(2deg)}
 #creditsRoll .creditName.creditNameIn{opacity:1;transform:translateX(0) rotate(0deg)}
 #creditsRoll .endThanks{margin-top:80px;font-size:16px;color:#96ad83;letter-spacing:3px}
-@keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 930px))}}
+@keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 1120px))}}
 #continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
 #continuePrompt.show{opacity:1}
 /* v18.0.68 — temp ending previews bypass final prep and trigger the real in-arena purification directly. */
@@ -1489,8 +1489,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.175</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.175</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.176</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.176</div>
 </section>
 
 <section id="bugs" class="screen hidden">
