@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.191 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.193 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -442,7 +442,7 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .pauseStats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px auto 18px;max-width:330px;text-align:left}.pauseStat{background:#17301f;border:1px solid #ffffff22;border-radius:10px;padding:9px 11px;box-shadow:inset 0 -2px #0b1b10}.pauseStat small{display:block;font-size:10px;opacity:.7;letter-spacing:.6px}.pauseStat b{display:block;font-size:18px;margin-top:2px}
 .leafCurrencyIcon.bbLeafIcon{width:24px;height:24px;font-size:0;background:none;border:0;box-shadow:none;filter:drop-shadow(0 0 5px #dfff63);transform:none}.leafCurrencyIcon.bbLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23c9f84f' stroke='%23fbffe1' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%233d792d' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}.leafCurrencyIcon.bbLeafIcon:after{display:none}
 .goldLeafIcon{display:inline-block;position:relative;width:24px;height:24px;vertical-align:-6px;margin-right:4px;filter:drop-shadow(0 0 5px #ffd84f) drop-shadow(0 0 10px #fff0a055)}
-.goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 9.4 L2.7 13.4' fill='none' stroke='%23b88718' stroke-width='2.2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
+.goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
 .goldLeafIcon:after{content:"✦";position:absolute;right:-6px;top:-7px;color:#fff7c7;font-size:11px;text-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
 @keyframes goldTwinkle{0%,100%{opacity:.3;transform:scale(.65) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(22deg)}}
 .homeGoldBalance{position:absolute!important;right:12px!important;left:auto!important;top:max(10px,env(safe-area-inset-top))!important;transform:none!important;z-index:45!important;background:linear-gradient(180deg,#fff3a6 0%,#ffd84e 20%,#e8a91e 68%,#bd7610 100%)!important;border:2px solid #fff1a0!important;border-radius:999px;padding:11px 18px;color:#3b2704!important;font-size:18px;font-weight:1000;box-shadow:inset 0 3px 2px #fffbd9cc,inset 0 -4px 3px #8f540d88,0 4px 0 #704109,0 7px 15px #0006,0 0 16px #ffd84f66!important;text-shadow:0 1px 0 #fff0a0;pointer-events:auto;cursor:pointer;font-family:inherit;min-height:48px;overflow:hidden}.homeGoldBalance:after{content:"";position:absolute;left:10%;top:4px;width:55%;height:8px;border-radius:999px;background:linear-gradient(90deg,#fff0,#fffbd9dd,#fff0);transform:skewX(-24deg);pointer-events:none}.homeGoldBalance .goldLeafIcon{width:25px;height:25px;vertical-align:-7px;margin-right:4px;filter:drop-shadow(0 1px 0 #fff2a8) drop-shadow(0 2px 2px #74480066)}.homeGoldBalance small{font-size:12px;letter-spacing:.9px;color:#4a2d03!important;margin-left:5px;text-shadow:0 1px 0 #fff0a0}
@@ -1003,6 +1003,34 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 #gardenBook .gardenBookPanel{padding-bottom:26px!important}
 
+/* v19.0.193 — PC-only Garden Book enlargement. Mobile/tablet layout is unchanged. */
+@media (min-width:900px){
+ #gardenBook{padding:36px 20px 56px!important}
+ #gardenBook .gardenBookPanel{
+  width:min(1520px,96vw)!important;
+  padding:36px 28px 52px!important;
+  border-width:4px!important;border-radius:26px!important;
+  box-shadow:0 8px 0 #1f3925!important
+ }
+ .gardenBookHeader h2{font-size:80px!important;margin-right:92px!important}
+ .gardenBookHeader .bookMini{width:50px!important;height:44px!important;border-width:6px!important;border-radius:6px 10px 10px 6px!important;margin-right:14px!important;box-shadow:inset 10px 0 #345d34!important}
+ .gardenBookHeader p{margin:18px 84px 24px 0!important;font-size:28px!important;line-height:1.25!important}
+ .gardenBookProgress{border-width:4px!important;border-radius:16px!important;padding:12px 24px!important;font-size:24px!important;box-shadow:0 4px 0 #203c27!important}
+ .gardenTabs{gap:14px!important;margin:32px 0 26px!important}
+ .gardenTab{border-width:4px!important;border-radius:16px!important;padding:16px 20px!important;font-size:24px!important;box-shadow:0 4px 0 #426238!important}
+ .gardenTab.active{box-shadow:0 4px 0 #35572d!important}
+ .gardenBookGrid{gap:20px!important}
+ .gardenEntry{min-height:396px!important;border-width:4px!important;border-radius:20px!important;padding:18px 16px 20px!important;box-shadow:0 4px 0 #5b744d!important}
+ .gardenEntry canvas{width:208px!important;height:208px!important;margin:-2px auto 6px!important;image-rendering:auto}
+ .gardenEntry h3{margin:6px 0 10px!important;font-size:32px!important}
+ .gardenEntry p{font-size:22px!important;line-height:1.25!important}
+ .gardenEntry .encounterTag{margin-top:12px!important;font-size:18px!important;border-width:2px!important;border-radius:12px!important;padding:6px 12px!important}
+ .gardenEntry.locked{box-shadow:0 4px 0 #6b7162!important}
+ .gardenEntry.locked .lockedBug{height:208px!important;font-size:124px!important}
+ .gardenBookBack{margin-top:36px!important;width:min(90%,660px)!important;border-width:6px!important;border-radius:24px!important;box-shadow:0 8px 0 #14291a!important;font-size:28px!important;padding:22px 26px!important}
+ .gardenBookClose{top:28px!important;right:28px!important;width:76px!important;height:76px!important;min-width:76px!important;border-width:6px!important;border-radius:18px!important;font-size:54px!important;line-height:58px!important;box-shadow:0 8px 0 #29482d!important}
+}
+
 
 /* v18.0.33 — requested visual polish only */
 #base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
@@ -1500,8 +1528,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.191</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.191</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.193</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.193</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1805,7 +1833,7 @@ if(save.legendaryGolden?.owned&&!save.discovered.includes('player:golden'))save.
 // v19.0.186 — Dragonfly Reflexes lightning bolt enlarged; player damage SFX replaced with a louder bug-squeak yelp.
 // v19.0.187 — Beetle/Butterfly 10 Gold Leaf purchase is early-unlock only; after Best Wave 20/25 only regular Leaf purchase remains.
 // v19.0.190 — repair desktop Home centering/wave HUD layout and guard BUGS purchase-button handlers against missing state-specific controls.
-// v19.0.191 — show the player’s total saved regular-Leaf bank in the upper-right of Pause and The Bug Parade.
+// v19.0.193 — show the player’s total saved regular-Leaf bank in the upper-right of Pause and The Bug Parade.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
 save.bugPurchases=Array.isArray(save.bugPurchases)?save.bugPurchases:[];
 save.unlocked=['ladybug'];
@@ -4488,7 +4516,7 @@ function drawLeaves(d){
  X.beginPath();X.moveTo(0,-r);X.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);X.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);X.closePath();X.fill();X.stroke();
  X.shadowBlur=0;X.strokeStyle='#956b12';X.lineWidth=1.6;X.beginPath();X.moveTo(0,-r*.78);X.lineTo(0,r*.82);X.stroke();
  X.beginPath();X.moveTo(0,-r*.38);X.lineTo(r*.50,-r*.10);X.moveTo(0,-r*.05);X.lineTo(-r*.52,r*.20);X.moveTo(0,r*.25);X.lineTo(r*.45,r*.48);X.stroke();
- X.strokeStyle='#b88718';X.lineWidth=2.2;X.beginPath();X.moveTo(0,r*.78);X.lineTo(r*.22,r*1.12);X.stroke();
+ // v19.0.193 — Gold Leaf silhouette now ends cleanly at its tip, matching the regular Leaf visual fix.
  X.rotate(.45-Math.sin(t*2.2+(d.phase||0))*.18);X.fillStyle='#fff8c9';X.shadowColor='#fff';X.shadowBlur=8;const glow=.55+.45*Math.sin(t*7+(d.phase||0));X.globalAlpha=Math.max(.25,glow);X.font='bold '+Math.round(r*.85)+'px system-ui';X.fillText('✦',r*.45,-r*.45);X.restore();X.globalAlpha=1;
 }
 const MOSQ_WINGS=new Path2D(),MOSQ_BODY=new Path2D(),MOSQ_HEAD=new Path2D(),MOSQ_EYES=new Path2D();
