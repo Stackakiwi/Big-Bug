@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.154 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.155 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1466,8 +1466,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.154</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.154</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.155</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.155</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2725,7 +2725,7 @@ function completeWave(){
  // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
- // v19.0.154 — wave-clear safety: hostile attacks/hazards cannot carry into the clear screen or next wave.
+ // v19.0.155 — wave-clear safety: hostile attacks/hazards cannot carry into the clear screen or next wave.
  // Remove only enemy-damaging FX; player shots, pickups, heal hearts, particles, and UI FX are preserved.
  if(Array.isArray(g.fx))g.fx=g.fx.filter(f=>!(f&&(f.sting||f.enemyShot||f.goldShot||f.bossHazard||f.toxic||f.lightningStrike)));
  if(g.p.helperArmyWave===g.wave&&g.p.helperArmyHelpers&&g.p.helperArmyHelpers.length){
@@ -3353,16 +3353,16 @@ function enemyMove(e,dt){
      flashBanner('FIRE SPRAY!',.3)
    }
    else if(e.kind==='mothBoss'){
-     // v19.0.145 — Dusk Moth pressure pass: more frequent attacks and a stronger, more common gust.
-     e.shotCd=2.55;bossHazard(p.x,p.y,115,2.4,'dark',8+game.wave*.14);
-     for(let i=0;i<6;i++)shoot(i*6.283/6+t*.35,105,8+game.wave*.15,true,7);
-     if(Math.random()<.50){
+     // v19.0.155 — Dusk Moth fairness pass: big attack remains dangerous but is more avoidable.
+     e.shotCd=2.7;bossHazard(p.x,p.y,92,2.25,'dark',8+game.wave*.14);
+     for(let i=0;i<6;i++)shoot(i*6.283/6+t*.35,100,8+game.wave*.15,true,7);
+     if(Math.random()<.46){
        let gx=p.x-e.x,gy=p.y-e.y,gd=Math.hypot(gx,gy)||1;
-       p.x=Math.max(p.r,Math.min(W-p.r,p.x+gx/gd*50));
-       p.y=Math.max(p.r,Math.min(H-p.r,p.y+gy/gd*50));
+       p.x=Math.max(p.r,Math.min(W-p.r,p.x+gx/gd*38));
+       p.y=Math.max(p.r,Math.min(H-p.r,p.y+gy/gd*38));
        p.moveX=Math.max(p.r,Math.min(W-p.r,p.moveX+gx/gd*50));
        p.moveY=Math.max(p.r,Math.min(H-p.r,p.moveY+gy/gd*50));
-       game.fx.push({x:p.x,y:p.y,vx:gx/gd*110,vy:gy/gd*110,life:.42,r:27,mothGust:true});
+       game.fx.push({x:p.x,y:p.y,vx:gx/gd*100,vy:gy/gd*100,life:.42,r:27,mothGust:true});
        flashBanner('DUSK GUST!',.25)
      }else flashBanner('DUSK VEIL!',.35)
    }
