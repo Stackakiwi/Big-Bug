@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.161 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.162 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1422,6 +1422,26 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  #bugs .legendaryBugCard b{font-size:21px!important}
  #bugs .legendaryBugCard p{font-size:15px!important}
 }
+
+/* v19.0.162 — cleaner, compact Final Boss Preparation screen. */
+#finalPrep .panel{width:min(720px,96vw)!important;padding:22px 20px 20px!important}
+#finalPrep h2{font-size:clamp(28px,5vw,36px)!important;margin-bottom:5px!important}
+#finalPrep .panel>p{font-size:16px!important;line-height:1.25!important;margin:0 auto 16px!important;max-width:500px!important}
+#finalPrep .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:11px!important;align-items:stretch!important}
+#finalPrep .choice{min-height:210px!important;padding:18px 14px 15px!important;text-align:center!important;align-items:center!important;justify-content:flex-start!important}
+#finalPrep .choice .upgradeMark{position:static!important;transform:none!important;order:-1!important;width:64px!important;height:64px!important;margin:0 auto 10px!important}
+#finalPrep .choice .upgradeMark.finalChoiceTrio{width:82px!important;height:64px!important;right:auto!important}
+#finalPrep .choice b{font-size:clamp(22px,2.4vw,29px)!important;line-height:1.02!important;margin:0 0 9px!important}
+#finalPrep .choice p{font-size:16px!important;line-height:1.22!important;margin:0!important}
+@media(max-width:620px){
+ #finalPrep .panel{width:min(430px,96vw)!important;padding:18px 14px 16px!important}
+ #finalPrep .grid{grid-template-columns:1fr!important;gap:9px!important}
+ #finalPrep .choice{min-height:108px!important;padding:13px 78px 13px 14px!important;text-align:left!important;align-items:flex-start!important;justify-content:center!important}
+ #finalPrep .choice .upgradeMark{position:absolute!important;right:12px!important;top:50%!important;transform:translateY(-50%)!important;order:initial!important;margin:0!important;width:56px!important;height:56px!important}
+ #finalPrep .choice .upgradeMark.finalChoiceTrio{right:7px!important;width:68px!important;height:54px!important}
+ #finalPrep .choice b{font-size:23px!important;margin-bottom:4px!important}
+ #finalPrep .choice p{font-size:15px!important}
+}
 </style>
 </head>
 <body>
@@ -1466,8 +1486,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.161</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.161</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.162</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.162</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1594,9 +1614,9 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <section id="finalPrep" class="screen hidden">
  <div class="panel"><h2>FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p>
  <div class="grid">
-  <button class="choice rare" id="prepLeaves"><div class="art"></div><b>100,067 LEAVES</b><p class="muted">Take 100,067 Leaves into the final fight.</p><span class="upgradeMark"><span class="leafCurrencyIcon bbLeafIcon"></span></span></button>
-  <button class="choice epic" id="prepUpgrades"><div class="art"></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose one of 3 upgrades, three separate times.</p><span class="upgradeMark finalChoiceTrio" id="finalChoicesMark"></span></button>
-  <button class="choice epic" id="prepBuddy"><div class="art"></div><b>SUPER LITTLE BUDDY</b><p class="muted">A glowing final-fight buddy with 1.5× your stats.</p><span class="upgradeMark" id="finalBuddyMark"></span></button>
+  <button class="choice rare" id="prepLeaves"><div class="art"></div><b>100,000 LEAVES</b><p class="muted">Take 100,000 Leaves.</p><span class="upgradeMark"><span class="leafCurrencyIcon bbLeafIcon"></span></span></button>
+  <button class="choice epic" id="prepUpgrades"><div class="art"></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose 3 upgrades.</p><span class="upgradeMark finalChoiceTrio" id="finalChoicesMark"></span></button>
+  <button class="choice epic" id="prepBuddy"><div class="art"></div><b>SUPER LITTLE BUDDY</b><p class="muted">A stronger buddy for the final fight.</p><span class="upgradeMark" id="finalBuddyMark"></span></button>
  </div></div>
 </section>
 
@@ -3811,7 +3831,7 @@ function finalUpgradePick(remaining){
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{choices[i].apply(game.p);upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
 }
-$('prepLeaves').onclick=()=>{initAudio();game.coins=(game.coins||0)+100067;finishFinalPrep()};
+$('prepLeaves').onclick=()=>{initAudio();game.coins=(game.coins||0)+100000;finishFinalPrep()};
 $('prepUpgrades').onclick=()=>{initAudio();$('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';finalUpgradePick(3)};
 $('prepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalPrep()};
 
