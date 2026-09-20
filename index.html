@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.149 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.150 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1448,8 +1448,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.149</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.149</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.150</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.150</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2058,11 +2058,11 @@ function applyStoryLeafCorruption(w=0){
  const layers=[];
  for(let i=0;i<pileCount;i++){
   const [px,py]=spots[i%spots.length],s=sizeScale*(.92+(i%3)*.07),dx=(i%2?2:-1),dy=(i%3)-1;
-  layers.push(`radial-gradient(ellipse at ${px}% ${py}%, rgba(111,55,128,${(.92*shadow).toFixed(3)}) 0 ${Math.round(7*s*10)/10}%, transparent ${Math.round(27*s*10)/10}%)`);
-  layers.push(`radial-gradient(circle at ${px-4*dx}% ${py-2*dy}%, rgba(201,138,220,${(.95*pile).toFixed(3)}) 0 ${(2.2*s).toFixed(2)}px, transparent ${(4.1*s).toFixed(2)}px)`);
-  layers.push(`radial-gradient(circle at ${px+2*dx}% ${py-5}%, rgba(235,195,246,${(.72*glow).toFixed(3)}) 0 ${(1.0*s).toFixed(2)}px, transparent ${(2.2*s).toFixed(2)}px)`);
-  layers.push(`radial-gradient(circle at ${px+5}% ${py+3}%, rgba(175,101,193,${(.88*pile).toFixed(3)}) 0 ${(1.8*s).toFixed(2)}px, transparent ${(3.4*s).toFixed(2)}px)`);
-  layers.push(`radial-gradient(circle at ${px-6}% ${py+4}%, rgba(246,223,250,${(.76*glow).toFixed(3)}) 0 ${(0.8*s).toFixed(2)}px, transparent ${(1.8*s).toFixed(2)}px)`);
+  // v19.0.150 — remove the faint round/circular dust spots from Garden Updates.
+  // Keep corruption as soft directional dusty streaks instead of radial blobs.
+  const a1=(31+i*17)%170,a2=(143+i*11)%170;
+  layers.push(`linear-gradient(${a1}deg, transparent 0 47%, rgba(151,83,166,${(.30*pile).toFixed(3)}) 48.5% 50.5%, transparent 52% 100%)`);
+  layers.push(`linear-gradient(${a2}deg, transparent 0 48.5%, rgba(215,158,226,${(.20*glow).toFixed(3)}) 49.2% 50.2%, transparent 51% 100%)`);
  }
  layers.push('linear-gradient(155deg,#f5e9b9 0%,#eadba3 58%,#d8c787 100%)');
  leaf.style.background=layers.join(',');
@@ -3218,7 +3218,7 @@ function enemyMove(e,dt){
  // v19.0.110 — Red Centipede runs instead of doing the usual boss hop/dash.
  // It stays grounded, tracks the player continuously, and its special is one sustained sprint.
  if(e.boss&&e.kind==='centipede'&&e.state==='centiRun'){
-   const rd=Math.hypot(dx,dy)||1,runSpeed=Math.max(270,e.speed*2.72);
+   const rd=Math.hypot(dx,dy)||1,runSpeed=Math.max(351,e.speed*3.536); // v19.0.150 — Red Centipede sprint +30% over v19.0.149
    e.x+=dx/rd*runSpeed*slow*dt;e.y+=dy/rd*runSpeed*slow*dt;
    if(e.stateT<=0){e.state='chase';e.cool=.48}
    return;
@@ -4258,9 +4258,18 @@ function drawStoryCorruptionDust(ai){
    const x=((i*163+ai*59+92)%(W-90))+45;
    const y=((i*127+ai*41+74)%(H-80))+40;
    const rx=(10+(i%3)*3.6+6*c)*sizeScale,ry=(5+(i%2)*2+2.5*c)*sizeScale;
-   X.globalAlpha=.12+.11*c;
+   // v19.0.150 — no faint oval/circle base under the pile. Build the pile itself as an irregular dusty patch.
+   X.globalAlpha=.10+.10*c;
    X.fillStyle=i%2?'#6f3a78':'#87508e';
-   X.beginPath();X.ellipse(x,y,rx*1.34,ry*1.18,(i*.31)+ai*.05,0,6.28);X.fill();
+   X.beginPath();
+   const rot=(i*.31)+ai*.05,pts=9;
+   for(let k=0;k<pts;k++){
+     const a=k*6.283185307179586/pts+rot;
+     const wob=.62+(((k*37+i*19)%41)/100);
+     const px=x+Math.cos(a)*rx*1.34*wob,py=y+Math.sin(a)*ry*1.18*wob;
+     if(k===0)X.moveTo(px,py);else X.lineTo(px,py);
+   }
+   X.closePath();X.fill();
    // Irregular dusty streaks and tiny angular flecks; deliberately no arc/circle particles.
    const flecks=10+step*2+Math.round(c*6)+(i%3)*2;
    X.lineCap='round';
