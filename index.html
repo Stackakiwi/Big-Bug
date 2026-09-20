@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.160 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.161 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1466,8 +1466,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.160</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.160</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.161</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.161</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3389,7 +3389,8 @@ function enemyMove(e,dt){
      e.shotCd=2.45;for(let i=0;i<5;i++){let q=(i+1)/5,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,36,1.7+i*.10,'root',(11+game.wave*.17)*.70)}flashBanner(' ROOT ERUPTION!',.35)}
    else if(e.kind==='sporeBeetle'){
      e.shotCd=2.55;
-     for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,4.8,'spore',(10+game.wave*.16)*.5)}
+     // v19.0.161 — Sporeback's lingering Spore Bloom patches last exactly 2.5s longer (4.8 -> 7.3s).
+     for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,7.3,'spore',(10+game.wave*.16)*.5)}
      bossRing(e,8,105,(8+game.wave*.14)*.5,t*.2,'spore');
      // v19.0.70 — Sporeback no longer leaves 30-second damaging ground poison behind.
      // This prevents long-lived FX accumulation during the Wave 85 fight.
@@ -3428,6 +3429,12 @@ function enemyMove(e,dt){
  if(e.boss&&e.kind==='bigBloodSucker'){
    // Constant mosquito-style pursuit: no hop/dash state, just a fast flying chase with a tiny side-to-side buzz.
    const nx=dx/d,ny=dy/d,wobble=Math.sin(game.time*7.2+(e._aiPhase||0))*.13,fly=e.speed*1.16;
+   e.x+=(nx-ny*wobble)*fly*slow*dt;e.y+=(ny+nx*wobble)*fly*slow*dt;
+   return;
+ }
+ if(e.boss&&e.kind==='sporeBeetle'){
+   // v19.0.161 — Sporeback presses the player more aggressively instead of keeping the old slow boss pace.
+   const nx=dx/d,ny=dy/d,wobble=Math.sin(game.time*5.6+(e._aiPhase||0))*.055,fly=e.speed*1.55;
    e.x+=(nx-ny*wobble)*fly*slow*dt;e.y+=(ny+nx*wobble)*fly*slow*dt;
    return;
  }
