@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.187 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.190 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1013,6 +1013,12 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 /* v19.0.69 — regular Leaf icon stem removed; Story-only beetle heart drop increased to 20%. */
 #hud .hudWave.storyBossWave #waveProgress{font-size:26px!important;line-height:1!important;margin-left:5px!important;letter-spacing:-1px!important;color:#e64d4d!important;text-shadow:0 2px 4px #000b!important}
 
+/* v19.0.190 — desktop Home/HUD layout repair. Keep menu and wave HUD anchored to the actual viewport. */
+#home.screen{inset:0!important;left:0!important;right:0!important;top:0!important;bottom:0!important;width:100vw!important;max-width:none!important;height:100vh!important;height:100dvh!important;margin:0!important;transform:none!important;align-items:center!important;justify-content:center!important}
+#home>.logo,#home>.bugHero,#home>[data-action="play"],#home>#endlessBtn,#home>#goldWavesBtn,#home>.homeMenuRow,#home>.homeBestFancy{left:auto!important;right:auto!important;margin-left:auto!important;margin-right:auto!important}
+#hud .hudWave{display:flex!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;min-width:max-content!important;width:auto!important;max-width:none!important}
+#hud .hudWave #waveLabel,#hud .hudWave #wave,#hud .hudWave #waveProgress{position:static!important;transform:none!important;white-space:nowrap!important;flex:0 0 auto!important}
+
 /* v18.0.58 — keep temporary wave tester higher and selectable */
 #home .testJump {
   position: relative !important;
@@ -1491,8 +1497,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.187</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.187</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.190</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.190</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1794,6 +1800,7 @@ if(save.legendaryGolden?.owned&&!save.discovered.includes('player:golden'))save.
 // v19.0.185 — Beetle now becomes purchasable at Wave 20 for 5,000 Leaves; Butterfly at Wave 25 for 7,500 Leaves. Gold Leaf option remains 10.
 // v19.0.186 — Dragonfly Reflexes lightning bolt enlarged; player damage SFX replaced with a louder bug-squeak yelp.
 // v19.0.187 — Beetle/Butterfly 10 Gold Leaf purchase is early-unlock only; after Best Wave 20/25 only regular Leaf purchase remains.
+// v19.0.190 — repair desktop Home centering/wave HUD layout and guard BUGS purchase-button handlers against missing state-specific controls.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
 save.bugPurchases=Array.isArray(save.bugPurchases)?save.bugPurchases:[];
 save.unlocked=['ladybug'];
@@ -2475,7 +2482,7 @@ function buildBugScreen(){
  for(const id of (save.unlocked||[]))if(BUGS[id])gardenDiscover('player:'+id);
  const grid=$('bugGrid');grid.innerHTML='';
  const normalIds=['ladybug','beetle','butterfly'];
- normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?20:25,eligible=starter||save.best>=unlockWave;const lockNote='';const leafCost=id==='beetle'?5000:7500;const actions=unlocked?`<button class="btn small green">${selected?'SELECTED':'SELECT'}</button>`:starter?'':eligible?`<button class="btn small leafBugUnlock"><span class="leafCurrencyIcon bbLeafIcon"></span>${leafCost.toLocaleString()}</button>`:`<div class="bugUnlockChoices"><button class="btn small dark" disabled>REACH WAVE ${unlockWave}</button><span>OR</span><button class="btn small goldUnlockBtn"><span class="goldLeafIcon" aria-hidden="true"></span>10</button></div>`;el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}${actions}`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);if(unlocked){el.querySelector('button').onclick=()=>{initAudio();save.selected=id;persist();buildBugScreen()}}else if(!starter){el.querySelector('.goldUnlockBtn').onclick=()=>buyStandardBug(id,'gold');if(eligible)el.querySelector('.leafBugUnlock').onclick=()=>buyStandardBug(id,'leaf')}grid.appendChild(el)});
+ normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?20:25,eligible=starter||save.best>=unlockWave;const lockNote='';const leafCost=id==='beetle'?5000:7500;const actions=unlocked?`<button class="btn small green">${selected?'SELECTED':'SELECT'}</button>`:starter?'':eligible?`<button class="btn small leafBugUnlock"><span class="leafCurrencyIcon bbLeafIcon"></span>${leafCost.toLocaleString()}</button>`:`<div class="bugUnlockChoices"><button class="btn small dark" disabled>REACH WAVE ${unlockWave}</button><span>OR</span><button class="btn small goldUnlockBtn"><span class="goldLeafIcon" aria-hidden="true"></span>10</button></div>`;el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}${actions}`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);if(unlocked){el.querySelector('button').onclick=()=>{initAudio();save.selected=id;persist();buildBugScreen()}}else if(!starter){const goldBtn=el.querySelector('.goldUnlockBtn'),leafBtn=el.querySelector('.leafBugUnlock');if(goldBtn)goldBtn.onclick=()=>buyStandardBug(id,'gold');if(leafBtn)leafBtn.onclick=()=>buyStandardBug(id,'leaf')}grid.appendChild(el)});
  if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>500,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
 }
 function buyStandardBug(id,kind){if(save.unlocked.includes(id))return;const unlockWave=id==='beetle'?20:25;const leafCost=id==='beetle'?5000:7500;const bestWave=save.best||0;if(kind==='leaf'&&bestWave<unlockWave){beep(155,.10,.022,'triangle');return}if(kind==='gold'&&bestWave>=unlockWave){beep(155,.10,.022,'triangle');return}const ok=kind==='leaf'?save.scrap>=leafCost:save.goldLeaves>=10;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf'){save.scrap-=leafCost;if(!save.bugPurchases.includes(id))save.bugPurchases.push(id)}else{save.goldLeaves-=10;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id)}if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}
