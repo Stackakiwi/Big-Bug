@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.165 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.168 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1242,7 +1242,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
 /* v19.0.90 — tighter upgrade cards; final 3-choice reward uses existing leaf + selected player + sword icons. */
-/* v18.0.188 — final prep leaf option is 100,067 Leaves; styling and boss logic otherwise unchanged. */
+/* v19.0.168 — final prep first choice grants the exact standard Leaves Attack Boost for free. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1486,8 +1486,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.165</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.165</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.168</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.168</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1614,7 +1614,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <section id="finalPrep" class="screen hidden">
  <div class="panel"><h2>FINAL BOSS PREPARATION</h2><p class="muted">One last gift before facing the Spore Behemoth. Choose only one.</p>
  <div class="grid">
-  <button class="choice rare" id="prepLeaves"><div class="art"></div><b>100,000 LEAVES</b><p class="muted">Take 100,000 Leaves.</p><span class="upgradeMark"><span class="leafCurrencyIcon bbLeafIcon"></span></span></button>
+  <button class="choice rare" id="prepLeaves"><div class="art"></div><b>FREE ATTACK BOOST</b><p class="muted">Get one Attack Boost free.</p><span class="upgradeMark"><span class="bbIcon bbBoltIcon" aria-hidden="true"></span></span></button>
   <button class="choice epic" id="prepUpgrades"><div class="art"></div><b>3 RANDOM UPGRADES</b><p class="muted">Choose 3 upgrades.</p><span class="upgradeMark finalChoiceTrio" id="finalChoicesMark"></span></button>
   <button class="choice epic" id="prepBuddy"><div class="art"></div><b>SUPER LITTLE BUDDY</b><p class="muted">A stronger buddy for the final fight.</p><span class="upgradeMark" id="finalBuddyMark"></span></button>
  </div></div>
@@ -3416,7 +3416,20 @@ function enemyMove(e,dt){
      // This prevents long-lived FX accumulation during the Wave 85 fight.
      flashBanner('SPORE BLOOM!',.35)
    }
-   else if(e.kind==='gardenHeart'){e.shotCd=1.85;bossRing(e,12,165,10+game.wave*.18,t*.12,'spore');if(Math.random()<.7){bossHazard(p.x,p.y,86,2.31,'rootFinal',12+game.wave*.18);bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16)}flashBanner('HEART PULSE!',.34)}
+   else if(e.kind==='gardenHeart'){
+    // v19.0.166 — replace the old brown root strike with a readable, dodgeable purple spore fan.
+    e.shotCd=1.85;
+    bossRing(e,12,165,10+game.wave*.18,t*.12,'spore');
+    if(Math.random()<.7){
+      const aim=Math.atan2(p.y-e.y,p.x-e.x),fanDamage=12+game.wave*.18;
+      for(const off of [-.42,-.21,0,.21,.42]){
+        const a=aim+off;
+        game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*118,vy:Math.sin(a)*118,life:3.2,r:6.2,sting:true,venom:true,damage:fanDamage,behemothSporeFan:true});
+      }
+      bossHazard(W-p.x,Math.max(110,H-p.y),58,2.5,'spore',11+game.wave*.16);
+      flashBanner('SPORE SWEEP!',.34)
+    }else flashBanner('HEART PULSE!',.34)
+  }
  }
  if(e.boss&&e.kind!=='gardenHeart'){
    e.addCd-=dt;
@@ -3842,7 +3855,7 @@ function finalUpgradePick(remaining){
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{choices[i].apply(game.p);upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
 }
-$('prepLeaves').onclick=()=>{initAudio();game.coins=(game.coins||0)+100000;finishFinalPrep()};
+$('prepLeaves').onclick=()=>{initAudio();const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);game.boostUntil=game.time+boostDuration;beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();finishFinalPrep()}; // v19.0.168 — exact standard Leaves Attack Boost effect, granted free with no Leaves deducted.
 $('prepUpgrades').onclick=()=>{initAudio();$('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';finalUpgradePick(3)};
 $('prepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalPrep()};
 
@@ -4607,7 +4620,7 @@ function drawEnemy(e){
   const rr=r*1.18,pulse=1+Math.sin(t*3.2)*.025;
   // Thick fungal limbs/tendrils.
   for(let side of [-1,1])for(let i=0;i<3;i++){
-    const sy=-rr*.18+i*rr*.42,k=(i%2?step2:step)*.12;
+    const sy=-rr*.18+i*rr*.42,k=(i%2?step2:step)*.34; // v19.0.166 — subtle visible leg/tendril movement
     X.strokeStyle=i===1?'#5d385f':'#493044';X.lineWidth=8-i;X.lineCap='round';X.beginPath();
     X.moveTo(side*rr*.34,sy);X.quadraticCurveTo(side*rr*(.9+i*.12),sy+rr*.16,side*rr*(1.35+i*.08),sy+rr*(.30+i*.08)+k);X.stroke();
   }
