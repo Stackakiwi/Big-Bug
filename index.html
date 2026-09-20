@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.164 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.165 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1486,8 +1486,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.164</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.164</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.165</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.165</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3438,7 +3438,7 @@ function enemyMove(e,dt){
            spawnEnemy('normal',extraKind);
          }
        }else{
-         // v19.0.164 — boss-wave support rules: no regular beetles on ANY boss wave.
+         // v19.0.165 — boss-wave support rules: no regular beetles on ANY boss wave.
          // Regular spiders are allowed only when Queen Spider or Old Webber is in the fight.
          const spiderBossFight=bossKindsFor(game.wave).some(k=>k==='queenSpider'||k==='tarantula');
          const supportPool=game.wave<11
@@ -5144,6 +5144,24 @@ function drawFinalSavedText(){
  X.font='900 '+Math.round(Math.min(68,W*.13))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=8;X.strokeStyle='#2b1c13';X.strokeText('YOU SAVED',0,-22);X.fillStyle='#f5b02e';X.fillText('YOU SAVED',0,-22);
  X.font='1000 '+Math.round(Math.min(82,W*.16))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=9;X.strokeStyle='#2b1c13';X.strokeText('THE GARDEN!',0,42);X.fillStyle='#78c84c';X.fillText('THE GARDEN!',0,42);X.restore();
 }
+// v19.0.165 — subtle falling purple spore-dust atmosphere on the final four boss waves only (85/90/95/100).
+// Purely visual and deterministic: no particle objects are allocated, so it cannot affect combat or wave state.
+function drawLateBossPurpleFall(now){
+ if(game?.mode!=='story'||!game.waveActive||![85,90,95,100].includes(game.wave))return;
+ const t=now*.001,count=22;
+ X.save();X.globalCompositeOperation='lighter';
+ for(let i=0;i<count;i++){
+   const seed=i*73.17+game.wave*1.91;
+   const x=((seed*19.37+Math.sin(t*.42+i*1.7)*18)% (W+30)+W+30)%(W+30)-15;
+   const speed=15+(i%6)*3.2;
+   const y=((seed*11.9+t*speed)%(H+34))-17;
+   const r=.65+(i%4)*.32,tw=.28+.48*(.5+.5*Math.sin(t*3.1+i*2.43));
+   X.globalAlpha=tw;X.fillStyle=i%3===0?'#e9b5ff':i%3===1?'#c779ef':'#9d57ca';
+   X.shadowColor='#c76cff';X.shadowBlur=3.5;X.beginPath();X.arc(x,y,r,0,6.283);X.fill();
+   if(i%5===0){X.globalAlpha=tw*.55;X.beginPath();X.arc(x,y,r*2.2,0,6.283);X.fill()}
+ }
+ X.restore();
+}
 function draw(now=performance.now()){
  FRAME_NOW=now;
  // v18.0.70 — anti-flash guard: reset transient draw state before every frame.
@@ -5186,6 +5204,7 @@ function draw(now=performance.now()){
    X.restore();
  }
  drawStoryCorruptionDust(ai);
+ drawLateBossPurpleFall(now);
 
  // area-aware leaf litter: quantity and placement now change with each map
  const leafCounts=[28,24,12,10,18,10,8,14,26,18,16,6,8,5,4,14,8,12,4,2];
