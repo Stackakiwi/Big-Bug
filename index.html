@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.190 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.191 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -436,6 +436,9 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .bbBugIcon{width:1.02em;height:1.18em;border-radius:48% 48% 46% 46%;border:2px solid #24211e;background:radial-gradient(circle at 29% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 39%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 29% 68%,#24211e 0 8%,transparent 9%),radial-gradient(circle at 71% 68%,#24211e 0 8%,transparent 9%),linear-gradient(90deg,transparent 47%,#24211e 47% 53%,transparent 53%),#d9473f;box-shadow:inset 0 0 0 1px #ed6a60,0 1px 0 #111}.bbBugIcon:before{content:"";position:absolute;left:16%;top:-28%;width:68%;height:38%;border-radius:50% 50% 42% 42%;background:#24211e;border:1px solid #171714;box-sizing:border-box}.bbBugIcon:after{content:"••";position:absolute;left:20%;top:-31%;width:60%;color:#f8f3df;font:bold .36em/1 system-ui,sans-serif;letter-spacing:.35em;text-align:center;text-shadow:0 0 0 #fff}
 .bbSwordSvg{width:1.28em;height:1.28em;display:block;flex:0 0 auto;overflow:visible;filter:drop-shadow(0 1px 1px #0008)}
 #pause .panel h2{display:block;text-align:center;width:100%;margin-left:auto;margin-right:auto}
+#pause .panel,#bugs .panel{position:relative}
+.screenLeafBank{position:absolute;right:18px;top:18px;z-index:4;display:flex;align-items:center;justify-content:center;gap:7px;min-width:86px;padding:8px 11px;border-radius:14px;background:#17301f;border:1px solid #ffffff2b;box-shadow:inset 0 -2px #0b1b10,0 4px 12px #0004;color:#f5ffe8;font-size:18px;font-weight:1000;line-height:1;text-shadow:0 1px 0 #17301f}.screenLeafBank .leafCurrencyIcon.bbLeafIcon{width:25px;height:25px;flex:0 0 25px;filter:drop-shadow(0 0 6px #baff78aa)}
+@media(max-width:560px){.screenLeafBank{right:12px;top:12px;min-width:74px;padding:7px 9px;font-size:16px}.screenLeafBank .leafCurrencyIcon.bbLeafIcon{width:22px;height:22px;flex-basis:22px}}
 .pauseStats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px auto 18px;max-width:330px;text-align:left}.pauseStat{background:#17301f;border:1px solid #ffffff22;border-radius:10px;padding:9px 11px;box-shadow:inset 0 -2px #0b1b10}.pauseStat small{display:block;font-size:10px;opacity:.7;letter-spacing:.6px}.pauseStat b{display:block;font-size:18px;margin-top:2px}
 .leafCurrencyIcon.bbLeafIcon{width:24px;height:24px;font-size:0;background:none;border:0;box-shadow:none;filter:drop-shadow(0 0 5px #dfff63);transform:none}.leafCurrencyIcon.bbLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23c9f84f' stroke='%23fbffe1' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%233d792d' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}.leafCurrencyIcon.bbLeafIcon:after{display:none}
 .goldLeafIcon{display:inline-block;position:relative;width:24px;height:24px;vertical-align:-6px;margin-right:4px;filter:drop-shadow(0 0 5px #ffd84f) drop-shadow(0 0 10px #fff0a055)}
@@ -1497,12 +1500,12 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.190</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.190</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.191</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.191</div>
 </section>
 
 <section id="bugs" class="screen hidden">
- <div class="panel"><h2><canvas id="bugParadeIcon" width="52" height="52" aria-hidden="true" style="width:1.18em;height:1.18em;vertical-align:-.23em;margin-right:.08em"></canvas> THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
+ <div class="panel"><div class="screenLeafBank" aria-label="Total Leaves"><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="bugsLeafBank">0</span></div><h2><canvas id="bugParadeIcon" width="52" height="52" aria-hidden="true" style="width:1.18em;height:1.18em;vertical-align:-.23em;margin-right:.08em"></canvas> THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
 <section id="cosmetics" class="screen hidden">
@@ -1663,6 +1666,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <section id="pause" class="screen hidden">
  <div class="panel" style="text-align:center">
+  <div class="screenLeafBank" aria-label="Total Leaves"><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="pauseLeafBank">0</span></div>
   <div id="pauseMain"><h2>PAUSED</h2><div id="pauseStats" class="pauseStats"></div><button class="btn green" data-action="resume">KEEP GOING</button><button class="btn dark" data-action="pauseSettings">SETTINGS</button><button class="btn red" data-action="showQuitConfirm">QUIT RUN</button></div>
   <div id="quitConfirm" class="hidden"><h2>QUIT THIS RUN?</h2><p>Your current run will end.</p><button class="btn red" data-action="confirmQuit">QUIT RUN</button><button class="btn green" data-action="cancelQuit">KEEP GOING</button></div>
  </div>
@@ -1801,6 +1805,7 @@ if(save.legendaryGolden?.owned&&!save.discovered.includes('player:golden'))save.
 // v19.0.186 — Dragonfly Reflexes lightning bolt enlarged; player damage SFX replaced with a louder bug-squeak yelp.
 // v19.0.187 — Beetle/Butterfly 10 Gold Leaf purchase is early-unlock only; after Best Wave 20/25 only regular Leaf purchase remains.
 // v19.0.190 — repair desktop Home centering/wave HUD layout and guard BUGS purchase-button handlers against missing state-specific controls.
+// v19.0.191 — show the player’s total saved regular-Leaf bank in the upper-right of Pause and The Bug Parade.
 save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
 save.bugPurchases=Array.isArray(save.bugPurchases)?save.bugPurchases:[];
 save.unlocked=['ladybug'];
@@ -2476,7 +2481,9 @@ function bigBigAlienDeathSting(){
 
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
 
+function refreshScreenLeafBanks(){const n=Math.max(0,Number(save.scrap)||0);if($('bugsLeafBank'))$('bugsLeafBank').textContent=n.toLocaleString();if($('pauseLeafBank'))$('pauseLeafBank').textContent=n.toLocaleString()}
 function buildBugScreen(){
+ refreshScreenLeafBanks();
  if(!save.legendaryGolden||typeof save.legendaryGolden!=='object')save.legendaryGolden={revealed:false,owned:false};
  syncLegendaryGolden(false);
  for(const id of (save.unlocked||[]))if(BUGS[id])gardenDiscover('player:'+id);
@@ -3949,6 +3956,7 @@ function wave50BonusPick(){
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
 }
 function refreshPauseStats(){
+ refreshScreenLeafBanks();
  if(!game||!game.p||!$('pauseStats'))return;const p=game.p;
  const atk=Math.round(p.damage*(game.mode==='gold'?100:10))/10, hp=Math.ceil(p.hp)+' / '+Math.ceil(p.maxHp), move=Math.round(p.speed), attacks=(1000/p.rate).toFixed(2)+'/sec';
  $('pauseStats').innerHTML=`<div class="pauseStat"><small>ATTACK</small><b>${atk}</b></div><div class="pauseStat"><small>HEALTH</small><b>${hp}</b></div><div class="pauseStat"><small>MOVEMENT</small><b>${move}</b></div><div class="pauseStat"><small>ATTACK SPEED</small><b>${attacks}</b></div>`;
