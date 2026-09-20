@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.157 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.159 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1466,8 +1466,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.157</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.157</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.159</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.159</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3209,7 +3209,7 @@ function enemyMove(e,dt){
      const ang=e.webberAim||0,cx=e.webberX,cy=e.webberY;
      for(let i=-1;i<=1;i++){
        const dist=i*84;
-       bossHazard(cx+Math.cos(ang)*dist,cy+Math.sin(ang)*dist,23.5,4.2,'webline',(8+game.wave*.14)*.5);
+       bossHazard(cx+Math.cos(ang)*dist,cy+Math.sin(ang)*dist,23.5,4.2,'webline',(8+game.wave*.14)*1.5); // v19.0.159 — Old Webber web damage tripled
      }
      e.state='chase';e.cool=.65;burst(e.x,e.y,4,.2,'#b495c7');flashBanner('WEB WALL!',.34);
    }
@@ -3383,7 +3383,7 @@ function enemyMove(e,dt){
      e.shotCd=3.15;e.state='weevilWindup';e.stateT=.56;e.weevilAimX=p.x;e.weevilAimY=p.y;
      burst(e.x,e.y,4,.28,'#d7e88b');beep(185,.11,.028,'sawtooth');flashBanner('THORN GARDEN!',.56)
    }
-   else if(e.kind==='tarantula'){e.shotCd=3.4;e.state='webberWindup';e.stateT=.58;e.webberAim=aim+Math.PI/2;e.webberX=p.x;e.webberY=p.y;flashBanner('WEB WALL INCOMING!',.58)}
+   else if(e.kind==='tarantula'){e.shotCd=2.9;e.state='webberWindup';e.stateT=.58;e.webberAim=aim+Math.PI/2;e.webberX=p.x;e.webberY=p.y;flashBanner('WEB WALL INCOMING!',.58)} // v19.0.159 — web wall used a little more frequently
    else if(e.kind==='rootBorer'){e.shotCd=3.0;for(let i=0;i<4;i++){let q=(i+1)/4,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,31,1.55+i*.12,'root',(11+game.wave*.17)*.5)}flashBanner(' ROOT ERUPTION!',.35)}
    else if(e.kind==='sporeBeetle'){
      e.shotCd=2.55;
@@ -4975,7 +4975,8 @@ function drawEnemy(e){
   for(let side of [-1,1]){line(side*r*.12,-r*.88,side*r*.72,-r*.82,1.2,'#c7b69d');line(side*r*.10,-r*.80,side*r*.76,-r*.68,1.2,'#c7b69d')}
   // Broad shovel-like forepaws keep its old attack silhouette but make it unmistakably a burrower.
   for(let side of [-1,1]){X.fillStyle='#b09168';X.beginPath();X.ellipse(side*r*.92,-r*.02,r*.42,r*.24,side*.22,0,6.28);X.fill();line(side*r*.76,-r*.02,side*r*1.22,-r*.20,5,'#a48658');line(side*r*.77,r*.05,side*r*1.22,r*.12,4,'#a48658')}
-  for(let side of [-1,1]){line(side*r*.38,r*.48,side*r*.70,r*.92+step*.08,3,'#5d4b3b')}
+  // v19.0.158 — remove the old stick-like rear legs and give Mole Thing one tiny odd little tail. Visual-only.
+  X.save();X.strokeStyle='#66513f';X.lineWidth=Math.max(2,r*.075);X.lineCap='round';X.beginPath();X.moveTo(r*.12,r*.91);X.quadraticCurveTo(r*.34,r*1.08,r*.19,r*1.22);X.quadraticCurveTo(r*.08,r*1.30,r*.02,r*1.20);X.stroke();X.restore();
  }else if(e.kind==='stagBeetle'){
   // v17.9.68 — Stag King gets a dedicated royal stag-beetle silhouette. Visual-only.
   for(let side of [-1,1]){line(side*r*.34,-r*.20,side*(r+10),-r*.42+step,3.1,'#2d211c');line(side*r*.42,r*.10,side*(r+12),r*.08-step,3.1,'#2d211c');line(side*r*.36,r*.40,side*(r+9),r*.72+step2,3.1,'#2d211c')}
