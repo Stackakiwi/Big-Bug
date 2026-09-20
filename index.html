@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.150 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.151 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1448,8 +1448,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.150</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.150</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.151</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.151</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -4963,31 +4963,18 @@ function drawEnemy(e){
 
  if(e.boss){
    const rr=r;
-   // v18.0.61 — Waves 90 and 95 are visibly Spored variants.
-   // Lightweight static fungal marks only: no extra particles, hitboxes, or gameplay changes.
+   // v19.0.151 — Waves 90/95 keep the original boss artwork.
+   // Their only Spored visual difference is purple eyes; original boss versions remain untouched.
    if(game.wave===90||game.wave===95){
      X.save();
-     X.globalAlpha=.86;
-     // Purple infection patches attached to the shell/body.
-     const sporePatches=[[-.44,-.18,.14],[.34,.20,.11],[-.10,.48,.09]];
-     for(const q of sporePatches){
-       X.fillStyle='#8f5a93';X.strokeStyle='#4e3157';X.lineWidth=1.3;
-       X.beginPath();X.arc(q[0]*rr,q[1]*rr,Math.max(3,q[2]*rr),0,6.28);X.fill();X.stroke();
-       X.fillStyle='#d498d0';X.beginPath();X.arc(q[0]*rr-1.2,q[1]*rr-1.5,Math.max(1.5,q[2]*rr*.34),0,6.28);X.fill();
-     }
-     // v19.0.149 — fused purple fungal growths plus dust stuck directly to the Spored bosses.
-     // Keep these static/lightweight and avoid round floating particles.
-     X.strokeStyle='#a56fa5';X.lineCap='round';
-     for(const f of [[-.55,-.42,-.72,-.67],[.45,-.30,.61,-.53]]){
-       X.lineWidth=Math.max(3,rr*.09);X.beginPath();X.moveTo(f[0]*rr,f[1]*rr);X.quadraticCurveTo((f[0]+f[2])*.55*rr,(f[1]+f[3])*.55*rr,f[2]*rr,f[3]*rr);X.stroke();
-     }
-     X.lineCap='butt';
-     X.fillStyle='#a96caf';
-     for(const d of [[-.62,.18,.18,.065,.18],[.52,.35,.15,.055,-.24],[-.08,-.62,.13,.05,.08]]){
-       X.save();X.translate(d[0]*rr,d[1]*rr);X.rotate(d[4]);X.beginPath();X.ellipse(0,0,d[2]*rr,d[3]*rr,0,0,6.28);X.fill();
-       X.fillStyle='#d59ad1';X.beginPath();X.moveTo(-d[2]*rr*.3,0);X.lineTo(0,-d[3]*rr*.9);X.lineTo(d[2]*rr*.28,d[3]*rr*.2);X.closePath();X.fill();X.restore();X.fillStyle='#a96caf';
-     }
-     // v19.0.70 — no surrounding infection ring on the Waves 90/95 double bosses.
+     const purpleEye=(x,y,rad)=>{
+       X.fillStyle='#8f4bb0';X.beginPath();X.arc(x,y,rad,0,6.28);X.fill();
+       X.fillStyle='#e0a8ef';X.beginPath();X.arc(x-rad*.24,y-rad*.28,Math.max(.7,rad*.28),0,6.28);X.fill();
+     };
+     if(e.kind==='hornet'){const er=r*1.17;purpleEye(-er*.25,-er*.96,3.7);purpleEye(er*.25,-er*.96,3.7)}
+     else if(e.kind==='mantisBoss'){purpleEye(-r*.20,-r*.55,3.4);purpleEye(r*.20,-r*.55,3.4)}
+     else if(e.kind==='queenSpider'){purpleEye(-r*.20,-9,2.4);purpleEye(r*.20,-9,2.4)}
+     else if(e.kind==='bigBloodSucker'){const er=r*1.02;purpleEye(-er*.20,-er*.72,er*.13);purpleEye(er*.20,-er*.72,er*.13)}
      X.restore();
    }
    
