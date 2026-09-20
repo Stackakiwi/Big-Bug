@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.180 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.181 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -287,7 +287,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
    The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;right:12px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
-/* v19.0.180 — post-game Credits button shifted farther left of Settings and appears only after the main game is beaten. */
+/* v19.0.181 — post-game Credits button shifted farther left of Settings and appears only after the main game is beaten. */
 #home #homeCreditsBtn{position:absolute;right:146px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
 #home .logoMain{display:block}
@@ -1489,8 +1489,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.180</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.180</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.181</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.181</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1827,9 +1827,9 @@ if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','c
 
 const BUGS={
  ladybug:{name:'Ladybug',art:'ladybug',desc:'The Original Bug',bonus:p=>p.crit+=.10},
- beetle:{name:'Beetle',art:'beetle',desc:'The Tanky Bug',bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.damage*=1.20;p.rate*=1.12}},
- butterfly:{name:'Butterfly',art:'butterfly',desc:'The Swift Bug',bonus:p=>{p.damage*=.95;p.rate*=.65;p.speed*=1.10}},
- golden:{name:'The Legendary Golden Ladybug',art:'golden',desc:'The Perfect Bug',bonus:p=>{p.maxHp=Math.round(p.maxHp*1.5);p.hp=p.maxHp;p.damage*=1.5;p.rate/=1.5;p.speed*=1.5;p.crit+=.20}}
+ beetle:{name:'Beetle',art:'beetle',desc:'The Tanky Bug — More health and damage, but slower attacks.',bonus:p=>{p.maxHp+=35;p.hp=p.maxHp;p.damage*=1.20;p.rate*=1.12}},
+ butterfly:{name:'Butterfly',art:'butterfly',desc:'The Swift Bug — Faster movement and attacks, but less damage.',bonus:p=>{p.damage*=.90;p.rate*=.65;p.speed*=1.10}},
+ golden:{name:'The Legendary Golden Ladybug',art:'golden',desc:'The Perfect Bug — Stronger, faster, and tougher.',bonus:p=>{p.maxHp=Math.round(p.maxHp*1.5);p.hp=p.maxHp;p.damage*=1.5;p.rate/=1.5;p.speed*=1.5;p.crit+=.20}}
 };
 function allPermanentMaxed(){const u=save.upgrades||{};return ['hp','dmg','magnet','coins'].every(k=>(u[k]||0)>=10)}
 function syncLegendaryGolden(showNotice=false){if(!allPermanentMaxed())return false;const newly=!save.legendaryGolden.revealed;save.legendaryGolden.revealed=true;if(save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');if((newly||showNotice)&&!save.legendaryGolden.noticeSeen){save.legendaryGolden.noticeSeen=true;persist();setTimeout(showLegendaryReveal,80)}return newly}
@@ -3252,7 +3252,7 @@ function enemyMove(e,dt){
        const ax=p.x-e.x,ay=p.y-e.y,ad=Math.hypot(ax,ay)||1;
        e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=Math.min(2.35,Math.max(1.05,ad/560+.22));
        burst(e.x,e.y,4,.18,'#b9f3eb');
-       // v19.0.180 — Sky Lancer retreats much faster, and Sky Lances is made unmistakable without increasing HP.
+       // v19.0.181 — Sky Lancer retreats much faster, and Sky Lances is made unmistakable without increasing HP.
        e.skyAttack=(e.skyAttack||0)+1;
        const a=Math.atan2(e.vy,e.vx),dmg=8+game.wave*.16;
        if(e.skyAttack%2===0){
@@ -3275,7 +3275,7 @@ function enemyMove(e,dt){
      if(e.stateT<=0){e.state='chase';e.shotCd=2.15;e.cool=.8}
      return;
    }
-   // v19.0.180 — Close-range defense: if the player crowds Sky Lancer, fire an extremely fast aimed dart.
+   // v19.0.181 — Close-range defense: if the player crowds Sky Lancer, fire an extremely fast aimed dart.
    // This is independent of the normal Sky Sweep/Sky Lances cycle and does not change HP, movement, or those attacks.
    if(e.state==='chase'&&d<205&&e.closeStrikeCd<=0){
      const ca=Math.atan2(dy,dx),veryClose=d<115;
@@ -3391,7 +3391,7 @@ function enemyMove(e,dt){
      flashBanner('BLOOD BURST!',.32)
    }
    else if(e.kind==='cicada'){
-     // v19.0.180 — Thunder Cicada alternates Thunder Chorus with a readable three-strike lightning chain.
+     // v19.0.181 — Thunder Cicada alternates Thunder Chorus with a readable three-strike lightning chain.
      // Uses the existing lightning warning/strike objects, so no new collision or rendering system is introduced.
      e.cicadaAttack=(e.cicadaAttack||0)+1;e.shotCd=2.8;
      if(e.cicadaAttack%2===0){
@@ -3439,7 +3439,7 @@ function enemyMove(e,dt){
      }else flashBanner('DUSK VEIL!',.35)
    }
    else if(e.kind==='waterStrider'){
-     // v19.0.180 — Pond Skater alternates Ripple Skim with Crosscurrent: three spaced water ripples
+     // v19.0.181 — Pond Skater alternates Ripple Skim with Crosscurrent: three spaced water ripples
      // around the player's path, leaving visible gaps rather than simply increasing damage or health.
      e.waterAttack=(e.waterAttack||0)+1;e.shotCd=2.05;
      let tx=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*180)),ty=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*180));
@@ -4908,7 +4908,7 @@ function drawEnemy(e){
     }
   }
   X.lineCap='butt';
-  // v19.0.180 — visual-only Pond Skater refinement: cleaner layered shell, subtle aquatic markings, same silhouette/gameplay.
+  // v19.0.181 — visual-only Pond Skater refinement: cleaner layered shell, subtle aquatic markings, same silhouette/gameplay.
   // Broad shield-shaped water-bug body.
   X.fillStyle='#456d69';X.beginPath();X.moveTo(0,-rr*1.02);X.quadraticCurveTo(rr*.78,-rr*.62,rr*.70,rr*.38);X.quadraticCurveTo(rr*.48,rr*.95,0,rr*1.12);X.quadraticCurveTo(-rr*.48,rr*.95,-rr*.70,rr*.38);X.quadraticCurveTo(-rr*.78,-rr*.62,0,-rr*1.02);X.fill();
   X.strokeStyle='#294d4b';X.lineWidth=2;X.stroke();
@@ -5564,9 +5564,9 @@ function startOrResume(){if(!game||game.over){startRun();return}if(game.mode==='
 const GARDEN_BOOK={
  playable:[
   {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:'The original'},
-  {key:'player:beetle',id:'beetle',name:'Beetle',desc:'Tough shell and sloooow.'},
-  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Quick! Sting like a Butterfly.'},
-  {key:'player:golden',id:'golden',name:'Legendary Golden Ladybug',desc:'The legend.'}
+  {key:'player:beetle',id:'beetle',name:'Beetle',desc:'More health and damage, but slower attacks.'},
+  {key:'player:butterfly',id:'butterfly',name:'Butterfly',desc:'Faster movement and attacks, but less damage.'},
+  {key:'player:golden',id:'golden',name:'Legendary Golden Ladybug',desc:'Stronger, faster, and tougher.'}
  ],
  enemy:[
   {key:'enemy:ant',id:'ant',name:'Garden Ant',desc:'Small workers that get troublesome in groups.'},
