@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.187 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.188 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1491,8 +1491,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.187</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.187</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.188</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.188</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3737,8 +3737,20 @@ function update(dt,now){
  if(g.mode==='endless'){g.mosquitoSepTick=(g.mosquitoSepTick||0)+1;if((g.mosquitoSepTick&1)===0)separateMosquitoes()}else separateEnemies();
  for(const d of g.drops){
    d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,dist=0,mag2=p.magnet*p.magnet;
-   if(d2<mag2){dist=Math.sqrt(d2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt}
-   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.healDrop){const healed=Math.min(d.healAmount||10,Math.max(0,p.maxHp-p.hp));p.hp=Math.min(p.maxHp,p.hp+(d.healAmount||10));d.dead=true;game.fx.push({x:d.x,y:d.y-8,vx:0,vy:-24,life:.72,maxLife:.72,r:0,healHeart:true});burst(d.x,d.y,5,.28,'#ff8b78');beep(620,.055,.018,'sine');if(healed>0)flashBanner('+'+healed+' HP',.7)}else if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+10;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ 10 GOLD LEAVES FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;const leafHud=$('hudCurrencyIcon')||document.querySelector('#hud .hudLeaves');const leafRect=leafHud?.getBoundingClientRect();const leafTX=leafRect?leafRect.left+leafRect.width*.5:W*.72,leafTY=leafRect?leafRect.top+leafRect.height*.5:42;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.52,maxLife:.52,r:10,scrapFly:true,tx:leafTX,ty:leafTY});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
+   // v19.0.188 — In desktop WASD mode, the mouse cursor is a second regular-Leaf pickup point.
+   // It uses the player's live Pollen Pull radius (permanent + in-run upgrades), while hearts and Gold Leaves remain player-only.
+   const cursorLeaf=pcUsingWASD()&&pcLeafCursor.active&&!d.healDrop&&!d.goldLeaf;
+   let cdx=0,cdy=0,cd2=Infinity;
+   if(cursorLeaf){cdx=pcLeafCursor.x-d.x;cdy=pcLeafCursor.y-d.y;cd2=cdx*cdx+cdy*cdy}
+   if(d2<mag2||cd2<mag2){
+     const useCursor=cd2<d2;
+     const pdx=useCursor?cdx:dx,pdy=useCursor?cdy:dy,pd2=useCursor?cd2:d2;
+     dist=Math.sqrt(pd2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=pdx/dist*pull*dt;d.y+=pdy/dist*pull*dt;
+     dx=p.x-d.x;dy=p.y-d.y;d2=dx*dx+dy*dy;
+     if(cursorLeaf){cdx=pcLeafCursor.x-d.x;cdy=pcLeafCursor.y-d.y;cd2=cdx*cdx+cdy*cdy}
+   }
+   const pick=p.r+d.r+5,cursorPick=d.r+10;
+   if(d2<pick*pick||(cursorLeaf&&cd2<cursorPick*cursorPick)){if(d.healDrop){const healed=Math.min(d.healAmount||10,Math.max(0,p.maxHp-p.hp));p.hp=Math.min(p.maxHp,p.hp+(d.healAmount||10));d.dead=true;game.fx.push({x:d.x,y:d.y-8,vx:0,vy:-24,life:.72,maxLife:.72,r:0,healHeart:true});burst(d.x,d.y,5,.28,'#ff8b78');beep(620,.055,.018,'sine');if(healed>0)flashBanner('+'+healed+' HP',.7)}else if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+10;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ 10 GOLD LEAVES FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;const leafHud=$('hudCurrencyIcon')||document.querySelector('#hud .hudLeaves');const leafRect=leafHud?.getBoundingClientRect();const leafTX=leafRect?leafRect.left+leafRect.width*.5:W*.72,leafTY=leafRect?leafRect.top+leafRect.height*.5:42;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.52,maxLife:.52,r:10,scrapFly:true,tx:leafTX,ty:leafTY});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
  }
  for(const f of g.fx){
    f.life-=dt;
@@ -5809,11 +5821,13 @@ $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$(
 $('pauseBtn').onclick=()=>{if(!game||game.over||game.mode==='gold')return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
 let drag=false;
 const pcKeys={w:false,a:false,s:false,d:false};
+const pcLeafCursor={x:0,y:0,active:false};
 function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'}
 function pointerPos(e){return e.touches?e.touches[0]:e}
+function trackPCLeafCursor(e){if(!DESKTOP_PERF_RENDER||e.pointerType==='touch')return;pcLeafCursor.x=Math.max(0,Math.min(W,e.clientX));pcLeafCursor.y=Math.max(0,Math.min(H,e.clientY));pcLeafCursor.active=true}
 function movePlayer(e){if(!game||game.paused||game.over||pcUsingWASD())return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
 C.addEventListener('pointerdown',e=>{initAudio();if(pcUsingWASD())return;drag=true;movePlayer(e)});
-addEventListener('pointermove',e=>{if(drag)movePlayer(e)});
+addEventListener('pointermove',e=>{trackPCLeafCursor(e);if(drag)movePlayer(e)});
 addEventListener('pointerup',()=>drag=false);
 C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
 C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
