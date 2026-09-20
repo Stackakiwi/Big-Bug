@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.171 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.172 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1486,8 +1486,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.171</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.171</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.172</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.172</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -5988,8 +5988,8 @@ function tick(e,dt){
    const hp={hunter:115,charger:150,prism:125,blink:105,arc:135,guard:180}[k]||125;
    e.maxHp=Math.round(hp*mult);e.hp=e.maxHp;
    e.damage=({hunter:12,charger:17,prism:11,blink:13,arc:12,guard:15}[k]||12)*(1+Math.max(0,wave-5)*.012);
-   e.speed=0;e.vx=0;e.vy=0;e._goldRelentless=Math.random()<.08;e._goldPressure=(1+Math.max(0,wave-5)*.018)*1.10;
-   e._gc=((.32+Math.random()*.22)*.92)/e._goldPressure;e._phase=Math.random()*TAU;e._goldTrick=1.15+Math.random()*.75;
+   e.speed=0;e.vx=0;e.vy=0;e._goldRelentless=Math.random()<.10;e._goldPressure=(1+Math.max(0,wave-5)*.020)*1.34;
+   e._gc=((.32+Math.random()*.22)*.78)/e._goldPressure;e._phase=Math.random()*TAU;e._goldTrick=.92+Math.random()*.58; // v19.0.172 — Gold-only pressure pass; HP untouched.
    // Explicitly strip poison/venom state from Gold aliens.
    e.poison=false;e.venom=false;e.poisoned=false;e.poisonDamage=0;e.poisonTime=0;e.venomous=false;e.poisonOnHit=false;e.venomOnHit=false;
  }
@@ -6002,9 +6002,12 @@ function tick(e,dt){
  // Short teleports/ram bursts/projectiles remain intentionally dangerous and are not flattened into normal chase speed.
  const playerSp=Math.max(1,p.speed||420),relentless=!!e._goldRelentless;
  const baseMove={hunter:145,charger:72,prism:128,blink:55,arc:100,guard:62}[k]||100;
- const sustainLimit=playerSp*(relentless?1.08:.92);
- const press=Math.min(rawPress,sustainLimit/baseMove);
- e._goldTrick-=dt;
+ // v19.0.172 — Gold Waves punish camping through aggression/attack cadence, never extra HP.
+ const playerMotion=Math.hypot(p.motionX||0,p.motionY||0),camping=playerMotion<18;
+ const sustainLimit=playerSp*(relentless?1.15:1.02);
+ const press=Math.min(rawPress*(camping?1.20:1),sustainLimit/baseMove);
+ e._gc-=dt*(camping?1.28:1);
+ e._goldTrick-=dt*(camping?1.35:1);
  // v19.0.59 — light secondary Gold-only attack layer. This adds variety without
  // changing enemy HP or wave population, and is intentionally low-frequency.
  if(e._goldTrick<=0){
