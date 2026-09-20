@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.159 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.160 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1466,8 +1466,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.159</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.159</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.160</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.160</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2851,7 +2851,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
-   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.82],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.76],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
+   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.82],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.90],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.42]};
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart')baseHp*=1.25;
@@ -3384,7 +3384,9 @@ function enemyMove(e,dt){
      burst(e.x,e.y,4,.28,'#d7e88b');beep(185,.11,.028,'sawtooth');flashBanner('THORN GARDEN!',.56)
    }
    else if(e.kind==='tarantula'){e.shotCd=2.9;e.state='webberWindup';e.stateT=.58;e.webberAim=aim+Math.PI/2;e.webberX=p.x;e.webberY=p.y;flashBanner('WEB WALL INCOMING!',.58)} // v19.0.159 — web wall used a little more frequently
-   else if(e.kind==='rootBorer'){e.shotCd=3.0;for(let i=0;i<4;i++){let q=(i+1)/4,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,31,1.55+i*.12,'root',(11+game.wave*.17)*.5)}flashBanner(' ROOT ERUPTION!',.35)}
+   else if(e.kind==='rootBorer'){
+     // v19.0.160 — Root Borer all-around buff (health intentionally unchanged): quicker attacks, faster movement, broader/stronger eruption.
+     e.shotCd=2.45;for(let i=0;i<5;i++){let q=(i+1)/5,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,36,1.7+i*.10,'root',(11+game.wave*.17)*.70)}flashBanner(' ROOT ERUPTION!',.35)}
    else if(e.kind==='sporeBeetle'){
      e.shotCd=2.55;
      for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,4.8,'spore',(10+game.wave*.16)*.5)}
