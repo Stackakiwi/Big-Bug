@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.177 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.178 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -287,7 +287,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
    The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;right:12px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
-/* v19.0.177 — post-game Credits button shifted farther left of Settings and appears only after the main game is beaten. */
+/* v19.0.178 — post-game Credits button shifted farther left of Settings and appears only after the main game is beaten. */
 #home #homeCreditsBtn{position:absolute;right:146px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
 #home .logoMain{display:block}
@@ -1489,8 +1489,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.177</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.177</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.178</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.178</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3251,13 +3251,18 @@ function enemyMove(e,dt){
        const ax=p.x-e.x,ay=p.y-e.y,ad=Math.hypot(ax,ay)||1;
        e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=Math.min(2.35,Math.max(1.05,ad/560+.22));
        burst(e.x,e.y,4,.18,'#b9f3eb');
-       // v19.0.177 — Sky Lancer alternates its familiar sweep with a wider aerial lance fan.
-       // Movement/HP are unchanged; the second pattern gives Wave 30 a clearer offensive identity.
+       // v19.0.178 — Sky Lancer retreats much faster, and Sky Lances is made unmistakable without increasing HP.
        e.skyAttack=(e.skyAttack||0)+1;
        const a=Math.atan2(e.vy,e.vx),dmg=8+game.wave*.16;
        if(e.skyAttack%2===0){
-         flashBanner('SKY LANCES!',.32);
-         for(const off of [-.30,-.15,0,.15,.30])game.fx.push({x:e.x,y:e.y,vx:Math.cos(a+off)*285,vy:Math.sin(a+off)*285,life:2.7,r:4.5,sting:true,damage:dmg});
+         flashBanner('SKY LANCES!',.48);
+         // Two staggered lance fans make the new attack clearly visible while preserving dodge lanes.
+         for(const off of [-.34,-.17,0,.17,.34])game.fx.push({x:e.x,y:e.y,vx:Math.cos(a+off)*300,vy:Math.sin(a+off)*300,life:2.85,r:5.4,sting:true,damage:dmg});
+         const lanceA=a;
+         setTimeout(()=>{
+           if(!game.running||game.paused||game.over||e.dead||e.hp<=0)return;
+           for(const off of [-.255,-.085,.085,.255])game.fx.push({x:e.x,y:e.y,vx:Math.cos(lanceA+off)*315,vy:Math.sin(lanceA+off)*315,life:2.65,r:5.1,sting:true,damage:dmg});
+         },150);
        }else{
          flashBanner('SKY SWEEP!',.32);
          game.fx.push({x:e.x,y:e.y,vx:Math.cos(a-.08)*300,vy:Math.sin(a-.08)*300,life:2.7,r:4.5,sting:true,damage:dmg},{x:e.x,y:e.y,vx:Math.cos(a+.08)*300,vy:Math.sin(a+.08)*300,life:2.7,r:4.5,sting:true,damage:dmg});
@@ -3358,7 +3363,7 @@ function enemyMove(e,dt){
    const shoot=(a,spd,damage=7+game.wave*.19,venom=false,r=4.5)=>game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:2.7,r,sting:true,venom,damage});
    if(e.kind==='stagBeetle'){e.shotCd=2.5;e.state='dash';e.stateT=.72;e.vx=Math.cos(aim)*285;e.vy=Math.sin(aim)*285;flashBanner('ANTLER CHARGE!',.28)}
    else if(e.kind==='moleCricket'){e.shotCd=5.8+Math.random()*1.0;const digX=e.x,digY=e.y;e.burrowX=Math.max(45,Math.min(W-45,p.x));e.burrowY=Math.max(120,Math.min(H-55,p.y));e.state='burrowWait';e.stateT=2.0;game.fx.push({x:digX,y:digY,vx:0,vy:0,life:1.65,maxLife:1.65,r:29,earthCrack:true,seed:Math.random()*6.283});game.fx.push({x:e.burrowX,y:e.burrowY,vx:0,vy:0,life:3.0,maxLife:3.0,r:32,earthCrack:true,seed:Math.random()*6.283});flashBanner('BURROW!',.38)}
-   else if(e.kind==='dragonflyBoss'){e.shotCd=999;e.state='skyExit';e.stateT=0;e.skyExitDir=e.x<W/2?-1:1;const exitSpeed=Math.max(105,e.speed*1.05);e.vx=e.skyExitDir*exitSpeed;e.vy=Math.max(-42,Math.min(42,(p.y-e.y)*.12));flashBanner('SKY LANCER BREAKS AWAY!',.3)}
+   else if(e.kind==='dragonflyBoss'){e.shotCd=999;e.state='skyExit';e.stateT=0;e.skyExitDir=e.x<W/2?-1:1;const exitSpeed=Math.max(360,e.speed*3.6);e.vx=e.skyExitDir*exitSpeed;e.vy=Math.max(-80,Math.min(80,(p.y-e.y)*.20));flashBanner('SKY LANCER BREAKS AWAY!',.3)}
    else if(e.kind==='centipede'){e.shotCd=2.55;e.state='centiRun';e.stateT=1.32;flashBanner('RAZOR RUN!',.38)}
    else if(e.kind==='earwig'){
      if(d<210&&Math.random()<.13){
@@ -3377,7 +3382,7 @@ function enemyMove(e,dt){
      flashBanner('BLOOD BURST!',.32)
    }
    else if(e.kind==='cicada'){
-     // v19.0.177 — Thunder Cicada alternates Thunder Chorus with a readable three-strike lightning chain.
+     // v19.0.178 — Thunder Cicada alternates Thunder Chorus with a readable three-strike lightning chain.
      // Uses the existing lightning warning/strike objects, so no new collision or rendering system is introduced.
      e.cicadaAttack=(e.cicadaAttack||0)+1;e.shotCd=2.8;
      if(e.cicadaAttack%2===0){
@@ -3425,7 +3430,7 @@ function enemyMove(e,dt){
      }else flashBanner('DUSK VEIL!',.35)
    }
    else if(e.kind==='waterStrider'){
-     // v19.0.177 — Pond Skater alternates Ripple Skim with Crosscurrent: three spaced water ripples
+     // v19.0.178 — Pond Skater alternates Ripple Skim with Crosscurrent: three spaced water ripples
      // around the player's path, leaving visible gaps rather than simply increasing damage or health.
      e.waterAttack=(e.waterAttack||0)+1;e.shotCd=2.05;
      let tx=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*180)),ty=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*180));
