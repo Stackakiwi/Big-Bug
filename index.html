@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.144 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.145 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1448,8 +1448,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.144</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.144</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.145</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.145</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3330,7 +3330,7 @@ function enemyMove(e,dt){
      flashBanner('FIRE SPRAY!',.3)
    }
    else if(e.kind==='mothBoss'){
-     // v19.0.144 — Dusk Moth pressure pass: more frequent attacks and a stronger, more common gust.
+     // v19.0.145 — Dusk Moth pressure pass: more frequent attacks and a stronger, more common gust.
      e.shotCd=2.55;bossHazard(p.x,p.y,115,2.4,'dark',8+game.wave*.14);
      for(let i=0;i<6;i++)shoot(i*6.283/6+t*.35,105,8+game.wave*.15,true,7);
      if(Math.random()<.50){
@@ -5583,6 +5583,15 @@ C.addEventListener('touchend',()=>drag=false);
 // explicitly gated out of the iPhone/iPad/Android input path. WASD behavior is unchanged.
 addEventListener('keydown',e=>{
  const k=(e.key||'').toLowerCase();
+ // v19.0.145 — WASD mode: Space advances a visible Garden Update/story note using
+ // the exact same continue handler as the on-screen button. This is checked before
+ // gameplay boost handling so a story overlay never triggers a boost underneath it.
+ if(pcUsingWASD()&&(e.code==='Space'||k===' ')&&!e.repeat){
+   const story=$('story'),storyBtn=$('storyContinue');
+   if(story&&storyBtn&&!story.classList.contains('hidden')&&story.style.display!=='none'){
+     e.preventDefault();storyBtn.click();return
+   }
+ }
  if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&game&&!game.paused&&!game.over){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
  // v19.0.132 — while the upgrade picker is visibly open in WASD mode, 1/2/3
