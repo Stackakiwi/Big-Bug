@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.152 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.154 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1404,6 +1404,24 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 #bugs .card p,#bugs .card .muted{font-size:23px!important;line-height:1.34!important}
 #bugs .card .btn{font-size:20px!important;min-height:50px!important}
 
+
+/* v19.0.153 — Bug Parade: bottom row follows the same card rhythm as the top row; Golden Ladybug preview enlarged. */
+#bugs .grid{align-items:stretch!important}
+#bugs .card,#bugs .legendaryBugCard{min-height:292px!important;padding:15px 15px 13px!important}
+#bugs .legendaryBugCard{justify-content:flex-start!important}
+#bugs .legendaryKicker{font-size:10px!important;line-height:1!important;letter-spacing:1.05px!important;margin:0 0 4px!important;min-height:10px!important}
+#bugs .legendaryBugCard .bugPreview{height:92px!important;min-height:92px!important;margin:0 0 7px!important;overflow:visible!important}
+#bugs .legendaryBugCard .bugPreview canvas{width:100px!important;height:100px!important}
+#bugs .legendaryBugCard b{font-size:20px!important;line-height:1.05!important;max-width:none!important;margin:0 0 4px!important}
+#bugs .legendaryBugCard p{font-size:15px!important;line-height:1.22!important;margin:4px 0 0!important}
+#bugs .legendarySelect,#bugs .legendaryPrice{margin-top:auto!important}
+@media(max-width:430px){
+ #bugs .card,#bugs .legendaryBugCard{min-height:0!important}
+ #bugs .legendaryBugCard .bugPreview{height:102px!important;min-height:102px!important}
+ #bugs .legendaryBugCard .bugPreview canvas{width:110px!important;height:110px!important}
+ #bugs .legendaryBugCard b{font-size:21px!important}
+ #bugs .legendaryBugCard p{font-size:15px!important}
+}
 </style>
 </head>
 <body>
@@ -1448,8 +1466,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.151</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.151</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.154</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.154</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2058,11 +2076,11 @@ function applyStoryLeafCorruption(w=0){
  const layers=[];
  for(let i=0;i<pileCount;i++){
   const [px,py]=spots[i%spots.length],s=sizeScale*(.92+(i%3)*.07),dx=(i%2?2:-1),dy=(i%3)-1;
-  // v19.0.150 — remove the faint round/circular dust spots from Garden Updates.
-  // Keep corruption as soft directional dusty streaks instead of radial blobs.
-  const a1=(31+i*17)%170,a2=(143+i*11)%170;
-  layers.push(`linear-gradient(${a1}deg, transparent 0 47%, rgba(151,83,166,${(.30*pile).toFixed(3)}) 48.5% 50.5%, transparent 52% 100%)`);
-  layers.push(`linear-gradient(${a2}deg, transparent 0 48.5%, rgba(215,158,226,${(.20*glow).toFixed(3)}) 49.2% 50.2%, transparent 51% 100%)`);
+  layers.push(`radial-gradient(ellipse at ${px}% ${py}%, rgba(111,55,128,${(.92*shadow).toFixed(3)}) 0 ${Math.round(7*s*10)/10}%, transparent ${Math.round(27*s*10)/10}%)`);
+  layers.push(`radial-gradient(circle at ${px-4*dx}% ${py-2*dy}%, rgba(201,138,220,${(.95*pile).toFixed(3)}) 0 ${(2.2*s).toFixed(2)}px, transparent ${(4.1*s).toFixed(2)}px)`);
+  layers.push(`radial-gradient(circle at ${px+2*dx}% ${py-5}%, rgba(235,195,246,${(.72*glow).toFixed(3)}) 0 ${(1.0*s).toFixed(2)}px, transparent ${(2.2*s).toFixed(2)}px)`);
+  layers.push(`radial-gradient(circle at ${px+5}% ${py+3}%, rgba(175,101,193,${(.88*pile).toFixed(3)}) 0 ${(1.8*s).toFixed(2)}px, transparent ${(3.4*s).toFixed(2)}px)`);
+  layers.push(`radial-gradient(circle at ${px-6}% ${py+4}%, rgba(246,223,250,${(.76*glow).toFixed(3)}) 0 ${(0.8*s).toFixed(2)}px, transparent ${(1.8*s).toFixed(2)}px)`);
  }
  layers.push('linear-gradient(155deg,#f5e9b9 0%,#eadba3 58%,#d8c787 100%)');
  leaf.style.background=layers.join(',');
@@ -2707,6 +2725,9 @@ function completeWave(){
  // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
+ // v19.0.154 — wave-clear safety: hostile attacks/hazards cannot carry into the clear screen or next wave.
+ // Remove only enemy-damaging FX; player shots, pickups, heal hearts, particles, and UI FX are preserved.
+ if(Array.isArray(g.fx))g.fx=g.fx.filter(f=>!(f&&(f.sting||f.enemyShot||f.goldShot||f.bossHazard||f.toxic||f.lightningStrike)));
  if(g.p.helperArmyWave===g.wave&&g.p.helperArmyHelpers&&g.p.helperArmyHelpers.length){
    const army=g.p.helperArmyHelpers;
    g.p.helperArmyWave=0;g.p.helperArmyReadyAt=0;g.p.helperArmyFormedAt=0;
