@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.156 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.157 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1466,8 +1466,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.156</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.156</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.157</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.157</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3193,7 +3193,7 @@ function enemyMove(e,dt){
      e.state='weevilRecover';e.stateT=.34;
      for(let i=-2;i<=2;i++){
        let px=Math.max(35,Math.min(W-35,e.weevilAimX+i*48)),py=Math.max(105,Math.min(H-40,e.weevilAimY+(i%2)*45));
-       bossHazard(px,py,22.5,2.1,'thorn',(10+game.wave*.16)*.5);
+       bossHazard(px,py,22.5,2.1,'thorn',(10+game.wave*.16)); // v19.0.157 — Thorn Weevil eruption damage doubled
      }
      burst(e.x,e.y,5,.22,'#b8d05b');flashBanner('THORNS ERUPT!',.26);
    }
@@ -3344,13 +3344,25 @@ function enemyMove(e,dt){
    }
    else if(e.kind==='cicada'){e.shotCd=2.8;bossRing(e,14,145,8+game.wave*.16,0,'sonic');flashBanner('THUNDER CHORUS!',.38)}
    else if(e.kind==='bombardier'){
-     e.shotCd=2.15;let back=aim+Math.PI;
-     for(let i=-2;i<=2;i++){
-       let a=back+i*.16,dist=72+Math.abs(i)*22;
-       bossHazard(e.x+Math.cos(a)*dist,e.y+Math.sin(a)*dist,38,2.8,'acid',9+game.wave*.17);
-       let f=game.fx[game.fx.length-1];f.sprayAngle=a;f.spraySeed=Math.random()*6.283;
+     // v19.0.157 — alternate the familiar rear Fire Spray with a new aimed Fire Burst.
+     e.bombardierAttack=(e.bombardierAttack||0)+1;
+     if(e.bombardierAttack%2===0){
+       e.shotCd=2.45;
+       const fireDamage=9+game.wave*.17;
+       for(const off of [-.24,-.12,0,.12,.24]){
+         const a=aim+off;
+         game.fx.push({x:e.x,y:e.y,vx:Math.cos(a)*225,vy:Math.sin(a)*225,life:2.45,r:6.5,sting:true,damage:fireDamage,bombardierFire:true});
+       }
+       flashBanner('FIRE BURST!',.34)
+     }else{
+       e.shotCd=2.15;let back=aim+Math.PI;
+       for(let i=-2;i<=2;i++){
+         let a=back+i*.16,dist=72+Math.abs(i)*22;
+         bossHazard(e.x+Math.cos(a)*dist,e.y+Math.sin(a)*dist,38,2.8,'acid',9+game.wave*.17);
+         let f=game.fx[game.fx.length-1];f.sprayAngle=a;f.spraySeed=Math.random()*6.283;
+       }
+       flashBanner('FIRE SPRAY!',.3)
      }
-     flashBanner('FIRE SPRAY!',.3)
    }
    else if(e.kind==='mothBoss'){
      // v19.0.156 — Dusk Moth fairness pass: big attack remains dangerous but is more avoidable.
@@ -5317,6 +5329,11 @@ function draw(now=performance.now()){
        X.save();X.translate(f.x,f.y);X.rotate(Math.atan2(f.vy||0,f.vx||1)+Math.PI/2);
        X.fillStyle='#ffd84a';X.strokeStyle='#fff0a0';X.lineWidth=1.2;X.shadowColor='#ffbd24';X.shadowBlur=8;
        X.beginPath();X.moveTo(0,-f.r*1.65);X.lineTo(f.r*.78,0);X.lineTo(0,f.r*1.65);X.lineTo(-f.r*.78,0);X.closePath();X.fill();X.stroke();X.restore();
+     }else if(f.bombardierFire){
+       // Hand-drawn flame projectile for Bombardier's new Fire Burst; collision remains the normal sting circle.
+       X.save();X.translate(f.x,f.y);X.rotate(Math.atan2(f.vy||0,f.vx||1)+Math.PI/2);X.shadowColor=lowStoryFx()?'transparent':'#ff7a20';X.shadowBlur=lowStoryFx()?0:8;
+       X.fillStyle='#e96828';X.beginPath();X.moveTo(0,-f.r*1.7);X.quadraticCurveTo(f.r*1.05,-f.r*.15,f.r*.7,f.r*.9);X.quadraticCurveTo(0,f.r*.55,-f.r*.7,f.r*.9);X.quadraticCurveTo(-f.r*1.05,-f.r*.15,0,-f.r*1.7);X.fill();
+       X.fillStyle='#ffd45a';X.beginPath();X.moveTo(0,-f.r*.95);X.quadraticCurveTo(f.r*.5,0,0,f.r*.55);X.quadraticCurveTo(-f.r*.5,0,0,-f.r*.95);X.fill();X.restore();X.shadowColor='transparent';
      }else{
        X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=lowStoryFx()?'transparent':(f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30'));X.shadowBlur=lowStoryFx()?0:6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent';
      }
