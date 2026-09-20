@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.151 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.152 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -4917,6 +4917,16 @@ function drawEnemy(e){
     X.save();X.translate(d[0]*rr,d[1]*rr);X.rotate(d[4]);X.beginPath();X.ellipse(0,0,d[2]*rr,d[3]*rr,0,0,6.28);X.fill();
     X.fillStyle='#d59ad1';X.beginPath();X.moveTo(-d[2]*rr*.35,-d[3]*rr*.2);X.lineTo(0,-d[3]*rr*.8);X.lineTo(d[2]*rr*.25,d[3]*rr*.15);X.closePath();X.fill();X.restore();X.fillStyle='#a96caf';
   }
+  // v19.0.152 — extra powdery corruption stays strictly inside Sporeback's body silhouette.
+  X.save();
+  X.beginPath();X.ellipse(0,rr*.08,rr*.66,rr*.72,0,0,6.28);X.clip();
+  X.globalAlpha=.88;
+  for(const d of [[-.42,-.30,.10,.035,-.25],[.30,-.18,.12,.04,.18],[-.22,.18,.14,.04,-.12],[.38,.36,.11,.035,.28],[-.08,.55,.13,.04,.06]]){
+    X.save();X.translate(d[0]*rr,d[1]*rr);X.rotate(d[4]);X.fillStyle='#b875bc';
+    X.beginPath();X.moveTo(-d[2]*rr,0);X.lineTo(-d[2]*rr*.18,-d[3]*rr);X.lineTo(d[2]*rr,d[3]*rr*.15);X.lineTo(d[2]*rr*.12,d[3]*rr);X.closePath();X.fill();
+    X.restore();
+  }
+  X.restore();
   X.restore();
  }else if(e.kind==='moleCricket'){
   // Mole Thing — compact furry digger with mouse-like ears, pointed snout and oversized digging paws.
@@ -4963,7 +4973,7 @@ function drawEnemy(e){
 
  if(e.boss){
    const rr=r;
-   // v19.0.151 — Waves 90/95 keep the original boss artwork.
+   // v19.0.152 — Waves 90/95 keep the original boss artwork, with purple eyes and body-bound purple dust.
    // Their only Spored visual difference is purple eyes; original boss versions remain untouched.
    if(game.wave===90||game.wave===95){
      X.save();
@@ -4975,6 +4985,16 @@ function drawEnemy(e){
      else if(e.kind==='mantisBoss'){purpleEye(-r*.20,-r*.55,3.4);purpleEye(r*.20,-r*.55,3.4)}
      else if(e.kind==='queenSpider'){purpleEye(-r*.20,-9,2.4);purpleEye(r*.20,-9,2.4)}
      else if(e.kind==='bigBloodSucker'){const er=r*1.02;purpleEye(-er*.20,-er*.72,er*.13);purpleEye(er*.20,-er*.72,er*.13)}
+     X.restore();
+     // v19.0.152 — powdery purple dust is painted only inside the Spored boss body area.
+     X.save();
+     X.beginPath();X.ellipse(0,0,rr*.66,rr*.72,0,0,6.28);X.clip();
+     X.globalAlpha=.90;
+     for(const d of [[-.40,-.20,.12,.04,-.22],[.30,-.28,.10,.035,.18],[-.26,.18,.13,.04,.12],[.37,.22,.11,.035,-.16],[-.05,.48,.14,.04,.05]]){
+       X.save();X.translate(d[0]*rr,d[1]*rr);X.rotate(d[4]);X.fillStyle='#b875bc';
+       X.beginPath();X.moveTo(-d[2]*rr,0);X.lineTo(-d[2]*rr*.22,-d[3]*rr);X.lineTo(d[2]*rr,d[3]*rr*.12);X.lineTo(d[2]*rr*.08,d[3]*rr);X.closePath();X.fill();
+       X.restore();
+     }
      X.restore();
    }
    
