@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.155 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.156 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1466,8 +1466,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <select id="testWave" aria-label="Choose test wave"></select>
     <button class="btn dark small" data-action="testWave">TEST</button>
   </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.155</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.155</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.156</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.156</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -2725,7 +2725,7 @@ function completeWave(){
  // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
- // v19.0.155 — wave-clear safety: hostile attacks/hazards cannot carry into the clear screen or next wave.
+ // v19.0.156 — wave-clear safety: hostile attacks/hazards cannot carry into the clear screen or next wave.
  // Remove only enemy-damaging FX; player shots, pickups, heal hearts, particles, and UI FX are preserved.
  if(Array.isArray(g.fx))g.fx=g.fx.filter(f=>!(f&&(f.sting||f.enemyShot||f.goldShot||f.bossHazard||f.toxic||f.lightningStrike)));
  if(g.p.helperArmyWave===g.wave&&g.p.helperArmyHelpers&&g.p.helperArmyHelpers.length){
@@ -3353,7 +3353,7 @@ function enemyMove(e,dt){
      flashBanner('FIRE SPRAY!',.3)
    }
    else if(e.kind==='mothBoss'){
-     // v19.0.155 — Dusk Moth fairness pass: big attack remains dangerous but is more avoidable.
+     // v19.0.156 — Dusk Moth fairness pass: big attack remains dangerous but is more avoidable.
      e.shotCd=2.7;bossHazard(p.x,p.y,92,2.25,'dark',8+game.wave*.14);
      for(let i=0;i<6;i++)shoot(i*6.283/6+t*.35,100,8+game.wave*.15,true,7);
      if(Math.random()<.46){
@@ -4925,7 +4925,9 @@ function drawEnemy(e){
   for(let side of [-1,1])for(let i=0;i<3;i++){let yy=-rr*.18+i*rr*.38;X.beginPath();X.arc(side*rr*(.34+(i%2)*.08),yy,rr*(.12+(i===1?.035:0)),0,6.28);X.fill()}
   // Purple-black head.
   X.fillStyle='#403142';X.beginPath();X.ellipse(0,-rr*.67,rr*.58,rr*.43,0,0,6.28);X.fill();
-  eye(-rr*.20,-rr*.72,2.8);eye(rr*.20,-rr*.72,2.8);
+  // v19.0.156 — Sporeback's corrupted eyes are purple; this is isolated to Sporeback only.
+  const sporeEye=(x,y,rad=2.8)=>{X.fillStyle='#160806';X.beginPath();X.arc(x,y,rad+1.7,0,6.28);X.fill();X.fillStyle='#b45bd4';X.beginPath();X.arc(x,y,rad,0,6.28);X.fill();X.fillStyle='#efd2ff';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill();X.strokeStyle='#160806';X.lineWidth=Math.max(1.4,rad*.65);X.lineCap='round';X.beginPath();if(x<0){X.moveTo(x-rad*1.35,y-rad*1.45);X.lineTo(x+rad*.55,y-rad*.8)}else{X.moveTo(x+rad*1.35,y-rad*1.45);X.lineTo(x-rad*.55,y-rad*.8)}X.stroke()};
+  sporeEye(-rr*.20,-rr*.72,2.8);sporeEye(rr*.20,-rr*.72,2.8);
   // Fused purple fungal ridges replace the old normal-looking mushroom stalks/caps.
   X.strokeStyle='#a56fa5';X.lineCap='round';
   for(const f of [[-.45,-.42,-.62,-.70],[.28,-.30,.43,-.62],[-.08,.02,-.18,-.31],[.42,.30,.63,.08],[-.34,.48,-.54,.28]]){
