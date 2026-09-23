@@ -6,11 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#152316">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.194 GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.196-rc.1: Gold Leaf paid-release economy pass; new saves start with 10 Gold Leaves; shop displays planned Steam packs; Steam checkout intentionally not connected yet. Steam PC release candidate; verified audit fixes. GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1471,6 +1469,14 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  #finalPrep .choice b{font-size:23px!important;margin-bottom:4px!important}
  #finalPrep .choice p{font-size:15px!important}
 }
+/* v19.0.196-rc.1 — preserve Home spacing after removing developer controls. */
+.homeReleaseSpacer{height:50px;flex:0 0 50px;pointer-events:none}
+#bugs .panel>h2{padding-right:100px}
+#pause .screenLeafBank,#bugs .screenLeafBank{max-width:calc(100% - 24px);overflow:hidden}
+@media(max-width:560px){
+ #bugs .panel>h2{padding-right:0;margin-top:48px!important}
+ #bugs .screenLeafBank{top:14px;right:14px}
+}
 </style>
 </head>
 <body>
@@ -1509,15 +1515,9 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="homeLowerLift homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> UPGRADES</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
-  <button class="btn dark small creditsTestBtn" data-action="testEnding">TEMP ENDING</button>
-  <button class="btn dark small purifyTestBtn" data-action="testPurify">TEMP PURIFY</button>
-  <div class="testJump" aria-label="Temporary wave, boss, and Garden Update tester">
-    <button class="btn dark small" data-action="testStoryNotes">STORY NOTES</button>
-    <select id="testWave" aria-label="Choose test wave"></select>
-    <button class="btn dark small" data-action="testWave">TEST</button>
-  </div>
-  <div class="versionStamp" aria-hidden="true">v19.0.194</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.194</div>
+  <div class="homeReleaseSpacer" aria-hidden="true"></div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.1</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.1</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1569,16 +1569,14 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="panel">
   <h2><span class="goldLeafIcon" aria-hidden="true"></span> GOLD LEAF SHOP</h2>
   <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
-  <div class="goldPackGrid">
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>20</div><div class="bonus">STARTER PACK</div><button class="btn small" data-gold-pack="20">$0.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>70</div><div class="bonus">BETTER VALUE</div><button class="btn small" data-gold-pack="70">$2.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>130</div><div class="bonus">+30% VALUE</div><button class="btn small" data-gold-pack="130">$4.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>300</div><div class="bonus">+50% VALUE</div><button class="btn small" data-gold-pack="300">$9.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon"></span>700</div><div class="bonus">+75% VALUE</div><button class="btn small" data-gold-pack="700">$19.99</button></div>
-   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon"></span>2000</div><div class="bonus">BEST VALUE • +100%</div><button class="btn small" data-gold-pack="2000">$49.99</button></div>
+  <p class="goldStoreNote">Gold Leaves are earned in the garden. Every new player starts with 10. Optional Steam packs will also be available; purchases are not connected in this build.</p>
+  <div class="goldPackGrid" aria-label="Planned Gold Leaf packs">
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>50</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$0.99</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>150</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$1.99</button></div>
+   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>300</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$2.99</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>750</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$4.99</button></div>
   </div>
-  <p class="goldStoreNote">Gold Leaves are permanent and are never erased by Reset Progress. Real-money checkout will activate when the payment system is connected.</p>
-  <div class="goldDevTools" aria-label="Temporary Gold Leaf testing controls"><button class="btn small" data-action="tempAddGold">TEMP +100 GOLD</button><button class="btn small goldDevClear" data-action="tempClearGold">TEMP CLEAR GOLD</button></div>
+  <p class="goldStoreNote" style="margin-top:14px">Steam checkout will be connected separately before real-money purchases go live.</p>
   <button class="btn dark" data-action="home">BACK</button>
  </div>
 </section>
@@ -1589,7 +1587,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <h2>HOW TO PLAY</h2>
   <p class="firstHelpIntro">A few things to know before your first run.</p>
   <div class="firstHelpSteps">
-   <div class="firstHelpStep"><div class="firstHelpNum">1</div><div><strong>Move &amp; Dodge</strong><p>Tap or drag to move your bug. Keep moving when enemies close in.</p></div></div>
+   <div class="firstHelpStep"><div class="firstHelpNum">1</div><div><strong>Move &amp; Dodge</strong><p>Click or drag to move your bug, or choose WASD in Settings. Keep moving when enemies close in.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">2</div><div><strong>Attacks Are Automatic</strong><p>Your bug automatically attacks the <b>closest enemy</b>, so focus on positioning and staying alive.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">3</div><div><strong>Collect &amp; Save Leaves</strong><p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves carry over between runs. Pick them up and save them — you will need a lot of them.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">4</div><div><strong>Permanent Upgrades Matter</strong><p>Spend saved Leaves on <span class="firstHelpImportant">Permanent Upgrades</span> between runs. They are a big part of getting farther.</p></div></div>
@@ -1610,9 +1608,9 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="settingRow"><div class="settingText"><b>Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
   <button class="btn dark settingsHelpBtn" data-action="help">HOW TO PLAY</button>
   <div class="settingsDanger">
-   <h3>Reset Progress</h3><p class="muted">Erase Leaves, unlocks, upgrades, and your best wave. Gold Leaves and settings stay safe.</p>
+   <h3>Reset Progress</h3><p class="muted">Reset earned Leaves, upgrades, discoveries, records, and mode progress. Purchased bugs, cosmetics, Gold Leaves, and settings stay safe.</p>
    <button class="btn red" data-action="showResetConfirm">RESET PROGRESS</button>
-   <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This will erase all BIG BUG progress and cannot be undone.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
+   <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This resets earned progress and cannot be undone. Purchased bugs, cosmetics, Gold Leaves, and settings are kept.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
   </div>
   <button id="settingsBackBtn" class="btn dark" data-action="settingsBack">BACK</button>
  </div>
@@ -1622,7 +1620,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="panel">
   <h2>HOW TO PLAY</h2>
   <div class="helpGrid">
-   <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Tap or drag to move. Attacks are automatic.</div></div>
+   <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Click or drag to move, or choose WASD in Settings. Attacks are automatic.</div></div>
    <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves and choose upgrades between waves.</div></div>
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">Standing still fires faster in Story and Mosquito Mode. In Story Mode, get close to an enemy to hit harder.</div></div>
@@ -1712,6 +1710,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 </section>
 
 <script>
+const BB_DEV_MODE=false; // Production builds have no developer entry points.
 // v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
 // v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
 // v19.0.83 — Gold Waves difficulty pass: modest Gold enemy durability/speed bump, BIG BUG +25% HP, and unique GOLDEN CAGE attack; attack damage/player health unchanged.
@@ -1762,6 +1761,8 @@ const $=id=>document.getElementById(id);
 const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','settings','help','firstHelp','upgrade','pause','goldFail','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
+ if(id!=='none')resetGameInput();
+ syncGoldPresentation();syncGoldMusic();
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
  if(id==='home')paintHomeHero();
  // v18.0.44 — transient gameplay banners should never bleed over menus/pause/end screens.
@@ -1773,15 +1774,55 @@ const SAVEKEY='big_bug_save_v1';
 const GOLDKEY='big_bug_gold_v1';
 const GOLDUNLOCKKEY='big_bug_gold_unlocks_v1';
 const FIRSTHELPKEY='big_bug_first_help_seen_v1';
-let save=JSON.parse(localStorage.getItem(SAVEKEY)||'null')||{scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,endlessUnlocked:false};
-if(save.selected==='dragonfly')save.selected='butterfly';
-save.goldLeaves=Math.max(0,Number(localStorage.getItem(GOLDKEY))||save.goldLeaves||0);localStorage.setItem(GOLDKEY,String(save.goldLeaves));
-save.goldUnlocks=JSON.parse(localStorage.getItem(GOLDUNLOCKKEY)||'[]');if(!Array.isArray(save.goldUnlocks))save.goldUnlocks=[];
-save.endlessBest=save.endlessBest||0;
-save.settings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{}); save.cosmetics=Object.assign({owned:[],equipped:{},medievalBundle:false,enabled:true},save.cosmetics||{});if(!Array.isArray(save.cosmetics.owned))save.cosmetics.owned=[];if(!save.cosmetics.equipped||typeof save.cosmetics.equipped!=='object')save.cosmetics.equipped={};
-save.legendaryGolden=Object.assign({revealed:false,owned:false,noticeSeen:false},save.legendaryGolden||{});
-save.discovered=Array.isArray(save.discovered)?save.discovered:['player:ladybug'];if(!save.discovered.includes('player:ladybug'))save.discovered.push('player:ladybug');
-if(save.legendaryGolden?.owned&&!save.discovered.includes('player:golden'))save.discovered.push('player:golden');
+let bbStorageFailed=false;
+function storageNotice(){
+ bbStorageFailed=true;
+ if(typeof document==='undefined'||!document.body||document.getElementById('storageNotice'))return;
+ const notice=document.createElement('div');notice.id='storageNotice';notice.setAttribute('role','status');
+ notice.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:200;padding:10px 14px;background:#392911;color:#fff1c2;border:1px solid #e5b65e;border-radius:10px;font:14px system-ui;text-align:center';
+ notice.textContent='Saving is unavailable. Progress in this session may be lost when you close the game.';document.body.appendChild(notice);
+}
+function storageRead(key){try{return localStorage.getItem(key)}catch(e){storageNotice();return null}}
+function storageWrite(key,value){try{localStorage.setItem(key,value);return true}catch(e){storageNotice();return false}}
+function storageRemove(key){try{localStorage.removeItem(key);return true}catch(e){storageNotice();return false}}
+function archiveSaveData(key,raw,reason='invalid'){
+ if(typeof raw!=='string')return;
+ // One bounded backup per source key avoids an unbounded collection of bad saves.
+ storageWrite(key+'_backup',JSON.stringify({reason,at:Date.now(),raw:raw.slice(0,262144)}));
+}
+function readSaveJson(key,fallback){
+ const raw=storageRead(key);if(raw===null)return fallback;
+ try{return JSON.parse(raw)}catch(e){archiveSaveData(key,raw);return fallback}
+}
+function saveObject(value){return !!value&&typeof value==='object'&&!Array.isArray(value)}
+function saveNumber(value,fallback=0,max=Number.MAX_SAFE_INTEGER){return typeof value==='number'&&Number.isFinite(value)?Math.min(max,Math.max(0,value)):fallback}
+function saveStringList(value,allowed=null){return Array.isArray(value)?[...new Set(value.filter(v=>typeof v==='string'&&v.length<=100&&(!allowed||allowed.includes(v))))].slice(0,256):[]}
+function normalizeSave(input={}){
+ const src=saveObject(input)?input:{},u=saveObject(src.upgrades)?src.upgrades:{},settings=saveObject(src.settings)?src.settings:{},cos=saveObject(src.cosmetics)?src.cosmetics:{},legend=saveObject(src.legendaryGolden)?src.legendaryGolden:{};
+ const bugs=['ladybug','beetle','butterfly','golden'],standard=['beetle','butterfly'],out={schemaVersion:3,scrap:Math.floor(saveNumber(src.scrap)),best:Math.floor(saveNumber(src.best,0,100)),endlessBest:Math.floor(saveNumber(src.endlessBest)),goldBest:Math.floor(saveNumber(src.goldBest,0,50)),runs:Math.floor(saveNumber(src.runs)),goldLeaves:Math.floor(saveNumber(src.goldLeaves)),goldUnlocks:saveStringList(src.goldUnlocks,standard),bugPurchases:saveStringList(src.bugPurchases,standard),upgrades:{choices:0},settings:{music:settings.music!==false,sfx:settings.sfx!==false,damageNumbers:settings.damageNumbers!==false,volume:saveNumber(settings.volume,50,100),pcControls:settings.pcControls==='wasd'?'wasd':'mouse'},cosmetics:{owned:saveStringList(cos.owned,bugs.map(id=>'medieval:'+id)),equipped:{},medievalBundle:cos.medievalBundle===true,enabled:cos.enabled!==false},legendaryGolden:{revealed:legend.revealed===true||legend.owned===true,owned:legend.owned===true,noticeSeen:legend.noticeSeen===true},mainGameBeaten:src.mainGameBeaten===true,discovered:saveStringList(src.discovered),unlocked:['ladybug']};
+ for(const key of ['hp','dmg','magnet','coins'])out.upgrades[key]=Math.floor(saveNumber(u[key],0,10));
+ for(const id of standard)if(out.goldUnlocks.includes(id)||out.bugPurchases.includes(id))out.unlocked.push(id);
+ if(out.legendaryGolden.owned)out.unlocked.push('golden');
+ if(out.cosmetics.medievalBundle)for(const id of bugs)if(!out.cosmetics.owned.includes('medieval:'+id))out.cosmetics.owned.push('medieval:'+id);
+ for(const id of bugs)if(cos.equipped?.[id]==='medieval'&&out.cosmetics.owned.includes('medieval:'+id))out.cosmetics.equipped[id]='medieval';
+ const selected=src.selected==='dragonfly'?'butterfly':src.selected;out.selected=out.unlocked.includes(selected)?selected:'ladybug';
+ for(const id of out.unlocked)if(!out.discovered.includes('player:'+id))out.discovered.push('player:'+id);
+ out.endlessUnlocked=src.endlessUnlocked===true||out.mainGameBeaten||out.best>=26;
+ return out;
+}
+function loadSave(){
+ const raw=storageRead(SAVEKEY);let data={};
+ // v19.0.196-rc.1 — Paid-release starter grant: only a genuinely new profile receives 10 Gold Leaves.
+ // Any primary/legacy save prevents the grant, and a storage failure is never treated as a fresh profile.
+ const legacyGoldRaw=storageRead(GOLDKEY),legacyUnlockRaw=storageRead(GOLDUNLOCKKEY);
+ const genuinelyNew=raw===null&&legacyGoldRaw===null&&legacyUnlockRaw===null&&!bbStorageFailed;
+ if(raw!==null){try{data=JSON.parse(raw);if(!saveObject(data)){archiveSaveData(SAVEKEY,raw,'invalid shape');data={}}else if(['scrap','best','runs','goldLeaves','endlessBest','goldBest'].some(k=>data[k]!==undefined&&(typeof data[k]!=='number'||!Number.isFinite(data[k])||data[k]<0))||['upgrades','settings','cosmetics','legendaryGolden'].some(k=>data[k]!==undefined&&!saveObject(data[k]))||['goldUnlocks','bugPurchases','discovered'].some(k=>data[k]!==undefined&&!Array.isArray(data[k])))archiveSaveData(SAVEKEY,raw,'invalid save fields')}catch(e){archiveSaveData(SAVEKEY,raw);data={}}}
+ // Version 3 stores one authoritative object; split legacy keys are migration inputs only.
+ if(data.schemaVersion!==3){const gold=legacyGoldRaw===null?NaN:Number(legacyGoldRaw);if(Number.isFinite(gold)&&gold>=0)data.goldLeaves=gold;else if(legacyGoldRaw!==null)archiveSaveData(GOLDKEY,legacyGoldRaw,'invalid balance');let unlocks=null;if(legacyUnlockRaw!==null){try{unlocks=JSON.parse(legacyUnlockRaw)}catch(e){archiveSaveData(GOLDUNLOCKKEY,legacyUnlockRaw)}}if(Array.isArray(unlocks))data.goldUnlocks=saveStringList([...(Array.isArray(data.goldUnlocks)?data.goldUnlocks:[]),...unlocks],['beetle','butterfly']);else if(unlocks!==null)archiveSaveData(GOLDUNLOCKKEY,legacyUnlockRaw,'invalid unlock list')}
+ if(genuinelyNew&&data.goldLeaves===undefined)data.goldLeaves=10;
+ return normalizeSave(data);
+}
+let save=loadSave();
 // v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
 // v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
 // v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
@@ -1822,7 +1863,7 @@ if(save.legendaryGolden?.owned&&!save.discovered.includes('player:golden'))save.
 // v19.0.187 — Beetle/Butterfly 10 Gold Leaf purchase is early-unlock only; after Best Wave 20/25 only regular Leaf purchase remains.
 // v19.0.190 — repair desktop Home centering/wave HUD layout and guard BUGS purchase-button handlers against missing state-specific controls.
 // v19.0.194 — show the player’s total saved regular-Leaf bank in the upper-right of Pause and The Bug Parade.
-save.mainGameBeaten=!!save.mainGameBeaten||save.best>=100;
+save.mainGameBeaten=save.mainGameBeaten===true;
 save.bugPurchases=Array.isArray(save.bugPurchases)?save.bugPurchases:[];
 save.unlocked=['ladybug'];
 if(save.goldUnlocks.includes('beetle')||save.bugPurchases.includes('beetle'))save.unlocked.push('beetle');
@@ -2146,8 +2187,8 @@ function applyStoryLeafCorruption(w=0){
 }
 let pendingBossUpgrade=false,storyNoteTestWaves=null,storyNoteTestIndex=0;
 function presentGardenUpdateNote(w){const beat=GARDEN_STORY[w];if(!beat)return false;applyStoryLeafCorruption(w);$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');return true}
-function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
-function startGardenStoryNotesTest(){storyNoteTestWaves=Object.keys(GARDEN_STORY).map(Number).sort((a,b)=>a-b);storyNoteTestIndex=0;pendingBossUpgrade=false;if(!storyNoteTestWaves.length)return;if(presentGardenUpdateNote(storyNoteTestWaves[0])){const b=$('storyContinue');if(b)b.textContent='NEXT NOTE →';beep(392,.08,.012,'triangle')}}
+function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;if(game){game.recoveryPhase='storyNote';game.paused=true;saveRunRecovery('story-note')}presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
+function startGardenStoryNotesTest(){if(!BB_DEV_MODE)return;storyNoteTestWaves=Object.keys(GARDEN_STORY).map(Number).sort((a,b)=>a-b);storyNoteTestIndex=0;pendingBossUpgrade=false;if(!storyNoteTestWaves.length)return;if(presentGardenUpdateNote(storyNoteTestWaves[0])){const b=$('storyContinue');if(b)b.textContent='NEXT NOTE →';beep(392,.08,.012,'triangle')}}
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');if(storyNoteTestWaves){storyNoteTestIndex++;if(storyNoteTestIndex<storyNoteTestWaves.length){presentGardenUpdateNote(storyNoteTestWaves[storyNoteTestIndex]);beep(620,.06,.01,'triangle');return}storyNoteTestWaves=null;storyNoteTestIndex=0;story.classList.add('hidden');story.style.display='';applyStoryLeafCorruption(0);$('storyContinue').textContent='Follow the trail →';beep(620,.07,.012,'triangle');return}story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
@@ -2168,6 +2209,8 @@ function makeArmyHelper(i=0){
  return {x,y,vx:0,vy:0,target:null,phase:i*(Math.PI*2/10),entered:false,attackCd:0};
 }
 let game=null, last=0, raf=0, audio=null;
+let homePresentationGeneration=0,drag=false;
+const pcKeys={w:false,a:false,s:false,d:false};
 
 // v19.0.57 — BIG BIG HUD fade presentation.
 // Intentionally presentation-only: no combat pause, no boss movement changes, no damage/game-over guards.
@@ -2220,76 +2263,124 @@ function persistLeafPickup(){
  if(leafPersistTimer)return;
  leafPersistTimer=setTimeout(()=>{leafPersistTimer=0;persist()},300);
 }
-function persist(){localStorage.setItem(SAVEKEY,JSON.stringify(save));localStorage.setItem(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));localStorage.setItem(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]));refreshGoldUI()}
+function persist(){const saved=storageWrite(SAVEKEY,JSON.stringify(save));if(saved){storageWrite(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));storageWrite(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]))}refreshGoldUI();return saved}
 function refreshGoldUI(){const n=Math.max(0,save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n;if($('cosmeticGold'))$('cosmeticGold').textContent=n}
 
 const RUNSAVEKEY='big_bug_run_recovery_v1';
-function clearRunRecovery(){try{localStorage.removeItem(RUNSAVEKEY)}catch(e){}}
+function clearRunRecovery(){storageRemove(RUNSAVEKEY)}
+function createRunState(mode,p,bugId){
+ return {mode,p,bugId,enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,bosses:[],shake:0,score:0,testMode:false,waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,rewardsBanked:false,endlessRewardPaid:0,recoveryPhase:'wave',pendingChoiceIds:[],pendingUpgradeAfterWave:false,finalUpgradeRemaining:0,wave50BonusRemaining:0,finalPrepDone:false,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0,goldMode:mode==='gold',goldFinale:false,goldCorruptionStart:0,goldFinaleRevealStart:0};
+}
+function cloneCheckpointValue(value,enemyIndex,depth=0,entityRoot=false){
+ if(value===null||typeof value==='boolean'||typeof value==='string')return value;
+ if(typeof value==='number')return Number.isFinite(value)?value:0;
+ if(typeof value!=='object'||depth>12)return undefined;
+ if(!entityRoot&&enemyIndex.has(value))return {enemyRef:enemyIndex.get(value)};
+ if(Array.isArray(value))return value.map(v=>cloneCheckpointValue(v,enemyIndex,depth+1));
+ if(Object.getPrototypeOf(value)!==Object.prototype&&Object.getPrototypeOf(value)!==null)return undefined;
+ const out={};for(const key of Object.keys(value)){if(['__proto__','constructor','prototype'].includes(key))continue;const item=cloneCheckpointValue(value[key],enemyIndex,depth+1);if(item!==undefined)out[key]=item}return out;
+}
+function checkpointPhase(g){
+ if(g.finalPurify)return 'purification';if(g.goldDeathActive)return 'goldDeath';
+ if(g.recoveryPhase&&g.recoveryPhase!=='wave')return g.recoveryPhase;
+ return g.intermission&&!g.waveActive?(g.mode==='story'&&g.wave%5===0?'storyNote':'upgrade'):'wave';
+}
 function saveRunRecovery(reason='checkpoint'){
- if(!game||game.over||game.testMode||game.mode==='endless')return;
+ if(!game||game.over||game.testMode||!['story','gold','endless'].includes(game.mode))return false;
  try{
-  const p=game.p;
-  const snap={
-   v:2,reason,wave:game.wave,coins:game.coins||0,time:game.time||0,bugId:game.bugId||save.selected||'ladybug',rewardsBanked:!!game.rewardsBanked,
-   intermission:!!game.intermission,waveActive:!!game.waveActive,
-   p:{
-    x:p.x,y:p.y,hp:p.hp,maxHp:p.maxHp,damage:p.damage,rate:p.rate,crit:p.crit,
-    fireballs:p.fireballs||0,frost:p.frost||0,greed:p.greed,magnet:p.magnet,
-    thorns:p.thorns||0,meteor:p.meteor||0,clones:p.clones||0,fireflies:p.fireflies||0,
-    speed:p.speed,moveX:p.moveX,moveY:p.moveY,attackCount:p.attackCount||0,
-    tripleShot:!!p.tripleShot,tripleShotUntilWave:p.tripleShotUntilWave||0,lastAttack:0,lastMeteor:0,kills:p.kills||0,
-    face:p.face,faceTarget:p.faceTarget,helperShot:0,
-    helpers:(p.helpers||[]).map(h=>({bornWave:h.bornWave,leaving:!!h.leaving,entering:!!h.entering,joining:h.joining||0,joinX:h.joinX,joinY:h.joinY,x:h.x,y:h.y,vx:h.vx,vy:h.vy})),
-    helperArmyWave:p.helperArmyWave||0,
-    helperArmyReadyAt:p.helperArmyReadyAt||0,helperArmyFormedAt:p.helperArmyFormedAt||0,
-    helperArmyHelpers:(p.helperArmyHelpers||[]).map(h=>({x:h.x,y:h.y,vx:h.vx||0,vy:h.vy||0,phase:h.phase||0,entered:!!h.entered,attackCd:h.attackCd||0}))
-   }
-  };
-  localStorage.setItem(RUNSAVEKEY,JSON.stringify(snap));
- }catch(e){}
+  const enemyIndex=new Map(game.enemies.map((e,i)=>[e,i])),state={};
+  // Simulation caches are rebuilt; all scalar state and live entities are preserved.
+  for(const key of Object.keys(game)){const v=game[key];if(!['__proto__','constructor','prototype'].includes(key)&&(v===null||['string','boolean','number'].includes(typeof v)))state[key]=cloneCheckpointValue(v,enemyIndex)}
+  for(const key of ['p','drops','fx','earlyWaveQueue','pendingChoiceIds','bbHudFaded','finalPurify'])if(game[key]!==undefined)state[key]=cloneCheckpointValue(game[key],enemyIndex);
+  state.enemies=game.enemies.map(e=>cloneCheckpointValue(e,enemyIndex,0,true));
+  state.bossIndex=enemyIndex.has(game.boss)?enemyIndex.get(game.boss):null;
+  state.bossIndices=(game.bosses||[]).filter(e=>enemyIndex.has(e)).map(e=>enemyIndex.get(e));
+  state.finalBossIndex=enemyIndex.has(game.finalBoss)?enemyIndex.get(game.finalBoss):null;
+  state.goldDeathBossIndex=enemyIndex.has(game.goldDeathBoss)?enemyIndex.get(game.goldDeathBoss):null;
+  state.recoveryPhase=checkpointPhase(game);
+  const snap={v:3,reason,savedAt:performance.now(),state};
+  return storageWrite(RUNSAVEKEY,JSON.stringify(snap));
+ }catch(e){storageNotice();return false}
+}
+function validCheckpoint(snap){
+ if(!saveObject(snap)||snap.v!==3||!saveObject(snap.state))return false;
+ const s=snap.state,p=s.p,phases=['wave','storyNote','upgrade','wave50','finalPrep','finalUpgrade','purification','goldDeath','goldOutro'];
+ if(!['story','gold','endless'].includes(s.mode)||!phases.includes(s.recoveryPhase)||!Number.isInteger(s.wave)||s.wave<1||s.wave>(s.mode==='gold'?50:s.mode==='story'?100:1000000)||!saveObject(p))return false;
+ if(!['ladybug','beetle','butterfly','golden'].includes(s.bugId)||s.over||s.testMode)return false;
+ for(const key of ['x','y','hp','maxHp','damage','rate','speed','r'])if(!Number.isFinite(p[key]))return false;
+ if(p.maxHp<=0||p.hp<0||p.rate<=0||p.speed<0||p.r<=0||p.damage<0)return false;
+ if(!Array.isArray(s.enemies)||s.enemies.length>1000||!Array.isArray(s.drops)||s.drops.length>10000||!Array.isArray(s.fx)||s.fx.length>2000)return false;
+ for(const e of s.enemies){if(!saveObject(e)||typeof e.kind!=='string')return false;for(const key of ['x','y','hp','r'])if(!Number.isFinite(e[key]))return false}
+ if(!Number.isFinite(s.time)||s.time<0||!Number.isFinite(s.coins)||s.coins<0)return false;
+ if(['goldDeath','goldOutro'].includes(s.recoveryPhase)&&s.mode!=='gold')return false;
+ if(['storyNote','wave50','finalPrep','finalUpgrade','purification'].includes(s.recoveryPhase)&&s.mode!=='story')return false;
+ return true;
 }
 function loadRunRecovery(){
- try{const raw=localStorage.getItem(RUNSAVEKEY);return raw?JSON.parse(raw):null}catch(e){return null}
+ const raw=storageRead(RUNSAVEKEY);if(raw===null)return null;
+ try{const snap=JSON.parse(raw);if(validCheckpoint(snap))return snap;archiveSaveData(RUNSAVEKEY,raw,snap?.v===2?'legacy checkpoint has no mode':'invalid checkpoint')}
+ catch(e){archiveSaveData(RUNSAVEKEY,raw,'invalid checkpoint JSON')}
+ clearRunRecovery();return null;
+}
+function resolveCheckpointRefs(value,enemies,depth=0){
+ if(!value||typeof value!=='object'||depth>12)return value;
+ if(Object.keys(value).length===1&&Number.isInteger(value.enemyRef))return enemies[value.enemyRef]||null;
+ if(Array.isArray(value)){for(let i=0;i<value.length;i++)value[i]=resolveCheckpointRefs(value[i],enemies,depth+1)}
+ else for(const key of Object.keys(value)){if(['__proto__','constructor','prototype'].includes(key)){delete value[key];continue}value[key]=resolveCheckpointRefs(value[key],enemies,depth+1)}
+ return value;
+}
+function restorePendingRunPhase(){
+ if(!game||game.over)return false;
+ const g=game,phase=checkpointPhase(g);
+ if(phase==='wave')return false;
+ screen('none');showGameUI(true);g.paused=true;
+ if(phase==='storyNote'){showGardenUpdate(g.wave);return true}
+ if(phase==='wave50'){wave50BonusPick(true);return true}
+ if(phase==='finalPrep'){showFinalPrep();return true}
+ if(phase==='finalUpgrade'){finalUpgradePick(Math.max(1,g.finalUpgradeRemaining||1),true);return true}
+ if(phase==='upgrade'){openUpgrade(g.pendingUpgradeAfterWave!==false||g.intermission,true);return true}
+ if(phase==='purification'){
+  const elapsed=Math.max(0,g.finalPurify?.elapsed||0);g.finalPurify=null;g.paused=false;completeGameEnding(false,false);
+  if(g.finalPurify){g.finalPurify.elapsed=elapsed;g.finalPurify.start=performance.now()-elapsed*1000}return true;
+ }
+ if(phase==='goldDeath'){
+  const boss=g.goldDeathBoss||g.boss;if(!boss)return false;
+  g.goldDeathActive=false;boss.goldDying=false;boss.dead=false;boss.hp=1;boss.invuln=0;g.paused=false;damageEnemy(boss,1);return true;
+ }
+ if(phase==='goldOutro'){startGoldFinaleOutro();return true}
+ return false;
 }
 function restoreRecoveredRun(){
- const snap=loadRunRecovery();
- if(!snap||!snap.p||!snap.wave)return false;
+ const snap=loadRunRecovery();if(!snap)return false;
  try{
-  initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(false);
-  game={p:basePlayer(),bugId:(snap.bugId&&BUGS[snap.bugId])?snap.bugId:(save.selected||'ladybug'),enemies:[],drops:[],fx:[],time:snap.time||0,wave:snap.wave,spawn:0,paused:true,over:false,boss:null,shake:0,score:0,
-        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:snap.coins||0,boostUntil:0,rewardsBanked:!!snap.rewardsBanked};
-  Object.assign(game.p,snap.p);
-  if(game.p.tripleShot&&!game.p.tripleShotUntilWave)game.p.tripleShotUntilWave=snap.wave+5;
-  game.p.x=Math.max(game.p.r,Math.min(W-game.p.r,game.p.x||W/2));
-  game.p.y=Math.max(game.p.r,Math.min(H-game.p.r,game.p.y||H/2));
-  game.p.moveX=game.p.x;game.p.moveY=game.p.y;
-  game.p.helpers=(snap.p.helpers||[]).map(h=>({bornWave:h.bornWave,leaving:!!h.leaving,entering:!!h.entering,joining:h.joining||0,joinX:h.joinX,joinY:h.joinY,x:Number.isFinite(h.x)?h.x:game.p.x,y:Number.isFinite(h.y)?h.y:game.p.y,vx:h.vx,vy:h.vy}));
-  game.p.helperArmyWave=snap.p.helperArmyWave||0;
-  game.p.helperArmyReadyAt=snap.p.helperArmyReadyAt||0;game.p.helperArmyFormedAt=snap.p.helperArmyFormedAt||0;
-  game.p.helperArmyHelpers=(snap.p.helperArmyHelpers||[]).map((h,i)=>({x:Number.isFinite(h.x)?h.x:makeArmyHelper(i).x,y:Number.isFinite(h.y)?h.y:makeArmyHelper(i).y,vx:h.vx||0,vy:h.vy||0,target:null,phase:Number.isFinite(h.phase)?h.phase:i*(Math.PI*2/10),entered:!!h.entered,attackCd:h.attackCd||0}));
-  if(snap.intermission){
-   game.wave=snap.wave;game.intermission=true;game.waveActive=false;
-  }else{
-   beginWave(snap.wave);
-   game.paused=true;
-  }
-  last=performance.now();
-  screen('pause');
-  if(game.mode==='story'&&!game.boss)titleMusicStart();
-  return true;
- }catch(e){game=null;clearRunRecovery();return false}
+  initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(false);resetBigBigHudFades();
+  const s=snap.state;game=createRunState(s.mode,basePlayer(),s.bugId);
+  for(const key of Object.keys(s))if(!['__proto__','constructor','prototype','bossIndex','bossIndices','finalBossIndex','goldDeathBossIndex'].includes(key))game[key]=s[key];
+  resolveCheckpointRefs(game.p,game.enemies);resolveCheckpointRefs(game.fx,game.enemies);for(const e of game.enemies)resolveCheckpointRefs(e,game.enemies);
+  game.boss=Number.isInteger(s.bossIndex)?game.enemies[s.bossIndex]||null:null;
+  game.bosses=(s.bossIndices||[]).map(i=>game.enemies[i]).filter(Boolean);
+  game.finalBoss=Number.isInteger(s.finalBossIndex)?game.enemies[s.finalBossIndex]||null:null;
+  game.goldDeathBoss=Number.isInteger(s.goldDeathBossIndex)?game.enemies[s.goldDeathBossIndex]||null:null;
+  game.over=false;game.testMode=false;game.paused=true;
+  const p=game.p;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y));p.moveX=p.x;p.moveY=p.y;
+  const shift=performance.now()-saveNumber(snap.savedAt);
+  for(const key of ['lastAttack','lastMeteor','helperShot','superBuddyShot','lastDamagePopup'])if(Number.isFinite(p[key]))p[key]+=shift;
+  for(const e of game.enemies)if(Number.isFinite(e.goldDeathStartedAt))e.goldDeathStartedAt+=shift;
+  // Helpers that were already exiting a cleared wave have no gameplay work to resume.
+  if(p.helperArmyWave===0&&Array.isArray(p.helperArmyHelpers))p.helperArmyHelpers=[];
+  if(game.boss&&!game.boss.dead){configureBossHud(game.wave);updateBossHud()}else $('bossbar').style.display='none';
+  updateHud(true);refreshPauseStats();$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');
+  if(['purification','goldDeath','goldOutro'].includes(game.recoveryPhase))restorePendingRunPhase();
+  restartGameLoop();return true;
+ }catch(e){game=null;archiveSaveData(RUNSAVEKEY,storageRead(RUNSAVEKEY),'restore failed');clearRunRecovery();showGameUI(false);screen('home');startTitleGardenLoop();return false}
 }
 
 function resetGameProgress(){
- const keptSettings=Object.assign({music:true,sfx:true,damageNumbers:true,volume:50,pcControls:'mouse'},save.settings||{});
-  const keptGold=Math.max(0,save.goldLeaves||0);
-  const keptGoldUnlocks=[...(save.goldUnlocks||[])];
- const keptCosmetics=JSON.parse(JSON.stringify(save.cosmetics||{owned:[],equipped:{}}));
- if(raf){cancelAnimationFrame(raf);raf=0}
- bossMusicStop();showGameUI(false);game=null;
- localStorage.removeItem(SAVEKEY);clearRunRecovery();
- save={scrap:0,best:0,selected:'ladybug',unlocked:['ladybug'],upgrades:{dmg:0,hp:0,choices:0,magnet:0,coins:0},runs:0,goldLeaves:keptGold,goldUnlocks:keptGoldUnlocks,mainGameBeaten:false,endlessUnlocked:false,endlessBest:0,discovered:['player:ladybug'],legendaryGolden:{revealed:false,owned:false},settings:keptSettings,cosmetics:keptCosmetics};
- persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();refreshCreditsHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
+ const kept=normalizeSave(save);
+ if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0}
+ stopGameLoop();bossMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();showGameUI(false);game=null;clearRunRecovery();
+ save=normalizeSave({goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
+ persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
 let settingsOpenedFromPause=false;
@@ -2313,7 +2404,7 @@ function toggleSetting(key){
    else if(shouldTitleMusicPlay())titleMusicStart();
    else if(!$('goldShop').classList.contains('hidden'))shopMusicStart(false);
    else if(game&&game.boss&&!game.boss.dead&&!game.paused)bossMusicStart();
-  }else{titleMusicStop();shopMusicStop();endlessMusicStop();bossMusicStop()}
+  }else{goldMusicStop();titleMusicStop();shopMusicStop();endlessMusicStop();bossMusicStop()}
  }
 }
 
@@ -2382,6 +2473,7 @@ function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&!g
 function shouldTitleMusicPlay(){if(game&&game.finalPurify)return false;const end=$('ending');if(end&&!end.classList.contains('hidden'))return false;return isMenuMusicScreen()||isQuietStoryMusic()}
 function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}if(titleMusicDeferredTimer){clearTimeout(titleMusicDeferredTimer);titleMusicDeferredTimer=null}hardStopMusicVoices();if(resetStep)titleMusicStep=0}
 function titleMusicStart(){
+ if(isMenuMusicScreen())goldMusicStop();
  if(!audio||save.settings.music===false||titleMusicTimer)return;
  const wait=bbAudioTransitionUntil-performance.now();
  if(wait>0){if(!titleMusicDeferredTimer)titleMusicDeferredTimer=setTimeout(()=>{titleMusicDeferredTimer=null;if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart()},wait+8);return}
@@ -2453,6 +2545,7 @@ function continueMysteryMusicStart(){
 let bossMusicTimer=null,bossMusicStep=0,bossMusicEpoch=0;
 function bossMusicStop(){bossMusicEpoch++;if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}hardStopMusicVoices();bossMusicStep=0}
 function bossMusicStart(){
+ if(game?.mode==='gold'){syncGoldMusic();return;}
  titleMusicStop(false);bossMusicStop();if(!audio||save.settings.music===false)return;const musicEpoch=bossMusicEpoch;
  const finalBoss=game?.boss?.kind==='gardenHeart';
  if(finalBoss){
@@ -2468,31 +2561,103 @@ function bossMusicStart(){
  const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
  bossMusicTimer=setTimeout(tick,380);
 }
+// Gold has one scheduler. Reveal/death/outro sequences explicitly take ownership.
+let goldMusicTimer=null,goldMusicOwner='',goldMusicStep=0,goldMusicRun=null,goldMusicGeneration=0;
+let goldCueGeneration=0;
+const goldCueTimers=new Set();
+const GOLD_WAVE_MELODY=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
+const GOLD_WAVE_BASS=[220,247,196,220,174,196,220,165],GOLD_WAVE_ALIEN=[311,466,349,523,277,415,330,494];
+const GOLD_BOSS_MOTIF=[220,277,330,415,330,277,247,311,370,466,370,311,262,330,392,494];
+const GOLD_BOSS_HIGH=[880,1109,988,1245,1047,1319,1175,1480],GOLD_BOSS_LOW=[110,123.47,98,110,87.31,103.83,92.5,116.54];
+function cancelGoldMusicCues(){
+ goldCueGeneration++;for(const timer of goldCueTimers)clearTimeout(timer);goldCueTimers.clear();
+}
+function scheduleGoldMusicCue(run,delay,callback){
+ const generation=goldCueGeneration;
+ const timer=setTimeout(()=>{
+  goldCueTimers.delete(timer);
+  if(generation===goldCueGeneration&&game===run&&run.mode==='gold'&&!run.over)callback();
+ },delay);
+ goldCueTimers.add(timer);return timer;
+}
+function goldMusicStop(){
+ goldMusicGeneration++;
+ const hadMusic=!!(goldMusicTimer||goldMusicOwner);
+ if(goldMusicTimer)clearTimeout(goldMusicTimer);
+ goldMusicTimer=null;goldMusicOwner='';goldMusicRun=null;goldMusicStep=0;
+ if(hadMusic)hardStopMusicVoices();
+}
+function goldMusicDesiredOwner(){
+ if(!game||game.mode!=='gold'||game.over||game.paused||document.hidden||save.settings.music===false)return '';
+ if(game.goldDeathActive||(game.goldFinaleRevealUntil||0)>game.time||gameScreenVisible('home')||gameScreenVisible('ending')||$('goldFinaleOutro')?.classList.contains('play'))return '';
+ return game.enemies?.some(e=>e&&!e.dead&&e.goldBossKey==='goldUnknownBoss'&&e.hp>0)?'boss':'wave';
+}
+function playGoldMusicBeat(owner,step){
+ if(owner==='wave'){
+  const n=GOLD_WAVE_MELODY[step%GOLD_WAVE_MELODY.length];
+  beep(n,.14,.006,'triangle','music');
+  if(step%2===0)beep(GOLD_WAVE_BASS[(step>>1)%GOLD_WAVE_BASS.length],.21,.0045,'sine','music');
+  if(step%2===1)beep(GOLD_WAVE_ALIEN[step%GOLD_WAVE_ALIEN.length],.13,.0038,'sawtooth','music');
+  if(step%4===3)beep(GOLD_WAVE_ALIEN[(step+3)%GOLD_WAVE_ALIEN.length]*1.49,.085,.0028,'square','music');
+  if(step%8===7)beep(1568,.13,.0032,'sine','music');
+  return 170;
+ }
+ const tier=Math.max(1,Math.floor(game.wave/5)),loud=Math.floor(step/16)%2===1,n=GOLD_BOSS_MOTIF[step%GOLD_BOSS_MOTIF.length];
+ if(!loud){
+  if(step%2===0)beep(n,.20,.0026,'sine','music');
+  if(step%4===2)beep(n*1.498,.14,.0018,'triangle','music');
+  if(step%8===6)beep(GOLD_BOSS_HIGH[(step>>1)%GOLD_BOSS_HIGH.length],.10,.0013,'sine','music');
+ }else{
+  beep(n,.15,.0062,'sawtooth','music');
+  beep(GOLD_BOSS_LOW[step%GOLD_BOSS_LOW.length],.22,.0052,'triangle','music');
+  if(step%2===0)beep(n*2,.10,.0043,'square','music');
+  if(step%4===3)beep(GOLD_BOSS_HIGH[step%GOLD_BOSS_HIGH.length],.12,.0048,'triangle','music');
+  if(tier>=7&&step%4===1)beep(n*2.247,.075,.0032,'square','music');
+ }
+ return Math.max(112,176-Math.min(50,tier*5));
+}
+function syncGoldMusic(){
+ const owner=goldMusicDesiredOwner();
+ if(owner===goldMusicOwner&&(!owner||(goldMusicTimer&&goldMusicRun===game)))return;
+ goldMusicStop();if(!owner||!audio||audio.state!=='running')return;
+ titleMusicStop(false);shopMusicStop();endlessMusicStop();bossMusicStop();
+ goldMusicOwner=owner;goldMusicRun=game;goldMusicStep=0;
+ const generation=goldMusicGeneration,run=game;
+ const tick=()=>{
+  if(generation!==goldMusicGeneration)return;
+  goldMusicTimer=null;
+  if(game!==run||goldMusicDesiredOwner()!==owner){syncGoldMusic();return;}
+  const tempo=playGoldMusicBeat(owner,goldMusicStep++);
+  goldMusicTimer=setTimeout(tick,tempo);
+ };
+ tick();
+}
+
 // v19.0.43 — short, self-contained reveal sting for ??? -> BIG BIG.
 // It briefly owns the music channel, then hands control back to the normal boss theme.
 function bigBigRevealSting(){
- if(!audio||save.settings.music===false)return;
- bossMusicStop();
- const live=()=>!!(game&&game.mode==='gold'&&game.wave===50&&game.goldFinale&&game.boss&&!game.boss.dead&&game.boss.goldPhase===2);
+ cancelGoldMusicCues();goldMusicStop();bossMusicStop();
+ if(!audio||save.settings.music===false||!game)return;
+ const run=game,live=()=>!!(game===run&&!run.over&&run.mode==='gold'&&run.wave===50&&run.goldFinale&&run.boss&&!run.boss.dead&&run.boss.goldPhase===2&&!run.goldDeathActive);
  beep(82,.52,.026,'sawtooth','music');
- setTimeout(()=>{if(live())beep(123,.42,.021,'triangle','music')},420);
- setTimeout(()=>{if(live()){beep(164,.40,.021,'sawtooth','music');beep(82,.48,.013,'sine','music')}},910);
- setTimeout(()=>{if(live())beep(220,.40,.024,'triangle','music')},1380);
- setTimeout(()=>{if(live()){beep(65,.46,.040,'square','music');beep(330,.38,.025,'triangle','music')}},1860);
- setTimeout(()=>{if(live()){beep(98,.42,.030,'sawtooth','music');beep(392,.32,.020,'triangle','music')}},2700);
- setTimeout(()=>{if(live())bossMusicStart()},3300);
+ scheduleGoldMusicCue(run,420,()=>{if(live())beep(123,.42,.021,'triangle','music');});
+ scheduleGoldMusicCue(run,910,()=>{if(live()){beep(164,.40,.021,'sawtooth','music');beep(82,.48,.013,'sine','music');}});
+ scheduleGoldMusicCue(run,1380,()=>{if(live())beep(220,.40,.024,'triangle','music');});
+ scheduleGoldMusicCue(run,1860,()=>{if(live()){beep(65,.46,.040,'square','music');beep(330,.38,.025,'triangle','music');}});
+ scheduleGoldMusicCue(run,2700,()=>{if(live()){beep(98,.42,.030,'sawtooth','music');beep(392,.32,.020,'triangle','music');}});
+ scheduleGoldMusicCue(run,3300,()=>{if(live())syncGoldMusic();});
 }
 function bigBigAlienDeathSting(){
- try{bossMusicStop();hardStopMusicVoices()}catch(_){ }
- if(!audio||save.settings.music===false)return;
- const seq=[
+ cancelGoldMusicCues();goldMusicStop();bossMusicStop();hardStopMusicVoices();
+ if(!audio||save.settings.music===false||!game)return;
+ const run=game,seq=[
   [0,196,.28,.018,'sine'],[180,147,.34,.022,'triangle'],[420,110,.42,.026,'sawtooth'],
   [760,82,.55,.030,'sawtooth'],[1180,61,.70,.028,'sine'],[1750,330,.18,.012,'sine'],
   [1900,247,.22,.014,'triangle'],[2080,185,.28,.016,'sine'],[2520,92,.75,.032,'sawtooth'],
   [3300,740,.10,.013,'sine'],[3380,1046,.14,.014,'triangle'],[3500,1480,.20,.012,'sine'],
   [3820,55,.90,.040,'sawtooth']
  ];
- for(const [ms,n,d,v,w] of seq)setTimeout(()=>{if(game&&game.goldDeathActive)beep(n,d,v,w,'music')},ms);
+ for(const [ms,n,d,v,w] of seq)scheduleGoldMusicCue(run,ms,()=>{if(run.goldDeathActive)beep(n,d,v,w,'music');});
 }
 
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
@@ -2508,8 +2673,21 @@ function buildBugScreen(){
  normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?20:25,eligible=starter||save.best>=unlockWave;const lockNote='';const leafCost=id==='beetle'?5000:7500;const actions=unlocked?`<button class="btn small green">${selected?'SELECTED':'SELECT'}</button>`:starter?'':eligible?`<button class="btn small leafBugUnlock"><span class="leafCurrencyIcon bbLeafIcon"></span>${leafCost.toLocaleString()}</button>`:`<div class="bugUnlockChoices"><button class="btn small dark" disabled>REACH WAVE ${unlockWave}</button><span>OR</span><button class="btn small goldUnlockBtn"><span class="goldLeafIcon" aria-hidden="true"></span>10</button></div>`;el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}${actions}`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);if(unlocked){el.querySelector('button').onclick=()=>{initAudio();save.selected=id;persist();buildBugScreen()}}else if(!starter){const goldBtn=el.querySelector('.goldUnlockBtn'),leafBtn=el.querySelector('.leafBugUnlock');if(goldBtn)goldBtn.onclick=()=>buyStandardBug(id,'gold');if(leafBtn)leafBtn.onclick=()=>buyStandardBug(id,'leaf')}grid.appendChild(el)});
  if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>500,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
 }
-function buyStandardBug(id,kind){if(save.unlocked.includes(id))return;const unlockWave=id==='beetle'?20:25;const leafCost=id==='beetle'?5000:7500;const bestWave=save.best||0;if(kind==='leaf'&&bestWave<unlockWave){beep(155,.10,.022,'triangle');return}if(kind==='gold'&&bestWave>=unlockWave){beep(155,.10,.022,'triangle');return}const ok=kind==='leaf'?save.scrap>=leafCost:save.goldLeaves>=10;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf'){save.scrap-=leafCost;if(!save.bugPurchases.includes(id))save.bugPurchases.push(id)}else{save.goldLeaves-=10;if(!save.goldUnlocks.includes(id))save.goldUnlocks.push(id)}if(!save.unlocked.includes(id))save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle')}
-function buyLegendary(kind){if(save.legendaryGolden.owned)return;const ok=kind==='leaf'?save.scrap>=500000:save.goldLeaves>=100;if(!ok){beep(155,.10,.022,'triangle');return}if(kind==='leaf')save.scrap-=500000;else save.goldLeaves-=100;save.legendaryGolden.owned=true;if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210)}
+function buyStandardBug(id,kind){
+ if(!['beetle','butterfly'].includes(id)||!['leaf','gold'].includes(kind))return false;
+ save=normalizeSave(save);if(save.unlocked.includes(id))return false;
+ const unlockWave=id==='beetle'?20:25,leafCost=id==='beetle'?5000:7500;
+ if((kind==='leaf'&&save.best<unlockWave)||(kind==='gold'&&save.best>=unlockWave)||(kind==='leaf'?save.scrap<leafCost:save.goldLeaves<10)){beep(155,.10,.022,'triangle');return false}
+ if(kind==='leaf'){save.bugPurchases.push(id);save.scrap-=leafCost}else{save.goldUnlocks.push(id);save.goldLeaves-=10}
+ save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle');return true;
+}
+function buyLegendary(kind){
+ if(!['leaf','gold'].includes(kind))return false;save=normalizeSave(save);
+ if(save.legendaryGolden.owned||!save.legendaryGolden.revealed)return false;
+ if(kind==='leaf'?save.scrap<500000:save.goldLeaves<100){beep(155,.10,.022,'triangle');return false}
+ save.legendaryGolden.owned=true;if(kind==='leaf')save.scrap-=500000;else save.goldLeaves-=100;
+ if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210);return true;
+}
 function permanentUpgradeLeafCost(k,level){
  // v18.0.34 — same simple leaf-price ladder for every permanent upgrade.
  // level is the current 0–9 level, so index 0 is the first purchase.
@@ -2530,14 +2708,14 @@ function buildShop(){
  $('shop').querySelectorAll('[data-buy-gold]').forEach(btn=>btn.onclick=()=>buyShopGold(btn.dataset.buyGold));
 }
 function buyShop(k){
- const s=save.upgrades, costs={hp:permanentUpgradeLeafCost('hp',s.hp),dmg:permanentUpgradeLeafCost('dmg',s.dmg),magnet:permanentUpgradeLeafCost('magnet',s.magnet),coins:permanentUpgradeLeafCost('coins',s.coins)};
- if(s[k]>=10||save.scrap<costs[k])return;
- save.scrap-=costs[k];s[k]++;persist();buildShop();beep(700,.1,.035,'triangle');syncLegendaryGolden(true);
+ if(!['hp','dmg','magnet','coins'].includes(k))return false;save=normalizeSave(save);const s=save.upgrades,cost=permanentUpgradeLeafCost(k,s[k]);
+ if(s[k]>=10||save.scrap<cost)return false;
+ s[k]++;save.scrap-=cost;persist();buildShop();beep(700,.1,.035,'triangle');syncLegendaryGolden(true);return true;
 }
 function buyShopGold(k){
- const s=save.upgrades;
- if(s[k]>=10||save.goldLeaves<10){beep(155,.10,.022,'triangle');return;}
- save.goldLeaves-=10;s[k]++;persist();buildShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);
+ if(!['hp','dmg','magnet','coins'].includes(k))return false;save=normalizeSave(save);const s=save.upgrades;
+ if(s[k]>=10||save.goldLeaves<10){beep(155,.10,.022,'triangle');return false}
+ s[k]++;save.goldLeaves-=10;persist();buildShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);return true;
 }
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[],storyStillTime:0,closeBonusUntil:0};
@@ -2551,13 +2729,17 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(startWave=1,testMode=false){
+ if(testMode&&!BB_DEV_MODE)return;
+ if(!BB_DEV_MODE)startWave=1;
+ homePresentationGeneration++;resetGameInput();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const w=Math.max(1,Math.min(100,Number(startWave)||1));
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
+ game=Object.assign(createRunState(game.mode,game.p,game.bugId),game);
  beginWave(w);if(!game.boss)titleMusicStart();if(!testMode)saveRunRecovery('run-start');
- last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
+ screenCanvas();restartGameLoop();
 }
 
 
@@ -2567,6 +2749,8 @@ function makeGoldPlayer(){
  finally{save.selected=old}
 }
 function startGoldWaves(testMode=false,startWave=1){
+ if(testMode&&!BB_DEV_MODE)return;
+ homePresentationGeneration++;resetGameInput();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
  if(!testMode&&!goldWavesUnlocked())return;
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
@@ -2574,7 +2758,8 @@ function startGoldWaves(testMode=false,startWave=1){
  p.damage=30; // v19.0.59 — Gold Mode only: start at exactly 30 damage.
  game={p,bugId:'golden',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'gold',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldCorruptionStart:0,goldFinaleRevealStart:0};
- beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);$('pauseBtn')?.classList.add('hidden');titleMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
+ game=Object.assign(createRunState(game.mode,game.p,game.bugId),game);
+ beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);saveRunRecovery('gold-run-start');$('pauseBtn')?.classList.add('hidden');titleMusicStart();screenCanvas();restartGameLoop();
 }
 const GOLD_BOSSES=[
  {wave:5,key:'goldUnknownBoss',name:'???',base:'beetle'},
@@ -2593,19 +2778,22 @@ function goldBossFor(w){return GOLD_BOSSES.find(b=>b.wave===w)||GOLD_BOSSES[Math
 function goldWaveQuota(w){return Math.min(12,4+Math.floor((Math.max(1,w)-1)/5))}
 
 function startEndless(){
+ homePresentationGeneration++;resetGameInput();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
  if(!save.endlessUnlocked)return;
  initAudio();titleMusicStop();shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
+ game=Object.assign(createRunState(game.mode,game.p,game.bugId),game);
  // Endless starts 50% faster than the same selected bug in Story Mode.
  game.p.speed*=1.75;game.p.rate/=1.75;
- beginWave(1);endlessMusicStart();last=performance.now();screenCanvas();raf=requestAnimationFrame(loop);
+ beginWave(1);saveRunRecovery('endless-run-start');endlessMusicStart();screenCanvas();restartGameLoop();
 }
 function endlessActiveCap(w){return Math.min(90,30+Math.floor(w*2.2))}
 function endlessWaveQuota(w){if(w===1)return 12;if(w===2)return 20;if(w===3)return 30;return Math.min(260,48+w*8)}
 
 function buildTestWaveSelector(){
+ if(!BB_DEV_MODE)return;
  const sel=$('testWave');if(!sel)return;let html='';
  for(let w=1;w<=100;w++){const boss=w%5===0, label=boss?`Wave ${w} — ${bossKindsFor(w).map(k=>bossDisplayName(k,w)).join(' + ')}`:`Wave ${w}`;html+=`<option value="${w}"${w===20?' selected':''}>${label}</option>`}
  sel.innerHTML=html;
@@ -2702,6 +2890,7 @@ function flashBanner(text,sec=1.25){
 // v19.0.43 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
+ if(!BB_DEV_MODE)return;
  try{
   const g=window.game||game, t=g&&Number.isFinite(g.time)?g.time.toFixed(2):'--';
   const line=t+' '+msg; BB22TRACE.push(line); if(BB22TRACE.length>14)BB22TRACE.shift();
@@ -2733,6 +2922,12 @@ function spawnBigBloodSuckerBossMosquitos(){
 }
 function beginWave(w){
  const g=game;
+ // A legacy Wave 51 request must never replace the live two-phase Wave 50 boss.
+ if(g.mode==='gold'&&w===51){
+   if(g.wave===50&&(g.goldFinale||g.goldDeathActive||g.over||(g.enemies||[]).some(e=>e&&!e.dead&&e.goldBossKey==='goldUnknownBoss')))return;
+   w=50;
+ }
+ g.recoveryPhase='wave';g.pendingChoiceIds=[];g.pendingUpgradeAfterWave=false;
  if(g&&g.mode==='gold'&&w>=50)bb22Trace('beginWave('+w+') ENTER oldWave='+g.wave);
  if(g.mode==='endless'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
@@ -2741,10 +2936,7 @@ function beginWave(w){
  }
  if(g.mode==='gold'){
    g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
-   // v19.0.43 — there is no separate internal Wave 51 anymore.
-   // Wave 50 owns both phases of the same live boss object. If any legacy path asks for
-   // Wave 51, keep the run on Wave 50 rather than spawning/replacing the boss.
-   if(w===51){w=50;bb22Trace('LEGACY beginWave(51) redirected to Wave 50');}
+   // Wave 50 owns both phases of the same live boss object.
    g.goldFinale=false;g.goldCorruptionStart=0;g.goldFinaleRevealStart=0;
    const bossWave=w%5===0;
    g.waveQuota=bossWave?bossKindsFor(w).length:goldWaveQuota(w);g.spawnLeft=g.waveQuota;
@@ -2780,10 +2972,13 @@ function showMosquitoModeUnlockPopup(onDone){
 function completeWave(){
  const g=game;
  if(g&&g.mode==='gold'&&g.wave>=50)bb22Trace('completeWave ENTER wave='+g.wave+' active='+g.waveActive+' inter='+g.intermission+' enemies='+(g.enemies?g.enemies.length:'?'));
+ if(g.p.hp<=0)return;
  if(!g.waveActive||g.intermission){if(g&&g.mode==='gold'&&g.wave>=50)bb22Trace('completeWave EARLY RETURN');return;}
  // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
+ g.recoveryPhase=g.mode==='gold'&&g.wave===50?'goldOutro':g.mode==='story'&&g.wave%5===0?'storyNote':'upgrade';
+ g.pendingUpgradeAfterWave=true;g.pendingChoiceIds=[];
  // v19.0.156 — wave-clear safety: hostile attacks/hazards cannot carry into the clear screen or next wave.
  // Remove only enemy-damaging FX; player shots, pickups, heal hearts, particles, and UI FX are preserved.
  if(Array.isArray(g.fx))g.fx=g.fx.filter(f=>!(f&&(f.sting||f.enemyShot||f.goldShot||f.bossHazard||f.toxic||f.lightningStrike)));
@@ -2810,9 +3005,7 @@ function completeWave(){
    },16);
  }
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
- // v19.0.62 — Gold Hard Mode does not synchronously serialize a run snapshot at every wave boundary.
- // That checkpoint write was unnecessary for the no-pause hard-mode flow and could create a tiny frame hitch.
- if(g.mode!=='gold')saveRunRecovery('wave-clear');
+ // Save clear phases after their healing/rewards, before a deferred choice screen.
  if(g.mode==='gold'){
    // v19.0.43 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
    // damageEnemy() promotes that same object in place. When phase 2 finally dies, Wave 50 ends the run.
@@ -2831,6 +3024,7 @@ function completeWave(){
    if(bossClear){
      const heal=Math.ceil(g.p.maxHp*.20);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
      flashBanner('GOLD BOSS DOWN! +'+heal+' HP',1.25);
+      saveRunRecovery('wave-clear');
      setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
    }else{
      // v19.0.62 — seamless Gold-wave handoff: no artificial clear pause/timer.
@@ -2843,6 +3037,7 @@ function completeWave(){
  if(g.mode==='endless'){
    if(g.wave%5===0){g.p.speed*=1.04;g.p.rate=Math.max(70,g.p.rate*.96);flashBanner('SWARM CLEAR!  •  SPEED UP!',1.15)}
    else flashBanner('SWARM CLEAR!',1.0);
+    saveRunRecovery('wave-clear');
    setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return
  }
  const bossClear=g.wave%5===0;
@@ -2867,6 +3062,7 @@ function completeWave(){
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
  }
  flashBanner(bossClear?'BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.3:1.1);
+  saveRunRecovery('wave-clear');
  // v17.9.65 — boss-clear transition safety:
  // open the garden story immediately after the boss clear instead of leaving the run paused
  // while waiting on a timer. This prevents iOS from getting stranded on "WAVE CLEAR".
@@ -2942,8 +3138,11 @@ function burst(x,y,n=8,life=.5,col=null){
  if(lowStoryFx()&&n>2)n=Math.max(2,Math.ceil(n*.55));
  n=Math.min(n,Math.max(0,110-game.fx.length));for(let i=0;i<n;i++){let a=Math.random()*6.28,s=35+Math.random()*150;game.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life*Math.random()+.2,r:2+Math.random()*4,col})}
 }
+function combatTransitionActive(g=game){return !!(g&&(g.over||g.finalPurify||g.goldDeathActive))}
 function damageEnemy(e,d,source='player'){
- if(!e||e.hp<=0)return;
+ if(!e||e.hp<=0||combatTransitionActive())return;
+ if(e.boss&&(e.invuln||0)>0)return;
+ if(game&&game.mode==='gold'&&e.goldPhase===2&&(game.goldFinaleRevealUntil||0)>game.time)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave===50&&e&&e.goldBossKey==='goldUnknownBoss';
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' phase='+(e.goldPhase||1)+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey);
  // v19.0.43 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
@@ -2973,7 +3172,7 @@ function damageEnemy(e,d,source='player'){
  // drawable for the death animation, then the existing Gold victory flow runs.
  if(game&&game.mode==='gold'&&game.wave===50&&e.goldPhase===2&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp&&!e.goldDying){
    const g=game;e.hp=0;e.goldDying=true;e.invuln=999;e.vx=0;e.vy=0;e._dash=0;e._hunt=0;
-   e.goldDeathStartedAt=performance.now();g.goldDeathActive=true;g.goldDeathBoss=e;g.paused=true;g.waveActive=false;
+   e.goldDeathStartedAt=performance.now();g.goldDeathActive=true;g.goldDeathBoss=e;g.paused=true;g.waveActive=false;g.recoveryPhase='goldDeath';saveRunRecovery('gold-death');
    g.p.lastAttack=performance.now();
    // Freeze hostile projectiles exactly where they are; they are cleared before play can resume.
    if(Array.isArray(g.fx))for(const f of g.fx){if(f&&(f.sting||f.enemyShot||f.goldShot)){f.vx=0;f.vy=0;f.damage=0;}}
@@ -3121,6 +3320,11 @@ function compactInPlace(arr,keep){
 function keepLiveEnemy(e){return !e.dead}
 function keepLiveDrop(d){return !d.dead}
 function keepLiveFx(f){return f.life>0}
+function isGameplayFx(f){return !!(f&&(f.sting||f.enemyShot||f.goldShot||f.orb||f.bossHazard||f.toxic||f.lightningStrike||f.web))}
+function trimCosmeticFx(fx,cap){
+ let remove=Math.max(0,fx.length-cap);if(!remove)return;
+ let write=0;for(let i=0;i<fx.length;i++){const f=fx[i];if(remove&&!isGameplayFx(f)){remove--;continue}fx[write++]=f}fx.length=write;
+}
 function keepLiveBoss(b){return !b.dead}
 function keepVisibleHelper(h){return !h.leaving||h.x>-50&&h.x<W+50&&h.y>-60&&h.y<H+60}
 function fireball(){
@@ -3306,9 +3510,9 @@ function enemyMove(e,dt){
          flashBanner('SKY LANCES!',.48);
          // Two staggered lance fans make the new attack clearly visible while preserving dodge lanes.
          for(const off of [-.34,-.17,0,.17,.34])game.fx.push({x:e.x,y:e.y,vx:Math.cos(a+off)*300,vy:Math.sin(a+off)*300,life:2.85,r:5.4,sting:true,damage:dmg});
-         const lanceA=a;
+         const lanceA=a,owner=game;
          setTimeout(()=>{
-           if(!game.running||game.paused||game.over||e.dead||e.hp<=0)return;
+           if(game!==owner||owner.paused||combatTransitionActive(owner)||e.dead||e.hp<=0)return;
            for(const off of [-.255,-.085,.085,.255])game.fx.push({x:e.x,y:e.y,vx:Math.cos(lanceA+off)*315,vy:Math.sin(lanceA+off)*315,life:2.65,r:5.1,sting:true,damage:dmg});
          },150);
        }else{
@@ -3395,10 +3599,11 @@ function enemyMove(e,dt){
    else if(e.state==='telegraph'&&e.stateT<=0){let dd=Math.hypot(dx,dy)||1;e.vx=dx/dd*270;e.vy=dy/dd*270;e.state='pounce';e.stateT=.34;burst(e.x,e.y,4,.2,'#b495c7')}
    else if(e.state==='pounce'){e.x+=e.vx*dt;e.y+=e.vy*dt;if(e.stateT<=0)e.state='chase';return}
  }
- if(e.kind==='stink'||e.kind==='queenSpider'){
+ if(e.kind==='stink'){
    e.cloudCd-=dt*duoBossRate;if(e.cloudCd<=0){e.cloudCd=3.1;toxicCloud(e.x,e.y,44,2.4,5.5+game.wave*.18);burst(e.x,e.y,5,.35,'#b56cff')}
  }
  if(e.boss&&e.kind==='queenSpider'){
+   e.cloudCd-=dt*duoBossRate;
    e.webCd=(e.webCd||0)-dt*duoBossRate;
    if(e.cloudCd<=0){
      e.cloudCd=bossSecondFight(game.wave)?1.65:2.25;
@@ -3679,6 +3884,7 @@ function update(dt,now){
  // v18.0.41 — build once before Story targeting/AI so player and buddies can use spatial lookups.
  if(g.mode!=='endless')buildStoryEnemyGrid();
  const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),stillFast=(g.mode==='story'||g.mode==='endless')&&(p.storyStillTime||0)>=.35,baseAttackDelay=stillFast?p.rate/1.25:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;const bigBigRevealActive=g.mode==='gold'&&g.wave===50&&g.goldFinale&&(g.goldFinaleRevealUntil||0)>g.time;if(bigBigRevealActive){p.lastAttack=now}else if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ if(combatTransitionActive(g))return;
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
  // v18.0.21: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
@@ -3750,7 +3956,9 @@ function update(dt,now){
    p.superBuddyShot=now;let a=g.time*1.35,hx=p.x+Math.cos(a)*48,hy=p.y+Math.sin(a)*48,t=nearestEnemy(hx,hy);p.superBuddyTarget=t||null;
    if(t){damageEnemy(t,p.damage*1.5,'helper');if(g.fx.length<145)g.fx.push({x:hx,y:hy,life:.16,maxLife:.16,r:3.15,helperShotFx:true,ax:t.x,ay:t.y})}
  }
+ if(combatTransitionActive(g))return;
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
+ if(combatTransitionActive(g))return;
  // v18.0.41 — Story grid was already built above before targeting and AI.
  // v17.9.94 — this decay factor is identical for every enemy in a frame, so calculate it once.
  const knockDecay=Math.pow(.05,dt);
@@ -3758,6 +3966,8 @@ function update(dt,now){
    if(g.mode==='gold'&&e.goldBossKey)goldBossMechanics(e,dt);
    e.slow=Math.max(0,e.slow-dt);e.hit=Math.max(0,e.hit-dt);
    if(e.poison&&playerCanTargetEnemy(e))damageEnemy(e,e.poison*dt*.8);
+   if(combatTransitionActive(g))return;
+   if(e.dead||e.hp<=0)continue;
    enemyMove(e,dt);
    if(e.kind==='moleCricket'&&e.state==='burrowWait')continue;
    e.x+=e.knockX*dt;e.y+=e.knockY*dt;e.knockX*=knockDecay;e.knockY*=knockDecay;
@@ -3813,19 +4023,20 @@ function update(dt,now){
        const head=g.storyGridHead,stamp=g.storyGridStamp,next=g.storyGridNext,gen=g.storyGridGen,cols=g.storyGridCols,rows=g.storyGridRows,cell=128,cx=Math.max(0,Math.min(cols-1,Math.floor(f.x/cell)+1)),cy=Math.max(0,Math.min(rows-1,Math.floor(f.y/cell)+1));
        outer:for(let oy=-1;oy<=1;oy++){const gy=cy+oy;if(gy<0||gy>=rows)continue;for(let ox=-1;ox<=1;ox++){const gx=cx+ox;if(gx<0||gx>=cols)continue;const ci=gy*cols+gx;if(stamp[ci]!==gen)continue;for(let j=head[ci];j!==-1;j=next[j]){const e=g.enemies[j];if(!playerCanTargetEnemy(e))continue;const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){hit=e;break outer}}}}
      }else{for(const e of g.enemies)if(!e.dead){const dx=e.x-f.x,dy=e.y-f.y,rr=e.r+12;if(dx*dx+dy*dy<rr*rr){hit=e;break}}}
-     if(hit){damageEnemy(hit,f.damage);f.life=0}
+     if(hit){damageEnemy(hit,f.damage);f.life=0;if(combatTransitionActive(g))return}
    }
    f.vx*=.985;f.vy*=.985;
  }
- compactInPlace(g.enemies,keepLiveEnemy);compactInPlace(g.drops,keepLiveDrop);compactInPlace(g.fx,keepLiveFx);let fxCap=g.enemies.length>32?108:(g.enemies.length>22?126:146);if(BB_LOW_FX_DEVICE)fxCap-=18;if(DESKTOP_PERF_RENDER)fxCap=Math.min(fxCap,112);if(g.fx.length>fxCap)g.fx.splice(0,g.fx.length-fxCap);
+ compactInPlace(g.enemies,keepLiveEnemy);compactInPlace(g.drops,keepLiveDrop);compactInPlace(g.fx,keepLiveFx);let fxCap=g.enemies.length>32?108:(g.enemies.length>22?126:146);if(BB_LOW_FX_DEVICE)fxCap-=18;if(DESKTOP_PERF_RENDER)fxCap=Math.min(fxCap,112);if(g.fx.length>fxCap)trimCosmeticFx(g.fx,fxCap);
  if(g.bosses&&g.bosses.length){
    compactInPlace(g.bosses,keepLiveBoss);
    g.boss=g.bosses[0]||null;
    if(!g.bosses.length){updateBossHud();$('bossbar').style.display='none';bossMusicStop();if(g.mode==='story'&&!g.over)titleMusicStart()}
    else{updateBossHud()}
  }
+ if(combatTransitionActive(g))return;
+ if(p.hp<=0){finish(false);return}
  if(g.waveActive&&g.spawnLeft<=0&&g.enemies.length===0)completeWave();
- if(p.hp<=0)finish(false);
  updateHud(false,now);
 }
 function upgradeCardClass(u){if(!u)return '';const cls=[];if(['triple','clone','helperArmy'].includes(u.id))cls.push('bbRare');if(['endlessHealth','endlessTriple','endlessRepel'].includes(u.id))cls.push('noDesc');return cls.join(' ')}
@@ -3880,9 +4091,15 @@ if(u.id==='endlessRepel'){
 }else if(u.id==='clone'||u.id==='crit'){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,(game?.bugId||save.selected),34,false)}else if(u.id==='helperArmy'){mark.innerHTML='';const wrap=document.createElement('span');wrap.className='buddyArmyWrap';mark.appendChild(wrap);for(let n=0;n<3;n++){const c=document.createElement('canvas');c.width=40;c.height=40;wrap.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,(game?.bugId||save.selected),22,false)}}})
 }
 
-function openUpgrade(afterWave=false){
- const g=game;g.paused=true;
-  if(g.mode==='gold'&&afterWave&&g.wave%5===0&&g.p){g.p.hp=g.p.maxHp;updateHud();}
+function rememberUpgradeChoices(kind,choices,afterWave=true){
+ game.recoveryPhase=kind;game.pendingChoiceIds=choices.map(u=>u.id);game.pendingUpgradeAfterWave=!!afterWave;
+ saveRunRecovery('choices-open');
+}
+function recoveredUpgradeChoices(pool){return (game.pendingChoiceIds||[]).map(id=>pool.find(u=>u.id===id)).filter(Boolean)}
+function clearPendingUpgrade(){game.pendingChoiceIds=[];game.pendingUpgradeAfterWave=false;game.recoveryPhase='wave'}
+function openUpgrade(afterWave=false,restoring=false){
+ const g=game;g.paused=true;let picked=false;
+  if(!restoring&&g.mode==='gold'&&afterWave&&g.wave%5===0&&g.p){g.p.hp=g.p.maxHp;updateHud();}
  $('upgradeTitle').textContent=afterWave?(g.mode==='endless'?'SWARM '+g.wave+' CLEARED!':g.mode==='gold'?'GOLD BOSS '+g.wave+' CLEARED!':(g.wave%5===0?'BOSS CLEARED!':'WAVE '+g.wave+' CLEAR!')):'LEVEL UP!';
  $('upgradeSub').textContent=g.mode==='endless'?'Choose one ability':g.mode==='gold'?'':'Choose one upgrade';
  if(g.mode==='endless'){
@@ -3891,9 +4108,10 @@ function openUpgrade(afterWave=false){
    if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:'',rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
    if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:'',rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
    if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
+   rememberUpgradeChoices('upgrade',endlessUp,afterWave);
    $('choices').innerHTML=endlessUp.map(u=>upgradeChoiceHtml(u)).join('');
    paintUpgradeBuddyIcons($('choices'),endlessUp);
-   [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();endlessUp[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1)});
+   [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;initAudio();endlessUp[i].apply(g.p);clearPendingUpgrade();$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound(endlessUp[i].rarity);updateHud();if(afterWave)beginWave(g.wave+1);saveRunRecovery('upgrade-picked')});
    $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
  }
  if(g.mode==='gold'){
@@ -3903,14 +4121,15 @@ function openUpgrade(afterWave=false){
   {id:'heart',name:'HEALTH',desc:'+20% max health',rarity:'common',apply:p=>{const add=p.maxHp*.20;p.maxHp+=add;p.hp=Math.min(p.maxHp,p.hp+add)}},
   {id:'goldMove',name:'MOVEMENT SPEED',desc:'+10% movement speed',rarity:'common',apply:p=>{p.speed*=1.10}}
  ];
- const picks=goldUp;
+ const picks=goldUp;rememberUpgradeChoices('upgrade',picks,afterWave);
  $('choices').innerHTML=picks.map(u=>upgradeChoiceHtml(u)).join('');
  paintUpgradeBuddyIcons($('choices'),picks);
- [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();picks[i].apply(g.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound('common');updateHud();if(afterWave)beginWave(g.wave+1)});
+ [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;initAudio();picks[i].apply(g.p);clearPendingUpgrade();$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound('common');updateHud();if(afterWave)beginWave(g.wave+1);saveRunRecovery('upgrade-picked')});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
 }
-const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
+const choices=restoring?recoveredUpgradeChoices(UP):[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
  const count=3;
+ if(!choices.length){
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  // v18.0.21 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
  // Little Buddy = 5%, Triple Shot = 5%, Little Buddy Army = 4% on eligible Story upgrade screens.
@@ -3925,17 +4144,19 @@ const choices=[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id=
  // Shuffle rare hits so no one rare upgrade always steals the first slot when multiple roll together.
  for(let i=lucky.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)),t=lucky[i];lucky[i]=lucky[j];lucky[j]=t}
  lucky.forEach((u,i)=>{if(i<choices.length)choices[i]=u});
+ }
+ rememberUpgradeChoices('upgrade',choices,afterWave);
  $('choices').innerHTML=choices.map(u=>upgradeChoiceHtml(u)).join('');
  paintUpgradeBuddyIcons($('choices'),choices);
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{
-   initAudio();choices[i].apply(game.p);$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
+   if(picked||game!==g||g.over)return;picked=true;initAudio();choices[i].apply(g.p);clearPendingUpgrade();$('upgrade').classList.add('hidden');$('upgrade').style.display='none';
    if(afterWave){game.paused=false;beginWave(game.wave+1)}else{game.paused=false;saveRunRecovery('upgrade-picked')}
    upgradePickSound(choices[i].rarity)
  });
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
 }
 function showFinalPrep(){
- const g=game;g.paused=true;g.wave=99;g.intermission=true;g.waveActive=false;
+ const g=game;g.paused=true;g.wave=99;g.intermission=true;g.waveActive=false;g.recoveryPhase='finalPrep';g.pendingChoiceIds=[];saveRunRecovery('final-prep');
  const trio=$('finalChoicesMark');if(trio){trio.innerHTML='<span class="leafCurrencyIcon bbLeafIcon"></span>';const c=document.createElement('canvas');c.width=40;c.height=40;trio.appendChild(c);const q=c.getContext('2d');q.translate(20,20);drawPlayableBug(q,(g.bugId||save.selected),22,false);const sword=document.createElementNS('http://www.w3.org/2000/svg','svg');sword.setAttribute('class','bbSwordSvg');sword.setAttribute('viewBox','0 0 48 48');sword.setAttribute('aria-hidden','true');sword.innerHTML='<path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/>';trio.appendChild(sword)}
  const mark=$('finalBuddyMark');if(mark){mark.innerHTML='';const c=document.createElement('canvas');c.width=64;c.height=64;c.className='buddyUpgradeIcon';mark.appendChild(c);const q=c.getContext('2d');q.translate(32,32);drawPlayableBug(q,(g.bugId||save.selected),34,false)}
  $('finalPrep').classList.remove('hidden');$('finalPrep').style.display='flex';flashBanner('SOMETHING HUGE IS WAITING...',1.2);upgradePopSound();
@@ -3943,14 +4164,16 @@ function showFinalPrep(){
 function finishFinalPrep(){
  $('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';game.finalPrepDone=true;game.paused=false;beginWave(100);
 }
-function finalUpgradePick(remaining){
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!game.p.tripleShot)),choices=[];
+function finalUpgradePick(remaining,restoring=false){
+ const g=game;g.paused=true;g.finalUpgradeRemaining=remaining;let picked=false;
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
+ rememberUpgradeChoices('finalUpgrade',choices,true);
  $('upgradeTitle').textContent='FINAL PREPARATION — '+(4-remaining)+' / 3';
  $('upgradeSub').textContent='Choose one upgrade. '+remaining+' choice'+(remaining===1?'':'s')+' remaining.';
  $('choices').innerHTML=choices.map(u=>upgradeChoiceHtml(u)).join('');
  paintUpgradeBuddyIcons($('choices'),choices);
- [...$('choices').children].forEach((el,i)=>el.onclick=()=>{choices[i].apply(game.p);upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
+ [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;choices[i].apply(g.p);g.pendingChoiceIds=[];g.finalUpgradeRemaining=remaining-1;upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
 }
 $('prepLeaves').onclick=()=>{initAudio();const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);game.boostUntil=game.time+boostDuration;beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();finishFinalPrep()}; // v19.0.168 — exact standard Leaves Attack Boost effect, granted free with no Leaves deducted.
@@ -3958,17 +4181,19 @@ $('prepUpgrades').onclick=()=>{initAudio();$('finalPrep').classList.add('hidden'
 $('prepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalPrep()};
 
 function openWave50BonusUpgrades(){
- const g=game;g.paused=true;g.wave50BonusRemaining=3;
+ const g=game;g.paused=true;g.wave50BonusRemaining=3;g.pendingChoiceIds=[];
  wave50BonusPick();
 }
-function wave50BonusPick(){
- const g=game,remaining=g.wave50BonusRemaining||0;if(remaining<=0){closeUpgrade();g.paused=false;return}
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)),choices=[];
+function wave50BonusPick(restoring=false){
+ const g=game,remaining=g.wave50BonusRemaining||0;if(remaining<=0){closeUpgrade();g.paused=false;beginWave(g.wave+1);return}
+ g.paused=true;let picked=false;
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
+ rememberUpgradeChoices('wave50',choices,true);
  $('upgradeTitle').textContent='WAVE 50 CLEARED!';$('upgradeSub').textContent='Choose 3 upgrades — '+remaining+' remaining';
  $('choices').innerHTML=choices.map(u=>upgradeChoiceHtml(u)).join('');
  paintUpgradeBuddyIcons($('choices'),choices);
- [...$('choices').children].forEach((el,i)=>el.onclick=()=>{initAudio();choices[i].apply(g.p);upgradePickSound(choices[i].rarity);g.wave50BonusRemaining--;if(g.wave50BonusRemaining>0)wave50BonusPick();else{closeUpgrade();g.paused=false;beginWave(g.wave+1)}});
+ [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;initAudio();choices[i].apply(g.p);g.pendingChoiceIds=[];upgradePickSound(choices[i].rarity);g.wave50BonusRemaining--;if(g.wave50BonusRemaining>0)wave50BonusPick();else{closeUpgrade();g.paused=false;beginWave(g.wave+1)}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();
 }
 function refreshPauseStats(){
@@ -3983,7 +4208,7 @@ function hudNode(id){return HUD_NODES[id]||(HUD_NODES[id]=$(id))}
 function setHudText(id,value){value=String(value);if(HUD_CACHE[id]!==value){HUD_CACHE[id]=value;hudNode(id).textContent=value}}
 function setBossBarFill(index,value){const key='bossFill'+index;if(HUD_CACHE[key]!==value){HUD_CACHE[key]=value;hudNode(key).style.width=value}}
 function resetRegularBossHudVisuals(w=game?.wave||5){
- document.body.classList.remove('g159');
+ syncGoldPresentation();
  if(typeof __bbGoldBossNameNodes!=='undefined')__bbGoldBossNameNodes=null;
  const kinds=bossKindsFor(w);
  for(let i=0;i<2;i++){
@@ -4165,7 +4390,7 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  // v18.0.77 — credits are visual-only. Freeze the real gameplay simulation so the
  // player cannot auto-attack any lingering game enemy and fire gameplay SFX under the credits music.
  if(game)game.paused=true;
- if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0;if(!game.testMode&&game.mode==='story'&&coins>0){save.scrap+=coins;game.coins=0}if(!game.testMode){save.best=Math.max(save.best,100);if(!game.rewardsBanked)save.runs++;save.mainGameBeaten=true;save.goldLeaves=(save.goldLeaves||0)+10;game.rewardsBanked=true;persist();setTimeout(()=>flashBanner('✦ GAME CLEAR — +10 GOLD LEAVES ✦',1.8),350)}}
+ if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0;if(!game.testMode&&game.mode==='story'&&coins>0){save.scrap+=coins;game.coins=0}if(!game.testMode){save.best=Math.max(save.best,100);if(!game.rewardsBanked)save.runs++;save.mainGameBeaten=true;if(!game.storyVictoryRewardPaid){save.goldLeaves=(save.goldLeaves||0)+10;game.storyVictoryRewardPaid=true;setTimeout(()=>flashBanner('✦ GAME CLEAR — +10 GOLD LEAVES ✦',1.8),350)}game.rewardsBanked=true;persist()}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt'),scene=$('victoryScene');
  end.dataset.phase='credits';end.dataset.skipAfter=String(performance.now()+700);
  screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');if(scene){scene.classList.remove('play','cleaning');scene.style.display='none'}roll.style.visibility='';
@@ -4193,13 +4418,16 @@ function completeGameEnding(preview=false,purifyOnly=false){
  clearEndingTimers();bossMusicStop();titleMusicStop(false);purifyMusicStop();creditsMusicStop();game.waveActive=false;game.intermission=true;game.paused=false;game.spawnLeft=0;
  game.enemies=game.enemies.filter(e=>e===game.finalBoss||(!e.dead&&e.kind==='gardenHeart'));
  const boss=game.finalBoss||game.boss;if(boss){boss.hp=0;boss.dying=true;boss.invuln=999;boss.state='chase';boss.vx=0;boss.vy=0}
+ game.recoveryPhase='purification';
  game.finalBoss=boss;game.finalPurify={start:performance.now(),elapsed:0,preview:!!preview,purifyOnly:!!purifyOnly,finished:false};
+ saveRunRecovery('purification-start');
  purifyMusicStart(true);
  arenaBgKey='';arenaCacheKey='';
  $('bossbar').style.display='none';showGameUI(false);screen('none');flashBanner('THE SPORE BEHEMOTH FALLS...',1.05);
  // v18.0.75 — purification keeps the low death-tone stack disabled; boss intro callbacks are also invalidated on defeat.
 }
 function previewFinalPurification(purifyOnly=false){
+ if(!BB_DEV_MODE)return;
  // TEMP preview must bypass the normal Wave 100 preparation screen. Set up the real
  // Wave 100 arena/boss only as scenery, then immediately run the post-defeat sequence.
  if(game&&!game.over){game.over=true;clearRunRecovery()}
@@ -4263,8 +4491,10 @@ function goldFinaleCreditsStart(){
  tick();
 }
 function bankGoldVictoryForOutro(){
- if(!game||game.rewardsBanked||game.testMode)return;
- save.goldBest=Math.max(save.goldBest||0,50);save.runs++;game.rewardsBanked=true;persist();refreshEndlessHome();refreshGoldWavesHome();
+ if(!game||game.testMode)return;
+ save.goldBest=Math.max(save.goldBest||0,50);
+ if(!game.rewardsBanked){save.runs++;game.rewardsBanked=true}
+ persist();refreshEndlessHome();refreshGoldWavesHome();
 }
 function reloadHomeAfterGoldFinale(){
  // v19.0.57 — do not try to unwind the Gold finale DOM in-place. Persist first,
@@ -4283,8 +4513,8 @@ function reloadHomeAfterGoldFinale(){
 }
 function startGoldFinaleOutro(){
  if(!game)return;
- resetBigBigHudFades();clearEndingTimers();bossMusicStop();endlessMusicStop();titleMusicStop(false);creditsMusicStop();goldFinaleCreditsStop();hardStopAllAudioVoices(.02);clearRunRecovery();
- game.over=true;game.paused=true;game.waveActive=false;game.intermission=true;bankGoldVictoryForOutro();
+ resetBigBigHudFades();clearEndingTimers();bossMusicStop();endlessMusicStop();goldMusicStop();cancelGoldMusicCues();titleMusicStop(false);creditsMusicStop();goldFinaleCreditsStop();hardStopAllAudioVoices(.02);clearRunRecovery();
+ game.over=true;game.paused=true;game.waveActive=false;game.intermission=true;game.recoveryPhase='goldOutro';bankGoldVictoryForOutro();
  showGameUI(false);$('bossbar').style.display='none';screens.forEach(id=>$(id)?.classList.add('hidden'));
  const o=$('goldFinaleOutro');if(!o)return;
  o.classList.remove('black','reveal','thanks');o.classList.add('play');void o.offsetHeight;
@@ -4319,10 +4549,12 @@ function startGoldFinaleOutro(){
 }
 
 function finish(won,quit=false){
+ if(!game||game.over||game.finalPurify||game.goldDeathActive)return;
  resetBigBigHudFades();
- if(game.over)return;game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();shopMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
+ game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();goldMusicStop();cancelGoldMusicCues();shopMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
- const endlessReward=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
+ const endlessRewardTotal=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
+ const endlessReward=Math.max(0,endlessRewardTotal-(game.endlessRewardPaid||0));
  const earned=game.testMode?0:(game.mode==='endless'?endlessReward:(game.mode==='gold'?coins+Math.floor(game.wave/2):coins));
  // Story leaf banking is deliberately independent from the one-time run/stat reward flag.
  // This lets a player die, bank carried leaves, Continue, then safely bank newly collected
@@ -4332,10 +4564,10 @@ function finish(won,quit=false){
    game.coins=0;
    persist();
  }
- if(!game.testMode&&!game.rewardsBanked){
-   if(game.mode==='endless')save.scrap+=endlessReward;
+ if(!game.testMode){
+   if(game.mode==='endless'){save.scrap+=endlessReward;game.endlessRewardPaid=endlessRewardTotal}
    if(game.mode==='endless')save.endlessBest=Math.max(save.endlessBest||0,game.wave);else if(game.mode==='gold')save.goldBest=Math.max(save.goldBest||0,Math.min(50,game.wave));else save.best=Math.max(save.best,game.wave);
-   save.runs++;game.rewardsBanked=true;
+   if(!game.rewardsBanked){save.runs++;game.rewardsBanked=true}
    persist();refreshEndlessHome();refreshGoldWavesHome();
  }
  // v19.0.83 — Gold Waves failure uses its own compact gold/black continue popup.
@@ -4366,7 +4598,20 @@ function restoreBossFightAfterContinue(){
  configureBossHud(game.wave);updateBossHud();$('bossbar').style.display='block';
  titleMusicStop();bossMusicStart();return true;
 }
-function goldContinue(){if(!game||!game.over||game.testMode||save.goldLeaves<10)return;save.goldLeaves-=10;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart();else if(game.mode==='gold'){restoreBossFightAfterContinue()}else if(!restoreBossFightAfterContinue())titleMusicStart();updateHud(true);last=performance.now();if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80)}
+function goldContinue(){
+ if(!game||!game.over||game.testMode||save.goldLeaves<10)return;
+ save.goldLeaves-=10;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;
+ game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;
+ screen('none');showGameUI(true);
+ const restoredPhase=typeof restorePendingRunPhase==='function'&&restorePendingRunPhase();
+ if(!restoredPhase){
+   if(game.mode==='endless')endlessMusicStart();
+   else if(game.mode==='gold')restoreBossFightAfterContinue();
+   else if(!restoreBossFightAfterContinue())titleMusicStart();
+ }
+ updateHud(true);restartGameLoop();saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);
+ beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80);
+}
 function quitRun(){if(game&&!game.over)finish(false,true)}
 
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
@@ -5328,7 +5573,6 @@ function draw(now=performance.now()){
    X.restore();
  }
  drawStoryCorruptionDust(ai);
- drawLateBossPurpleFall(now);
 
  // area-aware leaf litter: quantity and placement now change with each map
  const leafCounts=[28,24,12,10,18,10,8,14,26,18,16,6,8,5,4,14,8,12,4,2];
@@ -5347,6 +5591,7 @@ function draw(now=performance.now()){
  }
  }
  // v17.8.59 — all arena bases above are cached; only these intentionally animated accents stay live.
+ drawLateBossPurpleFall(now);
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
  if(game?.mode==='gold'){
@@ -5553,55 +5798,86 @@ function draw(now=performance.now()){
  }
  drawFinalSavedText();
 }
-let gameLoopHeartbeat=0;
-// v18.0.58 — older-device GC/FX pass: hot gameplay/draw loops reuse scratch state and avoid transient callbacks.
-function loop(now){gameLoopHeartbeat=now;let dt=Math.min(.035,(now-last)/1000);last=now;FRAME_NOW=now;update(dt,now);draw(now);raf=requestAnimationFrame(loop)}
-
-// v18.0.44 — iOS can briefly suspend canvas/rAF during screenshots, app switching,
-// Control Center, or other system overlays without always delivering the same lifecycle event.
-// Repair only live gameplay state; a real user-opened Pause screen stays paused.
+let gameLoopHeartbeat=0,gameLoopGeneration=0;
+function stopGameLoop(){
+ gameLoopGeneration++;
+ if(raf){cancelAnimationFrame(raf);raf=0;}
+}
+function restartGameLoop(){
+ stopGameLoop();if(!game)return;
+ last=performance.now();gameLoopHeartbeat=last;
+ const generation=gameLoopGeneration;
+ raf=requestAnimationFrame(now=>loop(now,generation));
+}
+function loop(now,generation=gameLoopGeneration){
+ if(generation!==gameLoopGeneration||!game)return;
+ raf=0;gameLoopHeartbeat=now;
+ const dt=Math.max(0,Math.min(.035,(now-last)/1000));last=now;FRAME_NOW=now;
+ update(dt,now);if(game)draw(now);syncGoldPresentation();syncGoldMusic();
+ if(generation===gameLoopGeneration&&game)raf=requestAnimationFrame(next=>loop(next,generation));
+}
+function gameScreenVisible(id){const el=$(id);return !!(el&&!el.classList.contains('hidden')&&el.style.display!=='none');}
+function gameplayVisible(){
+ return !!(game&&!screens.some(gameScreenVisible)&&!gameScreenVisible('story')&&!$('goldFinaleOutro')?.classList.contains('play'));
+}
+function gameplayInputAllowed(){return !!(game&&!game.paused&&!game.over&&!game.finalPurify&&!game.goldDeathActive&&gameplayVisible());}
+function syncGoldPresentation(){
+ const active=!!(game&&game.mode==='gold'&&!game.over&&!gameScreenVisible('home')&&!gameScreenVisible('ending')&&!$('goldFinaleOutro')?.classList.contains('play'));
+ document.body.classList.toggle('g159',active);
+ if(active&&game.goldFinale&&$('wave'))$('wave').textContent='';
+}
 function repairWaveAfterSystemInterruption(){
- if(!game||game.over)return;
- const pauseVisible=$('pause')&&!$('pause').classList.contains('hidden');
- if(game.paused&&!pauseVisible&&game.waveActive&&!game.intermission)game.paused=false;
- if(game.paused||game.intermission||!game.waveActive)return;
+ // A hidden Pause panel is also normal while Settings/Help is open. Only explicit
+ // Resume or a recorded background pause may unpause the run.
+ if(!game||game.over||game.paused||!gameplayVisible()||game.intermission||!game.waveActive)return;
  compactInPlace(game.enemies,e=>e&&!e.dead);
  if(game.mode==='story'&&game.wave%5!==0&&game.enemies.length===0){
-   if((game.spawnLeft||0)<=0){completeWave();return}
-   // Make the next normal update spawn immediately rather than leaving an empty field.
-   game.spawn=Math.max(Number.isFinite(game.spawn)?game.spawn:0,10000);
- }else if(game.enemies.length===0&&(game.spawnLeft||0)<=0){completeWave()}
+  if((game.spawnLeft||0)<=0){completeWave();return;}
+  game.spawn=Math.max(Number.isFinite(game.spawn)?game.spawn:0,10000);
+ }else if(game.enemies.length===0&&(game.spawnLeft||0)<=0){completeWave();}
+}
+function suspendGameForBackground(){
+ resetGameInput();
+ if(DESKTOP_PERF_RENDER&&gameplayInputAllowed()&&game.waveActive){game.backgroundPaused=true;game.paused=true;}
+ saveRunRecovery('background');syncGoldMusic();
 }
 function resumeGameAfterBackground(){
  if(document.hidden||!game||game.over)return;
+ if(game.backgroundPaused&&gameplayVisible()){game.backgroundPaused=false;game.paused=false;}
  repairWaveAfterSystemInterruption();
- last=performance.now();gameLoopHeartbeat=last;
- if(raf)cancelAnimationFrame(raf);
- raf=requestAnimationFrame(loop);
+ if(gameplayVisible()||game.finalPurify||game.goldDeathActive)restartGameLoop();
  const restoreAudio=()=>{
   if(save.settings.music===false)return;
-  if(game&&game.mode==='endless'&&!game.paused&&!game.over){if(!endlessMusicTimer)endlessMusicStart(false);return}
-  if(game&&game.boss&&!game.boss.dead&&!game.paused){if(!bossMusicTimer)bossMusicStart();return}
-  if($('ending')&&!$('ending').classList.contains('hidden')){if(!creditsMusicTimer&&!$('continuePrompt')?.classList.contains('show'))creditsMusicStart();return}
-  if($('goldShop')&&!$('goldShop').classList.contains('hidden')){if(!shopMusicTimer)shopMusicStart(false);return}
+  if(game?.mode==='gold'){syncGoldMusic();return;}
+  if(game?.mode==='endless'&&!game.paused&&!game.over){if(!endlessMusicTimer)endlessMusicStart(false);return;}
+  if(game?.boss&&!game.boss.dead&&!game.paused){if(!bossMusicTimer)bossMusicStart();return;}
+  if(gameScreenVisible('ending')){if(!creditsMusicTimer&&!$('continuePrompt')?.classList.contains('show'))creditsMusicStart();return;}
+  if(gameScreenVisible('goldShop')){if(!shopMusicTimer)shopMusicStart(false);return;}
   if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart();
  };
  if(audio&&audio.state==='suspended')audio.resume().then(restoreAudio).catch(()=>{});else restoreAudio();
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden){saveRunRecovery('background')}else resumeGameAfterBackground()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)suspendGameForBackground();else resumeGameAfterBackground();});
 addEventListener('pageshow',resumeGameAfterBackground);
 addEventListener('focus',resumeGameAfterBackground);
-addEventListener('pagehide',()=>saveRunRecovery('pagehide'));
-// One tiny once-per-second watchdog: if iOS stopped rAF without a visibility event, restart it
-// and run the empty-wave repair. This does no enemy AI/render work itself.
+addEventListener('blur',suspendGameForBackground);
+addEventListener('pagehide',()=>{resetGameInput();saveRunRecovery('pagehide');});
+addEventListener('bigbug-before-close',()=>{resetGameInput();saveRunRecovery('desktop-close');});
 setInterval(()=>{
  if(document.hidden||!game||game.over||game.paused)return;
  const now=performance.now();
  if(!gameLoopHeartbeat||now-gameLoopHeartbeat>900)resumeGameAfterBackground();
  else repairWaveAfterSystemInterruption();
 },1000);
-
-function startOrResume(){if(!game||game.over){startRun();return}if(game.mode==='story'&&game.intermission&&!game.waveActive){screen('none');showGameUI(true);if(game.wave%5===0){showGardenUpdate(game.wave)}else{openUpgrade(true)}return}game.paused=false;repairWaveAfterSystemInterruption();screen('none');showGameUI(true);if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();saveRunRecovery('resume')}
+function startOrResume(){
+ if(!game||game.over){startRun();return;}
+ game.backgroundPaused=false;resetGameInput();restartGameLoop();
+ if(typeof restorePendingRunPhase==='function'&&restorePendingRunPhase())return;
+ if(game.intermission&&!game.waveActive){screen('none');showGameUI(true);if(game.mode==='story'&&game.wave%5===0)showGardenUpdate(game.wave);else openUpgrade(true);return;}
+ game.paused=false;screen('none');showGameUI(true);repairWaveAfterSystemInterruption();
+ if(game.mode==='gold')syncGoldMusic();else if(game.mode==='endless')endlessMusicStart(false);else if(!game.boss||game.boss.dead)titleMusicStart();
+ saveRunRecovery('resume');
+}
 
 // v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
 // Existing button sounds remain untouched and do not get doubled.
@@ -5753,7 +6029,7 @@ function cleanupGoldFinaleForHome(){
  const eb=$('endingBackdrop');if(eb)eb.style.opacity='1';
  const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}
  const cr=$('creditsRoll');if(cr)cr.style.visibility='';
- document.body.classList.remove('g159','gold157');
+ document.body.classList.remove('gold157');syncGoldPresentation();
 }
 function restoreCoreHomePresentation(){
  const home=$('home');if(!home)return;
@@ -5779,6 +6055,8 @@ function restoreCoreHomePresentation(){
  }
 }
 function enterHomeCleanly(){
+ const presentation=++homePresentationGeneration;
+ resetGameInput();stopGameLoop();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
  cleanupGoldFinaleForHome();
  if(game&&game.mode==='gold'){game.mode='home';game.over=true;}
@@ -5786,12 +6064,13 @@ function enterHomeCleanly(){
  showGameUI(false);stopTitleGardenLoop();screen('home');restoreCoreHomePresentation();
  $('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();refreshGoldUI();
  requestAnimationFrame(()=>{
-  // Re-assert after layout so a stale ending timer/class cannot win the same frame.
+  if(presentation!==homePresentationGeneration||!gameScreenVisible('home'))return;
+  // Re-assert after layout only while this Home transition still owns the screen.
   cleanupGoldFinaleForHome();screen('home');restoreCoreHomePresentation();
   resizeTitleGarden();
   const w=titleGarden?.getBoundingClientRect().width||innerWidth;
   resetTitleScene(performance.now(),w);startTitleGardenLoop();
-  if(save.settings.music!==false){initAudio();setTimeout(()=>{if(isMenuMusicScreen())titleMusicStart()},45)}
+  if(save.settings.music!==false){initAudio();setTimeout(()=>{if(presentation===homePresentationGeneration&&isMenuMusicScreen())titleMusicStart()},45)}
  });
 }
 
@@ -5799,7 +6078,7 @@ const homeCosmeticsBtn=$('homeCosmeticsBtn');
 if(homeCosmeticsBtn)homeCosmeticsBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();initAudio();stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()});
 
 document.addEventListener('click',e=>{
- const pack=e.target.closest('[data-gold-pack]');if(pack){initAudio();beep(520,.08,.022,'triangle');alert('Gold Leaf purchasing is ready visually, but real-money checkout is not connected in this web build yet.');return}
+ const pack=e.target.closest('[data-gold-pack]');if(pack)return;
  const setting=e.target.closest('[data-setting]')?.dataset.setting;if(setting){initAudio();toggleSetting(setting);return}
  const pcControl=e.target.closest('[data-pc-control]')?.dataset.pcControl;if(pcControl&&DESKTOP_PERF_RENDER){save.settings.pcControls=pcControl==='wasd'?'wasd':'mouse';persist();pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false;if(game&&game.p){game.p.moveX=game.p.x;game.p.moveY=game.p.y}buildSettings();return}
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
@@ -5808,28 +6087,28 @@ document.addEventListener('click',e=>{
  if(a==='goldSquished'){if(game&&game.mode==='gold'){clearRunRecovery();game.over=true;enterHomeCleanly();}}
  if(a==='endless')startEndless();
  if(a==='goldWaves')startGoldWaves(false);
- if(a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
- if(a==='testStoryNotes')startGardenStoryNotesTest()
+ if(BB_DEV_MODE&&a==='testWave'){const w=Number($('testWave')?.value)||20;startRun(w,true)}
+ if(BB_DEV_MODE&&a==='testStoryNotes')startGardenStoryNotesTest()
  if(a==='credits'){stopTitleGardenLoop();showGameUI(false);playEndingCredits(true)}
- if(a==='testEnding')previewFinalPurification(false)
- if(a==='testPurify')previewFinalPurification(true)
+ if(BB_DEV_MODE&&a==='testEnding')previewFinalPurification(false)
+ if(BB_DEV_MODE&&a==='testPurify')previewFinalPurification(true)
  if(a==='settings'){settingsOpenedFromPause=false;stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildSettings();screen('settings');titleMusicStart()}
  if(a==='pauseSettings'){if(!game||game.over)return;settingsOpenedFromPause=true;game.paused=true;saveRunRecovery('pause-settings');showGameUI(false);bossMusicStop();endlessMusicStop(false);titleMusicStop(false);shopMusicStop();buildSettings();screen('settings')}
  if(a==='settingsFromHelp'){showGameUI(false);shopMusicStop();buildSettings();screen('settings');if(!settingsOpenedFromPause)titleMusicStart()}
- if(a==='settingsBack'){if(settingsOpenedFromPause&&game&&!game.over){settingsOpenedFromPause=false;game.paused=true;refreshPauseStats();showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');saveRunRecovery('pause')}else{settingsOpenedFromPause=false;enterHomeCleanly();setTimeout(bbApplyDeferredUpdate,120)}}
+ if(a==='settingsBack'){if(settingsOpenedFromPause&&game&&!game.over){settingsOpenedFromPause=false;game.paused=true;refreshPauseStats();showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');saveRunRecovery('pause')}else{settingsOpenedFromPause=false;enterHomeCleanly()}}
  if(a==='help'){showGameUI(false);screen('help');if(!settingsOpenedFromPause)titleMusicStart()}
  if(a==='firstHelpDone'){try{localStorage.setItem(FIRSTHELPKEY,'1')}catch(e){}enterHomeCleanly()}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
- if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly();setTimeout(bbApplyDeferredUpdate,120)}
+ if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
  if(a==='cosmetics'){stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
  if(a==='gardenBook'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildGardenBook('playable');screen('gardenBook');titleMusicStart()}
  if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');shopMusicStart(true)}
- if(a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+100;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +100 GOLD LEAVES',.9)}
- if(a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
+ if(BB_DEV_MODE&&a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+100;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +100 GOLD LEAVES',.9)}
+ if(BB_DEV_MODE&&a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
  if(a==='resume'){startOrResume()}
  if(a==='showQuitConfirm'){$('pauseMain').classList.add('hidden');$('quitConfirm').classList.remove('hidden')}
  if(a==='cancelQuit'){$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden')}
@@ -5838,20 +6117,41 @@ document.addEventListener('click',e=>{
 document.addEventListener('pointerdown',()=>{if(game&&game.mode==='endless'&&!game.over&&!game.paused){initAudio();if(!endlessMusicTimer)endlessMusicStart(false)}else if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
 $('pauseBtn').onclick=()=>{if(!game||game.over||game.mode==='gold')return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
-let drag=false;
-const pcKeys={w:false,a:false,s:false,d:false};
-function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'}
-function pointerPos(e){return e.touches?e.touches[0]:e}
-function movePlayer(e){if(!game||game.paused||game.over||pcUsingWASD())return;let t=pointerPos(e),p=game.p;p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY))}
-C.addEventListener('pointerdown',e=>{initAudio();if(pcUsingWASD())return;drag=true;movePlayer(e)});
-addEventListener('pointermove',e=>{if(drag)movePlayer(e)});
-addEventListener('pointerup',()=>drag=false);
-C.addEventListener('touchstart',e=>{initAudio();drag=true;movePlayer(e)},{passive:false});
-C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e)},{passive:false});
-C.addEventListener('touchend',()=>drag=false);
+function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd';}
+function resetGameInput(){
+ drag=false;pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false;
+ if(game?.p){game.p.moveX=game.p.x;game.p.moveY=game.p.y;}
+}
+function pointerPos(e){return e.touches?e.touches[0]:e;}
+function movePlayer(e){
+ if(!gameplayInputAllowed()||pcUsingWASD())return;
+ const t=pointerPos(e),p=game.p;if(!t)return;
+ p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY));
+}
+function beginPointerDrag(e){
+ if(!gameplayInputAllowed()||pcUsingWASD()||(e.button!=null&&e.button!==0))return;
+ initAudio();drag=true;try{if(e.pointerId!=null)C.setPointerCapture(e.pointerId);}catch(_){}movePlayer(e);
+}
+function endPointerDrag(){drag=false;}
+C.addEventListener('pointerdown',beginPointerDrag);
+addEventListener('pointermove',e=>{if(drag)movePlayer(e);});
+addEventListener('pointerup',endPointerDrag);
+addEventListener('pointercancel',resetGameInput);
+C.addEventListener('lostpointercapture',endPointerDrag);
+if(!window.PointerEvent){
+ C.addEventListener('touchstart',beginPointerDrag,{passive:false});
+ C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e);},{passive:false});
+ C.addEventListener('touchend',endPointerDrag);
+ C.addEventListener('touchcancel',resetGameInput);
+}
 // v18.0.128 — PC-only Spacebar boost shortcut. Uses the existing boost action and is
 // explicitly gated out of the iPhone/iPad/Android input path. WASD behavior is unchanged.
 addEventListener('keydown',e=>{
+ if(e.target?.closest?.('input,textarea,select,button,[contenteditable="true"]'))return;
+ if(e.key==='Escape'&&!e.repeat&&DESKTOP_PERF_RENDER&&game&&game.mode!=='gold'&&!game.over){
+  if(gameScreenVisible('pause')){e.preventDefault();startOrResume();return;}
+  if(gameplayInputAllowed()){$('pauseBtn').click();e.preventDefault();return;}
+ }
  const k=(e.key||'').toLowerCase();
  // v19.0.145 — WASD mode: Space advances a visible Garden Update/story note using
  // the exact same continue handler as the on-screen button. This is checked before
@@ -5862,7 +6162,7 @@ addEventListener('keydown',e=>{
      e.preventDefault();storyBtn.click();return
    }
  }
- if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&game&&!game.paused&&!game.over){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
+ if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&gameplayInputAllowed()){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
  // v19.0.132 — while the upgrade picker is visibly open in WASD mode, 1/2/3
  // activate the matching card from left-to-right/top-to-bottom. Repeats are ignored
@@ -5875,10 +6175,10 @@ addEventListener('keydown',e=>{
      if(card&&typeof card.onclick==='function'){e.preventDefault();card.onclick();return}
    }
  }
- if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=true;if(game&&!game.paused&&!game.over)e.preventDefault()}
+ if((k==='w'||k==='a'||k==='s'||k==='d')&&gameplayInputAllowed()){pcKeys[k]=true;e.preventDefault();}
 },{passive:false});
 addEventListener('keyup',e=>{const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=false;if(pcUsingWASD()&&game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
-addEventListener('blur',()=>{pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false});
+
 
 
 // v17.5.12 — enemy spawn initialization fixed; title music unlock improved; buddy behavior unchanged.
@@ -6063,7 +6363,7 @@ if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFir
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.109';
+const BB_BUILD_VERSION='19.0.196-rc.1';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
@@ -6072,8 +6372,8 @@ const BB_BUILD_VERSION='19.0.109';
 <script>
 /* BIG BUG v19.0.62 — Gold Hard Mode escape/death-flow pass */
 (()=>{
-'use strict';const TAU=Math.PI*2,G=()=>window.game&&game.mode==='gold';let seq=0;
-function sync(){document.body.classList.toggle('g159',!!G())}
+'use strict';const TAU=Math.PI*2,G=()=>!!(game&&game.mode==='gold');let seq=0;
+function sync(){syncGoldPresentation();}
 
 function drawGoldEnvironment(){
  if(!G()||!window.X)return;
@@ -6347,6 +6647,8 @@ function dropQuestionName(){
 }
 const U=window.update;if(typeof U==='function')window.update=function(dt){
  sync();
+ if(G()&&(game.paused||game.over))return U.apply(this,arguments);
+ const frameGame=game;
  const goldFrameWork=window.__bbGoldFrameWork||(window.__bbGoldFrameWork={aliens:[],pos:[],saved:[]});
  let alien=null,aliens=goldFrameWork.aliens,pos=goldFrameWork.pos,saved=goldFrameWork.saved;
  aliens.length=0;pos.length=0;saved.length=0;
@@ -6375,7 +6677,13 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    alien.boss=false;alien.kind='goldUnknown';
  }
  const fxBefore=(G()&&game.fx)?game.fx.length:0;
- const out=U.apply(this,arguments);
+  let out;
+  try{out=U.apply(this,arguments);}
+  finally{
+    if(alien&&bossState){alien.boss=bossState[0];alien.kind='goldUnknown';}
+    for(let i=0;i<aliens.length;i++){const e=aliens[i],q=saved[i];e.kind=q[0];e.type=q[1];}
+  }
+  if(game!==frameGame||!G()||game.paused||game.over)return out;
 
  // Remove any inherited poison/venom/purple-ring FX that somehow spawned during this Gold frame.
  if(G()&&game.fx&&game.fx.length>fxBefore){
@@ -6443,155 +6751,5 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 
 
 
-<script>
-/* v18.0.188 Gold HUD continuity — presentation only */
-(()=>{
- let lastWave='';
- function keepGoldHudFluid(){
-   const homeVisible=!document.getElementById('home').classList.contains('hidden');
-   const gameVisible=document.getElementById('gameover').classList.contains('hidden')&&
-                     document.getElementById('pause').classList.contains('hidden')&&
-                     document.getElementById('home').classList.contains('hidden');
-   if(game&&game.mode==='gold'&&!game.over&&gameVisible&&!homeVisible){
-     document.body.classList.add('g159');
-     const w=document.getElementById('wave');
-     if(w){
-       if(game.goldFinale){
-         // Final fight is labeled BIG BUG only. Never restore the cached wave number "50".
-         w.textContent='';
-         lastWave='';
-       }else{
-         if(w.textContent.trim())lastWave=w.textContent.trim();
-         else if(lastWave)w.textContent=lastWave;
-       }
-     }
-   }else{
-     document.body.classList.remove('g159');
-   }
-   setTimeout(keepGoldHudFluid,140);
- }
- keepGoldHudFluid();
-})();
-</script>
-
-<script>
-/* v18.0.188 Gold-state containment */
-(()=>{
- function clearGoldPresentation(){
-   const gp=document.getElementById('game');
-   const g=window.game;if(!(g&&g.mode==='gold'&&!g.over&&gp&&!gp.classList.contains('hidden')))document.body.classList.remove('g159');
- }
- const H=window.show;
- if(typeof H==='function')window.show=function(){const r=H.apply(this,arguments);clearGoldPresentation();return r};
- (function c(){clearGoldPresentation();setTimeout(c,220)})();
-})();
-</script>
-
-<script>
-/* v18.0.188 — reliable isolated Gold Waves music */
-(()=>{
- let timer=null,step=0,active=false;
- const melody=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
- const bass=[220,247,196,220,174,196,220,165],alien=[311,466,349,523,277,415,330,494];
- function visible(){
-   const h=document.getElementById('home');
-   const unknownBoss=!!(game&&game.boss&&game.enemies&&game.enemies.some(e=>e&&e.kind==='goldUnknown'&&e.hp>0));
-   return !!(game&&game.mode==='gold'&&!game.over&&!unknownBoss&&h&&h.classList.contains('hidden'));
- }
- function stop(){if(timer){clearTimeout(timer);timer=null}step=0;active=false}
- function tick(){
-   if(!visible()||!audio||save.settings.music===false){stop();return}
-   active=true;const n=melody[step%melody.length];
-   beep(n,.14,.006,'triangle','music');
-   if(step%2===0)beep(bass[(step>>1)%bass.length],.21,.0045,'sine','music');
-   if(step%2===1)beep(alien[step%alien.length],.13,.0038,'sawtooth','music');
-   if(step%4===3)beep(alien[(step+3)%alien.length]*1.49,.085,.0028,'square','music');
-   if(step%8===7)beep(1568,.13,.0032,'sine','music');
-   step++;timer=setTimeout(tick,170);
- }
- function start(){
-   if(active||timer||!visible()||save.settings.music===false)return;
-   try{if(!audio)initAudio()}catch(e){}
-   if(!audio)return;
-   try{titleMusicStop()}catch(e){} try{shopMusicStop()}catch(e){} try{endlessMusicStop()}catch(e){} try{bossMusicStop()}catch(e){}
-   step=0;tick();
- }
- function watch(){if(visible()){if(!active&&!timer)start()}else if(active||timer)stop();setTimeout(watch,240)}
- watch();
-})();
-</script>
-
-
-<script>
-/* v18.0.188 — dedicated ??? evolving alien/gold boss score */
-(()=>{
- let tmr=null,step=0,active=false,lastBoss=false;
- const motif=[220,277,330,415,330,277,247,311,370,466,370,311,262,330,392,494];
- const high=[880,1109,988,1245,1047,1319,1175,1480];
- const low=[110,123.47,98,110,87.31,103.83,92.5,116.54];
-
- function liveBoss(){
-   const h=document.getElementById('home'),go=document.getElementById('gameover');
-   if(!game||game.mode!=='gold'||game.over||!game.boss)return false;
-   if(h&&!h.classList.contains('hidden'))return false;
-   if(go&&!go.classList.contains('hidden'))return false;
-   return !!(game.enemies&&game.enemies.some(e=>e&&e.kind==='goldUnknown'&&e.hp>0));
- }
- function stop(){
-   if(tmr){clearTimeout(tmr);tmr=null}
-   step=0;active=false;lastBoss=false;
- }
- function tick(){
-   if(!liveBoss()||!audio||save.settings.music===false){stop();return}
-   active=true;lastBoss=true;
-   const tier=Math.max(1,Math.floor(game.wave/5));
-   // 16 quiet beats, then 16 loud beats. Later forms tighten the tempo slightly.
-   const section=Math.floor(step/16)%2, loud=section===1;
-   const tempo=Math.max(112,176-Math.min(50,tier*5));
-   const n=motif[step%motif.length];
-
-   if(!loud){
-     // Sparse, eerie gold ambience: lots of space and soft alien intervals.
-     if(step%2===0)beep(n,.20,.0026,'sine','music');
-     if(step%4===2)beep(n*1.498,.14,.0018,'triangle','music');
-     if(step%8===6)beep(high[(step>>1)%high.length],.10,.0013,'sine','music');
-   }else{
-     // Same musical identity opens up into a much stronger boss passage.
-     beep(n,.15,.0062,'sawtooth','music');
-     beep(low[step%low.length],.22,.0052,'triangle','music');
-     if(step%2===0)beep(n*2,.10,.0043,'square','music');
-     if(step%4===3)beep(high[step%high.length],.12,.0048,'triangle','music');
-     // Final forms add a strange metallic pulse without changing gameplay.
-     if(tier>=7&&step%4===1)beep(n*2.247,.075,.0032,'square','music');
-   }
-   step++;tmr=setTimeout(tick,tempo);
- }
- function start(){
-   if(active||tmr||!liveBoss()||save.settings.music===false)return;
-   try{if(!audio)initAudio()}catch(e){}
-   if(!audio)return;
-   // ??? owns the music bus while alive; Gold-wave music resumes after the fight.
-   try{titleMusicStop()}catch(e){}
-   try{shopMusicStop()}catch(e){}
-   try{endlessMusicStop()}catch(e){}
-   try{bossMusicStop()}catch(e){}
-   step=0;tick();
- }
- function watch(){
-   const now=liveBoss();
-   if(now){
-     if(!lastBoss){
-       // Stop the regular Gold Waves score before beginning ???'s score.
-       try{if(typeof goldWavesMusicStop==='function')goldWavesMusicStop()}catch(e){}
-     }
-     if(!active&&!tmr)start();
-   }else if(active||tmr){
-     stop();
-   }
-   setTimeout(watch,240);
- }
- watch();
-})();
-</script>
 </body>
 </html>
