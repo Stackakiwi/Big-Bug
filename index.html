@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.196-rc.2: Wave 25 Big Blood Sucker chase speed reduced only; all other gameplay retained.  Gold Leaf paid-release economy pass; new saves start with 10 Gold Leaves; shop displays planned Steam packs; Steam checkout intentionally not connected yet. Steam PC release candidate; verified audit fixes. GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.196-rc.3: fractional player-damage popup now waits for a full 1 HP before displaying; damage/HP behavior unchanged. Wave 25 Big Blood Sucker chase speed reduced only; all other gameplay retained.  Gold Leaf paid-release economy pass; new saves start with 10 Gold Leaves; shop displays planned Steam packs; Steam checkout intentionally not connected yet. Steam PC release candidate; verified audit fixes. GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1516,8 +1516,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.2</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.2</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.3</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.3</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3366,9 +3366,11 @@ function hurtPlayer(amount){
  if(amount>=Math.max(4,p.maxHp*.035))game.shake=Math.max(game.shake||0,2.4);
  // Direct hits show immediately. Continuous contact/poison damage is accumulated briefly
  // so the player sees useful whole-number damage instead of a flood of tiny decimals.
+ // v19.0.196-rc.3 — accumulated fractional damage does not display until at least 1 full HP has been lost.
  const now=performance.now();
  if(amount>=1.5){
-   if((p.pendingDamage||0)>0){showPlayerDamage(p.pendingDamage);p.pendingDamage=0}
+   const pendingWhole=Math.floor(p.pendingDamage||0);
+   if(pendingWhole>=1){showPlayerDamage(pendingWhole);p.pendingDamage-=pendingWhole}
    showPlayerDamage(amount);p.lastDamagePopup=now;
  }else{
    p.pendingDamage=(p.pendingDamage||0)+amount;
@@ -3843,7 +3845,7 @@ function update(dt,now){
  }
  if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);if((p.goldInvulnUntil||0)>0&&g.time>=p.goldInvulnUntil)p.goldInvulnUntil=0;
  // Flush accumulated contact damage into one readable popup roughly six times per second.
- if((p.pendingDamage||0)>0&&now-(p.lastDamagePopup||0)>=165){showPlayerDamage(p.pendingDamage);p.pendingDamage=0;p.lastDamagePopup=now}
+ if((p.pendingDamage||0)>=1&&now-(p.lastDamagePopup||0)>=165){const pendingWhole=Math.floor(p.pendingDamage);showPlayerDamage(pendingWhole);p.pendingDamage-=pendingWhole;p.lastDamagePopup=now}
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
@@ -6363,7 +6365,7 @@ if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFir
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.196-rc.2';
+const BB_BUILD_VERSION='19.0.196-rc.3';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
