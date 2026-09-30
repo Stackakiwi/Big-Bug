@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.196-rc.1: Gold Leaf paid-release economy pass; new saves start with 10 Gold Leaves; shop displays planned Steam packs; Steam checkout intentionally not connected yet. Steam PC release candidate; verified audit fixes. GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.196-rc.2: Wave 25 Big Blood Sucker chase speed reduced only; all other gameplay retained.  Gold Leaf paid-release economy pass; new saves start with 10 Gold Leaves; shop displays planned Steam packs; Steam checkout intentionally not connected yet. Steam PC release candidate; verified audit fixes. GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1516,8 +1516,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.1</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.1</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.2</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.2</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3106,7 +3106,7 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
    if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
    // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
-   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.82],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.90],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.567]}; // v19.0.170 — Spore Behemoth movement +35%; HP unchanged.
+   const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,w===25?4.8:5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.82],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.90],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.567]}; // v19.0.196-rc.2 — Wave 25 Big Blood Sucker speed only: 5.25x -> 4.8x; later rematch speed unchanged.
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
    // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart'){baseHp*=1.25;damage*=1.30;} // v19.0.171 — Spore Behemoth: all contact damage +30%; HP unchanged.
@@ -6363,7 +6363,7 @@ if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFir
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.196-rc.1';
+const BB_BUILD_VERSION='19.0.196-rc.2';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
