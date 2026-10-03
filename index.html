@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.196-rc.4: menu/death audio no longer lets a stale boss intro restart over Home music after continue/death/quit transitions. Wave 25 Big Blood Sucker chase speed reduced again so a base-speed player can open distance; later rematch unchanged. Fractional player-damage popup still waits for a full 1 HP before displaying; damage/HP behavior unchanged.  Gold Leaf paid-release economy pass; new saves start with 10 Gold Leaves; shop displays planned Steam packs; Steam checkout intentionally not connected yet. Steam PC release candidate; verified audit fixes. GOLD HARD MODE: Wave 50 is one boss object with two phases (??? -> BIG BIG); no internal Wave 51, no replacement entity, one renderer/lifecycle; Final Wave rendering is self-contained with no cross-script constants. -->
+<!-- Big Bug v19.0.196-rc.5: Mosquito Mode keeps the existing swarm/performance caps, but after Wave 73 progressively increases face-on, interceptor, and sprinter odds through the agreed late-game caps. WASD Gold Waves upgrade selection now supports key 4 for the fourth card; existing 1/2/3 shortcuts are unchanged. All v19.0.196-rc.4 audio, boss-speed, damage-popup, economy, and Gold finale fixes remain intact. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1516,8 +1516,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.4</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.4</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.5</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.5</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -3130,9 +3130,25 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
     baseHp*=.95;
  }
  if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7;sp=Math.min(250,116+ew*1.85);damage=3.8;evo=0}
+ // v19.0.196-rc.5 — Mosquito Mode late-wave difficulty: after Wave 73, keep the
+ // existing 260-total / 90-active / speed caps and make a larger share of the swarm
+ // use smarter approach patterns instead. Story mosquito behavior remains unchanged.
+ let mosquitoInterceptorChance=.05,mosquitoFaceOnChance=.25,mosquitoSprinterChance=w>=20?.025:0;
+ if(k==='mosquito'&&game.mode==='endless'&&w>73){
+   if(w<80){
+     const t=(w-73)/7;
+     mosquitoFaceOnChance=.25+.05*t;
+     mosquitoInterceptorChance=.05+.02*t;
+     mosquitoSprinterChance=.025+.005*t;
+   }else{
+     mosquitoFaceOnChance=Math.min(.65,.30+(w-80)*.005);
+     mosquitoInterceptorChance=Math.min(.20,.07+(w-80)*.002);
+     mosquitoSprinterChance=Math.min(.06,.03+(w-80)*.0005);
+   }
+ }
  const e={x,y,r,hp:baseHp,max:baseHp,speed:sp,damage,kind:k,hit:0,slow:0,boss,phase:Math.random()*6.28,
           state:boss?'entrance':'chase',cool:Math.random()*1.5+.8,stateT:boss?1.15:0,vx:0,vy:0,knockX:0,knockY:0,cloudCd:1.5+Math.random()*1.5,addCd:4.5,shotCd:1.8+Math.random()*2,evo,
-          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<.05,faceOn:k==='mosquito'&&Math.random()<.25,sprinter:k==='mosquito'&&w>=20&&Math.random()<.025,_aiPhase:game.enemies.length&1};
+          invuln:boss?1.15:0,webCd:boss&&k==='queenSpider'?2.2:0,interceptor:k==='mosquito'&&Math.random()<mosquitoInterceptorChance,faceOn:k==='mosquito'&&Math.random()<mosquitoFaceOnChance,sprinter:k==='mosquito'&&Math.random()<mosquitoSprinterChance,_aiPhase:game.enemies.length&1};
  if(e.sprinter)e.speed*=1.8;
  if(boss&&k==='moleCricket')e.shotCd=4.8+Math.random()*1.2;
  if(boss&&k==='cicada')e.lightningCd=2.2+Math.random()*1.8; // v19.0.112 — independent low-cost ground lightning timer
@@ -6174,10 +6190,10 @@ addEventListener('keydown',e=>{
  }
  if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&gameplayInputAllowed()){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
- // v19.0.132 — while the upgrade picker is visibly open in WASD mode, 1/2/3
- // activate the matching card from left-to-right/top-to-bottom. Repeats are ignored
- // so holding a number cannot accidentally choose again on a multi-pick screen.
- if(!e.repeat&&(k==='1'||k==='2'||k==='3')){
+ // v19.0.196-rc.5 — while the upgrade picker is visibly open in WASD mode, 1/2/3
+ // keep their existing behavior; Gold Waves additionally accepts 4 for its fourth card.
+ // Repeats are ignored so holding a number cannot accidentally choose again.
+ if(!e.repeat&&(k==='1'||k==='2'||k==='3'||(k==='4'&&game?.mode==='gold'))){
    const up=$('upgrade');
    if(up&&!up.classList.contains('hidden')&&up.style.display!=='none'){
      const cards=[...$('choices').children],idx=(k.charCodeAt(0)-49);
@@ -6373,7 +6389,7 @@ if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFir
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.196-rc.4';
+const BB_BUILD_VERSION='19.0.196-rc.5';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
