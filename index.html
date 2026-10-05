@@ -8,7 +8,6 @@
 <meta name="theme-color" content="#152316">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.196-rc.7: PC WASD in-run keyboard-completeness pass. Adds keyboard access for the Wave 25 Mosquito Mode unlock popup, Wave 100 final preparation, Gold Waves continue/fail choice, and all three Mosquito Mode stored abilities. Existing WASD movement, Space boost/story advance, upgrade 1/2/3, Gold upgrade 4, Gold finale fix, balance, rewards, visuals, and all non-PC input paths are unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -74,7 +73,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #story.hidden{display:none}.storyLeaf{position:relative;width:min(390px,94vw);padding:24px 22px 20px;border-radius:22px 22px 28px 18px;background:linear-gradient(155deg,#f2e6b9,#d8ca91);color:#26331f;border:2px solid #789656;box-shadow:0 9px 0 #21371f,0 16px 35px #0009,inset 0 0 0 4px #fff4ca55}
 .storyLeaf:before{content:"";position:absolute;inset:9px;border:1px dashed #728b5266;border-radius:15px;pointer-events:none}.storyKicker{font:700 12px Georgia,serif;letter-spacing:1.4px;text-transform:uppercase;color:#647b43}.storyTitle{font:700 25px Georgia,serif;margin:6px 0 11px;color:#263a20}.storyText{font:17px/1.45 Georgia,'Times New Roman',serif;min-height:72px}.storyTwig{height:1px;background:#81935c88;margin:15px 0 13px;position:relative}.storyTwig:after{content:"";position:absolute;right:8px;top:-12px;font-size:18px}#storyContinue{width:100%;min-height:48px;border:0;border-radius:13px;background:#476b36;color:#fff5d4;font:700 17px Georgia,serif;box-shadow:0 4px 0 #294627}
 
-/* v16.1 — cleaner upgrade cards: rarity by glow, not labels */
 #upgrade .panel{border-radius:10px}
 #upgrade .panel:before{border-radius:6px}
 #upgrade .choice{
@@ -110,7 +108,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 }
 
 
-/* v16.2 — whimsical garden lettering */
 #upgrade h2,
 #upgrade .choice b,
 #upgrade #upgradeSub{
@@ -133,7 +130,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 }
 
 
-/* v16.3 — dark garden upgrade screen + rarity glow */
 #upgrade{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #upgrade .panel{background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445}
 #upgrade .panel:before{border-color:#56705055}
@@ -147,7 +143,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #upgrade .choice .upgradeMark{display:block;text-align:center;font-size:17px;line-height:1;margin:7px auto -1px;color:#3e5838;font-style:normal}
 
 
-/* v16.4 — whimsical indie garden lettering */
 #upgrade h2,
 #upgrade .choice b{
   font-family:"Chalkboard SE","Marker Felt","Noteworthy","Bradley Hand","Comic Sans MS",cursive;
@@ -203,7 +198,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #upgrade .choice .buddyUpgradeIcon{width:48px;height:48px;display:block;filter:drop-shadow(0 2px 1px #fff7d099);}
 
 
-/* v17.5.3 — cleaner permanent Power Ups screen */
 #base{background:rgba(3,17,10,.96);padding:18px}
 #base .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:22px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #base .panel h2{text-align:center;margin:0 0 18px;color:#f8f3df;font-size:32px;letter-spacing:.5px}
@@ -220,7 +214,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @media(max-width:430px){#base{padding:12px}#base .panel{padding:18px 12px 14px}#base .panel h2{font-size:29px}#base .shopRow{padding:12px 10px;min-height:96px}#base .shopIcon{font-size:33px;width:40px}#base .shopRow b{font-size:18px}#base .shopRow .muted{font-size:14px}#base .shopRow .btn{min-width:105px;font-size:16px;padding:12px 9px}}
 
 
-/* v17.7.1 — whimsical menu lettering only */
 #bugs .panel h2,
 #base .panel h2{
   font-family:"Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand","Comic Sans MS",cursive;
@@ -240,7 +233,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #base .panel h2{transform:rotate(.3deg)}
 
 
-/* v17.7.6 — in-game Settings screen and native-styled reset confirmation */
 #settings{background:rgba(3,17,10,.96);padding:18px}
 #settings .panel{width:min(560px,100%);max-height:94vh;overflow:auto;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:22px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #settings .panel h2{text-align:center;margin:0 0 8px;color:#f8f3df;font-size:32px;font-family:"Marker Felt","Chalkboard SE","Noteworthy","Bradley Hand","Comic Sans MS",cursive}
@@ -260,7 +252,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @media(max-width:430px){#settings{padding:12px}#settings .panel{padding:18px 12px 14px}.settingRow{padding:13px 12px}.settingRow b{font-size:18px}.toggleBtn{min-width:78px}}
 
 
-/* v18.0.58 — upgrade-screen cleanup: larger centered prompt + handcrafted BIG BUG icons. */
 #upgrade #upgradeSub{font-size:22px!important;line-height:1.2!important;text-align:center!important;font-style:normal!important;font-weight:700!important;margin:8px auto 18px!important;color:#c8d7b7!important}
 #upgrade .upgradeMark{width:60px!important;height:60px!important;right:18px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#31523a!important;text-shadow:none!important}
 #upgrade .bbUpgradeIcon{display:block;width:58px;height:58px;overflow:visible}
@@ -276,20 +267,15 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #upgrade .buddyArmyWrap canvas:nth-child(2){left:15px;top:2px;z-index:2}
 #upgrade .buddyArmyWrap canvas:nth-child(3){right:0;top:17px;transform:rotate(13deg)}
 
-/* v17.5.4 — living title garden */
 #home{position:fixed;isolation:isolate;overflow:hidden}
 #titleGarden{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 #home>*:not(#titleGarden){position:relative;z-index:1}
 
-/* v17.7.8 — title/home layout restored from v17.7.5 verbatim.
-   The old Reset button remains only as an invisible layout keeper; Settings floats outside #home. */
 #home .homeResetLayoutKeeper{visibility:hidden;pointer-events:none}
 #home #globalSettingsBtn{position:absolute;right:12px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
-/* v19.0.183 — post-game Credits button shifted farther left of Settings and appears only after the main game is beaten. */
 #home #homeCreditsBtn{position:absolute;right:146px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 7px));top:auto;z-index:60;margin:0;min-width:0;padding:11px 14px;font-size:13px}
 #home .versionStamp{position:absolute;left:8px;bottom:max(6px,env(safe-area-inset-bottom));z-index:40;margin:0;color:#111;font:700 10px/1.1 system-ui,-apple-system,sans-serif;opacity:.72;pointer-events:none;white-space:nowrap}
 #home .logoMain{display:block}
-/* v17.8.3 — preserve the exact title/logo layout while simplifying only the lower Home controls. */
 #home .homeTextLayoutKeeper{visibility:hidden;pointer-events:none}
 #home .homeLowerLift{transform:translateY(-58px)}
 #home .homeBestFancy{position:relative;font-weight:850;opacity:.9;transform:translateY(-46px) scale(1.18);transform-origin:center}
@@ -308,9 +294,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 }
 
 
-/* v17.8.3 — small layout polish only: center game-over actions and lower Best Wave slightly. */
-
-/* v19.0.83 — Gold Waves-only failure popup. Compact gold/black presentation; no olive game-over panel. */
 #goldFail{position:fixed;inset:0;z-index:1600;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(circle at 50% 42%,#3b2909aa 0%,#100b05ee 52%,#030201f5 100%)}
 #goldFail.hidden{display:none!important}
 #goldFail .goldFailPanel{position:relative;width:min(420px,92vw);padding:24px 20px 20px;text-align:center;overflow:hidden;border:2px solid #ffe38a;border-radius:18px;background:linear-gradient(165deg,#211708 0%,#120d06 58%,#080603 100%);box-shadow:0 8px 0 #4a2b05,0 20px 55px #000c,inset 0 0 28px #d89a1b22,0 0 28px #ffd84f55}
@@ -327,13 +310,11 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @keyframes goldFailTwinkle{0%,100%{opacity:.28;transform:scale(.72) rotate(0)}50%{opacity:1;transform:scale(1.18) rotate(20deg)}}
 
 #gameover .panel>.btn{display:block;margin:14px auto;width:min(100%,470px)}
-/* v17.8.10 — cleaner defeat screen: remove defeat subtitle and scale title responsively. */
 #gameover #overTitle{font-size:clamp(30px,8vw,46px);line-height:1.05;text-align:left;white-space:nowrap}
 .testJump{display:flex;gap:6px;align-items:center;position:absolute!important;right:8px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;z-index:50;opacity:.88;margin:0!important;transform:none!important}.testJump select{min-height:36px;width:148px;border:1px solid #ffffff2a;border-radius:11px;background:#17231bf2;color:#fff;padding:0 7px;font:800 11px ui-rounded,system-ui,-apple-system,sans-serif;box-shadow:0 3px 10px #0005}.testJump .btn{min-height:36px;padding:6px 9px;font-size:10px}.testHint{display:none}
 #gameover #overSub:empty{display:none}
 #gameover.endlessOver .stats{margin-top:18px}
 
-/* v17.8.34 — lightweight final ending / credits sequence */
 .creditsTestBtn{position:absolute!important;left:62px!important;bottom:max(5px,env(safe-area-inset-bottom))!important;z-index:50;font-size:10px!important;padding:7px 9px!important;opacity:.72;margin:0!important;min-width:0!important;transform:none!important}.purifyTestBtn{position:absolute!important;left:62px!important;bottom:max(42px,calc(env(safe-area-inset-bottom) + 37px))!important;z-index:50;font-size:10px!important;padding:7px 9px!important;opacity:.72;margin:0!important;min-width:0!important;transform:none!important}
 #ending{position:fixed;inset:0;z-index:1000;overflow:hidden;background:#020503;color:#f6f0dc;padding:0;display:block}
 #ending.hidden{display:none}
@@ -351,7 +332,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsRoll .endSub{font-size:14px;letter-spacing:4px;color:#b8c7ad;margin-bottom:70px}
 #creditsRoll h2{font-family:"Marker Felt","Chalkboard SE","Noteworthy",cursive;font-size:24px;color:#d4b7d5;letter-spacing:3px;margin:0 0 28px}
 #creditsRoll .creditName{font-family:"Chalkboard SE","Marker Felt","Noteworthy",cursive;font-size:29px;font-weight:800;margin:0 0 28px;text-shadow:0 3px 0 #000}
-/* v18.0.58 — credits names enter from alternating sides only when they reach view, then stay centered. */
 #creditsRoll .creditName{opacity:0;will-change:transform,opacity;transition:transform .82s cubic-bezier(.18,.9,.28,1.12),opacity .32s ease}
 #creditsRoll .creditName:nth-of-type(2n){transform:translateX(-72vw) rotate(-2deg)}
 #creditsRoll .creditName:nth-of-type(2n+1){transform:translateX(72vw) rotate(2deg)}
@@ -360,7 +340,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 @keyframes creditsRise{from{transform:translateY(0)}to{transform:translateY(calc(-100vh - 1120px))}}
 #continuePrompt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;font-family:Georgia,serif;font-size:28px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity 2.4s ease}
 #continuePrompt.show{opacity:1}
-/* v18.0.68 — temp ending previews bypass final prep and trigger the real in-arena purification directly. */
 #victoryScene{position:absolute;inset:0;z-index:4;display:none;overflow:hidden;background:radial-gradient(circle at 50% 43%,#57345c88 0 18%,transparent 44%),linear-gradient(#171020,#090b0d 66%,#08120b);opacity:1}
 #victoryScene.play{display:block}
 #victoryScene.cleaning{animation:victoryWorldClean 9.6s ease-in-out forwards}
@@ -389,7 +368,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #creditsChaseCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;pointer-events:none}
 #creditsRoll{z-index:5}
 .endingVignette{z-index:4}
-/* v18.0.71 — the old lone credits watcher is replaced by the reverse Home-style chase. */
 #endingLadybug{display:none!important}
 .endGrass{position:absolute;left:-5%;right:-5%;bottom:-6px;height:92px;opacity:.22;background:repeating-linear-gradient(78deg,transparent 0 18px,#6e8a59 19px 21px,transparent 22px 35px);mask-image:linear-gradient(to top,#000,transparent)}
 .endMoon{position:absolute;width:72px;height:72px;border-radius:50%;right:10%;top:10%;background:#d8d4b6;opacity:.09;box-shadow:0 0 38px #c7c3a288}
@@ -419,14 +397,12 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 }
 
 
-/* v17.8.35 — handcrafted visual identity pass. Lightweight CSS/canvas only; gameplay untouched. */
 .bugHero{width:112px;height:112px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 12px 5px #254d2255)}
 .bugHero canvas{width:112px;height:112px;display:block;animation:bob 1.8s ease-in-out infinite}
 .bbIcon{display:inline-block;position:relative;width:1.15em;height:1.15em;vertical-align:-.19em;flex:0 0 auto}
 .bbHeartIcon{width:1.12em;height:1em;transform:rotate(-45deg);border-radius:20% 0 20% 20%;background:#df5149;box-shadow:inset 2px 2px #ff8b78,0 2px 0 #742b28}
 .bbHeartIcon:before,.bbHeartIcon:after{content:"";position:absolute;background:inherit;border-radius:50%;width:100%;height:100%}.bbHeartIcon:before{top:-50%;left:0}.bbHeartIcon:after{left:50%;top:0}
 .bbBoltIcon{width:.72em;height:1.25em;background:#f6b72b;clip-path:polygon(58% 0,8% 58%,45% 58%,29% 100%,94% 42%,57% 42%);filter:drop-shadow(0 2px 0 #6c4913)}
-/* v19.0.186 — Dragonfly Reflexes bolt enlarged for much clearer upgrade-card readability. */
 #upgrade .choice .upgradeMark .bbBoltIcon.dragonflyReflexBolt{font-size:62px!important;width:.82em!important;height:1.42em!important;filter:drop-shadow(0 3px 0 #6c4913) drop-shadow(0 0 5px #f6b72b66)!important}
 .bbSparkIcon:before,.bbSparkIcon:after{content:"";position:absolute;inset:5%;background:#f5b52d;clip-path:polygon(50% 0,60% 39%,100% 50%,60% 61%,50% 100%,40% 61%,0 50%,40% 39%)}.bbSparkIcon:after{transform:translate(48%,-38%) scale(.48);opacity:.8}
 .bbSproutIcon:before,.bbSproutIcon:after{content:"";position:absolute;background:#6fb747;border-radius:100% 0 100% 0;width:58%;height:42%;top:15%}.bbSproutIcon:before{left:3%;transform:rotate(25deg)}.bbSproutIcon:after{right:3%;transform:scaleX(-1) rotate(25deg)}.bbSproutIcon{border-left:2px solid #78a84e;border-radius:50%;transform:rotate(-2deg)}
@@ -458,7 +434,6 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 #pause .panel,#gameover .panel{border-radius:18px;border-color:#4b684d;box-shadow:0 8px 0 #08150c,0 22px 55px #0009}
 
 
-/* v17.8.41 — preserve four equal HUD boxes and compact the wave label only when digits grow. */
 #hud .pill:nth-child(2){font-size:12px;gap:3px;letter-spacing:-.15px;overflow:hidden}
 #hud .pill:nth-child(2) .waveProg{font-size:9px;margin-left:2px;min-width:0}
 #hud .pill:nth-child(2).waveDouble{font-size:10.5px;gap:2px;letter-spacing:-.35px;padding-left:4px;padding-right:4px}
@@ -485,8 +460,6 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 }
 
 
-/* v17.8.57 — iOS bottom-strip paint fix.
-   No layout sizing changes: the exposed document/safe-area color follows the active screen. */
 html:has(#home:not(.hidden)),body:has(#home:not(.hidden)){background:#365f31!important}
 html:has(#settings:not(.hidden)),body:has(#settings:not(.hidden)),
 html:has(#base:not(.hidden)),body:has(#base:not(.hidden)),
@@ -496,7 +469,6 @@ html:has(#gameover:not(.hidden)),body:has(#gameover:not(.hidden)){background:#03
 html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503!important}
 
 
-/* v17.9.16 — Gold Leaf storefront + direct permanent base-stat upgrades */
 #base .shopBuyStack{display:flex;flex-direction:column;gap:7px;flex:0 0 118px}
 #base .shopBuyStack .btn{width:100%;min-width:0!important;margin:0!important}
 #base .shopBuyStack .goldUpgradeBtn{background:linear-gradient(#f1c642,#c98e16)!important;color:#2a210b!important;border:1px solid #ffe889;box-shadow:inset 0 -4px #8d6110,0 4px 0 #132214,0 0 10px #ffd84f44!important}
@@ -518,7 +490,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 @media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:""}
-/* v17.9.52 — Home controls polish: Settings moved bottom-right; Gold Leaf Shop shifted right and enlarged. */
 #help{background:rgba(3,17,10,.97);padding:18px}
 #help .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#0d2a19,#071b10 70%,#04130b);border:2px solid #49684d;border-radius:28px;padding:20px 18px 18px;box-shadow:0 10px 0 #020b06,0 24px 55px #000b,inset 0 0 35px #1f4a2c44}
 #help h2{text-align:center;margin:0 0 4px;font:700 30px "Marker Felt","Chalkboard SE","Noteworthy",cursive;color:#f8f3df}
@@ -534,7 +505,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
 @media(max-width:430px){#help{padding:12px}#help .panel{padding:17px 12px 14px}.helpCard{padding:10px}}
-/* v19.0.110 — first-launch garden guide. Isolated menu-only presentation; gameplay untouched. */
 #firstHelp{background:radial-gradient(ellipse at 50% 0%,#2b573566 0 20%,transparent 48%),linear-gradient(180deg,#081b10 0%,#031008 100%);padding:18px}
 #firstHelp .firstHelpPanel{position:relative;width:min(560px,94vw);max-height:94vh;overflow:auto;padding:25px 20px 20px;border:2px solid #719369;border-radius:24px;background:radial-gradient(ellipse at 14% 10%,#2a56345a 0 13%,transparent 14%),radial-gradient(ellipse at 88% 88%,#214a2c55 0 12%,transparent 13%),linear-gradient(160deg,#12351f,#092317 68%,#05170d);box-shadow:0 9px 0 #021008,0 24px 60px #000c,inset 0 1px 0 #d9efbf33;color:#f8f3df}
 #firstHelp .firstHelpPanel:before,#firstHelp .firstHelpPanel:after{content:"";position:absolute;width:68px;height:24px;border-radius:90% 10% 90% 10%;background:#46724655;pointer-events:none}
@@ -553,7 +523,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #firstHelp .firstHelpGo{display:block;width:100%;margin:17px 0 0!important;min-height:58px;border-radius:19px!important;font-size:20px!important}
 #firstHelp .firstHelpFooter{text-align:center;margin:12px 4px 0;color:#8faa90;font-size:12px;line-height:1.3}
 @media(max-width:430px){#firstHelp{padding:11px}#firstHelp .firstHelpPanel{padding:21px 13px 16px}#firstHelp .firstHelpStep{grid-template-columns:40px 1fr;padding:11px 12px;gap:10px;min-height:78px}#firstHelp .firstHelpNum{width:38px;height:38px;font-size:18px}#firstHelp .firstHelpStep strong{font-size:18px}#firstHelp .firstHelpStep p{font-size:13.5px}}
-/* v17.9.52 — BIG BUG help polish: less uniform, more hand-built garden-board feel. */
 #help .panel{position:relative;overflow:hidden;background:radial-gradient(ellipse at 12% 8%,#21472b55 0 14%,transparent 15%),radial-gradient(ellipse at 92% 20%,#173e2655 0 12%,transparent 13%),linear-gradient(165deg,#102f1d,#071b10 72%,#04130b)}
 #help .panel:before,#help .panel:after{content:"";position:absolute;width:90px;height:34px;border-radius:70% 30% 70% 30%;background:#315c3570;pointer-events:none;z-index:0}
 #help .panel:before{left:-35px;top:105px;transform:rotate(-28deg)}#help .panel:after{right:-38px;bottom:100px;transform:rotate(32deg)}
@@ -568,8 +537,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #help .helpBack{border-radius:20px 15px 22px 17px}
 
 
-
-/* v17.9.52 — brighter handcrafted BIG BUG button pass. Visual-only; no gameplay changes. */
 .btn.dark{
   position:relative;overflow:hidden;
   background:linear-gradient(180deg,#5f9f4d 0%,#447f3d 58%,#2d6133 100%);
@@ -592,7 +559,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 .toggleBtn.off{background:linear-gradient(180deg,#8b9892,#68736e 62%,#515c57);border-color:#aeb8b2;box-shadow:inset 0 2px 0 #fff3,inset 0 -4px 0 #444f49,0 3px 0 #2e3933}
 
 
-/* v17.9.65 — unified handcrafted controls + clean floating gameplay HUD. Visual-only. */
 .btn{
   position:relative;overflow:hidden;
   background:linear-gradient(180deg,#f4c454 0%,#df982d 60%,#b96d20 100%);
@@ -624,7 +590,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #boostBtn{background:linear-gradient(180deg,#5f9f4d,#447f3d 58%,#2d6133);border-color:#86bb68}
 #endlessTripleBtn{background:linear-gradient(180deg,#8a65b4,#68458f 60%,#493367);border-color:#b493d7}
 #endlessRepelBtn{background:linear-gradient(180deg,#52a9a4,#327e7a 60%,#235c59);border-color:#86d4cc}
-/* v19.0.98 — Mosquito Mode ability order/layout only: 2x Attack, Health, Repellent. */
 body:has(#endlessTripleBtn:not(.hidden)) #endlessTripleBtn{left:12px!important;min-width:116px!important;width:116px!important;font-size:11px!important;padding:5px 7px!important;white-space:normal!important;line-height:1.05!important}
 body:has(#endlessTripleBtn:not(.hidden)) #boostBtn{left:136px!important;min-width:96px!important;width:96px!important}
 body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;min-width:104px!important;width:104px!important}
@@ -651,7 +616,6 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 #hud .pill:nth-child(3),#hud .pill:nth-child(4){font-size:14px}
 
 
-/* v17.9.65 — simplify gameplay HUD: health left, wave centered, leaves right. */
 #hud{
   display:grid;
   grid-template-columns:1fr auto 1fr;
@@ -672,22 +636,13 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 #hud .hudLeaves{justify-self:end;text-align:right;font-size:14px}
 
 
-/* v17.9.65 — sharper Sharper Bite dagger artwork only. */
 .sharperDagger{width:1.08em!important;height:1.08em!important;filter:drop-shadow(0 2px 1px #0006)}
 
-/* v17.9.65 — remove brown text telegraph popups; attack tells remain in-world. */
 #telegraph{display:none!important}
 
-/* v17.9.65 — story mosquito staging, Hornet-only bees, lighter beetle mix, temp Test restored. */
-
-/* v17.9.65 — temp Test removed; performance sanity pass with no gameplay/visual changes. */
-
-/* v17.9.66 — larger centered Wave/Boss counter; no HUD box added. */
-/* v17.9.68 — Stag King dedicated visual redesign only; gameplay and hitbox unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:30px;line-height:1;letter-spacing:0;padding-left:3px;padding-right:3px}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px;margin-left:6px}
 
-/* v17.9.84 — Mosquito Mode naming + BIG BUG-style hand-drawn mosquito icon polish. */
 .mosquitoCounterIcon{
   position:relative;
   display:inline-block;
@@ -724,7 +679,6 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 }
 
 
-/* v17.9.84 — tighter, more handcrafted BIG BUG Bugs + Power Ups screens. */
 #bugs,#base{padding:12px!important;justify-content:center!important}
 #bugs .panel,#base .panel{
   width:min(500px,100%)!important;
@@ -795,14 +749,11 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 }
 
 
-
-/* v19.0.108 — standard bug purchase choices */
 #bugs .bugUnlockChoices{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:9px}
 #bugs .bugUnlockChoices .btn{min-width:0!important;flex:1;margin:0!important}
 #bugs .bugUnlockChoices>span{font-size:12px;font-weight:900;opacity:.65}
 #bugs .leafBugUnlock{background:linear-gradient(#72c84b,#4ea936)!important}
 
-/* v17.9.84 — Bug Parade readability cleanup, same version. */
 #bugs .panel{width:min(520px,100%)!important}
 #bugs .panel h2{font-size:32px!important;margin-bottom:9px!important}
 #bugs .panel>p{font-size:18px!important;line-height:1.3!important;margin-bottom:12px!important}
@@ -813,7 +764,6 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 #bugs .card p,#bugs .card .muted{font-size:15.5px!important;line-height:1.3!important}
 #bugs .card .btn{font-size:17px!important;padding:11px 15px!important}
 
-/* v19.0.131 — Bug Parade desktop cleanup */
 #bugs .panel{width:min(760px,96vw)!important}
 #bugs .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:stretch!important;gap:12px!important}
 #bugs .card{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;min-height:292px!important;padding:15px 15px 13px!important;overflow:hidden!important}
@@ -848,15 +798,9 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 }
 
 
-/* v17.9.99 — settings icons refined to keep familiar emoji-like silhouettes using original BIG BUG CSS art. */
-/* v17.9.93 — Mosquito reward is shown in the Leaves result stat; Base Camp copy renamed Bug Camp. */
-/* v17.9.92 — Mosquito result replay stays in Mosquito Mode; QUITTER is emphasized. */
-/* v17.9.91 — quit copy can wrap cleanly without affecting normal defeat titles. */
 #gameover #overTitle.quitTitle{font-size:clamp(25px,6.4vw,40px);line-height:1.08;text-align:center;white-space:normal;max-width:100%;overflow-wrap:anywhere}
-/* v17.9.91 — Mosquito Mode HUD icon mirrors the actual in-game mosquito. */
 .mosquitoCounterIcon{width:28px!important;height:28px!important;flex:0 0 28px!important;transform:none!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 32'%3E%3Cg stroke='%2324251f' stroke-linecap='round'%3E%3Cg fill='%23d8e6df' opacity='.30' stroke='none'%3E%3Cellipse cx='-5' cy='-1' rx='6' ry='2.2' transform='rotate(-26 -5 -1)'/%3E%3Cellipse cx='5' cy='-1' rx='6' ry='2.2' transform='rotate(26 5 -1)'/%3E%3C/g%3E%3Cellipse cx='0' cy='4' rx='3' ry='6.5' fill='%2334372f' stroke='none'/%3E%3Ccircle cx='0' cy='-3' r='3.2' fill='%234b4f43' stroke='none'/%3E%3Ccircle cx='-1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Ccircle cx='1.2' cy='-3.6' r='.65' fill='%23b83c33' stroke='none'/%3E%3Cpath d='M0-6V-12M-2 1L-8 6M2 1L8 6M-2 4L-7 10M2 4L7 10' fill='none' stroke-width='1.1'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat!important}.mosquitoCounterIcon::before,.mosquitoCounterIcon::after{content:none!important;display:none!important}
 
-/* v17.9.99 — familiar emoji silhouettes, hand-drawn in the same chunky BIG BUG bug-art language. */
 .bbUiIcon{display:inline-block;position:relative;width:1.3em;height:1.3em;vertical-align:-.25em;margin-right:.34em;flex:0 0 auto;filter:drop-shadow(0 2px 0 #172018)}
 .bbGear{width:1.2em;height:1.2em;background:#9da69a;clip-path:polygon(40% 0,60% 0,64% 14%,76% 19%,88% 10%,100% 25%,89% 35%,92% 48%,100% 54%,95% 72%,80% 70%,70% 81%,70% 96%,51% 100%,45% 86%,31% 82%,20% 91%,7% 77%,17% 65%,12% 52%,0 44%,6% 27%,21% 29%,29% 17%,27% 5%);border-radius:24%}.bbGear:before{content:"";position:absolute;inset:25%;border-radius:48% 52% 46% 54%;background:#26372a;border:3px solid #d4d9cc;box-shadow:inset 1px 1px 0 #1118}.bbGear:after{content:"";position:absolute;left:12%;top:12%;width:26%;height:12%;border-radius:50%;background:#dfe3d8;transform:rotate(-28deg);opacity:.6}
 .bbMusic{width:1.2em;height:1.25em;transform:rotate(-4deg)}.bbMusic:before{content:"";position:absolute;left:54%;top:2%;width:5px;height:70%;background:#6d94b8;border:2px solid #26362e;border-radius:4px;box-shadow:-11px 4px 0 -1px #6d94b8,-11px 4px 0 1px #26362e}.bbMusic:after{content:"";position:absolute;left:1%;bottom:0;width:12px;height:9px;border-radius:58% 48% 55% 45%;background:#739bbd;border:2px solid #26362e;box-shadow:14px -4px 0 -1px #739bbd,14px -4px 0 1px #26362e}
@@ -868,8 +812,6 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 .goldLeafIcon:after{content:""!important;width:5px;height:5px;border-radius:50%;background:#fff7c7;right:-3px;top:-3px;box-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
 
 
-/* v18.0.4 — more natural wave-style card detail.
-   Leaf litter is deliberately scattered differently from card to card; layout/background screens unchanged. */
 #settings .settingRow,
 #bugs .card,
 #base .shopRow,
@@ -891,12 +833,9 @@ body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;m
 #base .shopCurrency:first-child{background-position:86% 22%,9% 74%,center,center!important}
 #base .shopCurrency:nth-child(2){background-position:14% 20%,79% 81%,center,center!important}
 
-/* v18.0.21 — Little Buddy Army test build: guaranteed after eligible Story waves, never offered immediately before a boss; 10 buddies form a protective ring and one-hit enemies for one wave. */
-/* v18.0.5 — Mosquito Mode power-up controls are gameplay-only; never show on the run-end screen. */
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
-/* v18.0.24 — Garden Book icon uses the exact playable ladybug renderer. */
 #gardenBookBtn{
  position:absolute!important;right:16px!important;top:45.2%!important;z-index:55!important;
  width:58px!important;height:58px!important;min-width:0!important;margin:0!important;padding:0!important;
@@ -931,7 +870,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
  box-shadow:0 4px 0 #1f3925;
  color:#173823;position:relative;overflow:hidden
 }
-
 
 
 .gardenBookHeader{text-align:center;position:relative;z-index:1}
@@ -1002,25 +940,19 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #gardenBook .gardenBookPanel{padding-bottom:26px!important}
 
 
-/* v18.0.33 — requested visual polish only */
 #base .shopIcon .bbHeartIcon.shopDrawn{font-size:22px;margin-left:12px;margin-right:12px}
 
-/* v18.0.40 — Wave counter visual doubled; HUD box geometry unchanged. */
 #hud .hudWave,#hud .hudWave.waveDouble,#hud .hudWave.waveTriple{font-size:26px!important;line-height:1!important;letter-spacing:-1px!important;gap:2px!important;padding-left:2px!important;padding-right:2px!important;overflow:visible!important}
 /* HUD polish — clearer WAVE 5 spacing. */
 #hud .hudWave #wave{margin-left:5px!important}
 #hud .hudWave .waveProg,#hud .hudWave.waveDouble .waveProg,#hud .hudWave.waveTriple .waveProg{font-size:20px!important;line-height:1!important;margin-left:2px!important;letter-spacing:-.5px!important}
-/* v19.0.65 — Story Mode boss-wave HUD only: BOSS matches the Wave/number size and is red. */
-/* v19.0.69 — regular Leaf icon stem removed; Story-only beetle heart drop increased to 20%. */
 #hud .hudWave.storyBossWave #waveProgress{font-size:26px!important;line-height:1!important;margin-left:5px!important;letter-spacing:-1px!important;color:#e64d4d!important;text-shadow:0 2px 4px #000b!important}
 
-/* v19.0.190 — desktop Home/HUD layout repair. Keep menu and wave HUD anchored to the actual viewport. */
 #home.screen{inset:0!important;left:0!important;right:0!important;top:0!important;bottom:0!important;width:100vw!important;max-width:none!important;height:100vh!important;height:100dvh!important;margin:0!important;transform:none!important;align-items:center!important;justify-content:center!important}
 #home>.logo,#home>.bugHero,#home>[data-action="play"],#home>#endlessBtn,#home>#goldWavesBtn,#home>.homeMenuRow,#home>.homeBestFancy{left:auto!important;right:auto!important;margin-left:auto!important;margin-right:auto!important}
 #hud .hudWave{display:flex!important;align-items:center!important;justify-content:center!important;flex-wrap:nowrap!important;white-space:nowrap!important;min-width:max-content!important;width:auto!important;max-width:none!important}
 #hud .hudWave #waveLabel,#hud .hudWave #wave,#hud .hudWave #waveProgress{position:static!important;transform:none!important;white-space:nowrap!important;flex:0 0 auto!important}
 
-/* v18.0.58 — keep temporary wave tester higher and selectable */
 #home .testJump {
   position: relative !important;
   z-index: 50 !important;
@@ -1034,14 +966,11 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
   pointer-events: auto !important;
 }
 
-/* v18.0.61 — Help layout + cleaner in-run upgrades. */
 #help .helpBossCard{grid-column:1/-1;min-height:112px;display:flex;flex-direction:column;justify-content:center}
 #upgrade .choice{padding:18px 18px!important;min-height:126px!important}
 #upgrade .choice .upgradeMark{display:none!important}
 #upgrade .choice b,#upgrade .choice p{max-width:100%!important}
 
-/* v18.0.78 — warning-circle cleanup: red/yellow warning-circle visuals and related help content removed. */
-/* v18.0.77 — BUGS screen readability pass */
 #bugs .panel{font-size:1.08em}
 #bugs .bugCard h3,
 #bugs .bugCard .bugName,
@@ -1056,7 +985,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #bugs .card button{font-size:clamp(21px,4vw,28px)!important}
 
 
-/* v18.0.108 — handcrafted Medieval cosmetic collection. Canvas/CSS only; no image assets. */
 #cosmetics{background:rgba(3,17,10,.97);padding:16px}
 #cosmetics .panel{width:min(620px,100%);max-height:94vh;background:linear-gradient(160deg,#10291a,#07180f 72%,#041008);border:2px solid #6c7950;border-radius:22px;padding:20px 16px;box-shadow:0 10px 0 #020906,0 24px 55px #000b,inset 0 0 32px #38502b35}
 .cosmeticHead{text-align:center;margin-bottom:13px}.cosmeticHead h2{margin:0;color:#f2e4b3;font:800 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive;letter-spacing:.5px}.cosmeticHead p{margin:5px 0 0;color:#bfc8a9}
@@ -1080,7 +1008,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-width:520px){.medievalGrid{grid-template-columns:1fr}.medievalCard{display:grid;grid-template-columns:94px 1fr;grid-template-rows:auto auto auto;column-gap:10px;text-align:left;align-items:center}.medievalPreview{grid-row:1/4}.medievalCard .muted{min-height:0}.medievalCard .btn{width:auto;min-width:150px}.cosmeticHead h2{font-size:28px}}
 
 
-/* v18.0.108 — keep BUGS / POWER UPS / COSMETICS on one row on mobile, matching desktop placement. */
 .homeMenuRow{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:nowrap}
 @media(max-width:560px){
  #home .homeMenuRow{width:calc(100vw - 28px);gap:5px}
@@ -1090,8 +1017,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.108 — on wider/desktop screens, keep the Garden Book beside the main Home controls
-   at the same relative spot it occupies on iPhone instead of pinning it to the far-right edge. */
 @media(min-width:561px){
  #home #gardenBookBtn{
   right:auto!important;
@@ -1117,7 +1042,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.108 — Steam-ready presentation polish. Visual/copy cleanup only; gameplay untouched. */
 .creditsTestBtn,.purifyTestBtn{display:none!important}
 #home .testJump{display:flex!important}
 #help,#settings,#bugs,#base,#shop,#cosmetics{background:radial-gradient(ellipse at 50% 0%,#23482d55 0 22%,transparent 48%),linear-gradient(180deg,#081b10 0%,#041109 100%)}
@@ -1142,7 +1066,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(min-width:900px){#help .panel{width:min(820px,92vw)}#help .helpCard{min-height:120px}#help .helpCard b{font-size:21px}#help .helpCard .muted{font-size:16px}}
 
 
-/* v18.0.108 — mobile How To Play scroll/exit fix. */
 #help{overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;justify-content:flex-start!important;}
 #help .panel{overflow:visible!important;max-height:none!important;flex:0 0 auto!important;margin:auto 0!important;}
 #help .helpBack{position:sticky!important;bottom:0!important;z-index:20!important;margin-top:16px!important;}
@@ -1153,7 +1076,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.108 — release readability + fuller menu cards; gameplay unchanged. */
 #settings .panel,#help .panel,#bugs .panel,#base .panel,#cosmetics .panel{font-size:1.08em}
 #settings .settingsIntro,#bugs .panel>p,#base .panel>p,.cosmeticHead p{font-size:18px!important;line-height:1.4!important}
 #settings .settingRow{min-height:88px!important;padding:18px 20px!important;margin:12px 0!important}
@@ -1199,7 +1121,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 }
 
 
-/* v18.0.108 — release-quality upgrade choice layout + familiar BIG BUG category icons. */
 #upgrade{padding:22px!important}
 #upgrade .panel{width:min(1120px,96vw)!important;max-width:1120px!important;padding:28px 30px 30px!important;border-radius:20px!important}
 #upgrade .panel h2{text-align:center!important;font-size:clamp(34px,4vw,48px)!important;line-height:1!important;margin:0 0 8px!important}
@@ -1261,15 +1182,11 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(max-height:620px){#story .storyLeaf{min-height:0;max-height:94vh;overflow:auto}#story .storyTitle{font-size:34px;margin-bottom:14px}#story .storyText{font-size:22px}#story .storyTwig{margin:20px 0 16px}}
 
 
-/* v18.0.124 — GitHub Pages/PWA cache reliability fix; legacy service worker retired. */
-/* v18.0.124 — Legendary preview canvas enlarged so the Golden Ladybug glow is not clipped by the canvas bounds. */
 .legendaryBugCard{position:relative;overflow:hidden;border:2px solid #f2c94c!important;background:radial-gradient(circle at 50% 25%,#6b541f,#24361e 64%,#122419)!important;box-shadow:0 4px 0 #72510d,0 0 18px #ffd84f77,inset 0 0 24px #f4c62f22!important}.legendaryBugCard:after{content:"";position:absolute;inset:-80% -30%;background:linear-gradient(105deg,transparent 42%,#fff6b855 49%,transparent 56%);animation:legendSweep 3.6s linear infinite;pointer-events:none}.legendaryKicker{font-size:12px;font-weight:1000;letter-spacing:1.5px;color:#ffe88b;margin-bottom:2px}.legendaryBugCard b{color:#fff0a2!important;text-shadow:0 2px #513500;font-size:20px}.legendaryBugCard .bugPreview{height:112px;overflow:visible!important}.legendaryBugCard .bugPreview canvas{width:112px!important;height:112px!important;overflow:visible!important}.legendaryPrice{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.legendaryPrice .btn{min-width:112px;margin:3px;padding:9px 8px}.legendaryPrice>span{font-size:11px;font-weight:1000;color:#ffe9a0}.legendaryLeafBuy{background:#78c84b!important}.legendaryGoldBuy,.legendarySelect{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}@keyframes legendSweep{to{transform:translateX(80%)}}
 #legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
 
 #homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
-/* v19.0.90 — tighter upgrade cards; final 3-choice reward uses existing leaf + selected player + sword icons. */
-/* v19.0.168 — final prep first choice grants the exact standard Leaves Attack Boost for free. */
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
 #finalPrep .panel:before{content:"";position:absolute;inset:8px;border:1px dashed #56705055;border-radius:6px;pointer-events:none}
@@ -1291,7 +1208,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 @media(min-width:761px){#finalPrep .choice b{font-size:clamp(29px,2.65vw,38px)}#finalPrep .choice p{font-size:clamp(21px,1.8vw,26px)}}
 
 
-/* v18.0.188 GOLD WAVES ONLY */
 body.gold157 .hudWave{
  background:transparent!important;border:0!important;box-shadow:none!important;
  outline:0!important;filter:none!important;
@@ -1307,7 +1223,6 @@ body.gold157 #waveProgress,body.gold157 #boostBtn{display:none!important}
  to{filter:brightness(1.24);text-shadow:0 0 7px #fffbd5,0 0 14px #ffd13e,0 0 21px #b96c00,0 2px #4b2a02}
 }
 
-/* v18.0.188 GOLD WAVES ONLY */
 body.g159 .hudWave{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
 body.g159 .hudWave::before,body.g159 .hudWave::after{display:none!important}
 body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
@@ -1316,7 +1231,6 @@ body.g159 .hudWave #waveLabel,body.g159 .hudWave #wave{
 body.g159 #waveProgress,body.g159 #boostBtn{display:none!important}
 @keyframes g159wave{to{filter:brightness(1.28);text-shadow:0 0 7px #fffbd1,0 0 15px #ffd23d,0 0 23px #a85e00,0 2px #4b2902}}
 
-/* v18.0.188 — Gold Waves boss health color only */
 body.g159 #bossBarFill,
 body.g159 #bossHealthFill,
 body.g159 .bossHpFill,
@@ -1330,7 +1244,6 @@ body.g159 #bossFill0,body.g159 #bossFill1{
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
 }
 
-/* v18.0.188 — GOLD WAVES boss HUD only */
 body.g159 #bossFill0,body.g159 #bossFill1{
  background:linear-gradient(90deg,#9b6108 0%,#e3a91c 42%,#ffe16a 72%,#fff1a6 100%)!important;
  box-shadow:0 0 5px #ffc62e,0 0 10px rgba(255,196,38,.72)!important;
@@ -1340,17 +1253,14 @@ body.g159 .bossBar,body.g159 .bossHealthBar,body.g159 [id^="bossBar"]{
  padding:0!important;
 }
 
-/* v18.0.188 Gold Waves boss identity */
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.188 — Gold Waves fluid wave presentation only */
 body.g159 .hudWave,body.g159 #waveLabel,body.g159 #wave{
  transition:opacity .18s ease,transform .18s ease,filter .18s ease!important;
  will-change:opacity,transform;
 }
 body.g159 #bossName{color:#ffe15b!important;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e!important}
 
-/* v18.0.188 — Gold Waves environment */
 body.g159 #game,body.g159 canvas{
  background:
    radial-gradient(ellipse at 50% 42%,rgba(255,225,105,.15) 0%,rgba(191,123,10,.08) 30%,transparent 57%),
@@ -1358,7 +1268,6 @@ body.g159 #game,body.g159 canvas{
 }
 
 
-/* v18.0.188 — Gold Waves boss reward screen */
 body.g159 #upgrade .panel{
  background:
   radial-gradient(circle at 50% 0%,#fff0a82b 0 8%,transparent 30%),
@@ -1384,7 +1293,6 @@ body.g159 #upgrade .choice p{color:#5b4316!important;opacity:1!important}
 body.g159 #upgrade .choice .rarity{display:none!important}
 body.g159 #upgrade .choice .upgradeMark{filter:sepia(1) saturate(1.7) brightness(1.08)}
 
-/* v18.0.188 — transparent Gold Ladybug movement icon */
 body.g159 #upgrade .choice .buddyUpgradeIcon{
  background:transparent!important;
  border:0!important;
@@ -1395,7 +1303,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 #bigBigFallingName{position:fixed;z-index:10000;pointer-events:none;font-weight:1000;font-size:15px;letter-spacing:1px;color:#ffe15b;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e;transform:translate(-50%,-50%);animation:bigBigNameFall 1.45s cubic-bezier(.35,.02,.8,.45) forwards}
 @keyframes bigBigNameFall{0%{opacity:1;transform:translate(-50%,-50%) rotate(0deg)}18%{transform:translate(calc(-50% + 9px),calc(-50% - 3px)) rotate(8deg)}36%{transform:translate(calc(-50% - 8px),calc(-50% + 5px)) rotate(-11deg)}100%{opacity:.05;transform:translate(calc(-50% + 34px),calc(100vh + 80px)) rotate(145deg)}}
 
-/* v19.0.57 — dedicated Gold victory finale; replaces the normal game-over square after BIG BIG. */
 #goldFinaleOutro{position:fixed;inset:0;z-index:1400;display:none;overflow:hidden;pointer-events:none;background:transparent;color:white}
 #goldFinaleOutro.play{display:block}
 #goldFinaleOutro.black{background:#000}
@@ -1415,8 +1322,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 #goldFinaleOutro.thanks #goldFinaleCongrats{opacity:1;transform:translateY(0)}
 
 
-
-/* v19.0.90 — larger upgrade text retained; mobile cards tightened to remove excess empty space. */
 #upgrade .choice b{font-size:clamp(29px,2.65vw,38px)!important;line-height:1.04!important}
 #upgrade .choice p{font-size:clamp(21px,1.8vw,26px)!important;line-height:1.27!important}
 @media(max-width:760px){
@@ -1425,14 +1330,11 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  #upgrade .choice p{font-size:20px!important;line-height:1.25!important}
 }
 
-/* v19.0.102 — Legendary Golden Ladybug Bug Parade description only. */
-/* v19.0.105 — Bug Parade descriptions standardized/capitalized only. */
 #bugs .card b{font-size:31px!important;line-height:1.08!important}
 #bugs .card p,#bugs .card .muted{font-size:23px!important;line-height:1.34!important}
 #bugs .card .btn{font-size:20px!important;min-height:50px!important}
 
 
-/* v19.0.153 — Bug Parade: bottom row follows the same card rhythm as the top row; Golden Ladybug preview enlarged. */
 #bugs .grid{align-items:stretch!important}
 #bugs .card,#bugs .legendaryBugCard{min-height:292px!important;padding:15px 15px 13px!important}
 #bugs .legendaryBugCard{justify-content:flex-start!important}
@@ -1450,7 +1352,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  #bugs .legendaryBugCard p{font-size:15px!important}
 }
 
-/* v19.0.162 — cleaner, compact Final Boss Preparation screen. */
 #finalPrep .panel{width:min(720px,96vw)!important;padding:22px 20px 20px!important}
 #finalPrep h2{font-size:clamp(28px,5vw,36px)!important;margin-bottom:5px!important}
 #finalPrep .panel>p{font-size:16px!important;line-height:1.25!important;margin:0 auto 16px!important;max-width:500px!important}
@@ -1469,7 +1370,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  #finalPrep .choice b{font-size:23px!important;margin-bottom:4px!important}
  #finalPrep .choice p{font-size:15px!important}
 }
-/* v19.0.196-rc.1 — preserve Home spacing after removing developer controls. */
 .homeReleaseSpacer{height:50px;flex:0 0 50px;pointer-events:none}
 #bugs .panel>h2{padding-right:100px}
 #pause .screenLeafBank,#bugs .screenLeafBank{max-width:calc(100% - 24px);overflow:hidden}
@@ -1477,6 +1377,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  #bugs .panel>h2{padding-right:0;margin-top:48px!important}
  #bugs .screenLeafBank{top:14px;right:14px}
 }
+
+.testJump,.creditsTestBtn,.purifyTestBtn{display:none!important}
 </style>
 </head>
 <body>
@@ -1516,8 +1418,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.7</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.7</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.9</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.9</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1711,35 +1613,11 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <script>
 const BB_DEV_MODE=false; // Production builds have no developer entry points.
-// v19.0.62 — removed temporary Gold Waves test controls only; production Gold/Story/Mosquito paths unchanged.
-// v19.0.76 — Story Mode boss Gold Leaf drop chance increased from 1/1000 to 1/350; reward remains 10 Gold Leaves.
-// v19.0.83 — Gold Waves difficulty pass: modest Gold enemy durability/speed bump, BIG BUG +25% HP, and unique GOLDEN CAGE attack; attack damage/player health unchanged.
-// v19.0.79 — Gold Waves intensity pass: visual-only 10× outgoing damage numbers and pause ATTACK display; real damage/health/enemy attacks/player health unchanged.
-// v19.0.78 — Home Gold Waves button polish only: removed POST-GAME CHALLENGE subtitle, centered label, richer gold finish, and lightweight CSS sparkles.
-// v19.0.78 — Pause polish: removed the breather subtitle and added pause-safe Settings access that returns to the paused run.
-// v19.0.75 — Gold Leaf Shop: corrected the $2.99 pack from 700 to 70 Gold Leaves; display and pack value match.
-// v19.0.74 — Story Mode boss HUD only: BOSS text beside the wave number is always red; all other modes/HUD text unchanged.
-// v19.0.73 — Story Mode leaves are now banked only when the run ends (death, quit, or game clear); exact carried amount only. Mosquito Mode and Gold Leaves unchanged.
-// v19.0.70 — Legendary Golden Ladybug regular-leaf purchase is 500,000; 100 Gold Leaves alternative unchanged.
-// v17.9.16 — Gold Leaves: premium persistence, 1-leaf continue, early bug unlocks, clear reward, and rare boss drops.
-// v17.9.16 — Major performance pass: static arena composited on a dedicated background canvas, HUD DOM writes are cached, and hot-loop work is reduced without changing gameplay or visuals.
-// v18.0.81 — Mosquito Mode stationary detection is more tolerant of tiny movement jitter; stand-still firing bonus is a true 25% and stacks with existing faster attack-speed scaling and boosts.
-// v18.0.81 — Mosquito Mode also gets the stand-still firing-speed bonus, stacking with its existing faster attack-speed scaling and boosts.
-// v17.9.10 — Endless starts at 1.75× Story movement and attack speed; all existing Endless scaling and 2× Boost behavior unchanged.
 
-// v17.9.10 — Endless performance pass: mosquito death audio removed; preserves cumulative v17.9.x performance work and Endless behavior.
 
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-// v18.0.108 — master volume remapped: 50% equals 30% louder than v18.0.86 at 100%; full range remains adjustable.
-// v18.0.84 — +10% global audio output and persistent master-volume slider.
-// v18.0.82 — desktop-only render-resolution cap. Touch/mobile devices (including iPhone)
-// keep the original up-to-1.5x DPR rendering. Desktop keeps logical coordinates unchanged
-// while avoiding oversized high-DPI canvas buffers that can overload integrated GPUs.
-// v18.0.84 — distinguish actual mobile browsers from touch-capable Windows laptops.
-// iPhone/iPad/Android keep the exact existing mobile render path. Desktop/2-in-1 PCs
-// get a lower internal canvas resolution that is CSS-scaled back to the same layout.
 const MOBILE_CANVAS_RENDER=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
 const DESKTOP_PERF_RENDER=!MOBILE_CANVAS_RENDER;
 function canvasRenderScale(w,h){
@@ -1765,7 +1643,6 @@ function screen(id){
  syncGoldPresentation();syncGoldMusic();
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
  if(id==='home')paintHomeHero();
- // v18.0.44 — transient gameplay banners should never bleed over menus/pause/end screens.
  if(id!=='none'){
   const t=$('telegraph');if(t){t.classList.add('hidden');clearTimeout(flashBanner._t)}
  }
@@ -1779,7 +1656,7 @@ function storageNotice(){
  bbStorageFailed=true;
  if(typeof document==='undefined'||!document.body||document.getElementById('storageNotice'))return;
  const notice=document.createElement('div');notice.id='storageNotice';notice.setAttribute('role','status');
- notice.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:200;padding:10px 14px;background:#392911;color:#fff1c2;border:1px solid #e5b65e;border-radius:10px;font:14px system-ui;text-align:center';
+ notice.style.cssText='position:fixed;left:12px;right:12px;bottom:12px;z-index:200;padding:10px 14px;background:#392911;color:#fff1c2;border:1px solid #e5b65e;border-radius:10px;font:14px system-ui;text-align:center;pointer-events:none';
  notice.textContent='Saving is unavailable. Progress in this session may be lost when you close the game.';document.body.appendChild(notice);
 }
 function storageRead(key){try{return localStorage.getItem(key)}catch(e){storageNotice();return null}}
@@ -1812,8 +1689,6 @@ function normalizeSave(input={}){
 }
 function loadSave(){
  const raw=storageRead(SAVEKEY);let data={};
- // v19.0.196-rc.1 — Paid-release starter grant: only a genuinely new profile receives 10 Gold Leaves.
- // Any primary/legacy save prevents the grant, and a storage failure is never treated as a fresh profile.
  const legacyGoldRaw=storageRead(GOLDKEY),legacyUnlockRaw=storageRead(GOLDUNLOCKKEY);
  const genuinelyNew=raw===null&&legacyGoldRaw===null&&legacyUnlockRaw===null&&!bbStorageFailed;
  if(raw!==null){try{data=JSON.parse(raw);if(!saveObject(data)){archiveSaveData(SAVEKEY,raw,'invalid shape');data={}}else if(['scrap','best','runs','goldLeaves','endlessBest','goldBest'].some(k=>data[k]!==undefined&&(typeof data[k]!=='number'||!Number.isFinite(data[k])||data[k]<0))||['upgrades','settings','cosmetics','legendaryGolden'].some(k=>data[k]!==undefined&&!saveObject(data[k]))||['goldUnlocks','bugPurchases','discovered'].some(k=>data[k]!==undefined&&!Array.isArray(data[k])))archiveSaveData(SAVEKEY,raw,'invalid save fields')}catch(e){archiveSaveData(SAVEKEY,raw);data={}}}
@@ -1823,61 +1698,13 @@ function loadSave(){
  return normalizeSave(data);
 }
 let save=loadSave();
-// v17.9.10 — Endless behavior pass: about 25% of mosquitoes now lead the player slightly to attack face-on, while the rarer 1-in-20 interceptors retain stronger predictive path-cutting. Story Mode unchanged.
-// v17.9.7 — Endless performance pass: nearby-cell mosquito separation replaces all-pairs checks, mosquito hit FX are lighter, overlapping death buzzes are rate-limited, 2× Boost lasts 6 seconds, and Health Boost lasts 10 seconds with slightly faster healing. Story Mode unchanged.
-// v17.9.5 — Endless survival pressure: no between-wave healing; Health Boost is the only recovery; stored attack ability is now a 5-second regular-style boost with rapid attacks, double damage, and a 2-shot attack. Story Mode unchanged.
-// v17.9.4 — Endless survival pass: no Leaf drops, stored Health Boost / 5× Attack / Repellent charges (max 3 each), and automatic move/attack-speed growth every 5 waves. Story Mode unchanged.
-// v17.9.2 — Endless refinement: lightweight mosquito spacing, 1.5× starting move/attack speed, louder mosquito buzz, and a basic Endless-only upgrade pool with a stored 5-second 3× Attack power. Story Mode unchanged.
-// v17.9.1 — Endless test pass: temporary Home access, much faster/denser mosquito swarms, and a quiet mosquito death buzz. Story Mode unchanged.
-// v17.8.59 — performance-only: every arena now uses the same static background cache; only tiny animated accents are drawn live. Gameplay and visuals unchanged.
-// v17.8.57 — Home test controls isolated from layout; title buddy hide/peek now follows the rendered BIG BUG logo.
-// v17.8.8 — lightweight run recovery: event-only autosaves on safe checkpoints/backgrounding, with no per-frame save work.
-// v17.8.34 — Sky Lancer now visibly exits the arena at normal flight speed before dashing back in, and has a more distinct dragonfly silhouette.
-// v17.8.15 — Mole Thing above-ground chase speed increased so his pressure matches other bosses without changing burrow timing.
-// v17.8.15 — Triple Shot now lasts 5 waves and uses one lightweight combined visual instead of three separate projectile FX per attack.
-// v17.8.13 — Mole Thing polish: standard boss movement speed, boss/minion collision cleanup, and separate entry + emergence cracks that linger longer.
-// v17.8.12 — Mole Thing burrow fix: direct player targeting, visible cracks at the exact emergence point, and no generic yellow dash telegraph.
-// v17.8.13 — Mole Thing rework: restore original stats, much rarer burrows, exact 2-second underground time, and crack-only warning with no yellow boss ring.
-// v17.8.10 — Mole Thing retune: faster movement, exact 2-second underground crack warning, cleaner crack-only tell, plus temporary wave/boss testing selector.
-// v17.8.7 — iOS resume recovery: safely restarts the game RAF after backgrounding and prevents active waves from becoming stranded after returning.
-// v17.8.6 — Mole Thing readability: longer burrow warning, wider emergence spacing, and a fading earth-crack marker.
-// v17.8.5 — smoothness pass: allocation-free Triple Shot targeting, cheaper radius checks, cached boss-bar writes, and a more reliably visible Home version label. Gameplay and visuals otherwise unchanged.
-// v17.6.0 — Wave 30+ unique boss abilities + refined silhouettes.
-// v17.8.4 — performance-only pass: cached static arena rendering + change-only HUD writes. Gameplay and visuals unchanged.
-// v17.8.3 — simplified Home copy, lifted controls, upgraded Best Wave badge, and safe 20-second title replay.
-// v17.7.6 — Settings menu, audio/damage-number toggles, and in-game reset confirmation.
-// v17.7.9 — Settings button now lives inside Home as an absolutely positioned overlay, so it can never appear on other screens.
-// v17.7.8 — restore the v17.7.5 Home Screen structure and title behavior; Settings floats independently above it.
-// v17.7.10 — player attacks made more visible with brighter fill only; projectile size and rendering cost unchanged.
-// v17.7.5 — remove bullet separators from game text + add safe main-menu progress reset.
-// v17.7.4 — Garden Magic clarity: every permanent level adds exactly +10% upgrade strength, shown as progress out of 10.
-// v17.7.3 — permanent upgrade cap + names + lower resistant Beetle frequency.
-// v17.7.0 — permanent Power Ups now strengthen in-run upgrades instead of granting starting stats.
-// v17.6.1 — suspend the title animation RAF completely while the home screen is hidden.
-// No gameplay or visual changes; this only removes invisible background work.
-// v17.5.13 — late-wave performance pass + 25% larger player attack visual.
-// Gameplay values, enemy counts, damage, speed, and arena visuals are unchanged.
-// v19.0.108 — Beetle/Butterfly are no longer free wave rewards. Reaching Wave 25/35 only makes them purchasable; ownership costs 10 Gold Leaves or 10,000 regular Leaves.
-// v19.0.185 — Beetle now becomes purchasable at Wave 20 for 5,000 Leaves; Butterfly at Wave 25 for 7,500 Leaves. Gold Leaf option remains 10.
-// v19.0.186 — Dragonfly Reflexes lightning bolt enlarged; player damage SFX replaced with a louder bug-squeak yelp.
-// v19.0.187 — Beetle/Butterfly 10 Gold Leaf purchase is early-unlock only; after Best Wave 20/25 only regular Leaf purchase remains.
-// v19.0.190 — repair desktop Home centering/wave HUD layout and guard BUGS purchase-button handlers against missing state-specific controls.
-// v19.0.194 — show the player’s total saved regular-Leaf bank in the upper-right of Pause and The Bug Parade.
 save.mainGameBeaten=save.mainGameBeaten===true;
 save.bugPurchases=Array.isArray(save.bugPurchases)?save.bugPurchases:[];
 save.unlocked=['ladybug'];
 if(save.goldUnlocks.includes('beetle')||save.bugPurchases.includes('beetle'))save.unlocked.push('beetle');
 if(save.goldUnlocks.includes('butterfly')||save.bugPurchases.includes('butterfly'))save.unlocked.push('butterfly');
-// v18.0.129 — Legendary Golden Ladybug ownership must survive every reload/resume.
 if(save.legendaryGolden&&save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');
 if(!save.unlocked.includes(save.selected))save.selected='ladybug';
-// v17.9.52 — Shifted the regular spider's flipped original head slightly farther forward.
-// v17.9.33 — Restored the original regular spider head/eyes/fangs and flipped the head as one unit.
-// v17.9.32 — Refined regular spider fangs: forward-facing, slimmer, and moved away from the eyes.
-// v17.9.31 — Regular spider face/fangs now project forward from the head.
-// v19.0.129 — Mosquito Mode now unlocks after clearing Wave 25.
-// v17.9.30 performance-only pass: preserve gameplay, timings, audio, and graphics while reducing repeated late-wave work.
-// Wave 25 must be cleared. A saved best wave of 26+ proves that clear happened in an older run.
 save.endlessUnlocked=!!save.endlessUnlocked||save.mainGameBeaten||save.best>=26;
 function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endlessBtn'),w=$('endlessBestWrap'),n=$('homeEndlessBest');if(b){b.classList.remove('hidden');b.disabled=!unlocked;const html=unlocked?'MOSQUITO MODE':' MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 25 TO UNLOCK</small>';if(b.innerHTML!==html)b.innerHTML=html}if(w)w.classList.toggle('hidden',!unlocked);if(n)n.textContent=save.endlessBest||0}
 function refreshCreditsHome(){const b=$('homeCreditsBtn');if(b)b.classList.toggle('hidden',!save.mainGameBeaten)}
@@ -1896,7 +1723,6 @@ function refreshGoldWavesHome(){
  b.innerHTML='GOLD WAVES';
 }
 
-// v17.5.1 — Extra Choice / reroll-style permanent power up removed.
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
 
 const BUGS={
@@ -1910,30 +1736,6 @@ function syncLegendaryGolden(showNotice=false){if(!allPermanentMaxed())return fa
 function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.createElement('div');d.id='legendaryReveal';d.innerHTML='<div class="legendaryRevealCard"><div class="legendaryStars">✦ &nbsp; ✦ &nbsp; ✦</div><canvas id="legendaryRevealBug" width="150" height="150"></canvas><small>THE GARDEN HAS REVEALED A LEGEND</small><h2>THE LEGENDARY<br>GOLDEN LADYBUG</h2><p>You maxed every permanent Power Up. A legendary bug is now waiting in The Bug Parade.</p><button class="btn legendaryRevealBtn">SEE THE LEGEND</button></div>';document.body.appendChild(d);d.querySelector('button').onclick=()=>{d.remove();screen('bugs');buildBugScreen()};const c=d.querySelector('canvas'),q=c.getContext('2d');q.translate(75,75);drawPlayableBug(q,'golden',82,true)}d.classList.remove('hidden')}
 
 
-
-// v17.8.57 — Home intro now initializes from the first rendered canvas frame so Safari always gets stable dimensions; animation visuals/timing unchanged.
-// v17.8.43 — normal player attacks now use the same clear target-travel visual as Triple Shot; performance-only cleanup removes dead duplicate rendering and per-frame helper allocation.
-// v17.8.42 — Sharper Bite now uses the exact same hand-drawn sword artwork as the attack HUD.
-// v19.0.119 — sword icon polish only: preserve the existing sword look and add a subtle pointed blade tip.
-// v19.0.120 — Dragonfly Reflexes / Quicker Reflexes now use the same pointed sword with small bug wings.
-// v19.0.122 — Dragonfly wings enlarged and redrawn so the speed sword reads clearly at game size.
-// v19.0.123 — story corruption pass: purple dust now slowly builds on Garden Updates and story-mode backgrounds from Wave 25 to the final boss.
-// v19.0.124 — speed sword cleanup: removed the right-side wing clutter and switched to left-side motion lines for a cleaner fast icon.
-// v19.0.125 — speed icon polish: replaced the gray motion marks with three black curved speed lines farther to the left.
-// v19.0.126 — purple corruption visibility fix: dust begins after the Wave 25 reveal, is easier to see, and still ramps gradually toward Wave 100.
-// v19.0.127 — speed icon cleanup: moved the three black speed lines farther left so they read clearly and do not crowd the sword.
-// v19.0.128 — purple dust polish: made the corruption brighter and more powdery/dust-like in both Garden Updates and story backgrounds.
-// v19.0.136 — purple dust piles now grow larger and increase in count every 10 waves after Wave 25, both in the arena and Garden Updates.
-// v19.0.137 — added temporary Home test button that previews every Garden Update note in order without affecting runs, upgrades, or saves.
-// v19.0.129 — replaced Iron Scarab everywhere in Story Mode with BIG BLOOD SUCKER, added dedicated boss art/attack behavior, and moved Mosquito Mode unlock to clearing Wave 25.
-// v19.0.130 — reverted Dragonfly Reflexes / Quicker Reflexes sword-wing artwork; attack speed now uses the existing lightning-bolt symbol again.
-// v17.8.41 — double/triple-digit wave labels compact automatically so BOSS stays fully inside the unchanged equal HUD box.
-// v17.8.39 — HUD cleanup: Wave icon removed, attack symbol restored to the earlier sword style, and Leaf currency icon now matches collectible Leaves.
-// v17.8.37 — attack icon lengthened and reshaped into a clear full sword with pointed blade, crossguard, grip, and pommel.
-// v17.8.39 — HUD boxes centered to equal widths, pause title centered without emoji, and attack HUD uses one hand-drawn sword.
-// v17.8.36 — ladybug character icons now match the playable bug more closely, ladybug eyes added, and attack icon redrawn as a sword.
-// v17.8.35 — handcrafted visual identity pass: unified title hero, HUD/menu/shop icon language, and less generic menu card styling. Gameplay/performance logic unchanged.
-// v17.8.34 — cross-platform playable bug renderer. No emoji dependencies.
 function drawPlayableBug(ctx,id,size=28,glow=false,legPhase=0,legAmp=0){
  ctx.save();
  const s=size/28;
@@ -2212,8 +2014,6 @@ let game=null, last=0, raf=0, audio=null;
 let homePresentationGeneration=0,drag=false;
 const pcKeys={w:false,a:false,s:false,d:false};
 
-// v19.0.57 — BIG BIG HUD fade presentation.
-// Intentionally presentation-only: no combat pause, no boss movement changes, no damage/game-over guards.
 const BB_HUD_FADE_TARGETS={
  health:()=>document.querySelector('#hud .hudHealth'),
  wave:()=>document.querySelector('#hud .hudWave'),
@@ -2254,10 +2054,8 @@ function syncBigBigHudFades(boss){
  if(pct<=20)startBigBigHudFade('bossbar');
 }
 const BB_LOW_FX_DEVICE=((navigator.hardwareConcurrency||8)<=4)||((navigator.deviceMemory||8)<=4);
-// v19.0.98 — low-end Story rendering pass. Presentation-only: no HP, damage, speed, spawn, collision, wave, boss, or timing changes.
 function lowStoryFx(){return !!(BB_LOW_FX_DEVICE&&game&&game.mode==='story'&&game.wave>=15)}
 
-// v17.9.84 — performance-only: coalesce rapid leaf pickup storage writes.
 let leafPersistTimer=0;
 function persistLeafPickup(){
  if(leafPersistTimer)return;
@@ -2413,9 +2211,6 @@ function initAudio(){
   audio=audio||new(window.AudioContext||window.webkitAudioContext)();
   const resumed=audio.state==='suspended'?audio.resume():Promise.resolve();
   if(resumed&&resumed.then)resumed.then(()=>{
-   // v19.0.196-rc.4 — choose exactly one soundtrack owner after resume/init. In particular,
-   // a finished boss run may still retain a live boss object; menu taps must never fall
-   // through past an already-running title track and restart that stale boss intro.
    if(game&&game.mode==='endless'&&!game.over&&!game.paused){if(!endlessMusicTimer)endlessMusicStart(false);return}
    if(shouldTitleMusicPlay()){if(!titleMusicTimer)titleMusicStart();return}
    if($('goldShop')&&!$('goldShop').classList.contains('hidden')){if(!shopMusicTimer)shopMusicStart(false);return}
@@ -2426,19 +2221,9 @@ function initAudio(){
 }
 let bbAudioVoices=0;
 const BB_AUDIO_VOICE_CAP=28;
-// v18.0.74 — track live music oscillators so song changes cannot leave old notes ringing under the next track.
 const bbMusicVoices=new Set();
-// v18.0.85 — track every live WebAudio voice, not only music. This lets death/menu
-// transitions reliably silence gameplay oscillators that would otherwise leak into Home clicks.
 const bbAllVoices=new Set();
-// v19.0.117 — audio transition guard. Any deferred UI/SFX work from the previous
-// screen is invalidated when we perform a full audio cleanup, preventing an old
-// chirp from waking up on the next tap after death/menu transitions on iOS.
 let bbAudioEpoch=0;
-// v19.0.118 — cross-platform transition settle window. This is not iOS-specific: on
-// Windows/Chromium too, a click can land while a death/menu audio handoff is still
-// stopping voices. Hold new UI SFX/music for a few milliseconds so the old and new
-// audio graphs never collide and produce a click/error-like chirp.
 let bbAudioTransitionUntil=0,titleMusicDeferredTimer=null;
 function stopVoiceSet(set,fade=.025){
  if(!audio||!set.size)return;
@@ -2454,17 +2239,10 @@ function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  if(category==='music'){if(save.settings.music===false)return}else if(save.settings.sfx===false)return;
  if(category==='sfx'&&window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;
  if(category==='sfx'&&performance.now()<bbAudioTransitionUntil)return;
- // v18.0.44 — never queue oscillator notes while iOS has the page/audio context suspended.
- // Music simply skips hidden beats; a user-triggered SFX gets one safe retry after resume.
  if(document.hidden)return;
  if(audio.state!=='running'){
-  // v19.0.117 — never queue an SFX to replay after AudioContext.resume().
-  // On iOS those deferred callbacks could survive a death/menu transition and then
-  // fire on the next tap, which sounded like a random error/glitch tone. User input
-  // already calls initAudio(), so a suspended note is safer to drop than replay later.
   return;
  }
- // v18.0.58 — cap simultaneous oscillator voices. This prevents dense late-wave SFX/music overlap from clipping or creating needless audio work on older phones.
  if(bbAudioVoices>=BB_AUDIO_VOICE_CAP)return;
  g*=3.432*Math.max(0,Math.min(2,Number(save.settings.volume??50)/50));if(g<=0)return;bbAudioVoices++;
  let o=audio.createOscillator(),a=audio.createGain(),voice={osc:o,gain:a,category};o.type=type;o.frequency.value=f;g=Math.min(g,.92);a.gain.setValueAtTime(g,audio.currentTime);a.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(a);a.connect(audio.destination);
@@ -2476,7 +2254,6 @@ function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
 function isMenuMusicScreen(){return ['home','bugs','cosmetics','base','gardenBook','settings','help','firstHelp','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
-// v18.0.75 — purification owns the soundtrack; normal Story/Home music must stay silent until it ends.
 function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&!game.finalPurify&&(!game.boss||game.boss.dead))}
 function shouldTitleMusicPlay(){if(game&&game.finalPurify)return false;const end=$('ending');if(end&&!end.classList.contains('hidden'))return false;return isMenuMusicScreen()||isQuietStoryMusic()}
 function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}if(titleMusicDeferredTimer){clearTimeout(titleMusicDeferredTimer);titleMusicDeferredTimer=null}hardStopMusicVoices();if(resetStep)titleMusicStep=0}
@@ -2490,7 +2267,6 @@ function titleMusicStart(){
  const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),med=medievalBundleOwned(),notes=med?medieval:regular,gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035,n=notes[titleMusicStep%notes.length];beep(n,med?.34:.28,gain,med?'triangle':'sine','music');if(titleMusicStep%4===0)beep(n/2,med?.46:.34,bassGain,med?'sine':'triangle','music');if(med&&titleMusicStep%8===6)beep(n*1.5,.13,quiet?.0011:.0025,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,med?455:420)};
  tick();
 }
-// v18.0.74 — bright final-garden reprise: the Home melody returns in a happier form while the garden purifies.
 let purifyMusicTimer=null,purifyMusicStep=0;
 function purifyMusicStop(resetStep=true){if(purifyMusicTimer){clearTimeout(purifyMusicTimer);purifyMusicTimer=null}hardStopMusicVoices();if(resetStep)purifyMusicStep=0}
 function purifyMusicStart(resetStep=true){
@@ -2510,7 +2286,6 @@ function purifyMusicStart(resetStep=true){
  };
  tick();
 }
-// v17.9.92 — faster, lightweight Mosquito Mode-only swarm theme.
 let endlessMusicTimer=null,endlessMusicStep=0;
 function endlessMusicStop(resetStep=true){if(endlessMusicTimer){clearTimeout(endlessMusicTimer);endlessMusicTimer=null}hardStopMusicVoices();if(resetStep)endlessMusicStep=0}
 function endlessMusicStart(resetStep=true){
@@ -2539,7 +2314,6 @@ function creditsMusicStart(){
  const melody=[392,440,523,440,349,392,440,330,349,392,523,494,440,392,349,330],harmony=[196,220,262,220,175,196,220,165];
  const tick=()=>{if($('ending')?.classList.contains('hidden')){creditsMusicStop();return}const n=melody[creditsMusicStep%melody.length],h=harmony[Math.floor(creditsMusicStep/2)%harmony.length];beep(n,.58,.0065,'sine','music');if(creditsMusicStep%2===0)beep(h,.82,.0045,'triangle','music');if(creditsMusicStep%4===0)beep(n/2,.95,.0028,'sine','music');creditsMusicStep++;creditsMusicTimer=setTimeout(tick,620)};tick();
 }
-// v17.9.21 — short mysterious/playful cue while the fully-black Continue… prompt is visible.
 function continueMysteryMusicStart(){
  if(!audio||save.settings.music===false)return;
  const notes=[294,349,440,523,466,392,330,440,587];
@@ -2641,8 +2415,6 @@ function syncGoldMusic(){
  tick();
 }
 
-// v19.0.43 — short, self-contained reveal sting for ??? -> BIG BIG.
-// It briefly owns the music channel, then hands control back to the normal boss theme.
 function bigBigRevealSting(){
  cancelGoldMusicCues();goldMusicStop();bossMusicStop();
  if(!audio||save.settings.music===false||!game)return;
@@ -2697,8 +2469,6 @@ function buyLegendary(kind){
  if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210);return true;
 }
 function permanentUpgradeLeafCost(k,level){
- // v18.0.34 — same simple leaf-price ladder for every permanent upgrade.
- // level is the current 0–9 level, so index 0 is the first purchase.
  const costs=[500,1000,2000,3000,5000,6000,7000,8000,9000,12000];
  return costs[Math.max(0,Math.min(9,level|0))];
 }
@@ -2895,19 +2665,15 @@ function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
  clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
-// v19.0.43 DIAGNOSTIC — intentionally temporary. Records the actual Gold Wave 50 -> Final Wave runtime path on-device.
 const BB22TRACE=[];
 function bb22Trace(msg){
  if(!BB_DEV_MODE)return;
  try{
   const g=window.game||game, t=g&&Number.isFinite(g.time)?g.time.toFixed(2):'--';
   const line=t+' '+msg; BB22TRACE.push(line); if(BB22TRACE.length>14)BB22TRACE.shift();
-  // v19.0.43 — diagnostics stay in the console only; no debug UI is created in gameplay.
   console.log('[BB22]',line);
  }catch(err){console.error('[BB22 trace error]',err)}
 }
-// v19.0.30 — Wave 50 finale fix: this helper must live in the main script scope.
-// The previous copy was inside the later Gold-Waves IIFE, so completeWave() could not see it.
 function dropQuestionName(){
  const n=document.getElementById('bossName0')||document.getElementById('bossName');
  if(!n||!document.body)return false;
@@ -2958,7 +2724,6 @@ function beginWave(w){
  const bossWave=w%5===0;
  g.waveQuota=bossWave?bossKindsFor(w).length:(w===1?6:w===2?8:Math.min(activeEnemyCap(w),5+w*2));
  g.spawnLeft=g.waveQuota;
- // v17.9.75 — opening waves stay light on beetles; post-Wave-5 odds are 1/9, 1/11, then 1/13.
  g.earlyWaveQueue=w===1?['ant','ant','ant','ant','ant','mosquito']:null;
  $('bossbar').style.display='none';
  const enteringArea=w>1&&(w-1)%5===0;
@@ -2982,13 +2747,10 @@ function completeWave(){
  if(g&&g.mode==='gold'&&g.wave>=50)bb22Trace('completeWave ENTER wave='+g.wave+' active='+g.waveActive+' inter='+g.intermission+' enemies='+(g.enemies?g.enemies.length:'?'));
  if(g.p.hp<=0)return;
  if(!g.waveActive||g.intermission){if(g&&g.mode==='gold'&&g.wave>=50)bb22Trace('completeWave EARLY RETURN');return;}
- // v18.0.24 — flush any coalesced Leaf save at the wave checkpoint.
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
  g.recoveryPhase=g.mode==='gold'&&g.wave===50?'goldOutro':g.mode==='story'&&g.wave%5===0?'storyNote':'upgrade';
  g.pendingUpgradeAfterWave=true;g.pendingChoiceIds=[];
- // v19.0.156 — wave-clear safety: hostile attacks/hazards cannot carry into the clear screen or next wave.
- // Remove only enemy-damaging FX; player shots, pickups, heal hearts, particles, and UI FX are preserved.
  if(Array.isArray(g.fx))g.fx=g.fx.filter(f=>!(f&&(f.sting||f.enemyShot||f.goldShot||f.bossHazard||f.toxic||f.lightningStrike)));
  if(g.p.helperArmyWave===g.wave&&g.p.helperArmyHelpers&&g.p.helperArmyHelpers.length){
    const army=g.p.helperArmyHelpers;
@@ -3015,8 +2777,6 @@ function completeWave(){
  if(g.p.tripleShot&&g.wave>=(g.p.tripleShotUntilWave||0)){g.p.tripleShot=false;g.p.tripleShotUntilWave=0;flashBanner('TRIPLE SHOT ENDED',.9)}
  // Save clear phases after their healing/rewards, before a deferred choice screen.
  if(g.mode==='gold'){
-   // v19.0.43 — Wave 50 is one boss with two phases. Phase 1 never clears the wave;
-   // damageEnemy() promotes that same object in place. When phase 2 finally dies, Wave 50 ends the run.
    if(g.wave===50){
      if(g.goldFinale){
        bb22Trace('W50 PHASE 2 COMPLETE -> GOLD VICTORY');
@@ -3035,8 +2795,6 @@ function completeWave(){
       saveRunRecovery('wave-clear');
      setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
    }else{
-     // v19.0.62 — seamless Gold-wave handoff: no artificial clear pause/timer.
-     // Advance in the same update boundary so movement/rendering never visibly freezes between normal waves.
      g.paused=false;
      beginWave(g.wave+1);
    }
@@ -3071,9 +2829,6 @@ function completeWave(){
  }
  flashBanner(bossClear?'BOSS DOWN!':'WAVE CLEAR! +'+heal+' HP',bossClear?1.3:1.1);
   saveRunRecovery('wave-clear');
- // v17.9.65 — boss-clear transition safety:
- // open the garden story immediately after the boss clear instead of leaving the run paused
- // while waiting on a timer. This prevents iOS from getting stranded on "WAVE CLEAR".
  if(bossClear){
    if(g.wave>=100)completeGameEnding();
    else if(mosquitoModeJustUnlocked)showMosquitoModeUnlockPopup(()=>{if(game===g&&!g.over)showGardenUpdate(g.wave)});
@@ -3108,31 +2863,21 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
  if(game.mode==='gold'&&!boss){baseHp*=1.80;sp*=1.25;damage*=1.45} // v19.0.83 — Gold Waves only: slightly tougher/faster regular enemies; damage unchanged
  if(boss){
    const duo=bossKindsFor(w).length>1;
-   // v18.0.81 — boss HP is progression-based only; player damage/attack-speed upgrades no longer increase boss max HP.
    baseHp=(80+w*15)*24*1.12*(duo?.62:1);
    sp=50+Math.min(18,w*.12);r=k==='gardenHeart'?58:k==='bigBloodSucker'?45:k==='queenSpider'||k==='tarantula'?43:k==='mantisBoss'?44:40;damage=(18+w*.52)*(duo?.82:1);
    if(game.mode==='gold'){baseHp*=1.67;sp*=1.15;damage*=1.35} // v19.0.83 — Gold Waves only: modest boss durability/speed bump; damage unchanged
-   // v19.0.70 — Waves 90/95 duo bosses move a little faster; HP/damage stay unchanged.
    if(duo&&game.mode==='story')sp*=1.12;
    const mods={stagBeetle:[1.28,.78],moleCricket:[.702,1.32],bigBloodSucker:[.92,w===25?4.0:5.25],dragonflyBoss:[.82,1.35],centipede:[1.0,1.82],earwig:[1.18,.92],cicada:[.92,1.12],bombardier:[1.06,.92],mothBoss:[.9,1.08],waterStrider:[.9,1.3],weevil:[1.16,.9],tarantula:[1.2,.84],rootBorer:[1.35,.90],sporeBeetle:[1.3,.8],gardenHeart:[2.25,.567]}; // v19.0.196-rc.4 — Wave 25 Big Blood Sucker speed only: 4.8x -> 4.0x so a base-speed player can open distance; later rematch speed unchanged.
    if(mods[k]){baseHp*=mods[k][0];sp*=mods[k][1]}
-   // v18.0.132 — final boss durability only: Spore Behemoth has 25% more max HP.
    if(k==='gardenHeart'){baseHp*=1.25;damage*=1.30;} // v19.0.171 — Spore Behemoth: all contact damage +30%; HP unchanged.
-   // v17.8.34 — Praying Tyrant: faster, slightly stronger physical attacker; no ranged scythes.
    if(k==='mantisBoss'){sp*=1.18;damage*=1.12}
-    // v17.4.4 — early boss HP tuning after upgrade power reduction
     const earlyBossHp={hornet:.585,stagBeetle:.578,queenSpider:.765,moleCricket:.93};
     if(earlyBossHp[k])baseHp*=earlyBossHp[k];
-    // v18.0.40 — shorten the first four boss fights without changing their attacks or damage.
     const earlyBossExtraCut={hornet:.85,stagBeetle:.85,queenSpider:.90,moleCricket:.90};
     if(earlyBossExtraCut[k])baseHp*=earlyBossExtraCut[k];
-    // v17.9.66 — global boss balance pass: all bosses have 5% less max HP.
     baseHp*=.95;
  }
  if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7;sp=Math.min(250,116+ew*1.85);damage=3.8;evo=0}
- // v19.0.196-rc.5 — Mosquito Mode late-wave difficulty: after Wave 73, keep the
- // existing 260-total / 90-active / speed caps and make a larger share of the swarm
- // use smarter approach patterns instead. Story mosquito behavior remains unchanged.
  let mosquitoInterceptorChance=.05,mosquitoFaceOnChance=.25,mosquitoSprinterChance=w>=20?.025:0;
  if(k==='mosquito'&&game.mode==='endless'&&w>73){
    if(w<80){
@@ -3169,9 +2914,6 @@ function damageEnemy(e,d,source='player'){
  if(game&&game.mode==='gold'&&e.goldPhase===2&&(game.goldFinaleRevealUntil||0)>game.time)return;
  const bb22GoldFinaleTarget=game&&game.mode==='gold'&&game.wave===50&&e&&e.goldBossKey==='goldUnknownBoss';
  if(bb22GoldFinaleTarget&&d>=e.hp)bb22Trace('LETHAL damage wave='+game.wave+' phase='+(e.goldPhase||1)+' hp='+e.hp+' d='+d+' boss='+e.boss+' key='+e.goldBossKey);
- // v19.0.43 — eliminate the fragile Wave 50 -> Final Wave remove/respawn gap.
- // The lethal hit on ??? now promotes that SAME live entity into BIG BIG before it can be
- // marked dead or compacted out of game.enemies. No replacement entity is needed.
  if(game&&game.mode==='gold'&&game.wave===50&&(e.goldPhase||1)===1&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp){
    bb22Trace('W50 LETHAL PROMOTION ACCEPTED key='+e.goldBossKey+' boss='+e.boss+' hp='+e.hp+' d='+d);
    const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.83: BIG BUG finale +25% HP (4,500 -> 5,625)
@@ -3191,9 +2933,6 @@ function damageEnemy(e,d,source='player'){
    bb22Trace('SAME-BOSS PHASE 2 BIG BIG hp='+e.hp+'/'+e.max+' enemies='+g.enemies.length+' wave='+g.wave);
    return;
  }
- // v19.0.57 — BIG BIG dies in place with a self-contained alien death sequence.
- // No wave transition or replacement entity: combat freezes immediately, the same boss remains
- // drawable for the death animation, then the existing Gold victory flow runs.
  if(game&&game.mode==='gold'&&game.wave===50&&e.goldPhase===2&&e.goldBossKey==='goldUnknownBoss'&&d>=e.hp&&!e.goldDying){
    const g=game;e.hp=0;e.goldDying=true;e.invuln=999;e.vx=0;e.vy=0;e._dash=0;e._hunt=0;
    e.goldDeathStartedAt=performance.now();g.goldDeathActive=true;g.goldDeathBoss=e;g.paused=true;g.waveActive=false;g.recoveryPhase='goldDeath';saveRunRecovery('gold-death');
@@ -3224,8 +2963,6 @@ function damageEnemy(e,d,source='player'){
  let dx=e.x-game.p.x,dy=e.y-game.p.y,dd=Math.hypot(dx,dy)||1;if(e.kind==='beetle'){e.knockX=0;e.knockY=0}else{e.knockX+=dx/dd*24;e.knockY+=dy/dd*24;}
  if(game.mode==='endless'&&e.kind==='mosquito')burst(e.x,e.y,1,.16,'#d7d1b7');else burst(e.x,e.y,game.enemies.length>28?2:3,.22,e.kind==='beetle'?'#b6c2b1':'#f0d5a6');
  if(e.hp<=0){
-   // v18.0.65 — the Spore Behemoth dies on the actual gameplay field. Keep its body
-   // drawable and freeze combat so the arena itself can purify before the credits.
    if(e.boss&&e.kind==='gardenHeart'&&game.mode==='story'&&game.wave>=100){
      e.hp=0;e.dying=true;e.invuln=999;game.finalBoss=e;game.p.kills++;game.score++;game.waveKills++;
      // Keep e.x/e.y untouched: the real death animation begins exactly where the killing hit landed.
@@ -3238,8 +2975,6 @@ function damageEnemy(e,d,source='player'){
      if(e.boss){val*=20;}
      else if(Math.random()<1/40){val*=2;luckyLeaf=true;}
      game.drops.push({x:e.x,y:e.y,v:val,r:e.boss?17:(luckyLeaf?11.5:9),age:0,phase:Math.random()*6.28,bossLeaf:e.boss,luckyLeaf});
-     // v19.0.69 — Story Mode only: regular Armored Beetles have a 20% chance to drop a tiny +10 HP heart.
-     // Keep this as a normal lightweight pickup in the existing drop array so Gold/Mosquito modes and wave logic are untouched.
      if(game.mode==='story'&&!e.boss&&e.kind==='beetle'&&Math.random()<.20)game.drops.push({x:e.x+10,y:e.y-6,v:0,r:7,age:0,phase:Math.random()*6.28,healDrop:true,healAmount:10});
       if(e.boss&&Math.random()<1/350)game.drops.push({x:e.x+18,y:e.y-8,v:0,r:15,age:0,phase:Math.random()*6.28,goldLeaf:true});
    }
@@ -3278,17 +3013,12 @@ function shootAt(target){
  if(p.poison)target.poison=(target.poison||0)+p.poison;
  beep(d>p.damage*2?880:520,.030,.028,'square');
 }
-// v19.0.112 — Story Mode attack-entry gate. An enemy becomes player-targetable only once
-// its center has crossed onto the playfield, which corresponds to at least half of its body
-// being visible at a screen edge. Other modes are intentionally unchanged.
 function playerCanTargetEnemy(e){
  if(!e||e.dead||e.state==='burrowWait')return false;
  if(game.mode!=='story')return true;
  return e.x>=0&&e.x<=W&&e.y>=0&&e.y<=H;
 }
 function nearestEnemy(x=game.p.x,y=game.p.y){
- // v18.0.41 — Story Mode uses the existing spatial buckets first. If nothing is within
- // 320px we fall back to the full list, preserving long-range targeting exactly.
  if(game.mode==='story'&&game.storyGridHead){
    const head=game.storyGridHead,stamp=game.storyGridStamp,next=game.storyGridNext,gen=game.storyGridGen,cols=game.storyGridCols,rows=game.storyGridRows,cell=128;
    if(head&&stamp&&next&&cols&&rows){
@@ -3306,8 +3036,6 @@ function nearestEnemy(x=game.p.x,y=game.p.y){
 function countActiveEnemies(nonBossOnly=false){
  let n=0;for(const e of game.enemies)if(!e.dead&&(!nonBossOnly||!e.boss))n++;return n;
 }
-// v18.0.25 — story-mode enemy spatial buckets. Regular enemies keep the same movement,
-// overlap radius, swarm bonus and collision math; we only stop comparing obviously distant enemies.
 function buildStoryEnemyGrid(){
  const es=game.enemies,n=es.length;
  if(game.storyGridBuiltForFrame===game.aiFrame&&game.storyGridBuiltEnemyCount===n&&game.storyGridHead&&game.storyGridStamp&&game.storyGridNext){
@@ -3340,7 +3068,6 @@ function countFxFlag(flag,limit=Infinity){
 function compactInPlace(arr,keep){
  let w=0;for(let r=0;r<arr.length;r++){const v=arr[r];if(keep(v))arr[w++]=v}arr.length=w;return arr;
 }
-// v18.0.58 — reuse hot-loop predicates so older browsers do not allocate closures every frame.
 function keepLiveEnemy(e){return !e.dead}
 function keepLiveDrop(d){return !d.dead}
 function keepLiveFx(f){return f.life>0}
@@ -3377,7 +3104,6 @@ function showPlayerDamage(amount){
  const p=game.p,shown=Math.max(1,Math.round(amount));
  // Red floating number above the player, matching the enemy damage-number feel.
  const playerDamageCap=lowStoryFx()?4:8;if(save.settings.damageNumbers!==false&&countFxFlag('playerDamageText',playerDamageCap)<playerDamageCap)game.fx.push({x:p.x+(Math.random()-.5)*8,y:p.y-p.r-12,vx:(Math.random()-.5)*9,vy:-31,life:.78,maxLife:.78,r:0,playerDamageText:shown});
- // v19.0.186 — loud, short bug-squeak hit sound: a quick high-to-low yelp instead of the old two-note chirp.
  playerHurtSqueak();
 }
 function hurtPlayer(amount){
@@ -3390,7 +3116,6 @@ function hurtPlayer(amount){
  if(amount>=Math.max(4,p.maxHp*.035))game.shake=Math.max(game.shake||0,2.4);
  // Direct hits show immediately. Continuous contact/poison damage is accumulated briefly
  // so the player sees useful whole-number damage instead of a flood of tiny decimals.
- // v19.0.196-rc.3 — accumulated fractional damage does not display until at least 1 full HP has been lost.
  const now=performance.now();
  if(amount>=1.5){
    const pendingWhole=Math.floor(p.pendingDamage||0);
@@ -3435,13 +3160,9 @@ function goldBossMechanics(e,dt){
 
 function enemyMove(e,dt){
  const p=game.p,t=game.time;
- // v19.0.30 — BIG BIG's Final Wave movement is owned exclusively by bossTick().
- // Keep the entity as a real boss in the core update, but bypass inherited Story boss AI
- // so it cannot be moved/transitioned by two different systems in the same frame.
  if(game.mode==='gold'&&game.wave===50&&e&&e.goldPhase===2)return;
  let dx=p.x-e.x,dy=p.y-e.y,slow=e.slow>0?.45:1;
  if(e.kind==='mosquito'){
-   // v17.9.94 — same steering, but avoid a redundant square-root for every mosquito on every frame.
    const pd2=dx*dx+dy*dy,repel=!!game.endlessRepelFrame;
    if(repel){
      const pd=Math.sqrt(pd2)||1,pushRange=230;if(pd<pushRange){const force=(1-pd/pushRange)*185;e.x-=dx/pd*force*dt;e.y-=dy/pd*force*dt}
@@ -3470,9 +3191,6 @@ function enemyMove(e,dt){
  e.cool-=dt*duoBossRate;e.stateT-=dt;
  e.shotCd=(e.shotCd||2)-dt*duoBossRate;
  if(e.boss&&e.kind==='dragonflyBoss')e.closeStrikeCd=Math.max(0,(e.closeStrikeCd||0)-dt);
- // v19.0.112 — Thunder Cicada: lightweight random ground lightning.
- // One single FX object per strike, never more than one active strike from this boss at a time.
- // It runs independently of Thunder Chorus so the timing feels unpredictable without adding projectile spam.
  if(e.boss&&e.kind==='cicada'){
    e.lightningCd=(e.lightningCd??(2.2+Math.random()*1.8))-dt*duoBossRate;
    if(e.lightningCd<=0&&!game.fx.some(f=>f.lightningStrike)){
@@ -3489,7 +3207,6 @@ function enemyMove(e,dt){
    else return;
  }
  if(!e.boss&&e.evo>0&&e.shotCd<=0){e.shotCd=Math.max(1.45,3.7-e.evo*.35)+Math.random()*1.2;let dd=Math.hypot(dx,dy)||1,spd=120+e.evo*18;if(e.kind==='ant'||e.kind==='spider')game.fx.push({x:e.x,y:e.y,vx:dx/dd*spd,vy:dy/dd*spd,life:2.8,r:4,sting:true,venom:true,damage:4+e.evo*2});else if(e.kind==='wasp'||e.kind==='stink')game.fx.push({x:e.x,y:e.y,vx:dx/dd*(spd+35),vy:dy/dd*(spd+35),life:2.5,r:4,sting:true,damage:5+e.evo*2})}
- // v17.8.34 — Thorn Weevil readability pass.
  if(e.boss&&e.kind==='weevil'&&e.state==='weevilWindup'){
    if(e.stateT<=0){
      e.state='weevilRecover';e.stateT=.34;
@@ -3505,7 +3222,6 @@ function enemyMove(e,dt){
    if(e.stateT<=0){e.state='chase';e.cool=.55}
    return;
  }
- // v18.0.58 — Old Webber now clearly winds up before laying the wall, with real escape lanes between webs.
  if(e.boss&&e.kind==='tarantula'&&e.state==='webberWindup'){
    if(e.stateT<=0){
      const ang=e.webberAim||0,cx=e.webberX,cy=e.webberY;
@@ -3529,7 +3245,6 @@ function enemyMove(e,dt){
        const ax=p.x-e.x,ay=p.y-e.y,ad=Math.hypot(ax,ay)||1;
        e.vx=ax/ad*560;e.vy=ay/ad*560;e.state='skyDash';e.stateT=Math.min(2.35,Math.max(1.05,ad/560+.22));
        burst(e.x,e.y,4,.18,'#b9f3eb');
-       // v19.0.183 — Sky Lancer retreats much faster, and Sky Lances is made unmistakable without increasing HP.
        e.skyAttack=(e.skyAttack||0)+1;
        const a=Math.atan2(e.vy,e.vx),dmg=8+game.wave*.16;
        if(e.skyAttack%2===0){
@@ -3552,8 +3267,6 @@ function enemyMove(e,dt){
      if(e.stateT<=0){e.state='chase';e.shotCd=2.15;e.cool=.8}
      return;
    }
-   // v19.0.183 — Close-range defense: if the player crowds Sky Lancer, fire an extremely fast aimed dart.
-   // This is independent of the normal Sky Sweep/Sky Lances cycle and does not change HP, movement, or those attacks.
    if(e.state==='chase'&&d<205&&e.closeStrikeCd<=0){
      const ca=Math.atan2(dy,dx),veryClose=d<115;
      game.fx.push({x:e.x,y:e.y,vx:Math.cos(ca)*(veryClose?610:540),vy:Math.sin(ca)*(veryClose?610:540),life:1.15,r:4.2,sting:true,damage:8+game.wave*.12});
@@ -3561,8 +3274,6 @@ function enemyMove(e,dt){
      burst(e.x+Math.cos(ca)*e.r*.55,e.y+Math.sin(ca)*e.r*.55,2,.10,'#b9f3eb');
    }
  }
- // v19.0.110 — Red Centipede runs instead of doing the usual boss hop/dash.
- // It stays grounded, tracks the player continuously, and its special is one sustained sprint.
  if(e.boss&&e.kind==='centipede'&&e.state==='centiRun'){
    const rd=Math.hypot(dx,dy)||1,runSpeed=Math.max(351,e.speed*3.536); // v19.0.150 — Red Centipede sprint +30% over v19.0.149
    e.x+=dx/rd*runSpeed*slow*dt;e.y+=dy/rd*runSpeed*slow*dt;
@@ -3574,8 +3285,6 @@ function enemyMove(e,dt){
      e.state='pinchStrike';e.stateT=.22;
      let ax=e.pinchX-e.x,ay=e.pinchY-e.y,ad=Math.hypot(ax,ay)||1;
      e.vx=ax/ad*340;e.vy=ay/ad*340;
-     // v19.0.149 — Pincher's signature clamp is intentionally catastrophic.
-     // This only changes the BIG PINCH/CRUSH hazard; contact damage and every other attack stay untouched.
      bossHazard(e.pinchX,e.pinchY,42,.34,'clamp',9999);
      flashBanner('CRUSH!',.22)
    }
@@ -3586,9 +3295,6 @@ function enemyMove(e,dt){
    if(e.stateT<=0){e.state='chase';e.cool=.75}
    return;
  }
- // v19.0.143 — Praying Tyrant jump retune.
- // He attacks more often and commits each jump to either the player's live position
- // or a point just behind the player's current movement, instead of inheriting the generic boss dash.
  if(e.boss&&e.kind==='mantisBoss'){
    if(e.state==='chase'&&e.cool<=0){
      e.state='mantisWindup';e.stateT=.28;e.cool=.95;
@@ -3669,8 +3375,6 @@ function enemyMove(e,dt){
      flashBanner('BLOOD BURST!',.32)
    }
    else if(e.kind==='cicada'){
-     // v19.0.183 — Thunder Cicada alternates Thunder Chorus with a readable three-strike lightning chain.
-     // Uses the existing lightning warning/strike objects, so no new collision or rendering system is introduced.
      e.cicadaAttack=(e.cicadaAttack||0)+1;e.shotCd=2.8;
      if(e.cicadaAttack%2===0){
        const mvx=p.motionX||0,mvy=p.motionY||0,mm=Math.hypot(mvx,mvy)||1,px=mvx/mm,py=mvy/mm;
@@ -3682,7 +3386,6 @@ function enemyMove(e,dt){
      }else{bossRing(e,14,145,8+game.wave*.16,0,'sonic');flashBanner('THUNDER CHORUS!',.38)}
    }
    else if(e.kind==='bombardier'){
-     // v19.0.157 — alternate the familiar rear Fire Spray with a new aimed Fire Burst.
      e.bombardierAttack=(e.bombardierAttack||0)+1;
      if(e.bombardierAttack%2===0){
        e.shotCd=2.45;
@@ -3703,7 +3406,6 @@ function enemyMove(e,dt){
      }
    }
    else if(e.kind==='mothBoss'){
-     // v19.0.156 — Dusk Moth fairness pass: big attack remains dangerous but is more avoidable.
      e.shotCd=2.7;bossHazard(p.x,p.y,92,2.25,'dark',8+game.wave*.14);
      for(let i=0;i<6;i++)shoot(i*6.283/6+t*.35,100,8+game.wave*.15,true,7);
      if(Math.random()<.46){
@@ -3717,8 +3419,6 @@ function enemyMove(e,dt){
      }else flashBanner('DUSK VEIL!',.35)
    }
    else if(e.kind==='waterStrider'){
-     // v19.0.183 — Pond Skater alternates Ripple Skim with Crosscurrent: three spaced water ripples
-     // around the player's path, leaving visible gaps rather than simply increasing damage or health.
      e.waterAttack=(e.waterAttack||0)+1;e.shotCd=2.05;
      let tx=Math.max(45,Math.min(W-45,p.x+(Math.random()-.5)*180)),ty=Math.max(120,Math.min(H-55,p.y+(Math.random()-.5)*180));
      e.state='dash';e.stateT=.55;e.vx=(tx-e.x)/.55;e.vy=(ty-e.y)/.55;
@@ -3734,19 +3434,14 @@ function enemyMove(e,dt){
    }
    else if(e.kind==='tarantula'){e.shotCd=2.9;e.state='webberWindup';e.stateT=.58;e.webberAim=aim+Math.PI/2;e.webberX=p.x;e.webberY=p.y;flashBanner('WEB WALL INCOMING!',.58)} // v19.0.159 — web wall used a little more frequently
    else if(e.kind==='rootBorer'){
-     // v19.0.160 — Root Borer all-around buff (health intentionally unchanged): quicker attacks, faster movement, broader/stronger eruption.
      e.shotCd=2.45;for(let i=0;i<5;i++){let q=(i+1)/5,bx=e.x+(p.x-e.x)*q,by=e.y+(p.y-e.y)*q;bossHazard(bx,by,36,1.7+i*.10,'root',(11+game.wave*.17)*.70)}flashBanner(' ROOT ERUPTION!',.35)}
    else if(e.kind==='sporeBeetle'){
      e.shotCd=2.55;
-     // v19.0.161 — Sporeback's lingering Spore Bloom patches last exactly 2.5s longer (4.8 -> 7.3s).
      for(let i=0;i<5;i++){let a=i*6.283/5+t*.25,rr=72;bossHazard(e.x+Math.cos(a)*rr,e.y+Math.sin(a)*rr,31,7.3,'spore',(10+game.wave*.16)*.5)}
      bossRing(e,8,105,(8+game.wave*.14)*.5,t*.2,'spore');
-     // v19.0.70 — Sporeback no longer leaves 30-second damaging ground poison behind.
-     // This prevents long-lived FX accumulation during the Wave 85 fight.
      flashBanner('SPORE BLOOM!',.35)
    }
    else if(e.kind==='gardenHeart'){
-    // v19.0.166 — replace the old brown root strike with a readable, dodgeable purple spore fan.
     e.shotCd=1.85;
     bossRing(e,12,165,(10+game.wave*.18)*1.30,t*.12,'spore'); // v19.0.171 — Spore Behemoth projectile damage +30%
     if(Math.random()<.7){
@@ -3762,17 +3457,12 @@ function enemyMove(e,dt){
  }
  if(e.boss&&e.kind!=='gardenHeart'){
    e.addCd-=dt;
-   // v19.0.71 — Story Mode boss cleanup: once ANY living boss reaches its final 10% HP,
-   // stop spawning new regular enemy adds. Existing enemies are left alone so wave/death state stays intact.
-   // This is Story-only; Gold Waves and Mosquito Mode keep their existing behavior.
    const storyBossClosing=game.mode==='story'&&(game.bosses||[]).some(b=>b&&!b.dead&&b.hp>0&&b.max>0&&b.hp<=b.max*.10);
    if(e.addCd<=0){
      e.addCd=Math.max(3.2,5.5-game.wave*.025);
      if(!storyBossClosing&&countActiveEnemies(true)<Math.min(8,Math.floor(activeEnemyCap(game.wave)/3))){
        const mosquitoBossRound=game.mode==='story'&&bossKindsFor(game.wave).includes('bigBloodSucker');
        if(mosquitoBossRound){
-         // v19.0.143 — Big Blood Sucker support enemies stay mosquito-only on Wave 25.
-         // On the Wave 95 duo fight, the ONLY normal enemies allowed are mosquitoes and spiders.
          const supportKind=game.wave===95?(Math.random()<.5?'mosquito':'spider'):'mosquito';
          spawnEnemy('normal',supportKind);
          if(e.hp<e.max*.45){
@@ -3780,8 +3470,6 @@ function enemyMove(e,dt){
            spawnEnemy('normal',extraKind);
          }
        }else{
-         // v19.0.165 — boss-wave support rules: no regular beetles on ANY boss wave.
-         // Regular spiders are allowed only when Queen Spider or Old Webber is in the fight.
          const spiderBossFight=bossKindsFor(game.wave).some(k=>k==='queenSpider'||k==='tarantula');
          const supportPool=game.wave<11
            ? ['ant','ant','wasp','wasp','mosquito','mosquito']
@@ -3806,7 +3494,6 @@ function enemyMove(e,dt){
    return;
  }
  if(e.boss&&e.kind==='sporeBeetle'){
-   // v19.0.161 — Sporeback presses the player more aggressively instead of keeping the old slow boss pace.
    const nx=dx/d,ny=dy/d,wobble=Math.sin(game.time*5.6+(e._aiPhase||0))*.055,fly=e.speed*1.55;
    e.x+=(nx-ny*wobble)*fly*slow*dt;e.y+=(ny+nx*wobble)*fly*slow*dt;
    return;
@@ -3857,8 +3544,6 @@ function separateMosquitoes(){
 }
 function update(dt,now){
  const g=game,p=g.p;
- // v18.0.65 — during the ending, the real Wave 100 arena stays alive visually but
- // all combat/AI is frozen. Only the purification clock advances.
  if(g.finalPurify){
    g.finalPurify.elapsed=Math.max(0,(now-g.finalPurify.start)/1000);g.time+=dt;
    if(g.finalPurify.elapsed>=14.6&&!g.finalPurify.finished){
@@ -3873,7 +3558,6 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- // v18.0.108 — PC-only WASD option. Keep mobile and Mouse mode on the existing destination movement path.
  if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
@@ -3907,12 +3591,10 @@ function update(dt,now){
    }
  }
  g.aiFrame=(g.aiFrame||0)+1;
- // v18.0.41 — build once before Story targeting/AI so player and buddies can use spatial lookups.
  if(g.mode!=='endless')buildStoryEnemyGrid();
  const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),stillFast=(g.mode==='story'||g.mode==='endless')&&(p.storyStillTime||0)>=.35,baseAttackDelay=stillFast?p.rate/1.25:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;const bigBigRevealActive=g.mode==='gold'&&g.wave===50&&g.goldFinale&&(g.goldFinaleRevealUntil||0)>g.time;if(bigBigRevealActive){p.lastAttack=now}else if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  if(combatTransitionActive(g))return;
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
- // v18.0.21: once all ten arrive, the formation is latched so the 1-second firing timer can never reset.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
    p.helperArmyHelpers=p.helperArmyHelpers||[];
    while(p.helperArmyHelpers.length<10)p.helperArmyHelpers.push(makeArmyHelper(p.helperArmyHelpers.length));
@@ -3985,8 +3667,6 @@ function update(dt,now){
  if(combatTransitionActive(g))return;
  if(p.meteor&&g.time-p.lastMeteor>10){p.lastMeteor=g.time;meteor()}
  if(combatTransitionActive(g))return;
- // v18.0.41 — Story grid was already built above before targeting and AI.
- // v17.9.94 — this decay factor is identical for every enemy in a frame, so calculate it once.
  const knockDecay=Math.pow(.05,dt);
  for(const e of g.enemies)if(!e.dead){
    if(g.mode==='gold'&&e.goldBossKey)goldBossMechanics(e,dt);
@@ -4068,8 +3748,6 @@ function update(dt,now){
 function upgradeCardClass(u){if(!u)return '';const cls=[];if(['triple','clone','helperArmy'].includes(u.id))cls.push('bbRare');if(['endlessHealth','endlessTriple','endlessRepel'].includes(u.id))cls.push('noDesc');return cls.join(' ')}
 function upgradeIconSvg(id){
  const open='<svg class="bbUpgradeIcon" viewBox="0 0 64 64" aria-hidden="true">',close='</svg>';
- // v18.0.58 — deliberately simple BIG BUG garden doodles: chunky ink, small asymmetry,
- // and recognizable silhouettes instead of glossy/generic iconography.
  const icons={
   sharp:'<path class="cream" d="M18 49 L35 12 L43 17 L28 52 Z"/><path class="ink" d="M37 15 L47 8 M21 45 L13 55"/><path class="fill" d="M12 48 L27 45 L31 52 L17 56 Z"/><path class="ink" d="M29 24 L36 28"/>',
   heart:'<path class="fill" d="M32 51 C25 45 13 38 13 27 C13 19 21 15 28 21 C32 14 42 15 48 22 C54 31 45 42 32 51 Z"/><path class="ink" d="M31 46 C31 36 33 27 39 21 M31 34 L23 29 M34 29 L42 26"/>',
@@ -4101,8 +3779,6 @@ function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgrad
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
 if(u.id==='endlessRepel'){
- // v19.0.98 — purely decorative mosquito icon on this card's own tiny canvas.
- // No enemy object is created, and the main gameplay canvas/context is never touched.
  mark.innerHTML='';
  const c=document.createElement('canvas');c.width=72;c.height=72;c.className='buddyUpgradeIcon';mark.appendChild(c);
  const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.translate(36,36);drawUpgradeMosquitoIcon(q,46);
@@ -4157,9 +3833,6 @@ const choices=restoring?recoveredUpgradeChoices(UP):[];const helper=UP.find(u=>u
  const count=3;
  if(!choices.length){
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
- // v18.0.21 production rarity — Little Buddy Army is slightly rarer than Little Buddy and Triple Shot.
- // Little Buddy = 5%, Triple Shot = 5%, Little Buddy Army = 4% on eligible Story upgrade screens.
- // The Army is NEVER offered immediately before a boss (after waves 4, 9, 14, ...), but can appear right after a boss.
  const nextWave=g.wave+1,armyEligible=!!army&&nextWave%5!==0;
  const lucky=[];
  // Pollen Pull is deliberately less common than the normal upgrade pool.
@@ -4264,8 +3937,6 @@ function updateBossHud(){
 function setHudClass(el,key,cls,on){if(HUD_CACHE[key]!==on||el.classList.contains(cls)!==on){HUD_CACHE[key]=on;el.classList.toggle(cls,on)}}
 function setHudDisabled(el,key,on){if(HUD_CACHE[key]!==on||el.disabled!==on){HUD_CACHE[key]=on;el.disabled=on}}
 function updateHud(force=true,now=performance.now()){
- // v17.9.94 — HUD values are event-driven plus a lightweight 25 Hz refresh during live play.
- // This avoids needless DOM/class/style work on every animation frame while preserving the same displayed values.
  if(!force&&now-(HUD_CACHE.lastPaint||0)<40)return;HUD_CACHE.lastPaint=now;
  const p=game.p,g=game,active=boostActive();
  setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',(g.mode==='gold'&&g.goldFinale)?'BIG BUG':(g.mode==='gold'?'WAVE':(g.wave===100?'FINAL WAVE':'WAVE')));setHudText('wave',((g.mode==='gold'&&g.goldFinale)||(g.mode!=='gold'&&g.wave===100))?'':g.wave);
@@ -4285,7 +3956,6 @@ function returnHomeAfterEnding(){
 }
 
 
-// v18.0.71 — lightweight credits-only reverse Home Screen chase.
 let creditsChaseRAF=0,creditsChaseState=null;
 function stopCreditsChase(){
  if(creditsChaseRAF){cancelAnimationFrame(creditsChaseRAF);creditsChaseRAF=0}
@@ -4413,8 +4083,6 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  stopCreditsChase();
 
  clearEndingTimers();bossMusicStop();titleMusicStop();purifyMusicStop();creditsMusicStop();stopTitleGardenLoop();showGameUI(false);
- // v18.0.77 — credits are visual-only. Freeze the real gameplay simulation so the
- // player cannot auto-attack any lingering game enemy and fire gameplay SFX under the credits music.
  if(game)game.paused=true;
  if(game&&!preview){game.over=true;clearRunRecovery();const coins=game.coins||0;if(!game.testMode&&game.mode==='story'&&coins>0){save.scrap+=coins;game.coins=0}if(!game.testMode){save.best=Math.max(save.best,100);if(!game.rewardsBanked)save.runs++;save.mainGameBeaten=true;if(!game.storyVictoryRewardPaid){save.goldLeaves=(save.goldLeaves||0)+10;game.storyVictoryRewardPaid=true;setTimeout(()=>flashBanner('✦ GAME CLEAR — +10 GOLD LEAVES ✦',1.8),350)}game.rewardsBanked=true;persist()}}
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt'),scene=$('victoryScene');
@@ -4450,7 +4118,6 @@ function completeGameEnding(preview=false,purifyOnly=false){
  purifyMusicStart(true);
  arenaBgKey='';arenaCacheKey='';
  $('bossbar').style.display='none';showGameUI(false);screen('none');flashBanner('THE SPORE BEHEMOTH FALLS...',1.05);
- // v18.0.75 — purification keeps the low death-tone stack disabled; boss intro callbacks are also invalidated on defeat.
 }
 function previewFinalPurification(purifyOnly=false){
  if(!BB_DEV_MODE)return;
@@ -4523,8 +4190,6 @@ function bankGoldVictoryForOutro(){
  persist();refreshEndlessHome();refreshGoldWavesHome();
 }
 function reloadHomeAfterGoldFinale(){
- // v19.0.57 — do not try to unwind the Gold finale DOM in-place. Persist first,
- // then reload the app so Home is rebuilt from a completely clean document state.
  try{persist()}catch(_){ }
  try{clearRunRecovery()}catch(_){ }
  try{clearEndingTimers()}catch(_){ }
@@ -4596,7 +4261,6 @@ function finish(won,quit=false){
    if(!game.rewardsBanked){save.runs++;game.rewardsBanked=true}
    persist();refreshEndlessHome();refreshGoldWavesHome();
  }
- // v19.0.83 — Gold Waves failure uses its own compact gold/black continue popup.
  if(game.mode==='gold'&&!won&&!game.testMode){
    const c=$('goldFailCount'),btn=$('goldFailContinueBtn');
    if(c)c.textContent=save.goldLeaves||0;
@@ -4611,8 +4275,6 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- // v18.0.188 — death audio cleanup: give any already-scheduled gameplay SFX a moment to expire,
- // then clear surviving voices once more before starting the game-over/Home theme.
  if(save.settings.music){clearTimeout(finish._menuMusicTimer);const finishAudioEpoch=bbAudioEpoch;finish._menuMusicTimer=setTimeout(()=>{if(!game||!game.over||finishAudioEpoch!==bbAudioEpoch)return;if(!titleMusicTimer&&!titleMusicDeferredTimer)titleMusicStart()},110)}
 }
 function restoreBossFightAfterContinue(){
@@ -4643,8 +4305,6 @@ function quitRun(){if(game&&!game.over)finish(false,true)}
 function line(x1,y1,x2,y2,w=2,col='#171814'){X.strokeStyle=col;X.lineWidth=w;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x2,y2);X.stroke()}
 function eye(x,y,r=2.5){X.fillStyle='#160806';X.beginPath();X.arc(x,y,r+1.7,0,6.28);X.fill();X.fillStyle='#ff3b32';X.beginPath();X.arc(x,y,r,0,6.28);X.fill();X.fillStyle='#ffd0a8';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill();/* tiny angry brow */X.strokeStyle='#160806';X.lineWidth=Math.max(1.4,r*.65);X.lineCap='round';X.beginPath();if(x<0){X.moveTo(x-r*1.35,y-r*1.45);X.lineTo(x+r*.55,y-r*.8)}else{X.moveTo(x+r*1.35,y-r*1.45);X.lineTo(x-r*.55,y-r*.8)}X.stroke()}
 
-// v17.6.4 SAFE — allocation-only optimization from the stable v17.6.1 baseline.
-// These scenery tables are static, so keep one shared copy instead of rebuilding them every rendered frame.
 const GARDEN_ROCKS=[[.16,.29,8,5],[.82,.24,6,4],[.73,.66,9,5],[.25,.76,7,4],[.61,.18,5,3],[.45,.86,8,4]];
 const GARDEN_TWIGS=[[.18,.58,.28,.54],[.67,.33,.76,.36],[.38,.22,.43,.17],[.72,.79,.81,.75]];
 const GARDEN_CLOVERS=[[.12,.43],[.87,.48],[.30,.35],[.76,.57],[.19,.72],[.58,.78]];
@@ -4706,15 +4366,12 @@ function drawStoryCorruptionDust(ai){
  if(c<=0)return;
  const step=storyDustStepFromArea(ai),pileCount=3+step,sizeScale=(1.38+step*.16);
  X.save();
- // v19.0.149 — larger physical dust piles with no floating/dotted purple circles.
- // The corruption reads as grounded dusty smears/flecks instead of round particles.
  const hazeAlpha=.008+.022*c;
  X.globalAlpha=hazeAlpha;X.fillStyle='#7a4481';X.fillRect(0,0,W,H);
  for(let i=0;i<pileCount;i++){
    const x=((i*163+ai*59+92)%(W-90))+45;
    const y=((i*127+ai*41+74)%(H-80))+40;
    const rx=(10+(i%3)*3.6+6*c)*sizeScale,ry=(5+(i%2)*2+2.5*c)*sizeScale;
-   // v19.0.150 — no faint oval/circle base under the pile. Build the pile itself as an irregular dusty patch.
    X.globalAlpha=.10+.10*c;
    X.fillStyle=i%2?'#6f3a78':'#87508e';
    X.beginPath();
@@ -4750,9 +4407,6 @@ function drawStoryCorruptionDust(ai){
  X.restore();X.globalAlpha=1;
 }
 
-// v18.0.24 — story-mode performance: normal Leaves are rendered once per size and reused.
-// By Venom Queen and later, uncollected Leaves can number in the hundreds; rebuilding
-// their glow + Bezier silhouette every frame was a major GPU/canvas cost on phones.
 const LEAF_SPRITE_CACHE=new Map();
 function leafSprite(r){
  const key=Math.round(r*10)/10;if(LEAF_SPRITE_CACHE.has(key))return LEAF_SPRITE_CACHE.get(key);
@@ -4762,7 +4416,6 @@ function leafSprite(r){
  q.beginPath();q.moveTo(0,-r);q.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);q.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);q.closePath();q.fill();q.stroke();
  q.shadowBlur=0;q.strokeStyle='#3d792d';q.lineWidth=1.6;q.beginPath();q.moveTo(0,-r*.78);q.lineTo(0,r*.82);q.stroke();
  q.beginPath();q.moveTo(0,-r*.38);q.lineTo(r*.50,-r*.10);q.moveTo(0,-r*.05);q.lineTo(-r*.52,r*.20);q.moveTo(0,r*.25);q.lineTo(r*.45,r*.48);q.stroke();
- // v19.0.69 — regular Leaf silhouette ends cleanly at its tip; no protruding stem.
  const out={c,size};LEAF_SPRITE_CACHE.set(key,out);return out;
 }
 function drawLeaves(d){
@@ -4775,7 +4428,6 @@ function drawLeaves(d){
  X.beginPath();X.moveTo(0,-r);X.bezierCurveTo(r*.92,-r*.62,r*.95,r*.28,0,r);X.bezierCurveTo(-r*.95,r*.28,-r*.92,-r*.62,0,-r);X.closePath();X.fill();X.stroke();
  X.shadowBlur=0;X.strokeStyle='#956b12';X.lineWidth=1.6;X.beginPath();X.moveTo(0,-r*.78);X.lineTo(0,r*.82);X.stroke();
  X.beginPath();X.moveTo(0,-r*.38);X.lineTo(r*.50,-r*.10);X.moveTo(0,-r*.05);X.lineTo(-r*.52,r*.20);X.moveTo(0,r*.25);X.lineTo(r*.45,r*.48);X.stroke();
- // v19.0.194 — Gold Leaf silhouette now ends cleanly at its tip, matching the regular Leaf visual fix.
  X.rotate(.45-Math.sin(t*2.2+(d.phase||0))*.18);X.fillStyle='#fff8c9';X.shadowColor='#fff';X.shadowBlur=8;const glow=.55+.45*Math.sin(t*7+(d.phase||0));X.globalAlpha=Math.max(.25,glow);X.font='bold '+Math.round(r*.85)+'px system-ui';X.fillText('✦',r*.45,-r*.45);X.restore();X.globalAlpha=1;
 }
 const MOSQ_WINGS=new Path2D(),MOSQ_BODY=new Path2D(),MOSQ_HEAD=new Path2D(),MOSQ_EYES=new Path2D();
@@ -4860,7 +4512,6 @@ function drawMedievalEnemyOverlay(ctx,e){
  ctx.restore();
 }
 function drawGoldUnknownBossCore(e){
- // v19.0.43 — one proven renderer for both phases, with a brief reveal-only glitch layer.
  if(!e||e.dead)return;
  const r=(Number.isFinite(e.r)&&e.r>7)?e.r:32,t=FRAME_NOW*.001,tau=Math.PI*2;
  const deathAge=e.goldDying&&e.goldDeathStartedAt?Math.max(0,(performance.now()-e.goldDeathStartedAt)/1000):0;
@@ -4917,9 +4568,6 @@ function drawGoldUnknownBossCore(e){
  X.restore();
 }
 function drawEnemy(e){
- // v19.0.57 — Gold visuals are authoritative in the core renderer.
- // Regular Gold enemies use their existing custom Gold artwork; the ??? / BIG BUG boss
- // keeps its dedicated renderer completely untouched.
  if(game&&game.mode==='gold'&&e){
    if(e.goldBossKey==='goldUnknownBoss'){drawGoldUnknownBossCore(e);return;}
    if(!e.boss&&!e.dead&&typeof window.drawGoldAlien==='function'){window.drawGoldAlien(e);return;}
@@ -4932,9 +4580,6 @@ function drawEnemy(e){
    X.rotate(q*1.30);X.translate(0,44*sink);X.scale(1-q*.20,1-q*.58);X.globalAlpha=Math.max(.025,1-q*.975);X.filter=`saturate(${Math.max(.08,1-q*.92)}) brightness(${Math.max(.58,1-q*.34)})`;
  }
  if(e.hit>0&&!e.dying){X.globalAlpha=.72;X.filter='brightness(1.7)'}
- // v18.0.84 — live shadowBlur on every bug is disproportionately expensive on some
- // desktop/integrated-GPU browsers. Mobile keeps the original look; desktop skips only
- // this soft blur while retaining the bug artwork, movement, hit flash, and gameplay.
  if(DESKTOP_PERF_RENDER||lowStoryFx()){X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetY=0}
  else{X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5}
  if(e.kind==='mosquito'){
@@ -4972,8 +4617,6 @@ function drawEnemy(e){
   for(let side of [-1,1])for(let i=0;i<4;i++){let yy=-10+i*7,w=(i%2?step:-step);line(side*5,yy,side*(r+8),yy+(i-1.5)*4+w,2.5,'#241c2c');line(side*(r+8),yy+(i-1.5)*4+w,side*(r+13),yy+(i-1.5)*8-w*.5,2,'#241c2c')}
   X.fillStyle='#30253a';X.beginPath();X.ellipse(0,7,r*.78,r*.92,0,0,6.28);X.fill();
    if(e.kind==='spider'){
-     // v17.9.33 — use the original regular-spider head exactly, flipped as one unit.
-     // This preserves the original eyes/fangs relationship instead of redrawing the teeth.
      X.save();X.translate(0,-2.5);X.scale(1,-1);
      X.fillStyle='#49334f';X.beginPath();X.arc(0,-6,r*.62,0,6.28);X.fill();
      eye(-r*.2,-9,2.4);eye(r*.2,-9,2.4);
@@ -5085,7 +4728,6 @@ function drawEnemy(e){
     }
   }
  }else if(e.kind==='hornet'){
-  // v17.9.68 — HORNET: dedicated first-boss silhouette; visual-only, hitbox/gameplay unchanged.
   const rr=r*1.17;
   // Four sharper wings give the boss a broad, fast silhouette without extra effects.
   X.globalAlpha=.48;X.fillStyle='#e7f3e9';X.strokeStyle='#aabdaf';X.lineWidth=1.2;
@@ -5139,8 +4781,6 @@ function drawEnemy(e){
   eye(-r*.22,-r*.82,2.6);eye(r*.22,-r*.82,2.6);
   line(-r*.2,-r*1.02,-r*.62,-r*1.48,2,'#63251f');line(r*.2,-r*1.02,r*.62,-r*1.48,2,'#63251f');
  }else if(e.kind==='earwig'){
-  // v19.0.149 — PINCHER identity pass. Visual only: hitbox/radius stays exactly the same.
-  // Low, plated rust-red body, jagged shoulder guards, and oversized ivory-tipped clamp arms.
   for(let side of [-1,1]){
     line(side*5,-2,side*(r+10),-12+step,3.2,'#40251f');
     line(side*7,7,side*(r+13),5-step2,3.2,'#40251f');
@@ -5180,9 +4820,6 @@ function drawEnemy(e){
   X.fillStyle='#3b211c';X.beginPath();X.moveTo(-r*.16,r*.92);X.lineTo(0,r*1.28);X.lineTo(r*.16,r*.92);X.closePath();X.fill();
   X.lineCap='butt';
  }else if(e.kind==='bombardier'){
-  // v19.0.90 — BOMBARDIER visual-only identity pass: squat charcoal fire beetle,
-  // orange warning bands, heavy head plate, and an oversized twin-nozzle rear chamber.
-  // Gameplay size, hitbox, movement and attacks are unchanged.
   for(let side of [-1,1]){
     line(side*7,-4,side*(r+10),-13+step,3,'#25251f');
     line(side*8,6,side*(r+12),7-step2,3,'#25251f');
@@ -5227,8 +4864,6 @@ function drawEnemy(e){
     }
   }
   X.lineCap='butt';
-  // v19.0.183 — visual-only Pond Skater refinement: cleaner layered shell, subtle aquatic markings, same silhouette/gameplay.
-  // Broad shield-shaped water-bug body.
   X.fillStyle='#456d69';X.beginPath();X.moveTo(0,-rr*1.02);X.quadraticCurveTo(rr*.78,-rr*.62,rr*.70,rr*.38);X.quadraticCurveTo(rr*.48,rr*.95,0,rr*1.12);X.quadraticCurveTo(-rr*.48,rr*.95,-rr*.70,rr*.38);X.quadraticCurveTo(-rr*.78,-rr*.62,0,-rr*1.02);X.fill();
   X.strokeStyle='#294d4b';X.lineWidth=2;X.stroke();
   // Slightly layered wing cases keep the handmade water-bug look while giving the body more depth.
@@ -5356,8 +4991,6 @@ function drawEnemy(e){
   X.fillStyle='#9a704b';
   for(let side of [-1,1]){X.beginPath();X.moveTo(side*rr*.42,-rr*.95);X.lineTo(side*rr*.68,-rr*1.16);X.lineTo(side*rr*.55,-rr*.88);X.fill()}
  }else if(e.kind==='sporeBeetle'){
-  // v19.0.149 — SPOREBACK now shares the same purple corruption language as the Spored double bosses.
-  // No ordinary beige mushrooms: the infection is fused purple fungal tissue plus grounded dust/flecks.
   const rr=r*1.12;
   for(let side of [-1,1]){
     for(let i=0;i<3;i++){const sy=-rr*.25+i*rr*.42,k=(i%2?step2:step)*.22;line(side*rr*.35,sy,side*rr*1.04,sy+rr*.22+k,4.2,'#453047')}
@@ -5372,7 +5005,6 @@ function drawEnemy(e){
   for(let side of [-1,1])for(let i=0;i<3;i++){let yy=-rr*.18+i*rr*.38;X.beginPath();X.arc(side*rr*(.34+(i%2)*.08),yy,rr*(.12+(i===1?.035:0)),0,6.28);X.fill()}
   // Purple-black head.
   X.fillStyle='#403142';X.beginPath();X.ellipse(0,-rr*.67,rr*.58,rr*.43,0,0,6.28);X.fill();
-  // v19.0.156 — Sporeback's corrupted eyes are purple; this is isolated to Sporeback only.
   const sporeEye=(x,y,rad=2.8)=>{X.fillStyle='#160806';X.beginPath();X.arc(x,y,rad+1.7,0,6.28);X.fill();X.fillStyle='#b45bd4';X.beginPath();X.arc(x,y,rad,0,6.28);X.fill();X.fillStyle='#efd2ff';X.beginPath();X.arc(x-.7,y-.8,.7,0,6.28);X.fill();X.strokeStyle='#160806';X.lineWidth=Math.max(1.4,rad*.65);X.lineCap='round';X.beginPath();if(x<0){X.moveTo(x-rad*1.35,y-rad*1.45);X.lineTo(x+rad*.55,y-rad*.8)}else{X.moveTo(x+rad*1.35,y-rad*1.45);X.lineTo(x-rad*.55,y-rad*.8)}X.stroke()};
   sporeEye(-rr*.20,-rr*.72,2.8);sporeEye(rr*.20,-rr*.72,2.8);
   // Fused purple fungal ridges replace the old normal-looking mushroom stalks/caps.
@@ -5387,7 +5019,6 @@ function drawEnemy(e){
     X.save();X.translate(d[0]*rr,d[1]*rr);X.rotate(d[4]);X.beginPath();X.ellipse(0,0,d[2]*rr,d[3]*rr,0,0,6.28);X.fill();
     X.fillStyle='#d59ad1';X.beginPath();X.moveTo(-d[2]*rr*.35,-d[3]*rr*.2);X.lineTo(0,-d[3]*rr*.8);X.lineTo(d[2]*rr*.25,d[3]*rr*.15);X.closePath();X.fill();X.restore();X.fillStyle='#a96caf';
   }
-  // v19.0.152 — extra powdery corruption stays strictly inside Sporeback's body silhouette.
   X.save();
   X.beginPath();X.ellipse(0,rr*.08,rr*.66,rr*.72,0,0,6.28);X.clip();
   X.globalAlpha=.88;
@@ -5410,10 +5041,8 @@ function drawEnemy(e){
   for(let side of [-1,1]){line(side*r*.12,-r*.88,side*r*.72,-r*.82,1.2,'#c7b69d');line(side*r*.10,-r*.80,side*r*.76,-r*.68,1.2,'#c7b69d')}
   // Broad shovel-like forepaws keep its old attack silhouette but make it unmistakably a burrower.
   for(let side of [-1,1]){X.fillStyle='#b09168';X.beginPath();X.ellipse(side*r*.92,-r*.02,r*.42,r*.24,side*.22,0,6.28);X.fill();line(side*r*.76,-r*.02,side*r*1.22,-r*.20,5,'#a48658');line(side*r*.77,r*.05,side*r*1.22,r*.12,4,'#a48658')}
-  // v19.0.158 — remove the old stick-like rear legs and give Mole Thing one tiny odd little tail. Visual-only.
   X.save();X.strokeStyle='#66513f';X.lineWidth=Math.max(2,r*.075);X.lineCap='round';X.beginPath();X.moveTo(r*.12,r*.91);X.quadraticCurveTo(r*.34,r*1.08,r*.19,r*1.22);X.quadraticCurveTo(r*.08,r*1.30,r*.02,r*1.20);X.stroke();X.restore();
  }else if(e.kind==='stagBeetle'){
-  // v17.9.68 — Stag King gets a dedicated royal stag-beetle silhouette. Visual-only.
   for(let side of [-1,1]){line(side*r*.34,-r*.20,side*(r+10),-r*.42+step,3.1,'#2d211c');line(side*r*.42,r*.10,side*(r+12),r*.08-step,3.1,'#2d211c');line(side*r*.36,r*.40,side*(r+9),r*.72+step2,3.1,'#2d211c')}
   // Broad, armored abdomen with a crown-like gold seam.
   X.fillStyle='#5a3325';X.beginPath();X.ellipse(0,r*.25,r*.88,r*.88,0,0,6.28);X.fill();
@@ -5444,8 +5073,6 @@ function drawEnemy(e){
 
  if(e.boss){
    const rr=r;
-   // v19.0.152 — Waves 90/95 keep the original boss artwork, with purple eyes and body-bound purple dust.
-   // Their only Spored visual difference is purple eyes; original boss versions remain untouched.
    if(game.wave===90||game.wave===95){
      X.save();
      const purpleEye=(x,y,rad)=>{
@@ -5457,7 +5084,6 @@ function drawEnemy(e){
      else if(e.kind==='queenSpider'){purpleEye(-r*.20,-9,2.4);purpleEye(r*.20,-9,2.4)}
      else if(e.kind==='bigBloodSucker'){const er=r*1.02;purpleEye(-er*.20,-er*.72,er*.13);purpleEye(er*.20,-er*.72,er*.13)}
      X.restore();
-     // v19.0.152 — powdery purple dust is painted only inside the Spored boss body area.
      X.save();
      X.beginPath();X.ellipse(0,0,rr*.66,rr*.72,0,0,6.28);X.clip();
      X.globalAlpha=.90;
@@ -5539,8 +5165,6 @@ function drawFinalSavedText(){
  X.font='900 '+Math.round(Math.min(68,W*.13))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=8;X.strokeStyle='#2b1c13';X.strokeText('YOU SAVED',0,-22);X.fillStyle='#f5b02e';X.fillText('YOU SAVED',0,-22);
  X.font='1000 '+Math.round(Math.min(82,W*.16))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=9;X.strokeStyle='#2b1c13';X.strokeText('THE GARDEN!',0,42);X.fillStyle='#78c84c';X.fillText('THE GARDEN!',0,42);X.restore();
 }
-// v19.0.165 — subtle falling purple spore-dust atmosphere on the final four boss waves only (85/90/95/100).
-// Purely visual and deterministic: no particle objects are allocated, so it cannot affect combat or wave state.
 function drawLateBossPurpleFall(now){
  if(game?.mode!=='story'||!game.waveActive||![85,90,95,100].includes(game.wave))return;
  const t=now*.001,count=22;
@@ -5559,13 +5183,9 @@ function drawLateBossPurpleFall(now){
 }
 function draw(now=performance.now()){
  FRAME_NOW=now;
- // v18.0.70 — anti-flash guard: reset transient draw state before every frame.
  X.globalAlpha=1;X.filter='none';X.globalCompositeOperation='source-over';X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetX=0;X.shadowOffsetY=0;
  const area=areaFor(),ai=areaIndex(),cacheable=Number.isInteger(ai),cacheKey='arena:'+(game?.mode==='gold'?'gold:':'story:')+ai+':'+C.width+'x'+C.height;
  X.clearRect(0,0,W,H);
- // v18.0.70 — while the final garden purifies, render the cached Wave 100 arena
- // directly into the gameplay canvas as a fully opaque base. This avoids iOS briefly
- // recompositing the transparent gameplay layer over the separate background canvas.
  const finalPurifyOpaque=!!(game?.finalPurify&&ai===19&&cacheable&&arenaCacheKey===cacheKey);
  if(finalPurifyOpaque){
    X.save();X.globalAlpha=1;X.globalCompositeOperation='source-over';X.fillStyle=area.bot||'#17251a';X.fillRect(0,0,W,H);
@@ -5587,10 +5207,8 @@ function draw(now=performance.now()){
  if(ai===5){for(let i=0;i<7;i++){let x=(i*121+35)%W,y=(i*181+110)%H;X.globalAlpha=.25;X.fillStyle='#79c6b5';X.beginPath();X.ellipse(x,y,24+(i%3)*8,7+(i%2)*3,i*.5,0,6.28);X.fill();X.globalAlpha=1;for(let j=0;j<3;j++){X.fillStyle='#8dbb5b';X.beginPath();X.ellipse(x-12+j*12,y-2,8,4,j*.7,0,6.28);X.fill()}}}
  if(ai===7){for(let i=0;i<10;i++){let x=(i*107+61)%W,y=(i*169+82)%H;X.strokeStyle='#42643c';X.lineWidth=2;X.beginPath();X.moveTo(x,y+11);X.lineTo(x,y);X.stroke();X.fillStyle=i%2?'#e9879c':'#cf5e78';for(let a=0;a<6;a++){X.beginPath();X.arc(x+Math.cos(a*1.047)*4,y+Math.sin(a*1.047)*4,3,0,6.28);X.fill()}X.fillStyle='#e6c65c';X.beginPath();X.arc(x,y,2,0,6.28);X.fill()}}
  
- // v17 late-game area accents: lightweight so Wave 100 stays smooth.
  if(ai>=8){for(let i=0;i<Math.min(14,6+Math.floor(ai/2));i++){let x=(i*117+ai*29)%W,y=(i*163+ai*41)%H;X.globalAlpha=.22;if(ai>=16){X.fillStyle=ai>=18?'#a45b91':'#9a78a8';X.beginPath();X.arc(x,y,3+(i%3),0,6.28);X.fill()}else if(ai===13){X.fillStyle='#76a98a';X.beginPath();X.ellipse(x,y,15,6,i,0,6.28);X.fill()}else{X.strokeStyle=area.edge2;X.lineWidth=2;X.beginPath();X.moveTo(x,y+12);X.quadraticCurveTo(x+8,y,x,y-12);X.stroke()}}X.globalAlpha=1}
 
- // v18.0.62 — Wave 100 is visibly overrun by the Spore Behemoth. These are cached/static, so the extra detail is cheap.
  if(ai===19){
    X.save();X.globalAlpha=.62;X.strokeStyle='#875183';X.lineWidth=4;X.lineCap='round';
    for(let i=0;i<11;i++){const x=(i*139+37)%W,y=(i*181+66)%H;X.beginPath();X.moveTo(x-38,y+24);X.bezierCurveTo(x-12,y-18,x+24,y+35,x+52,y-20);X.stroke()}
@@ -5616,7 +5234,6 @@ function draw(now=performance.now()){
    X.clearRect(0,0,W,H);
  }
  }
- // v17.8.59 — all arena bases above are cached; only these intentionally animated accents stay live.
  drawLateBossPurpleFall(now);
  if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
@@ -5640,9 +5257,6 @@ function draw(now=performance.now()){
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
    X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
 
-   // v19.0.43 — when ??? begins the BIG BIG reveal, the entire arena quickly
-   // falls into near-solid darkness AFTER every Gold background light/sparkle pass. This is
-   // background-only: player, boss, shots, combat FX, and HUD are drawn afterward.
    if(game.goldFinale){
      const darkAge=Math.max(0,game.time-(game.goldFinaleRevealStart||game.time));
      const darkQ=Math.min(1,darkAge/.82);
@@ -5655,15 +5269,11 @@ function draw(now=performance.now()){
      }
    }
  }
-   // v19.0.43 — keep BIG BIG's arena uniformly dark after the quick reveal fade.
-   // The old slow corruption/black-circle growth pass was intentionally removed.
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
  if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
  drawFinalArenaPurification();
  for(const d of game.drops){const m=28;if(d.x+m<0||d.x-m>W||d.y+m<0||d.y-m>H)continue;drawLeaves(d)}
- // v18.0.41 — skip detailed regular-enemy rendering only when fully outside a generous viewport margin.
- // AI/collisions still run normally, and bosses are never culled.
  for(const e of game.enemies){const m=e.boss?0:Math.max(90,e.r*3);if(!e.boss&&(e.x+m<0||e.x-m>W||e.y+m<0||e.y-m>H))continue;drawEnemy(e)}
  for(const f of game.fx){
    const fr=(f.r||8)*2+18;if(!f.playerShotFx&&!f.helperShotFx&&!f.tripleShotFx&&!f.scrapFly&&(f.x+fr<0||f.x-fr>W||f.y+fr<0||f.y-fr>H))continue;
@@ -5713,7 +5323,6 @@ function draw(now=performance.now()){
      const q=Math.max(0,f.life/(f.maxLife||1)),pulse=.85+.15*Math.sin(game.time*9);X.save();X.translate(f.x,f.y);X.globalAlpha=.28+.42*q;
      const cols={acid:'#e58b3b',dark:'#7d5a91',ripple:'#a8e7df',thorn:'#b8d05b',webline:'#e8d9f4',root:'#9a6a42',rootFinal:'#b77a4d',spore:'#c879d1',clamp:'#d86b45'};X.strokeStyle=cols[f.style]||'#f0d16a';X.fillStyle=cols[f.style]||'#f0d16a';X.lineWidth=f.style==='webline'?3:2.5;
      if(f.style==='acid'){
-       // v19.0.90 — Bombardier hazards keep the same gameplay radius/damage, but render as chunky hand-drawn fire instead of circles.
        const age=(f.maxLife||1)-f.life,seed=f.spraySeed||0,ang=Number.isFinite(f.sprayAngle)?f.sprayAngle:-Math.PI/2;
        X.rotate(ang+Math.PI/2);
        X.globalAlpha=.42+.50*q;
@@ -5797,13 +5406,11 @@ function draw(now=performance.now()){
    else{X.fillStyle=f.orb?'#ff9f43':(f.col||'#e7f7b5');X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
    X.globalAlpha=1
  }
- // v19.0.43 — no duplicate Gold boss render pass; the normal enemy loop owns the single renderer.
  const p=game.p;
  // lively player: eases toward the enemy being attacked and gently bobs at idle
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- // v18.0.44 — Story combat bonuses remain active, but their player rings were removed.
  const moveDX=(p.moveX??p.x)-p.x,moveDY=(p.moveY??p.y)-p.y,playerMoving=(moveDX*moveDX+moveDY*moveDY)>9,movePhase=game.time*(playerMoving?13:2.2),moveAmp=playerMoving?1.8:.35;X.save();X.translate(p.x,p.y+bob+((game.bugId||save.selected)==='ladybug'&&playerMoving?Math.sin(movePhase)*.45:0));X.rotate(p.face+((game.bugId||save.selected)==='ladybug'?Math.sin(movePhase*.5)*(playerMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayerStyled(X,(game.bugId||save.selected),p.r*2.05,false,movePhase,moveAmp);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
@@ -5848,9 +5455,6 @@ function gameplayVisible(){
 }
 function gameplayInputAllowed(){return !!(game&&!game.paused&&!game.over&&!game.finalPurify&&!game.goldDeathActive&&gameplayVisible());}
 function syncGoldPresentation(){
- // v19.0.196-rc.6 — the Gold victory overlay starts transparent so the final battlefield remains
- // visible behind the BIG BUG reveal. Keep Gold presentation alive under that overlay until it
- // deliberately cuts to black; otherwise the arena can visually revert during the outro.
  const outro=$('goldFinaleOutro'),goldOutroVisible=!!(outro?.classList.contains('play')&&!outro.classList.contains('black'));
  const active=!!(game&&game.mode==='gold'&&!gameScreenVisible('home')&&!gameScreenVisible('ending')&&((!game.over&&!outro?.classList.contains('play'))||goldOutroVisible));
  document.body.classList.toggle('g159',active);
@@ -5909,12 +5513,7 @@ function startOrResume(){
  saveRunRecovery('resume');
 }
 
-// v17.9.20 — quiet fallback click for buttons that do not already play an SFX.
-// Existing button sounds remain untouched and do not get doubled.
 
-// v18.0.21 — Garden Book discovery journal.
-// Entries use the game's own live renderers. Enemy portraits are captured from drawEnemy
-// on the hidden arena canvas, so the book always matches the actual in-game artwork.
 const GARDEN_BOOK={
  playable:[
   {key:'player:ladybug',id:'ladybug',name:'Ladybug',desc:'The original'},
@@ -6037,12 +5636,7 @@ document.addEventListener('change',e=>{
  const vol=Math.max(0,Math.min(100,Number(e.target.value)||0));save.settings.volume=vol;persist();initAudio();if(vol>0)beep(760,.045,.012,'triangle');
 });
 
-// v18.0.85 — one authoritative Home transition. A death can leave a stale RAF/canvas
-// or short-lived gameplay oscillator behind; rebuild the Home canvas after it is visible and
-// silence old voices before restarting the normal title soundtrack.
 function cleanupGoldFinaleForHome(){
- // v19.0.57 — authoritative finale cleanup. The Gold outro must never be able to
- // leave the Home screen partially hidden after its timers finish.
  clearEndingTimers();
  goldFinaleCreditsStop();
  const go=$('goldFinaleOutro');
@@ -6127,7 +5721,7 @@ document.addEventListener('click',e=>{
  if(a==='settingsFromHelp'){showGameUI(false);shopMusicStop();buildSettings();screen('settings');if(!settingsOpenedFromPause)titleMusicStart()}
  if(a==='settingsBack'){if(settingsOpenedFromPause&&game&&!game.over){settingsOpenedFromPause=false;game.paused=true;refreshPauseStats();showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');saveRunRecovery('pause')}else{settingsOpenedFromPause=false;enterHomeCleanly()}}
  if(a==='help'){showGameUI(false);screen('help');if(!settingsOpenedFromPause)titleMusicStart()}
- if(a==='firstHelpDone'){try{localStorage.setItem(FIRSTHELPKEY,'1')}catch(e){}enterHomeCleanly()}
+ if(a==='firstHelpDone'){storageWrite(FIRSTHELPKEY,'1');enterHomeCleanly()}
  if(a==='showResetConfirm')$('resetConfirm').classList.remove('hidden');
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
@@ -6174,8 +5768,6 @@ if(!window.PointerEvent){
  C.addEventListener('touchend',endPointerDrag);
  C.addEventListener('touchcancel',resetGameInput);
 }
-// v18.0.128 — PC-only Spacebar boost shortcut. Uses the existing boost action and is
-// explicitly gated out of the iPhone/iPad/Android input path. WASD behavior is unchanged.
 addEventListener('keydown',e=>{
  if(e.target?.closest?.('input,textarea,select,button,[contenteditable="true"]'))return;
  if(e.key==='Escape'&&!e.repeat&&DESKTOP_PERF_RENDER&&game&&game.mode!=='gold'&&!game.over){
@@ -6183,25 +5775,18 @@ addEventListener('keydown',e=>{
   if(gameplayInputAllowed()){$('pauseBtn').click();e.preventDefault();return;}
  }
  const k=(e.key||'').toLowerCase();
- // v19.0.145 — WASD mode: Space advances a visible Garden Update/story note using
- // the exact same continue handler as the on-screen button. This is checked before
- // gameplay boost handling so a story overlay never triggers a boost underneath it.
  if(pcUsingWASD()&&(e.code==='Space'||k===' ')&&!e.repeat){
    const story=$('story'),storyBtn=$('storyContinue');
    if(story&&storyBtn&&!story.classList.contains('hidden')&&story.style.display!=='none'){
      e.preventDefault();storyBtn.click();return
    }
  }
- // v19.0.196-rc.7 — Wave 25's one-time Mosquito Mode unlock is part of the live Story run.
- // Space or Enter dismisses it in WASD mode so the run never needs a mouse here.
  if(pcUsingWASD()&&!e.repeat&&(e.code==='Space'||e.code==='Enter'||k===' '||k==='enter')){
    const mosquitoUnlock=$('mosquitoUnlockPopup'),okay=$('mosquitoUnlockOkay');
    if(mosquitoUnlock&&okay&&mosquitoUnlock.isConnected){e.preventDefault();okay.click();return}
  }
  if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&gameplayInputAllowed()){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
- // v19.0.196-rc.7 — all in-run choice screens are keyboard-complete in WASD mode.
- // Wave 100 final preparation: 1 = free boost, 2 = 3 upgrades, 3 = Super Little Buddy.
  if(!e.repeat&&(k==='1'||k==='2'||k==='3')){
    const fp=$('finalPrep');
    if(fp&&!fp.classList.contains('hidden')&&fp.style.display!=='none'){
@@ -6219,9 +5804,6 @@ addEventListener('keydown',e=>{
      if(k==='2'&&btn){e.preventDefault();btn.click();return}
    }
  }
- // v19.0.196-rc.5 — while the upgrade picker is visibly open in WASD mode, 1/2/3
- // keep their existing behavior; Gold Waves additionally accepts 4 for its fourth card.
- // Repeats are ignored so holding a number cannot accidentally choose again.
  if(!e.repeat&&(k==='1'||k==='2'||k==='3'||(k==='4'&&game?.mode==='gold'))){
    const up=$('upgrade');
    if(up&&!up.classList.contains('hidden')&&up.style.display!=='none'){
@@ -6244,8 +5826,6 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>{const k=(e.key||'').toLowerCase();if(k==='w'||k==='a'||k==='s'||k==='d'){pcKeys[k]=false;if(pcUsingWASD()&&game&&!game.paused&&!game.over)e.preventDefault()}},{passive:false});
 
 
-
-// v17.5.12 — enemy spawn initialization fixed; title music unlock improved; buddy behavior unchanged.
 const titleGarden=$('titleGarden'),TG=titleGarden?.getContext('2d');
 let titleBugs=[],titleSpawnAt=0,titleLast=performance.now(),titleRAF=0,titleLeafSeed=[];
 const TITLE_KINDS=['ant','beetle','spider','wasp','stink'];
@@ -6330,13 +5910,9 @@ function titleGardenLoop(now){
   if(titleSceneStart){
    let t=(now-titleSceneStart)/1000;
    const cx=w*.5;
-   // v17.8.57 — anchor the hide/peek path to the rendered BIG BUG letters, not screen height.
-   // This keeps the buddy tucked behind the logo even when safe areas/device sizes differ.
    const homeRect=$('home').getBoundingClientRect(),logoMain=$('home').querySelector('.logoMain'),logoRect=logoMain?.getBoundingClientRect();
    const logoTop=logoRect?logoRect.top-homeRect.top:h*.27,logoH=logoRect?logoRect.height:h*.18;
    const logoHideY=logoTop+logoH*.50,playRect=$('home').querySelector('[data-action="play"]')?.getBoundingClientRect(),endlessRect=$('endlessBtn')?.getBoundingClientRect();
-   // v18.0.33 — on the second stop, line up the buddy's LOOK-BACK EYES with the visible gap
-   // between Play and Mosquito Mode. His body can stay tucked behind the buttons while the eyes peek through.
    const buttonGapMid=(playRect&&endlessRect)?(((playRect.bottom+endlessRect.top)*.5)-homeRect.top):(logoTop+logoH+13);
    const buddyLookEyeOffset=12.8; // drawTitleBuddy look-back eye Y (16px) after its .8 canvas scale
    const peekY=buttonGapMid-buddyLookEyeOffset;
@@ -6350,9 +5926,6 @@ function titleGardenLoop(now){
    else if(t<4.72){const q=(t-3.30)/1.42,e=q*q*(3-2*q);buddyY=peekY+(h+95-peekY)*e}
    else buddyY=h+95;
 
-   // v17.5.12 — spawn the swarm right as the buddy finishes hiding and starts his escape.
-   // Buddy timing/movement is intentionally unchanged. Enemies begin visibly at the top edge
-   // and then chase all the way off-screen in a wide formation.
    if(t>=3.24&&!titleSceneEnemiesSpawned){
     titleSceneEnemiesSpawned=true;
     titleSceneEnemyOffsets.forEach((o,i)=>{
@@ -6388,9 +5961,6 @@ function startTitleGardenLoop(){
  titleRAF=requestAnimationFrame(titleGardenLoop);
 }
 resizeTitleGarden();
-// v17.8.57 — let the first real animation frame initialize the intro using stable rendered dimensions.
-// This avoids iOS/Safari occasionally reporting a transient width during initial script execution,
-// which could bunch or misplace the opening swarm without changing the animation itself.
 titleSceneStart=0;titleScenePlayed=false;titleSceneLastStart=0;titleSceneEnemyOffsets=[];
 addEventListener('resize',resizeTitleGarden);startTitleGardenLoop();
 
@@ -6424,13 +5994,7 @@ function paintHelpGameIcons(){
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();refreshGoldUI();
 const bbHasRecovery=!!loadRunRecovery();
 if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFirstHelpSeen=localStorage.getItem(FIRSTHELPKEY)==='1'}catch(e){}if(!bbFirstHelpSeen){stopTitleGardenLoop();showGameUI(false);screen('firstHelp')}}
-// v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
-// v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
-// v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
 const BB_BUILD_VERSION='19.0.196-rc.6';
-// v19.0.30 — stability: automatic network update/reload system remains removed.
-// Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
-// v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
 </script>
 
 <script>
@@ -6474,19 +6038,13 @@ function tick(e,dt){
  e._gc-=dt;e._phase+=dt;
  const dx=p.x-e.x,dy=p.y-e.y,dist=Math.hypot(dx,dy)||1,nx=dx/dist,ny=dy/dist,px=-ny,py=nx;
  const dam=e.damage,rawPress=e._goldPressure||1;
- // v19.0.62 — Gold hard-mode escape rule: sustained chase speed stays disengageable for 92% of regular aliens.
- // 8% are Relentless and may sustain up to ~8% over the player's current movement speed.
- // Short teleports/ram bursts/projectiles remain intentionally dangerous and are not flattened into normal chase speed.
  const playerSp=Math.max(1,p.speed||420),relentless=!!e._goldRelentless;
  const baseMove={hunter:145,charger:72,prism:128,blink:55,arc:100,guard:62}[k]||100;
- // v19.0.172 — Gold Waves punish camping through aggression/attack cadence, never extra HP.
  const playerMotion=Math.hypot(p.motionX||0,p.motionY||0),camping=playerMotion<18;
  const sustainLimit=playerSp*(relentless?1.15:1.02);
  const press=Math.min(rawPress*(camping?1.20:1),sustainLimit/baseMove);
  e._gc-=dt*(camping?1.28:1);
  e._goldTrick-=dt*(camping?1.35:1);
- // v19.0.59 — light secondary Gold-only attack layer. This adds variety without
- // changing enemy HP or wave population, and is intentionally low-frequency.
  if(e._goldTrick<=0){
    const a=Math.atan2(dy,dx);
    if(k==='hunter')fire(e,a,260,dam*.72,4.0);
@@ -6557,10 +6115,6 @@ function bossTick(e,dt){
    e._g163Init=true;e.kind='goldUnknown';
    const tier=Math.max(1,Math.floor(game.wave/5));e._goldTier=tier;
    e.maxHp=(game.wave===50&&(e.goldPhase||1)===2)?5625:Math.round(760*Math.pow(1.245,tier-1)*.85);e.max=e.maxHp;e.hp=e.maxHp; // v19.0.83: Gold bosses keep progression; BIG BUG phase 2 is 5,625 HP (+25%)
-   // v19.0.30 — Wave 50's ??? is deliberately 50 HP for finale testing.
-   // This must live here, after Gold boss initialization, because bossTick is the code
-   // that owns/overwrites Gold boss HP on its first frame. BIG BIG finale keeps
-   // the full tier-10 health calculated above.
    if(game.wave===50&&(e.goldPhase||1)===1){e.goldPhase=1;e.maxHp=4000;e.max=4000;e.hp=4000;bb22Trace('bossTick W50 PHASE 1 forced 4000/4000')}
    e.damage=14+tier*3.4;e.speed=0;e.vx=0;e.vy=0;
    e._orbit=0;e._bc=Math.max(.16,.50-tier*.028);e._phase=0;e._hunt=0;e._dash=0;e._goldCycle=0;
@@ -6570,8 +6124,6 @@ function bossTick(e,dt){
    const left=game.goldFinaleRevealUntil-game.time;
    e.invuln=left>0?left:0;
    if(left>0){
-     // v19.0.30 — keep BIG BIG visibly on-field for the entire reveal. Its Gold AI must
-     // not spend the reveal window chasing/dashing offscreen before the player can see it.
      e.x=W/2;e.y=Math.max(145,H*.24);e.vx=0;e.vy=0;e._dash=0;e._hunt=0;
      const revealAge=Math.max(0,game.time-(game.goldFinaleRevealStart||game.time));
      e.goldBossName=revealAge<1.84?'???':'BIG BUG';e.name=e.goldBossName;
@@ -6638,9 +6190,6 @@ function bossTick(e,dt){
    if(tier>=10){const a=Math.atan2(p.y+(p.motionY||0)*.34*(p.motionScale125||1)-e.y,p.x+(p.motionX||0)*.34*(p.motionScale125||1)-e.x);for(const o of [-.11,0,.11])fire(e,a+o,430,dam*1.05,5)}
    e._bc=tier>=10?.24:.42;
  }else{
-   // v19.0.83 — BIG BUG unique attack: GOLDEN CAGE. Four inward shard walls
-   // close around the player's current position, with one rotating lane left open to dodge through.
-   // Uses the normal lightweight Gold projectile objects: no persistent hazards or extra damage scaling.
    const cageSp=430,gap=Math.abs(e._goldCycle||0)%5|0,step=42,edge=24;
    for(let j=0;j<5;j++){
      if(j===gap)continue;
@@ -6666,7 +6215,6 @@ function bossDraw(e){
  // Alien gold shell.
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
  for(let i=0;i<10;i++){const a=-Math.PI/2+i*TAU/10,z=i%2?r*.73:r*.98;i?X.lineTo(Math.cos(a)*z,Math.sin(a)*z):X.moveTo(Math.cos(a)*z,Math.sin(a)*z)}X.closePath();X.fill();X.stroke();
- // v19.0.43 — keep the proven visible central body in BOTH phases. BIG BIG reveals a brighter core instead of deleting the body geometry.
  {const pulse=1+.035*Math.sin(t*5);X.save();X.scale(pulse,pulse);X.fillStyle=e.goldPhase===2?'#8f5f0b':'#211505';X.strokeStyle=e.goldPhase===2?'#ffd85a':'#332005';X.lineWidth=e.goldPhase===2?Math.max(3,r*.08):1;X.beginPath();X.ellipse(0,-r*.05,r*.50,r*.60,0,0,TAU);X.fill();if(e.goldPhase===2)X.stroke();if(e.goldPhase===2){X.globalAlpha=.72;X.fillStyle='#d99c16';X.beginPath();X.ellipse(0,r*.19,r*.30,r*.16,0,0,TAU);X.fill();X.globalAlpha=1;}X.restore();}
  // Three animated eyes.
  for(let i=0;i<3;i++){const P=[[0,-.38],[-.24,-.07],[.24,-.07]][i],blink=.82+.18*Math.sin(t*4+i);X.fillStyle='#fff0a0';X.beginPath();X.ellipse(r*P[0],r*P[1],Math.max(3,r*.11),Math.max(2,r*.11*blink),0,0,TAU);X.fill();X.fillStyle='#7a3e00';X.beginPath();X.arc(r*P[0],r*P[1],Math.max(1.3,r*.035),0,TAU);X.fill()}
@@ -6681,7 +6229,6 @@ function bossDraw(e){
  if(tier>=3){X.fillStyle='#fff0a0';const motes=Math.min(tier-1,8);for(let i=0;i<motes;i++){const a=t*(.7+.03*tier)+i*TAU/motes,rr=r*(1.58+.03*Math.sin(t*2+i));X.beginPath();X.arc(Math.cos(a)*rr,Math.sin(a)*rr,2.2+(tier>=7?1:0),0,TAU);X.fill()}}
  X.restore();
 }
-// v19.0.30 — expose the Gold boss renderer to the core arena draw loop.
 window.__bbGoldBossDraw=bossDraw;
 let __bbGoldBossNameNodes=null;
 function syncGoldBossName(){
@@ -6736,8 +6283,6 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
  if(alien){
    if(game.wave>=50&&!alien.__bb22MaskSeen){alien.__bb22MaskSeen=true;bb22Trace('WRAPPER MASK wave='+game.wave+' hp='+alien.hp+' boss='+alien.boss+' key='+alien.goldBossKey)}
    bossState=[alien.boss,alien.kind];
-   // v19.0.43 — only mask the generic Story boss flag while inherited core AI runs.
-   // The Gold boss key NEVER changes mid-frame anymore.
    alien.boss=false;alien.kind='goldUnknown';
  }
  const fxBefore=(G()&&game.fx)?game.fx.length:0;
@@ -6761,8 +6306,6 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
    if(bossState){alien.boss=bossState[0];alien.kind='goldUnknown'}
    if(!alien.dead&&!alien.goldDying)bossTick(alien,dt);
    if(alien.goldPhase===2&&!alien.dead&&!alien.goldDying){
-     // v19.0.43 — finale geometry is authoritative after every core update. A transient
-     // wrapper/AI value can no longer leave the live boss invisible or outside the arena.
      if(!Number.isFinite(alien.r)||alien.r<8)alien.r=32;
      if(!Number.isFinite(alien.x))alien.x=W/2;if(!Number.isFinite(alien.y))alien.y=Math.max(145,H*.24);
      if(!Number.isFinite(alien.vx))alien.vx=0;if(!Number.isFinite(alien.vy))alien.vy=0;
@@ -6805,14 +6348,11 @@ function drawGoldAlien(e){
  
  X.restore();
 }
-// v19.0.57 — expose ONLY the existing regular Gold-alien artwork to the core renderer.
-// The ??? / BIG BUG boss keeps its separate dedicated render path.
 window.drawGoldAlien=drawGoldAlien;
 // No window.drawEnemy override: avoids reintroducing the old final-boss renderer conflict.
 const S=window.show;if(typeof S==='function')window.show=function(){const o=S.apply(this,arguments);sync();return o};
 })();
 </script>
-
 
 
 </body>
