@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#152316">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>BIG BUG</title>
-<!-- Big Bug v19.0.196-rc.5: Mosquito Mode keeps the existing swarm/performance caps, but after Wave 73 progressively increases face-on, interceptor, and sprinter odds through the agreed late-game caps. WASD Gold Waves upgrade selection now supports key 4 for the fourth card; existing 1/2/3 shortcuts are unchanged. All v19.0.196-rc.4 audio, boss-speed, damage-popup, economy, and Gold finale fixes remain intact. -->
+<!-- Big Bug v19.0.196-rc.7: PC WASD in-run keyboard-completeness pass. Adds keyboard access for the Wave 25 Mosquito Mode unlock popup, Wave 100 final preparation, Gold Waves continue/fail choice, and all three Mosquito Mode stored abilities. Existing WASD movement, Space boost/story advance, upgrade 1/2/3, Gold upgrade 4, Gold finale fix, balance, rewards, visuals, and all non-PC input paths are unchanged. -->
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1516,8 +1516,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.5</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.5</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.7</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.7</div>
 </section>
 
 <section id="bugs" class="screen hidden">
@@ -1587,7 +1587,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <h2>HOW TO PLAY</h2>
   <p class="firstHelpIntro">A few things to know before your first run.</p>
   <div class="firstHelpSteps">
-   <div class="firstHelpStep"><div class="firstHelpNum">1</div><div><strong>Move &amp; Dodge</strong><p>Click or drag to move your bug, or choose WASD in Settings. Keep moving when enemies close in.</p></div></div>
+   <div class="firstHelpStep"><div class="firstHelpNum">1</div><div><strong>Move &amp; Dodge</strong><p>Click or drag to move your bug, or choose WASD in Settings. On WASD, use 1/2/3 for upgrade choices (4 for the fourth Gold choice) and Space for your attack boost.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">2</div><div><strong>Attacks Are Automatic</strong><p>Your bug automatically attacks the <b>closest enemy</b>, so focus on positioning and staying alive.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">3</div><div><strong>Collect &amp; Save Leaves</strong><p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves carry over between runs. Pick them up and save them — you will need a lot of them.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">4</div><div><strong>Permanent Upgrades Matter</strong><p>Spend saved Leaves on <span class="firstHelpImportant">Permanent Upgrades</span> between runs. They are a big part of getting farther.</p></div></div>
@@ -1620,13 +1620,13 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="panel">
   <h2>HOW TO PLAY</h2>
   <div class="helpGrid">
-   <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Click or drag to move, or choose WASD in Settings. Attacks are automatic.</div></div>
+   <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Click or drag to move, or choose WASD in Settings. WASD runs can be played entirely from the keyboard; attacks are automatic.</div></div>
    <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves and choose upgrades between waves.</div></div>
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">Standing still fires faster in Story and Mosquito Mode. In Story Mode, get close to an enemy to hit harder.</div></div>
    <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Learn its attacks and keep moving.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Upgrades</b><div class="muted">Spend Leaves on permanent upgrades between runs.</div></div>
-   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 25 to unlock. Survive the swarm and earn Leaves.</div></div>
+   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 25 to unlock. On WASD: 1 = 2x Attack Boost, 2 = Health Boost, 3 = Repellent.</div></div>
   </div>
   <button class="btn dark helpBack" data-action="settingsFromHelp">BACK TO SETTINGS</button>
  </div>
@@ -5848,7 +5848,11 @@ function gameplayVisible(){
 }
 function gameplayInputAllowed(){return !!(game&&!game.paused&&!game.over&&!game.finalPurify&&!game.goldDeathActive&&gameplayVisible());}
 function syncGoldPresentation(){
- const active=!!(game&&game.mode==='gold'&&!game.over&&!gameScreenVisible('home')&&!gameScreenVisible('ending')&&!$('goldFinaleOutro')?.classList.contains('play'));
+ // v19.0.196-rc.6 — the Gold victory overlay starts transparent so the final battlefield remains
+ // visible behind the BIG BUG reveal. Keep Gold presentation alive under that overlay until it
+ // deliberately cuts to black; otherwise the arena can visually revert during the outro.
+ const outro=$('goldFinaleOutro'),goldOutroVisible=!!(outro?.classList.contains('play')&&!outro.classList.contains('black'));
+ const active=!!(game&&game.mode==='gold'&&!gameScreenVisible('home')&&!gameScreenVisible('ending')&&((!game.over&&!outro?.classList.contains('play'))||goldOutroVisible));
  document.body.classList.toggle('g159',active);
  if(active&&game.goldFinale&&$('wave'))$('wave').textContent='';
 }
@@ -6188,8 +6192,33 @@ addEventListener('keydown',e=>{
      e.preventDefault();storyBtn.click();return
    }
  }
+ // v19.0.196-rc.7 — Wave 25's one-time Mosquito Mode unlock is part of the live Story run.
+ // Space or Enter dismisses it in WASD mode so the run never needs a mouse here.
+ if(pcUsingWASD()&&!e.repeat&&(e.code==='Space'||e.code==='Enter'||k===' '||k==='enter')){
+   const mosquitoUnlock=$('mosquitoUnlockPopup'),okay=$('mosquitoUnlockOkay');
+   if(mosquitoUnlock&&okay&&mosquitoUnlock.isConnected){e.preventDefault();okay.click();return}
+ }
  if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&gameplayInputAllowed()){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
+ // v19.0.196-rc.7 — all in-run choice screens are keyboard-complete in WASD mode.
+ // Wave 100 final preparation: 1 = free boost, 2 = 3 upgrades, 3 = Super Little Buddy.
+ if(!e.repeat&&(k==='1'||k==='2'||k==='3')){
+   const fp=$('finalPrep');
+   if(fp&&!fp.classList.contains('hidden')&&fp.style.display!=='none'){
+     const btn=[ $('prepLeaves'),$('prepUpgrades'),$('prepBuddy') ][k.charCodeAt(0)-49];
+     if(btn){e.preventDefault();btn.click();return}
+   }
+ }
+ // Gold Waves failure is still the same run until the player chooses. 1 continues; 2 ends it.
+ // Space/Enter also chooses Continue when it is available, matching the natural confirm action.
+ if(!e.repeat&&(k==='1'||k==='2'||e.code==='Space'||e.code==='Enter'||k===' '||k==='enter')){
+   const gf=$('goldFail');
+   if(gf&&!gf.classList.contains('hidden')&&gf.style.display!=='none'){
+     const btn=(k==='2')?gf.querySelector('[data-action="goldSquished"]'):$('goldFailContinueBtn');
+     if(btn&&!btn.disabled){e.preventDefault();btn.click();return}
+     if(k==='2'&&btn){e.preventDefault();btn.click();return}
+   }
+ }
  // v19.0.196-rc.5 — while the upgrade picker is visibly open in WASD mode, 1/2/3
  // keep their existing behavior; Gold Waves additionally accepts 4 for its fourth card.
  // Repeats are ignored so holding a number cannot accidentally choose again.
@@ -6200,6 +6229,15 @@ addEventListener('keydown',e=>{
      const card=cards[idx];
      if(card&&typeof card.onclick==='function'){e.preventDefault();card.onclick();return}
    }
+ }
+ // Mosquito Mode active-run abilities mirror the three on-screen buttons left-to-right.
+ // Upgrade screens above take priority, so the same number keys cannot fire an ability underneath a choice screen.
+ if(!e.repeat&&game?.mode==='endless'&&gameplayInputAllowed()&&(k==='1'||k==='2'||k==='3')){
+   e.preventDefault();
+   if(k==='1')useEndlessTriple();
+   else if(k==='2')useEndlessHealth();
+   else useEndlessRepel();
+   return;
  }
  if((k==='w'||k==='a'||k==='s'||k==='d')&&gameplayInputAllowed()){pcKeys[k]=true;e.preventDefault();}
 },{passive:false});
@@ -6389,7 +6427,7 @@ if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFir
 // v18.0.130 — pause/resume stability: updates never apply during a live run, even while paused; resume repairs empty-wave state.
 // v18.0.129 — Golden Ladybug stability audit: ownership migration, active-run identity, boss-clear recovery, and Garden Book entry.
 // v18.0.125 — release update system. Keep the self-contained build network-first without interrupting a live run.
-const BB_BUILD_VERSION='19.0.196-rc.5';
+const BB_BUILD_VERSION='19.0.196-rc.6';
 // v19.0.30 — stability: automatic network update/reload system remains removed.
 // Builds update only through a normal user refresh/reopen; no background fetches, reload timers, or update listeners.
 // v17.9.18 — Game-over Gold Leaf revive button is now surfaced; gameplay unchanged.
