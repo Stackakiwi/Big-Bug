@@ -1441,6 +1441,27 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   .achievementReward{min-width:83px;font-size:17px;gap:4px}
   .achievementReward .leafCurrencyIcon.bbLeafIcon,.achievementReward .goldLeafIcon{width:22px;height:22px;flex-basis:22px}
 }
+/* Claim celebration is a non-interactive, short-lived layer above the scrolling achievement screen.
+   Reuse the game's actual Leaf and Gold Leaf drawings; animate transforms rather than layout. */
+.achievementClaimFx{position:fixed;inset:0;z-index:3100;overflow:hidden;pointer-events:none;contain:layout style paint}
+.achievementClaimFx .achievementClaimParticle{
+ position:absolute;left:var(--ach-from-x);top:var(--ach-from-y);
+ width:var(--ach-size);height:var(--ach-size);margin:0;
+ display:block;opacity:0;transform-origin:center;will-change:transform,opacity;
+ animation:achievementClaimFly var(--ach-time) cubic-bezier(.16,.63,.29,1) var(--ach-delay) both;
+}
+@keyframes achievementClaimFly{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.28) rotate(-30deg)}
+ 8%{opacity:1}
+ 23%{opacity:1;transform:translate(calc(-50% + var(--ach-pop-x)),calc(-50% + var(--ach-pop-y))) scale(1.12) rotate(var(--ach-rotate-a))}
+ 47%{opacity:1;transform:translate(calc(-50% + var(--ach-mid-x)),calc(-50% + var(--ach-mid-y))) scale(.98) rotate(var(--ach-rotate-b))}
+ 83%{opacity:1}
+ 100%{opacity:0;transform:translate(calc(-50% + var(--ach-end-x)),calc(-50% + var(--ach-end-y))) scale(.52) rotate(var(--ach-rotate-c))}
+}
+@media(prefers-reduced-motion:reduce){
+ .achievementClaimFx .achievementClaimParticle{animation-name:achievementClaimReduced!important;animation-duration:.28s!important;animation-delay:0ms!important}
+ @keyframes achievementClaimReduced{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}35%{opacity:1;transform:translate(-50%,-85%) scale(1)}100%{opacity:0;transform:translate(-50%,-130%) scale(.8)}}
+}
 </style>
 </head>
 <body>
@@ -1481,8 +1502,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.17</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.17</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.18</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.18</div>
 </section>
 
  <section id="achievements" class="screen hidden" aria-label="Achievements">
@@ -2587,8 +2608,50 @@ function buildAchievements(){
   return heading+`<${kind} class="achievementRow ${collected?'collected':earned?'ready':'locked'}"${attrs}><div class="achievementText"><span class="achievementTitle">${a.title}</span><span class="achievementStatus">${status}</span></div><span class="achievementReward">${icon}${a.reward.toLocaleString()}</span></${kind}>`;
  }).join('');
  list.querySelectorAll('button[data-achievement]').forEach(row=>{
-  row.onclick=()=>{initAudio();if(collectAchievement(row.dataset.achievement))beep(820,.11,.020,'triangle')};
+  row.onclick=()=>{
+   initAudio();
+   // Capture the icon's viewport position before collection re-renders the achievement row.
+   const icon=row.querySelector('.achievementReward .bbLeafIcon,.achievementReward .goldLeafIcon');
+   const rect=icon?.getBoundingClientRect(),currency=row.querySelector('.achievementReward .goldLeafIcon')?'gold':'leaves';
+   if(collectAchievement(row.dataset.achievement)){
+    if(rect)playAchievementClaimLeaves(rect,currency);
+    beep(820,.11,.020,'triangle');
+   }
+  };
  });
+}
+function playAchievementClaimLeaves(iconRect,currency){
+ // This is decorative only. Reward eligibility, balance, and persistence happen before it.
+ const x=iconRect.left+iconRect.width/2,y=iconRect.top+iconRect.height/2;
+ if(!Number.isFinite(x)||!Number.isFinite(y))return;
+ const reduced=!!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+ const layer=document.createElement('div');layer.className='achievementClaimFx';layer.setAttribute('aria-hidden','true');
+ const pieces=document.createDocumentFragment(),count=reduced?6:26;
+ const width=window.innerWidth,height=window.innerHeight;
+ for(let i=0;i<count;i++){
+  const leaf=document.createElement('span');
+  leaf.className=currency==='gold'?'achievementClaimParticle goldLeafIcon':'achievementClaimParticle leafCurrencyIcon bbLeafIcon';
+  const popX=(Math.random()-.5)*115,popY=-28-Math.random()*88;
+  // Start as a lively burst at the tapped icon, then arc to beyond the top-right edge.
+  const endX=width+65+Math.random()*85-x,endY=-65-Math.random()*110-y;
+  const midX=endX*(.28+Math.random()*.15)+popX*.36;
+  const midY=endY*(.43+Math.random()*.12)+popY*.23;
+  const spin=(Math.random()<.5?-1:1)*(250+Math.random()*470);
+  const size=16+Math.random()*12,delay=Math.random()*180,duration=1100+Math.random()*430;
+  const styles={
+   '--ach-from-x':x+'px','--ach-from-y':y+'px','--ach-size':size+'px',
+   '--ach-pop-x':popX+'px','--ach-pop-y':popY+'px',
+   '--ach-mid-x':midX+'px','--ach-mid-y':midY+'px',
+   '--ach-end-x':endX+'px','--ach-end-y':endY+'px',
+   '--ach-rotate-a':(spin*.25)+'deg','--ach-rotate-b':(spin*.55)+'deg','--ach-rotate-c':spin+'deg',
+   '--ach-delay':delay+'ms','--ach-time':duration+'ms'
+  };
+  for(const [key,value] of Object.entries(styles))leaf.style.setProperty(key,value);
+  pieces.appendChild(leaf);
+ }
+ layer.appendChild(pieces);document.body.appendChild(layer);
+ // Remove all temporary DOM and compositor hints after the slowest particle has exited.
+ setTimeout(()=>layer.remove(),reduced?450:1850);
 }
 function storyWaveActuallyCleared(g){
  // Bosses are removed from game.bosses as they die. Verify the completed wave,
