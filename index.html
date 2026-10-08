@@ -1480,8 +1480,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.13</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.13</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.15</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.15</div>
 </section>
 
  <section id="achievements" class="screen hidden" aria-label="Achievements">
@@ -2071,30 +2071,42 @@ function presentGardenUpdateNote(w){const beat=GARDEN_STORY[w];if(!beat)return f
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;if(game){game.recoveryPhase='storyNote';game.paused=true;saveRunRecovery('story-note')}presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 function startGardenStoryNotesTest(){if(!BB_DEV_MODE)return;storyNoteTestWaves=Object.keys(GARDEN_STORY).map(Number).sort((a,b)=>a-b);storyNoteTestIndex=0;pendingBossUpgrade=false;if(!storyNoteTestWaves.length)return;if(presentGardenUpdateNote(storyNoteTestWaves[0])){const b=$('storyContinue');if(b)b.textContent='NEXT NOTE →';beep(392,.08,.012,'triangle')}}
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');if(storyNoteTestWaves){storyNoteTestIndex++;if(storyNoteTestIndex<storyNoteTestWaves.length){presentGardenUpdateNote(storyNoteTestWaves[storyNoteTestIndex]);beep(620,.06,.01,'triangle');return}storyNoteTestWaves=null;storyNoteTestIndex=0;story.classList.add('hidden');story.style.display='';applyStoryLeafCorruption(0);$('storyContinue').textContent='Follow the trail →';beep(620,.07,.012,'triangle');return}story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
-// Leaf earnings balance (rc.12): permanent bonuses stay unchanged.
-// In-run +20% Forager and +10% Sprint increase the SAME base, never the prior bonus.
-// Tenths avoid rounding drift: 2 tenths = +20%, and the in-run cap is +200%.
-const BB_LEAF_BONUS_CAP_TENTHS=20;
+// Leaf earnings balance (rc.15): never alter or cap permanent Garden Wisdom.
+// Leaf Forager is additive +20% of the permanently-upgraded base, up to 20 picks per run.
+// Garden Sprint adds +10% of that SAME base per pick and always retains its speed boost.
+// Tenths preserve the bonus exactly without repeated floating-point compounding.
+const BB_LEAF_FORAGER_MAX_PICKS=20;
 function normalizeLeafRunBalance(p){
  const base=(Number.isFinite(p.leafBaseMultiplier)&&p.leafBaseMultiplier>0)
   ?p.leafBaseMultiplier:1+.10*(save.upgrades?.coins||0);
- // Existing rc.11 mid-run recoveries recorded only the old compounded greed value.
- // Convert their current effective bonus conservatively into the capped new system.
- const legacyTenths=Math.max(0,Math.floor(((Number.isFinite(p.greed)?p.greed:base)/base-1)*10+1e-8));
- const tenths=Number.isFinite(p.leafBonusTenths)?Math.floor(p.leafBonusTenths):legacyTenths;
+ // Old rc.11 recoveries stored only a compounded greed multiplier; keep the prior
+ // conservative +200% migration for those older saves, not for new gameplay.
+ const legacyTenths=Math.min(20,Math.max(0,Math.floor(((Number.isFinite(p.greed)?p.greed:base)/base-1)*10+1e-8)));
+ const tenths=Number.isFinite(p.leafBonusTenths)?Math.max(0,Math.floor(p.leafBonusTenths)):legacyTenths;
  p.leafBaseMultiplier=base;
- p.leafBonusTenths=Math.min(BB_LEAF_BONUS_CAP_TENTHS,Math.max(0,tenths));
- p.greed=base*(1+p.leafBonusTenths*.10);
+ p.leafBonusTenths=tenths;
+ // rc.14 mid-run saves combined Forager and Sprint into one bonus. The exact
+ // Forager count cannot be recovered; the maximum possible count (floor/2)
+ // avoids permitting more than 20 total Forager picks in an ongoing old run.
+ p.leafForagerPicks=Number.isFinite(p.leafForagerPicks)
+  ?Math.max(0,Math.min(BB_LEAF_FORAGER_MAX_PICKS,Math.floor(p.leafForagerPicks)))
+  :Math.min(BB_LEAF_FORAGER_MAX_PICKS,Math.floor(tenths/2));
+ p.greed=base*(1+tenths*.10);
 }
-function leafBonusRoom(p){
- if(!p)return BB_LEAF_BONUS_CAP_TENTHS;
+function leafForagerRoom(p){
+ if(!p)return BB_LEAF_FORAGER_MAX_PICKS;
  normalizeLeafRunBalance(p);
- return BB_LEAF_BONUS_CAP_TENTHS-p.leafBonusTenths;
+ return BB_LEAF_FORAGER_MAX_PICKS-p.leafForagerPicks;
 }
-function addLeafRunBonus(p,tenths){
+function addLeafRunBonus(p,tenths,forager=false){
  normalizeLeafRunBalance(p);
- p.leafBonusTenths=Math.min(BB_LEAF_BONUS_CAP_TENTHS,p.leafBonusTenths+Math.max(0,Math.floor(tenths)));
+ if(forager){
+  if(p.leafForagerPicks>=BB_LEAF_FORAGER_MAX_PICKS)return false;
+  p.leafForagerPicks++;
+ }
+ p.leafBonusTenths+=Math.max(0,Math.floor(tenths));
  p.greed=p.leafBaseMultiplier*(1+p.leafBonusTenths*.10);
+ return true;
 }
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
@@ -2103,7 +2115,7 @@ const UP=[
  {id:'crit',icon:'',name:'Lucky Bug',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
  {id:'triple',icon:'',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
  {id:'magnet',icon:'',name:'Pollen Pull',desc:'+65% Leaf range',rarity:'rare',apply:p=>p.magnet+=65},
- {id:'greed',icon:'',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>addLeafRunBonus(p,2)},
+ {id:'greed',icon:'',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>addLeafRunBonus(p,2,true)},
  {id:'clone',icon:'',name:'Little Buddy',desc:'Little Buddy attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];const edge=Math.floor(Math.random()*4),pad=34;let hx=p.x,hy=p.y;if(edge===0){hx=-pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===1){hx=W+pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===2){hx=Math.max(24,Math.min(W-24,p.x));hy=-pad}else{hx=Math.max(24,Math.min(W-24,p.x));hy=H+pad}p.helpers.push({bornWave:game.wave,leaving:false,entering:true,joining:0,x:hx,y:hy})}},
  {id:'helperArmy',icon:'',name:'Little Buddy Army',desc:'10 Little Buddies one-hit enemies for the entire next wave',rarity:'epic',apply:p=>{const w=game.wave+1;if(w%5===0)return;p.helperArmyWave=w;p.helperArmyReadyAt=0;p.helperArmyFormedAt=0;p.helperArmyHelpers=[];for(let i=0;i<10;i++)p.helperArmyHelpers.push(makeArmyHelper(i))}},
  {id:'gold',icon:'',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;addLeafRunBonus(p,1)}}
@@ -2696,6 +2708,7 @@ function basePlayer(){
  p.greed*=1+.10*(u.coins||0);
  p.leafBaseMultiplier=p.greed;
  p.leafBonusTenths=0;
+ p.leafForagerPicks=0;
  p.hp=p.maxHp;
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
@@ -3881,8 +3894,23 @@ function update(dt,now){
  }
  if(g.mode==='endless'){g.mosquitoSepTick=(g.mosquitoSepTick||0)+1;if((g.mosquitoSepTick&1)===0)separateMosquitoes()}else separateEnemies();
  for(const d of g.drops){
-   d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,dist=0,mag2=p.magnet*p.magnet;
-   if(d2<mag2){dist=Math.sqrt(d2)||1;let pull=300+Math.max(0,p.magnet-dist)*1.4;d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt}
+   d.age=(d.age||0)+dt;let dx=p.x-d.x,dy=p.y-d.y,d2=dx*dx+dy*dy,mag2=p.magnet*p.magnet;
+   if(d2<mag2){
+     const dist=Math.sqrt(d2)||1;
+     if(d.healDrop){
+       // Health-heart pickup timing and pull speed stay unchanged.
+       const pull=300+Math.max(0,p.magnet-dist)*1.4;
+       d.x+=dx/dist*pull*dt;d.y+=dy/dist*pull*dt;
+     }else{
+       // Leaves get a modestly faster pull, with extra follow-through for fast-moving bugs.
+       // The magnet radius and pickup collision size stay exactly the same.
+       const pull=(300+Math.max(0,p.magnet-dist)*1.4)*1.35+Math.max(0,pMotionMag-280)*.65;
+       const step=Math.min(dist,pull*dt); // Avoid passing straight through the player.
+       d.x+=dx/dist*step;d.y+=dy/dist*step;
+       // Collect immediately on arrival instead of checking the Leaf's old position.
+       dx=p.x-d.x;dy=p.y-d.y;d2=dx*dx+dy*dy;
+     }
+   }
    const pick=p.r+d.r+5;if(d2<pick*pick){if(d.healDrop){const healed=Math.min(d.healAmount||10,Math.max(0,p.maxHp-p.hp));p.hp=Math.min(p.maxHp,p.hp+(d.healAmount||10));d.dead=true;game.fx.push({x:d.x,y:d.y-8,vx:0,vy:-24,life:.72,maxLife:.72,r:0,healHeart:true});burst(d.x,d.y,5,.28,'#ff8b78');beep(620,.055,.018,'sine');if(healed>0)flashBanner('+'+healed+' HP',.7)}else if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+10;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ 10 GOLD LEAVES FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;const leafHud=$('hudCurrencyIcon')||document.querySelector('#hud .hudLeaves');const leafRect=leafHud?.getBoundingClientRect();const leafTX=leafRect?leafRect.left+leafRect.width*.5:W*.72,leafTY=leafRect?leafRect.top+leafRect.height*.5:42;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.52,maxLife:.52,r:10,scrapFly:true,tx:leafTX,ty:leafTY});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
  }
  for(const f of g.fx){
@@ -3975,13 +4003,7 @@ function upgradeCardIconMarkup(u){
  return upgradeIconSvg(u.id);
 }
 function upgradeChoiceHtml(u){
- let desc=u.desc;
- if(game?.mode==='story'&&(u.id==='greed'||u.id==='gold')){
-  const available=leafBonusRoom(game.p);
-  if(u.id==='greed')desc=`+${Math.min(20,available*10)}% Leaves from enemies`;
-  if(u.id==='gold'&&available===0)desc='+10% move speed (Leaf bonus maxed)';
- }
- return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`;
+ return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${u.desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`;
 }
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
@@ -4036,7 +4058,7 @@ function openUpgrade(afterWave=false,restoring=false){
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;initAudio();picks[i].apply(g.p);clearPendingUpgrade();$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound('common');updateHud();if(afterWave)beginWave(g.wave+1);saveRunRecovery('upgrade-picked')});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
 }
-const choices=restoring?recoveredUpgradeChoices(UP):[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(u.id!=='greed'||leafBonusRoom(g.p)>0)&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
+const choices=restoring?recoveredUpgradeChoices(UP):[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(u.id!=='greed'||leafForagerRoom(g.p)>0)&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
  const count=3;
  if(!choices.length){
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
@@ -4072,7 +4094,7 @@ function finishFinalPrep(){
 }
 function finalUpgradePick(remaining,restoring=false){
  const g=game;g.paused=true;g.finalUpgradeRemaining=remaining;let picked=false;
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafBonusRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafForagerRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  rememberUpgradeChoices('finalUpgrade',choices,true);
  $('upgradeTitle').textContent='FINAL PREPARATION — '+(4-remaining)+' / 3';
@@ -4093,7 +4115,7 @@ function openWave50BonusUpgrades(){
 function wave50BonusPick(restoring=false){
  const g=game,remaining=g.wave50BonusRemaining||0;if(remaining<=0){closeUpgrade();g.paused=false;beginWave(g.wave+1);return}
  g.paused=true;let picked=false;
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafBonusRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafForagerRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  rememberUpgradeChoices('wave50',choices,true);
  $('upgradeTitle').textContent='WAVE 50 CLEARED!';$('upgradeSub').textContent='Choose 3 upgrades — '+remaining+' remaining';
