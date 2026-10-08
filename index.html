@@ -1441,27 +1441,9 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   .achievementReward{min-width:83px;font-size:17px;gap:4px}
   .achievementReward .leafCurrencyIcon.bbLeafIcon,.achievementReward .goldLeafIcon{width:22px;height:22px;flex-basis:22px}
 }
-/* Claim celebration is a non-interactive, short-lived layer above the scrolling achievement screen.
-   Reuse the game's actual Leaf and Gold Leaf drawings; animate transforms rather than layout. */
-.achievementClaimFx{position:fixed;inset:0;z-index:3100;overflow:hidden;pointer-events:none;contain:layout style paint}
-.achievementClaimFx .achievementClaimParticle{
- position:absolute;left:var(--ach-from-x);top:var(--ach-from-y);
- width:var(--ach-size);height:var(--ach-size);margin:0;
- display:block;opacity:0;transform-origin:center;will-change:transform,opacity;
- animation:achievementClaimFly var(--ach-time) cubic-bezier(.16,.63,.29,1) var(--ach-delay) both;
-}
-@keyframes achievementClaimFly{
- 0%{opacity:0;transform:translate(-50%,-50%) scale(.28) rotate(-30deg)}
- 8%{opacity:1}
- 23%{opacity:1;transform:translate(calc(-50% + var(--ach-pop-x)),calc(-50% + var(--ach-pop-y))) scale(1.12) rotate(var(--ach-rotate-a))}
- 47%{opacity:1;transform:translate(calc(-50% + var(--ach-mid-x)),calc(-50% + var(--ach-mid-y))) scale(.98) rotate(var(--ach-rotate-b))}
- 83%{opacity:1}
- 100%{opacity:0;transform:translate(calc(-50% + var(--ach-end-x)),calc(-50% + var(--ach-end-y))) scale(.52) rotate(var(--ach-rotate-c))}
-}
-@media(prefers-reduced-motion:reduce){
- .achievementClaimFx .achievementClaimParticle{animation-name:achievementClaimReduced!important;animation-duration:.28s!important;animation-delay:0ms!important}
- @keyframes achievementClaimReduced{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}35%{opacity:1;transform:translate(-50%,-85%) scale(1)}100%{opacity:0;transform:translate(-50%,-130%) scale(.8)}}
-}
+/* One small procedural canvas replaces 26 filtered, separately animated DOM nodes.
+   A continuous curve keeps velocity smooth across the whole achievement burst. */
+.achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
 </head>
 <body>
@@ -1502,8 +1484,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.18</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.18</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.19</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.19</div>
 </section>
 
  <section id="achievements" class="screen hidden" aria-label="Achievements">
@@ -2610,48 +2592,117 @@ function buildAchievements(){
  list.querySelectorAll('button[data-achievement]').forEach(row=>{
   row.onclick=()=>{
    initAudio();
-   // Capture the icon's viewport position before collection re-renders the achievement row.
+   // Capture the icon before collecting re-renders the row; game rewards stay authoritative.
    const icon=row.querySelector('.achievementReward .bbLeafIcon,.achievementReward .goldLeafIcon');
-   const rect=icon?.getBoundingClientRect(),currency=row.querySelector('.achievementReward .goldLeafIcon')?'gold':'leaves';
+   const rect=icon?.getBoundingClientRect(),currency=icon?.classList.contains('goldLeafIcon')?'gold':'leaves';
    if(collectAchievement(row.dataset.achievement)){
     if(rect)playAchievementClaimLeaves(rect,currency);
-    beep(820,.11,.020,'triangle');
+    playAchievementClaimCascade(currency);
    }
   };
  });
 }
+
+// All celebration art is drawn here in code (matching the game's Leaf icon silhouette).
+// Cached sprites + a single canvas avoid 26 independently composited, glowing DOM elements.
+const achievementClaimSprites={};
+let achievementClaimFxState=null;
+function achievementClaimSprite(currency){
+ if(achievementClaimSprites[currency])return achievementClaimSprites[currency];
+ const s=document.createElement('canvas');s.width=s.height=64;
+ const q=s.getContext('2d');q.save();q.translate(32,32);q.scale(1.8,1.8);q.rotate(-26*Math.PI/180);
+ const gold=currency==='gold';
+ const grad=q.createLinearGradient(-9,-12,10,13);
+ if(gold){grad.addColorStop(0,'#fff4a7');grad.addColorStop(.5,'#f4c62f');grad.addColorStop(1,'#b8790b')}
+ else{grad.addColorStop(0,'#efff8a');grad.addColorStop(.5,'#c9f84f');grad.addColorStop(1,'#77be35')}
+ q.fillStyle=grad;q.strokeStyle=gold?'#fff2a6':'#fbffe1';q.lineWidth=1.65;
+ q.shadowColor=gold?'#ffda5e':'#baff65';q.shadowBlur=2.5;
+ q.beginPath();q.moveTo(0,-12);q.bezierCurveTo(11,-7.4,11.4,3.4,0,12);q.bezierCurveTo(-11.4,3.4,-11,-7.4,0,-12);q.closePath();q.fill();q.shadowBlur=0;q.stroke();
+ q.strokeStyle=gold?'#956b12':'#3d792d';q.lineWidth=1.5;q.lineCap='round';
+ q.beginPath();q.moveTo(0,-9.4);q.lineTo(0,9.8);q.moveTo(0,-4.6);q.lineTo(6,-1.2);q.moveTo(0,-.6);q.lineTo(-6.2,2.4);q.moveTo(0,3);q.lineTo(5.4,5.8);q.stroke();
+ q.fillStyle=gold?'#fff9d0':'#f6ffe4';q.globalAlpha=.75;q.beginPath();q.ellipse(-3,-5,1.35,2.6,-.35,0,Math.PI*2);q.fill();
+ q.restore();achievementClaimSprites[currency]=s;return s;
+}
+function resizeAchievementClaimCanvas(fx){
+ fx.w=Math.max(1,innerWidth);fx.h=Math.max(1,innerHeight);
+ fx.dpr=Math.min(devicePixelRatio||1,1.5,Math.sqrt(1000000/(fx.w*fx.h)));
+ fx.canvas.width=Math.max(1,Math.round(fx.w*fx.dpr));fx.canvas.height=Math.max(1,Math.round(fx.h*fx.dpr));
+ fx.canvas.style.width=fx.w+'px';fx.canvas.style.height=fx.h+'px';
+ fx.ctx.setTransform(fx.dpr,0,0,fx.dpr,0,0);
+}
+function achievementClaimFrame(now,fx){
+ if(achievementClaimFxState!==fx)return;
+ fx.raf=0;
+ if(document.hidden){fx.canvas.remove();achievementClaimFxState=null;return}
+ if(fx.w!==innerWidth||fx.h!==innerHeight)resizeAchievementClaimCanvas(fx);
+ const q=fx.ctx;q.clearRect(0,0,fx.w,fx.h);
+ let remaining=0;
+ for(const p of fx.particles){
+  const t=(now-p.start)/p.duration;
+  if(t>=1)continue;
+  fx.particles[remaining++]=p;
+  if(t<0)continue;
+  // One cubic Bezier has no velocity resets or keyframe seams during the flight.
+  const inv=1-t,a=inv*inv*inv,b=3*inv*inv*t,c=3*inv*t*t,d=t*t*t;
+  const x=a*p.x+b*p.x1+c*p.x2+d*p.x3;
+  const y=a*p.y+b*p.y1+c*p.y2+d*p.y3;
+  const alpha=Math.max(0,Math.min(1,t/.10,(1-t)/.16));
+  const size=p.size*(.48+.62*Math.sin(Math.min(1,t/.23)*Math.PI/2)-.54*t);
+  q.save();q.globalAlpha=alpha;q.translate(x,y);q.rotate(p.angle+p.spin*t);
+  q.drawImage(p.sprite,-size/2,-size/2,size,size);q.restore();
+ }
+ fx.particles.length=remaining;
+ if(remaining)fx.raf=requestAnimationFrame(next=>achievementClaimFrame(next,fx));
+ else{fx.canvas.remove();achievementClaimFxState=null}
+}
 function playAchievementClaimLeaves(iconRect,currency){
- // This is decorative only. Reward eligibility, balance, and persistence happen before it.
+ // Decorative only. One-time payout was already persisted by collectAchievement().
  const x=iconRect.left+iconRect.width/2,y=iconRect.top+iconRect.height/2;
  if(!Number.isFinite(x)||!Number.isFinite(y))return;
  const reduced=!!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
- const layer=document.createElement('div');layer.className='achievementClaimFx';layer.setAttribute('aria-hidden','true');
- const pieces=document.createDocumentFragment(),count=reduced?6:26;
- const width=window.innerWidth,height=window.innerHeight;
- for(let i=0;i<count;i++){
-  const leaf=document.createElement('span');
-  leaf.className=currency==='gold'?'achievementClaimParticle goldLeafIcon':'achievementClaimParticle leafCurrencyIcon bbLeafIcon';
-  const popX=(Math.random()-.5)*115,popY=-28-Math.random()*88;
-  // Start as a lively burst at the tapped icon, then arc to beyond the top-right edge.
-  const endX=width+65+Math.random()*85-x,endY=-65-Math.random()*110-y;
-  const midX=endX*(.28+Math.random()*.15)+popX*.36;
-  const midY=endY*(.43+Math.random()*.12)+popY*.23;
-  const spin=(Math.random()<.5?-1:1)*(250+Math.random()*470);
-  const size=16+Math.random()*12,delay=Math.random()*180,duration=1100+Math.random()*430;
-  const styles={
-   '--ach-from-x':x+'px','--ach-from-y':y+'px','--ach-size':size+'px',
-   '--ach-pop-x':popX+'px','--ach-pop-y':popY+'px',
-   '--ach-mid-x':midX+'px','--ach-mid-y':midY+'px',
-   '--ach-end-x':endX+'px','--ach-end-y':endY+'px',
-   '--ach-rotate-a':(spin*.25)+'deg','--ach-rotate-b':(spin*.55)+'deg','--ach-rotate-c':spin+'deg',
-   '--ach-delay':delay+'ms','--ach-time':duration+'ms'
-  };
-  for(const [key,value] of Object.entries(styles))leaf.style.setProperty(key,value);
-  pieces.appendChild(leaf);
+ let fx=achievementClaimFxState;
+ if(!fx){
+  const canvas=document.createElement('canvas');canvas.className='achievementClaimFx';canvas.setAttribute('aria-hidden','true');
+  const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;
+  fx={canvas,ctx,particles:[],raf:0,w:0,h:0,dpr:1};resizeAchievementClaimCanvas(fx);
+  document.body.appendChild(canvas);achievementClaimFxState=fx;
  }
- layer.appendChild(pieces);document.body.appendChild(layer);
- // Remove all temporary DOM and compositor hints after the slowest particle has exited.
- setTimeout(()=>layer.remove(),reduced?450:1850);
+ const count=reduced?6:26,sprite=achievementClaimSprite(currency),start=performance.now();
+ for(let i=0;i<count;i++){
+  const popX=(Math.random()-.5)*(reduced?35:125),popY=-28-Math.random()*(reduced?30:90);
+  const endX=reduced?x+popX*.65:innerWidth+65+Math.random()*85;
+  const endY=reduced?y-42-Math.random()*25:-65-Math.random()*110;
+  const x1=x+popX,y1=y+popY;
+  const x2=reduced?x+(endX-x)*.8:x+(endX-x)*(.48+Math.random()*.12)+popX*.14;
+  const y2=reduced?y-58:y+(endY-y)*(.46+Math.random()*.12)+popY*.10;
+  fx.particles.push({sprite,x,y,x1,y1,x2,y2,x3:endX,y3:endY,
+   angle:(Math.random()-.5)*.5,spin:(Math.random()<.5?-1:1)*(2.8+Math.random()*5.6),
+   size:16+Math.random()*12,start:start+(reduced?Math.random()*15:Math.random()*155),
+   duration:reduced?260+Math.random()*35:1170+Math.random()*360});
+ }
+ if(!fx.raf)fx.raf=requestAnimationFrame(now=>achievementClaimFrame(now,fx));
+}
+// Procedural Web Audio chimes only: no sound files, recordings, or generated assets.
+// Schedule the whole cascading sequence on the audio clock, not setTimeout / visual frames.
+function playAchievementClaimCascade(currency){
+ if(window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;
+ if(!audio||audio.state==='closed'||save.settings.sfx===false||document.hidden||performance.now()<bbAudioTransitionUntil)return;
+ const volume=Math.max(0,Math.min(2,Number(save.settings.volume??50)/50));if(volume<=0)return;
+ const gold=currency==='gold',notes=gold?[988,1175,1319,1568,1319,1760,1976,2093]:[659,784,880,1047,988,1175,1319,1568];
+ const now=audio.currentTime+.012;
+ for(let i=0;i<notes.length&&bbAudioVoices<BB_AUDIO_VOICE_CAP;i++){
+  const t=now+i*.075,osc=audio.createOscillator(),gain=audio.createGain();
+  const peak=Math.min(.18,(gold?.016:.013)*3.432*volume*(1-i*.055));
+  const voice={osc,gain,category:'sfx'};osc.type=(i%3===2?'sine':'triangle');
+  osc.frequency.setValueAtTime(notes[i]*.96,t);
+  osc.frequency.exponentialRampToValueAtTime(notes[i]*1.035,t+.12);
+  gain.gain.setValueAtTime(.0001,t);gain.gain.linearRampToValueAtTime(peak,t+.008);
+  gain.gain.exponentialRampToValueAtTime(.0001,t+.16);
+  osc.connect(gain);gain.connect(audio.destination);
+  bbAudioVoices++;bbAllVoices.add(voice);
+  osc.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1);bbAllVoices.delete(voice)};
+  osc.start(t);osc.stop(t+.17);
+ }
 }
 function storyWaveActuallyCleared(g){
  // Bosses are removed from game.bosses as they die. Verify the completed wave,
