@@ -1390,7 +1390,10 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   box-shadow:inset 0 2px #fff3c59c,inset 0 -4px #8b581d,0 5px 0 #5c451f,0 7px 13px #0004!important;
   text-shadow:0 1px #ffedbd!important;font:1000 clamp(11px,2.5vw,17px)/1.1 ui-rounded,system-ui,-apple-system,sans-serif;
   letter-spacing:-.3px;white-space:nowrap;cursor:pointer;pointer-events:auto!important;
+  /* Requested smaller Home button: scale the complete button (text, border, shine) to 60%, anchored top-left. */
+  transform:scale(.6)!important;transform-origin:top left!important;
 }
+#home #homeAchievementsBtn:active:not(:disabled){transform:translateY(2px) scale(.6)!important}
 #achievements{overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;
   -webkit-overflow-scrolling:touch!important;padding:20px 12px!important;
   background:radial-gradient(ellipse at 50% 0%,#274b3055 0 20%,transparent 48%),linear-gradient(#0a1e12,#041109)!important}
@@ -1407,6 +1410,16 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   box-shadow:inset 0 1px #ffffff13,0 3px #05180e}
 .achievementRow.locked{background:linear-gradient(155deg,#303934,#202b24);border-color:#556259;
   filter:grayscale(1);opacity:.63}
+#achievements button.achievementRow{width:100%;color:inherit;text-align:left;font:inherit;
+  cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.achievementRow.ready{border-color:#e8c665;background:linear-gradient(155deg,#416a2e,#254725);
+  box-shadow:inset 0 1px #fff5bd48,0 3px #42351a,0 0 14px #e4bf4b44;
+  transition:transform .08s ease,filter .12s ease}
+.achievementRow.ready .achievementStatus{color:#ffe79a}
+.achievementRow.ready:active{transform:translateY(2px);filter:brightness(1.12)}
+.achievementRow.ready:focus-visible{outline:3px solid #ffe49a;outline-offset:3px}
+.achievementRow.collected{opacity:.83;border-color:#58865b;background:linear-gradient(155deg,#25452d,#173421)}
+.achievementRow.collected .achievementStatus{color:#a3cda3}
 .achievementRow .achievementText{flex:1;min-width:0}
 .achievementRow .achievementTitle{display:block;color:#f6f4e4;font-size:19px;font-weight:950;line-height:1.18}
 .achievementRow .achievementStatus{display:block;margin-top:7px;font-size:11px;font-weight:950;letter-spacing:1px;color:#bbd8ac}
@@ -1467,16 +1480,16 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.11</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.11</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.13</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.13</div>
 </section>
 
  <section id="achievements" class="screen hidden" aria-label="Achievements">
   <div class="panel achievementsPanel">
     <h2>ACHIEVEMENTS</h2>
-    <p class="achievementIntro">Complete Story Mode challenges to earn these rewards.</p>
+    <p class="achievementIntro">Complete Story Mode challenges to unlock these rewards.</p>
     <div id="achievementList" class="achievementList"></div>
-    <p class="achievementNote">Rewards are given automatically, once per achievement. Completed achievements are kept when you reset progress.</p>
+    <p class="achievementNote">Completed achievements stay saved, even after resetting progress.</p>
     <button class="btn dark achievementsBack" data-action="home">BACK TO GARDEN</button>
   </div>
  </section>
@@ -1569,9 +1582,9 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="settingRow"><div class="settingText"><b>Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
   <button class="btn dark settingsHelpBtn" data-action="help">HOW TO PLAY</button>
   <div class="settingsDanger">
-   <h3>Reset Progress</h3><p class="muted">Reset earned Leaves, upgrades, discoveries, records, and mode progress. Achievements stay completed and cannot pay out twice. Purchased bugs, cosmetics, Gold Leaves, and settings stay safe.</p>
+   <h3>Reset Progress</h3><p class="muted">Reset earned Leaves, upgrades, discoveries, records, and mode progress. Completed achievements and collected rewards are preserved. Purchased bugs, cosmetics, Gold Leaves, and settings stay safe.</p>
    <button class="btn red" data-action="showResetConfirm">RESET PROGRESS</button>
-   <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This resets earned progress and cannot be undone. Achievements stay completed. Purchased bugs, cosmetics, Gold Leaves, and settings are kept.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
+   <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This resets earned progress and cannot be undone. Completed achievements and collected rewards stay saved. Purchased bugs, cosmetics, Gold Leaves, and settings are kept.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
   </div>
   <button id="settingsBackBtn" class="btn dark" data-action="settingsBack">BACK</button>
  </div>
@@ -1742,7 +1755,7 @@ function saveNumber(value,fallback=0,max=Number.MAX_SAFE_INTEGER){return typeof 
 function saveStringList(value,allowed=null){return Array.isArray(value)?[...new Set(value.filter(v=>typeof v==='string'&&v.length<=100&&(!allowed||allowed.includes(v))))].slice(0,256):[]}
 function normalizeSave(input={}){
  const src=saveObject(input)?input:{},u=saveObject(src.upgrades)?src.upgrades:{},settings=saveObject(src.settings)?src.settings:{},cos=saveObject(src.cosmetics)?src.cosmetics:{},legend=saveObject(src.legendaryGolden)?src.legendaryGolden:{},achievements=saveObject(src.achievements)?src.achievements:{};
- const bugs=['ladybug','beetle','butterfly','golden'],standard=['beetle','butterfly'],out={schemaVersion:3,scrap:Math.floor(saveNumber(src.scrap)),best:Math.floor(saveNumber(src.best,0,100)),endlessBest:Math.floor(saveNumber(src.endlessBest)),goldBest:Math.floor(saveNumber(src.goldBest,0,50)),runs:Math.floor(saveNumber(src.runs)),goldLeaves:Math.floor(saveNumber(src.goldLeaves)),goldUnlocks:saveStringList(src.goldUnlocks,standard),bugPurchases:saveStringList(src.bugPurchases,standard),upgrades:{choices:0},settings:{music:settings.music!==false,sfx:settings.sfx!==false,damageNumbers:settings.damageNumbers!==false,volume:saveNumber(settings.volume,50,100),pcControls:settings.pcControls==='wasd'?'wasd':'mouse'},cosmetics:{owned:saveStringList(cos.owned,bugs.map(id=>'medieval:'+id)),equipped:{},medievalBundle:cos.medievalBundle===true,enabled:cos.enabled!==false},legendaryGolden:{revealed:legend.revealed===true||legend.owned===true,owned:legend.owned===true,noticeSeen:legend.noticeSeen===true},mainGameBeaten:src.mainGameBeaten===true,achievements:Object.fromEntries(ACHIEVEMENT_DEFS.map(a=>[a.id,achievements[a.id]===true])),discovered:saveStringList(src.discovered),unlocked:['ladybug']};
+ const bugs=['ladybug','beetle','butterfly','golden'],standard=['beetle','butterfly'],out={schemaVersion:3,scrap:Math.floor(saveNumber(src.scrap)),best:Math.floor(saveNumber(src.best,0,100)),endlessBest:Math.floor(saveNumber(src.endlessBest)),goldBest:Math.floor(saveNumber(src.goldBest,0,50)),runs:Math.floor(saveNumber(src.runs)),goldLeaves:Math.floor(saveNumber(src.goldLeaves)),goldUnlocks:saveStringList(src.goldUnlocks,standard),bugPurchases:saveStringList(src.bugPurchases,standard),upgrades:{choices:0},settings:{music:settings.music!==false,sfx:settings.sfx!==false,damageNumbers:settings.damageNumbers!==false,volume:saveNumber(settings.volume,50,100),pcControls:settings.pcControls==='wasd'?'wasd':'mouse'},cosmetics:{owned:saveStringList(cos.owned,bugs.map(id=>'medieval:'+id)),equipped:{},medievalBundle:cos.medievalBundle===true,enabled:cos.enabled!==false},legendaryGolden:{revealed:legend.revealed===true||legend.owned===true,owned:legend.owned===true,noticeSeen:legend.noticeSeen===true},mainGameBeaten:src.mainGameBeaten===true,achievements:Object.fromEntries(ACHIEVEMENT_DEFS.map(a=>[a.id,achievements[a.id]===true])),achievementEarned:Object.fromEntries(ACHIEVEMENT_DEFS.map(a=>[a.id,achievements[a.id]===true||src.achievementEarned?.[a.id]===true])),discovered:saveStringList(src.discovered),unlocked:['ladybug']};
  for(const key of ['hp','dmg','magnet','coins'])out.upgrades[key]=Math.floor(saveNumber(u[key],0,10));
  for(const id of standard)if(out.goldUnlocks.includes(id)||out.bugPurchases.includes(id))out.unlocked.push(id);
  if(out.legendaryGolden.owned)out.unlocked.push('golden');
@@ -1757,7 +1770,7 @@ function loadSave(){
  const raw=storageRead(SAVEKEY);let data={};
  const legacyGoldRaw=storageRead(GOLDKEY),legacyUnlockRaw=storageRead(GOLDUNLOCKKEY);
  const genuinelyNew=raw===null&&legacyGoldRaw===null&&legacyUnlockRaw===null&&!bbStorageFailed;
- if(raw!==null){try{data=JSON.parse(raw);if(!saveObject(data)){archiveSaveData(SAVEKEY,raw,'invalid shape');data={}}else if(['scrap','best','runs','goldLeaves','endlessBest','goldBest'].some(k=>data[k]!==undefined&&(typeof data[k]!=='number'||!Number.isFinite(data[k])||data[k]<0))||['upgrades','settings','cosmetics','legendaryGolden','achievements'].some(k=>data[k]!==undefined&&!saveObject(data[k]))||['goldUnlocks','bugPurchases','discovered'].some(k=>data[k]!==undefined&&!Array.isArray(data[k])))archiveSaveData(SAVEKEY,raw,'invalid save fields')}catch(e){archiveSaveData(SAVEKEY,raw);data={}}}
+ if(raw!==null){try{data=JSON.parse(raw);if(!saveObject(data)){archiveSaveData(SAVEKEY,raw,'invalid shape');data={}}else if(['scrap','best','runs','goldLeaves','endlessBest','goldBest'].some(k=>data[k]!==undefined&&(typeof data[k]!=='number'||!Number.isFinite(data[k])||data[k]<0))||['upgrades','settings','cosmetics','legendaryGolden','achievements','achievementEarned'].some(k=>data[k]!==undefined&&!saveObject(data[k]))||['goldUnlocks','bugPurchases','discovered'].some(k=>data[k]!==undefined&&!Array.isArray(data[k])))archiveSaveData(SAVEKEY,raw,'invalid save fields')}catch(e){archiveSaveData(SAVEKEY,raw);data={}}}
  // Version 3 stores one authoritative object; split legacy keys are migration inputs only.
  if(data.schemaVersion!==3){const gold=legacyGoldRaw===null?NaN:Number(legacyGoldRaw);if(Number.isFinite(gold)&&gold>=0)data.goldLeaves=gold;else if(legacyGoldRaw!==null)archiveSaveData(GOLDKEY,legacyGoldRaw,'invalid balance');let unlocks=null;if(legacyUnlockRaw!==null){try{unlocks=JSON.parse(legacyUnlockRaw)}catch(e){archiveSaveData(GOLDUNLOCKKEY,legacyUnlockRaw)}}if(Array.isArray(unlocks))data.goldUnlocks=saveStringList([...(Array.isArray(data.goldUnlocks)?data.goldUnlocks:[]),...unlocks],['beetle','butterfly']);else if(unlocks!==null)archiveSaveData(GOLDUNLOCKKEY,legacyUnlockRaw,'invalid unlock list')}
  if(genuinelyNew&&data.goldLeaves===undefined)data.goldLeaves=10;
@@ -2058,6 +2071,31 @@ function presentGardenUpdateNote(w){const beat=GARDEN_STORY[w];if(!beat)return f
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;if(game){game.recoveryPhase='storyNote';game.paused=true;saveRunRecovery('story-note')}presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
 function startGardenStoryNotesTest(){if(!BB_DEV_MODE)return;storyNoteTestWaves=Object.keys(GARDEN_STORY).map(Number).sort((a,b)=>a-b);storyNoteTestIndex=0;pendingBossUpgrade=false;if(!storyNoteTestWaves.length)return;if(presentGardenUpdateNote(storyNoteTestWaves[0])){const b=$('storyContinue');if(b)b.textContent='NEXT NOTE →';beep(392,.08,.012,'triangle')}}
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');if(storyNoteTestWaves){storyNoteTestIndex++;if(storyNoteTestIndex<storyNoteTestWaves.length){presentGardenUpdateNote(storyNoteTestWaves[storyNoteTestIndex]);beep(620,.06,.01,'triangle');return}storyNoteTestWaves=null;storyNoteTestIndex=0;story.classList.add('hidden');story.style.display='';applyStoryLeafCorruption(0);$('storyContinue').textContent='Follow the trail →';beep(620,.07,.012,'triangle');return}story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
+// Leaf earnings balance (rc.12): permanent bonuses stay unchanged.
+// In-run +20% Forager and +10% Sprint increase the SAME base, never the prior bonus.
+// Tenths avoid rounding drift: 2 tenths = +20%, and the in-run cap is +200%.
+const BB_LEAF_BONUS_CAP_TENTHS=20;
+function normalizeLeafRunBalance(p){
+ const base=(Number.isFinite(p.leafBaseMultiplier)&&p.leafBaseMultiplier>0)
+  ?p.leafBaseMultiplier:1+.10*(save.upgrades?.coins||0);
+ // Existing rc.11 mid-run recoveries recorded only the old compounded greed value.
+ // Convert their current effective bonus conservatively into the capped new system.
+ const legacyTenths=Math.max(0,Math.floor(((Number.isFinite(p.greed)?p.greed:base)/base-1)*10+1e-8));
+ const tenths=Number.isFinite(p.leafBonusTenths)?Math.floor(p.leafBonusTenths):legacyTenths;
+ p.leafBaseMultiplier=base;
+ p.leafBonusTenths=Math.min(BB_LEAF_BONUS_CAP_TENTHS,Math.max(0,tenths));
+ p.greed=base*(1+p.leafBonusTenths*.10);
+}
+function leafBonusRoom(p){
+ if(!p)return BB_LEAF_BONUS_CAP_TENTHS;
+ normalizeLeafRunBalance(p);
+ return BB_LEAF_BONUS_CAP_TENTHS-p.leafBonusTenths;
+}
+function addLeafRunBonus(p,tenths){
+ normalizeLeafRunBalance(p);
+ p.leafBonusTenths=Math.min(BB_LEAF_BONUS_CAP_TENTHS,p.leafBonusTenths+Math.max(0,Math.floor(tenths)));
+ p.greed=p.leafBaseMultiplier*(1+p.leafBonusTenths*.10);
+}
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
  {id:'heart',icon:'',name:'Clover Heart',desc:'+20 max HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
@@ -2065,10 +2103,10 @@ const UP=[
  {id:'crit',icon:'',name:'Lucky Bug',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
  {id:'triple',icon:'',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
  {id:'magnet',icon:'',name:'Pollen Pull',desc:'+65% Leaf range',rarity:'rare',apply:p=>p.magnet+=65},
- {id:'greed',icon:'',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>p.greed*=1.20},
+ {id:'greed',icon:'',name:'Leaf Forager',desc:'+20% Leaves from enemies',rarity:'rare',apply:p=>addLeafRunBonus(p,2)},
  {id:'clone',icon:'',name:'Little Buddy',desc:'Little Buddy attacks for 5 waves',rarity:'epic',apply:p=>{p.clones++;p.helpers=p.helpers||[];const edge=Math.floor(Math.random()*4),pad=34;let hx=p.x,hy=p.y;if(edge===0){hx=-pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===1){hx=W+pad;hy=Math.max(24,Math.min(H-24,p.y))}else if(edge===2){hx=Math.max(24,Math.min(W-24,p.x));hy=-pad}else{hx=Math.max(24,Math.min(W-24,p.x));hy=H+pad}p.helpers.push({bornWave:game.wave,leaving:false,entering:true,joining:0,x:hx,y:hy})}},
  {id:'helperArmy',icon:'',name:'Little Buddy Army',desc:'10 Little Buddies one-hit enemies for the entire next wave',rarity:'epic',apply:p=>{const w=game.wave+1;if(w%5===0)return;p.helperArmyWave=w;p.helperArmyReadyAt=0;p.helperArmyFormedAt=0;p.helperArmyHelpers=[];for(let i=0;i<10;i++)p.helperArmyHelpers.push(makeArmyHelper(i))}},
- {id:'gold',icon:'',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;p.greed*=1.10}}
+ {id:'gold',icon:'',name:'Garden Sprint',desc:'+10% move speed + 10% more Leaves',rarity:'rare',apply:p=>{p.speed*=1.10;addLeafRunBonus(p,1)}}
 ];
 
 function makeArmyHelper(i=0){
@@ -2226,7 +2264,7 @@ function restoreRecoveredRun(){
   game.finalBoss=Number.isInteger(s.finalBossIndex)?game.enemies[s.finalBossIndex]||null:null;
   game.goldDeathBoss=Number.isInteger(s.goldDeathBossIndex)?game.enemies[s.goldDeathBossIndex]||null:null;
   game.over=false;game.testMode=false;game.paused=true;
-  const p=game.p;p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y));p.moveX=p.x;p.moveY=p.y;
+  const p=game.p;normalizeLeafRunBalance(p);p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y));p.moveX=p.x;p.moveY=p.y;
   const shift=performance.now()-saveNumber(snap.savedAt);
   for(const key of ['lastAttack','lastMeteor','helperShot','superBuddyShot','lastDamagePopup'])if(Number.isFinite(p[key]))p[key]+=shift;
   for(const e of game.enemies)if(Number.isFinite(e.goldDeathStartedAt))e.goldDeathStartedAt+=shift;
@@ -2243,7 +2281,7 @@ function resetGameProgress(){
  const kept=normalizeSave(save);
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0}
  stopGameLoop();bossMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();showGameUI(false);game=null;clearRunRecovery();
- save=normalizeSave({achievements:kept.achievements,goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
+ save=normalizeSave({achievements:kept.achievements,achievementEarned:kept.achievementEarned,goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -2514,10 +2552,17 @@ function formatLeafCount(value){const n=Math.max(0,Math.floor(Number(value)||0))
 function buildAchievements(){
  const list=$('achievementList');if(!list)return;
  list.innerHTML=ACHIEVEMENT_DEFS.map(a=>{
-  const earned=save.achievements?.[a.id]===true;
+  const collected=save.achievements?.[a.id]===true;
+  const earned=collected||save.achievementEarned?.[a.id]===true;
+  const status=collected?'COLLECTED':earned?'COMPLETED':'NOT COMPLETED';
+  const kind=earned&&!collected?'button':'div';
+  const attrs=kind==='button'?` type="button" data-achievement="${a.id}" aria-label="${a.title}, completed"`:'';
   const icon=a.currency==='gold'?'<span class="goldLeafIcon" aria-hidden="true"></span>':'<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>';
-  return `<div class="achievementRow ${earned?'earned':'locked'}"><div class="achievementText"><span class="achievementTitle">${a.title}</span><span class="achievementStatus">${earned?'COMPLETED':'NOT COMPLETED'}</span></div><span class="achievementReward">${icon}${a.reward.toLocaleString()}</span></div>`;
+  return `<${kind} class="achievementRow ${collected?'collected':earned?'ready':'locked'}"${attrs}><div class="achievementText"><span class="achievementTitle">${a.title}</span><span class="achievementStatus">${status}</span></div><span class="achievementReward">${icon}${a.reward.toLocaleString()}</span></${kind}>`;
  }).join('');
+ list.querySelectorAll('button[data-achievement]').forEach(row=>{
+  row.onclick=()=>{initAudio();if(collectAchievement(row.dataset.achievement))beep(820,.11,.020,'triangle')};
+ });
 }
 function storyWaveActuallyCleared(g){
  // Require the same empty, fully spawned arena that the regular update loop checks.
@@ -2528,11 +2573,11 @@ function storyWaveActuallyCleared(g){
  }
  return true;
 }
-function grantAchievement(id,legacy=false){
+function earnAchievement(id,legacy=false){
  const a=ACHIEVEMENT_DEFS.find(item=>item.id===id);
- if(!a||save.achievements?.[id]===true)return false;
+ if(!a||save.achievementEarned?.[id]===true||save.achievements?.[id]===true)return false;
  if(legacy){
-  // Historic proof exists only for the three ordinary milestones. Never infer boost-free runs.
+  // Old progress can prove the first three milestones, never a boost-free run.
   const valid=(id==='wave10'&&(save.best>=11||save.mainGameBeaten))||
    (id==='mosquito'&&save.endlessUnlocked===true)||
    (id==='wave50'&&(save.best>=51||save.mainGameBeaten));
@@ -2550,17 +2595,24 @@ function grantAchievement(id,legacy=false){
    if(g.wave!==100||!g.storyAchCleanRun||g.storyAchClearedThrough!==99||g.storyAchUsedBoost||!boss||boss.kind!=='gardenHeart'||boss.hp>0)return false;
   }else return false;
  }
+ // Earning only unlocks the tile. No Leaves are added before a direct player tap.
+ save.achievementEarned[id]=true;
+ persist();return true;
+}
+function collectAchievement(id){
+ const a=ACHIEVEMENT_DEFS.find(item=>item.id===id);
+ if(!a||save.achievementEarned?.[id]!==true||save.achievements?.[id]===true)return false;
  save.achievements[id]=true;
  if(a.currency==='gold')save.goldLeaves=(save.goldLeaves||0)+a.reward;
  else save.scrap=(save.scrap||0)+a.reward;
- // One authoritative save write contains BOTH the payout and its one-time claim flag.
- persist();return true;
+ // Store the payout and its one-time collection flag together, even across resets.
+ persist();refreshScreenLeafBanks();buildAchievements();return true;
 }
 function restoreEarnedStoryMilestones(){
  // Older saves cannot prove a boost-free run, but visiting the next wave proves the prior boss fell.
- if(save.best>=11||save.mainGameBeaten)grantAchievement('wave10',true);
- if(save.endlessUnlocked)grantAchievement('mosquito',true);
- if(save.best>=51||save.mainGameBeaten)grantAchievement('wave50',true);
+ if(save.best>=11||save.mainGameBeaten)earnAchievement('wave10',true);
+ if(save.endlessUnlocked)earnAchievement('mosquito',true);
+ if(save.best>=51||save.mainGameBeaten)earnAchievement('wave50',true);
 }
 function recordStoryAchievementWaveClear(g){
  if(g.mode!=='story'||g.testMode||!storyWaveActuallyCleared(g))return;
@@ -2568,17 +2620,17 @@ function recordStoryAchievementWaveClear(g){
   if(g.storyAchClearedThrough===g.wave-1)g.storyAchClearedThrough=g.wave;
   else g.storyAchCleanRun=false; // No skipped waves, including across recovery.
  }
- if(g.wave===10)grantAchievement('wave10');
- if(g.wave===25&&save.endlessUnlocked)grantAchievement('mosquito');
- if(g.wave===50)grantAchievement('wave50');
+ if(g.wave===10)earnAchievement('wave10');
+ if(g.wave===25&&save.endlessUnlocked)earnAchievement('mosquito');
+ if(g.wave===50)earnAchievement('wave50');
 }
 function maybeGrantNoBoostWave30(g){
  if(g.mode==='story'&&!g.testMode&&g.storyAchCleanRun&&g.storyAchClearedThrough===29&&!g.storyAchUsedBoost&&g.wave===30)
-  grantAchievement('wave30NoBoost');
+  earnAchievement('wave30NoBoost');
 }
 function maybeGrantNoBoostStory(g,boss){
  if(g.mode==='story'&&!g.testMode&&g.storyAchCleanRun&&g.storyAchClearedThrough===99&&!g.storyAchUsedBoost&&g.wave===100&&boss&&boss.kind==='gardenHeart'&&boss.hp<=0)
-  grantAchievement('storyNoBoost');
+  earnAchievement('storyNoBoost');
 }
 
 function refreshScreenLeafBanks(){const n=Math.max(0,Number(save.scrap)||0),display=n>=1000000?formatLeafCount(n):n.toLocaleString();if($('bugsLeafBank'))$('bugsLeafBank').textContent=display;if($('pauseLeafBank'))$('pauseLeafBank').textContent=display}
@@ -2642,6 +2694,8 @@ function basePlayer(){
  p.rate/=1+.10*(u.magnet||0);
  p.magnet*=1+.10*(u.coins||0);
  p.greed*=1+.10*(u.coins||0);
+ p.leafBaseMultiplier=p.greed;
+ p.leafBonusTenths=0;
  p.hp=p.maxHp;
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
@@ -3920,7 +3974,15 @@ function upgradeCardIconMarkup(u){
  if(u.id==='endlessRepel')return '';
  return upgradeIconSvg(u.id);
 }
-function upgradeChoiceHtml(u){return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${u.desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`}
+function upgradeChoiceHtml(u){
+ let desc=u.desc;
+ if(game?.mode==='story'&&(u.id==='greed'||u.id==='gold')){
+  const available=leafBonusRoom(game.p);
+  if(u.id==='greed')desc=`+${Math.min(20,available*10)}% Leaves from enemies`;
+  if(u.id==='gold'&&available===0)desc='+10% move speed (Leaf bonus maxed)';
+ }
+ return `<button class="choice ${u.rarity} ${upgradeCardClass(u)}"><div class="rarity">${u.rarity}</div><div class="art">${u.icon||''}</div><b>${u.name}</b><p class="muted">${desc}</p><span class="upgradeMark">${upgradeCardIconMarkup(u)}</span></button>`;
+}
 function paintUpgradeBuddyIcons(root,choices){
  [...root.children].forEach((el,i)=>{const u=choices[i];if(!u)return;const mark=el.querySelector('.upgradeMark');if(!mark)return;
 if(u.id==='endlessRepel'){
@@ -3974,7 +4036,7 @@ function openUpgrade(afterWave=false,restoring=false){
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;initAudio();picks[i].apply(g.p);clearPendingUpgrade();$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound('common');updateHud();if(afterWave)beginWave(g.wave+1);saveRunRecovery('upgrade-picked')});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
 }
-const choices=restoring?recoveredUpgradeChoices(UP):[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
+const choices=restoring?recoveredUpgradeChoices(UP):[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(u.id!=='greed'||leafBonusRoom(g.p)>0)&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
  const count=3;
  if(!choices.length){
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
@@ -4010,7 +4072,7 @@ function finishFinalPrep(){
 }
 function finalUpgradePick(remaining,restoring=false){
  const g=game;g.paused=true;g.finalUpgradeRemaining=remaining;let picked=false;
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)),choices=restoring?recoveredUpgradeChoices(pool):[];
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafBonusRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  rememberUpgradeChoices('finalUpgrade',choices,true);
  $('upgradeTitle').textContent='FINAL PREPARATION — '+(4-remaining)+' / 3';
@@ -4031,7 +4093,7 @@ function openWave50BonusUpgrades(){
 function wave50BonusPick(restoring=false){
  const g=game,remaining=g.wave50BonusRemaining||0;if(remaining<=0){closeUpgrade();g.paused=false;beginWave(g.wave+1);return}
  g.paused=true;let picked=false;
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)),choices=restoring?recoveredUpgradeChoices(pool):[];
+ const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafBonusRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  rememberUpgradeChoices('wave50',choices,true);
  $('upgradeTitle').textContent='WAVE 50 CLEARED!';$('upgradeSub').textContent='Choose 3 upgrades — '+remaining+' remaining';
