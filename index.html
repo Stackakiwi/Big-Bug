@@ -1379,6 +1379,54 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 }
 
 .testJump,.creditsTestBtn,.purifyTestBtn{display:none!important}
+
+/* Achievements: upper-left Home button matches the exact highlighted placement. */
+#home #homeAchievementsBtn{
+  position:absolute!important;left:12px!important;top:max(10px,env(safe-area-inset-top))!important;
+  z-index:46!important;width:min(220px,43vw)!important;min-width:0!important;min-height:52px;
+  margin:0!important;padding:10px 9px!important;border-radius:18px!important;
+  background:linear-gradient(180deg,#f5c34c,#d89a2d 63%,#a76b1f)!important;
+  border:2px solid #ffe4a1!important;color:#35260e!important;
+  box-shadow:inset 0 2px #fff3c59c,inset 0 -4px #8b581d,0 5px 0 #5c451f,0 7px 13px #0004!important;
+  text-shadow:0 1px #ffedbd!important;font:1000 clamp(11px,2.5vw,17px)/1.1 ui-rounded,system-ui,-apple-system,sans-serif;
+  letter-spacing:-.3px;white-space:nowrap;cursor:pointer;pointer-events:auto!important;
+}
+#achievements{overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;
+  -webkit-overflow-scrolling:touch!important;padding:20px 12px!important;
+  background:radial-gradient(ellipse at 50% 0%,#274b3055 0 20%,transparent 48%),linear-gradient(#0a1e12,#041109)!important}
+#achievements .achievementsPanel{width:min(650px,100%);max-height:none;flex:0 0 auto;margin:auto 0!important;
+  border:2px solid #547b52;border-radius:20px;padding:24px 20px 18px;
+  background:linear-gradient(160deg,#143520,#0b2416 65%,#06170e);
+  box-shadow:0 8px 0 #031008,0 24px 54px #0009,inset 0 0 25px #2b54303b}
+#achievements h2{font:800 clamp(30px,6vw,43px)/1.05 'Marker Felt','Chalkboard SE','Noteworthy',system-ui,sans-serif;
+  text-align:center;color:#fff6d9;text-shadow:0 2px #06140b;letter-spacing:.2px;margin:0 0 10px}
+#achievements .achievementIntro{font-size:16px;text-align:center;color:#d5deca;opacity:1;margin:0 0 18px;line-height:1.35}
+.achievementList{display:grid;grid-template-columns:1fr;gap:10px}
+.achievementRow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:90px;
+  padding:14px 15px;border-radius:13px;border:1px solid #4f7950;background:linear-gradient(155deg,#20492d,#123420);
+  box-shadow:inset 0 1px #ffffff13,0 3px #05180e}
+.achievementRow.locked{background:linear-gradient(155deg,#303934,#202b24);border-color:#556259;
+  filter:grayscale(1);opacity:.63}
+.achievementRow .achievementText{flex:1;min-width:0}
+.achievementRow .achievementTitle{display:block;color:#f6f4e4;font-size:19px;font-weight:950;line-height:1.18}
+.achievementRow .achievementStatus{display:block;margin-top:7px;font-size:11px;font-weight:950;letter-spacing:1px;color:#bbd8ac}
+.achievementRow.locked .achievementStatus{color:#b3bdb1}
+.achievementReward{flex:0 0 auto;display:flex;align-items:center;gap:6px;justify-content:flex-end;
+  min-width:108px;font-size:19px;font-weight:1000;white-space:nowrap;color:#fff1bf}
+.achievementReward .leafCurrencyIcon.bbLeafIcon,.achievementReward .goldLeafIcon{
+  width:25px;height:25px;flex:0 0 25px;margin:0;vertical-align:0}
+#achievements .achievementNote{font-size:12px;line-height:1.4;opacity:.7;color:#d5deca;text-align:center;margin:16px 6px 12px}
+#achievements .achievementsBack{width:100%;min-height:56px;min-width:0;margin:4px 0 0;font-size:18px}
+@media(max-width:440px){
+  #home #homeAchievementsBtn{width:min(166px,43vw)!important;padding:9px 5px!important;
+    border-radius:15px!important;font-size:clamp(11px,2.6vw,13px)!important;letter-spacing:-.4px!important}
+  #achievements .achievementsPanel{padding:19px 12px 15px;border-radius:16px}
+  #achievements .achievementIntro{font-size:15px}
+  .achievementRow{min-height:88px;padding:12px 11px;gap:8px}
+  .achievementRow .achievementTitle{font-size:17px}
+  .achievementReward{min-width:83px;font-size:17px;gap:4px}
+  .achievementReward .leafCurrencyIcon.bbLeafIcon,.achievementReward .goldLeafIcon{width:22px;height:22px;flex-basis:22px}
+}
 </style>
 </head>
 <body>
@@ -1403,6 +1451,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
+  <button id="homeAchievementsBtn" class="btn" data-action="achievements" aria-label="Open Achievements">ACHIEVEMENTS</button>
   <button class="homeGoldBalance" data-action="goldShop" aria-label="Open Gold Leaf Shop"><span class="goldLeafIcon" aria-hidden="true"></span><span id="homeGold">0</span><small> SHOP</small></button>
   <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
   <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
@@ -1418,11 +1467,21 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.9</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.9</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.11</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.11</div>
 </section>
 
-<section id="bugs" class="screen hidden">
+ <section id="achievements" class="screen hidden" aria-label="Achievements">
+  <div class="panel achievementsPanel">
+    <h2>ACHIEVEMENTS</h2>
+    <p class="achievementIntro">Complete Story Mode challenges to earn these rewards.</p>
+    <div id="achievementList" class="achievementList"></div>
+    <p class="achievementNote">Rewards are given automatically, once per achievement. Completed achievements are kept when you reset progress.</p>
+    <button class="btn dark achievementsBack" data-action="home">BACK TO GARDEN</button>
+  </div>
+ </section>
+
+ <section id="bugs" class="screen hidden">
  <div class="panel"><div class="screenLeafBank" aria-label="Total Leaves"><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span id="bugsLeafBank">0</span></div><h2><canvas id="bugParadeIcon" width="52" height="52" aria-hidden="true" style="width:1.18em;height:1.18em;vertical-align:-.23em;margin-right:.08em"></canvas> THE BUG PARADE</h2><p>Pick your tiny champion for the adventure ahead.</p><div id="bugGrid" class="grid"></div><button class="btn dark" data-action="home">BACK</button></div>
 </section>
 
@@ -1510,9 +1569,9 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="settingRow"><div class="settingText"><b>Damage Numbers</b><div class="muted">Show floating damage during fights</div></div><button class="toggleBtn" id="damageToggle" data-setting="damageNumbers">ON</button></div>
   <button class="btn dark settingsHelpBtn" data-action="help">HOW TO PLAY</button>
   <div class="settingsDanger">
-   <h3>Reset Progress</h3><p class="muted">Reset earned Leaves, upgrades, discoveries, records, and mode progress. Purchased bugs, cosmetics, Gold Leaves, and settings stay safe.</p>
+   <h3>Reset Progress</h3><p class="muted">Reset earned Leaves, upgrades, discoveries, records, and mode progress. Achievements stay completed and cannot pay out twice. Purchased bugs, cosmetics, Gold Leaves, and settings stay safe.</p>
    <button class="btn red" data-action="showResetConfirm">RESET PROGRESS</button>
-   <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This resets earned progress and cannot be undone. Purchased bugs, cosmetics, Gold Leaves, and settings are kept.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
+   <div id="resetConfirm" class="hidden"><h3>Are you sure?</h3><p>This resets earned progress and cannot be undone. Achievements stay completed. Purchased bugs, cosmetics, Gold Leaves, and settings are kept.</p><button class="btn dark small" data-action="cancelReset">CANCEL</button><button class="btn red small" data-action="confirmReset">YES, RESET</button></div>
   </div>
   <button id="settingsBackBtn" class="btn dark" data-action="settingsBack">BACK</button>
  </div>
@@ -1636,7 +1695,7 @@ function resize(){
 } addEventListener('resize',resize);resize();
 
 const $=id=>document.getElementById(id);
-const screens=['home','bugs','cosmetics','base','gardenBook','goldShop','settings','help','firstHelp','upgrade','pause','goldFail','gameover','finalPrep','ending'];
+const screens=['home','achievements','bugs','cosmetics','base','gardenBook','goldShop','settings','help','firstHelp','upgrade','pause','goldFail','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  if(id!=='none')resetGameInput();
@@ -1647,6 +1706,13 @@ function screen(id){
   const t=$('telegraph');if(t){t.classList.add('hidden');clearTimeout(flashBanner._t)}
  }
 }
+const ACHIEVEMENT_DEFS=Object.freeze([
+ {id:'wave10',title:'Beat Wave 10',currency:'leaves',reward:2000},
+ {id:'mosquito',title:'Unlock Mosquito Mode',currency:'leaves',reward:5000},
+ {id:'wave50',title:'Beat Wave 50',currency:'leaves',reward:25000},
+ {id:'wave30NoBoost',title:'Reach Wave 30 with no Boost used',currency:'gold',reward:10},
+ {id:'storyNoBoost',title:'Beat Story Mode with no Boost used',currency:'gold',reward:100}
+]);
 const SAVEKEY='big_bug_save_v1';
 const GOLDKEY='big_bug_gold_v1';
 const GOLDUNLOCKKEY='big_bug_gold_unlocks_v1';
@@ -1675,8 +1741,8 @@ function saveObject(value){return !!value&&typeof value==='object'&&!Array.isArr
 function saveNumber(value,fallback=0,max=Number.MAX_SAFE_INTEGER){return typeof value==='number'&&Number.isFinite(value)?Math.min(max,Math.max(0,value)):fallback}
 function saveStringList(value,allowed=null){return Array.isArray(value)?[...new Set(value.filter(v=>typeof v==='string'&&v.length<=100&&(!allowed||allowed.includes(v))))].slice(0,256):[]}
 function normalizeSave(input={}){
- const src=saveObject(input)?input:{},u=saveObject(src.upgrades)?src.upgrades:{},settings=saveObject(src.settings)?src.settings:{},cos=saveObject(src.cosmetics)?src.cosmetics:{},legend=saveObject(src.legendaryGolden)?src.legendaryGolden:{};
- const bugs=['ladybug','beetle','butterfly','golden'],standard=['beetle','butterfly'],out={schemaVersion:3,scrap:Math.floor(saveNumber(src.scrap)),best:Math.floor(saveNumber(src.best,0,100)),endlessBest:Math.floor(saveNumber(src.endlessBest)),goldBest:Math.floor(saveNumber(src.goldBest,0,50)),runs:Math.floor(saveNumber(src.runs)),goldLeaves:Math.floor(saveNumber(src.goldLeaves)),goldUnlocks:saveStringList(src.goldUnlocks,standard),bugPurchases:saveStringList(src.bugPurchases,standard),upgrades:{choices:0},settings:{music:settings.music!==false,sfx:settings.sfx!==false,damageNumbers:settings.damageNumbers!==false,volume:saveNumber(settings.volume,50,100),pcControls:settings.pcControls==='wasd'?'wasd':'mouse'},cosmetics:{owned:saveStringList(cos.owned,bugs.map(id=>'medieval:'+id)),equipped:{},medievalBundle:cos.medievalBundle===true,enabled:cos.enabled!==false},legendaryGolden:{revealed:legend.revealed===true||legend.owned===true,owned:legend.owned===true,noticeSeen:legend.noticeSeen===true},mainGameBeaten:src.mainGameBeaten===true,discovered:saveStringList(src.discovered),unlocked:['ladybug']};
+ const src=saveObject(input)?input:{},u=saveObject(src.upgrades)?src.upgrades:{},settings=saveObject(src.settings)?src.settings:{},cos=saveObject(src.cosmetics)?src.cosmetics:{},legend=saveObject(src.legendaryGolden)?src.legendaryGolden:{},achievements=saveObject(src.achievements)?src.achievements:{};
+ const bugs=['ladybug','beetle','butterfly','golden'],standard=['beetle','butterfly'],out={schemaVersion:3,scrap:Math.floor(saveNumber(src.scrap)),best:Math.floor(saveNumber(src.best,0,100)),endlessBest:Math.floor(saveNumber(src.endlessBest)),goldBest:Math.floor(saveNumber(src.goldBest,0,50)),runs:Math.floor(saveNumber(src.runs)),goldLeaves:Math.floor(saveNumber(src.goldLeaves)),goldUnlocks:saveStringList(src.goldUnlocks,standard),bugPurchases:saveStringList(src.bugPurchases,standard),upgrades:{choices:0},settings:{music:settings.music!==false,sfx:settings.sfx!==false,damageNumbers:settings.damageNumbers!==false,volume:saveNumber(settings.volume,50,100),pcControls:settings.pcControls==='wasd'?'wasd':'mouse'},cosmetics:{owned:saveStringList(cos.owned,bugs.map(id=>'medieval:'+id)),equipped:{},medievalBundle:cos.medievalBundle===true,enabled:cos.enabled!==false},legendaryGolden:{revealed:legend.revealed===true||legend.owned===true,owned:legend.owned===true,noticeSeen:legend.noticeSeen===true},mainGameBeaten:src.mainGameBeaten===true,achievements:Object.fromEntries(ACHIEVEMENT_DEFS.map(a=>[a.id,achievements[a.id]===true])),discovered:saveStringList(src.discovered),unlocked:['ladybug']};
  for(const key of ['hp','dmg','magnet','coins'])out.upgrades[key]=Math.floor(saveNumber(u[key],0,10));
  for(const id of standard)if(out.goldUnlocks.includes(id)||out.bugPurchases.includes(id))out.unlocked.push(id);
  if(out.legendaryGolden.owned)out.unlocked.push('golden');
@@ -1691,7 +1757,7 @@ function loadSave(){
  const raw=storageRead(SAVEKEY);let data={};
  const legacyGoldRaw=storageRead(GOLDKEY),legacyUnlockRaw=storageRead(GOLDUNLOCKKEY);
  const genuinelyNew=raw===null&&legacyGoldRaw===null&&legacyUnlockRaw===null&&!bbStorageFailed;
- if(raw!==null){try{data=JSON.parse(raw);if(!saveObject(data)){archiveSaveData(SAVEKEY,raw,'invalid shape');data={}}else if(['scrap','best','runs','goldLeaves','endlessBest','goldBest'].some(k=>data[k]!==undefined&&(typeof data[k]!=='number'||!Number.isFinite(data[k])||data[k]<0))||['upgrades','settings','cosmetics','legendaryGolden'].some(k=>data[k]!==undefined&&!saveObject(data[k]))||['goldUnlocks','bugPurchases','discovered'].some(k=>data[k]!==undefined&&!Array.isArray(data[k])))archiveSaveData(SAVEKEY,raw,'invalid save fields')}catch(e){archiveSaveData(SAVEKEY,raw);data={}}}
+ if(raw!==null){try{data=JSON.parse(raw);if(!saveObject(data)){archiveSaveData(SAVEKEY,raw,'invalid shape');data={}}else if(['scrap','best','runs','goldLeaves','endlessBest','goldBest'].some(k=>data[k]!==undefined&&(typeof data[k]!=='number'||!Number.isFinite(data[k])||data[k]<0))||['upgrades','settings','cosmetics','legendaryGolden','achievements'].some(k=>data[k]!==undefined&&!saveObject(data[k]))||['goldUnlocks','bugPurchases','discovered'].some(k=>data[k]!==undefined&&!Array.isArray(data[k])))archiveSaveData(SAVEKEY,raw,'invalid save fields')}catch(e){archiveSaveData(SAVEKEY,raw);data={}}}
  // Version 3 stores one authoritative object; split legacy keys are migration inputs only.
  if(data.schemaVersion!==3){const gold=legacyGoldRaw===null?NaN:Number(legacyGoldRaw);if(Number.isFinite(gold)&&gold>=0)data.goldLeaves=gold;else if(legacyGoldRaw!==null)archiveSaveData(GOLDKEY,legacyGoldRaw,'invalid balance');let unlocks=null;if(legacyUnlockRaw!==null){try{unlocks=JSON.parse(legacyUnlockRaw)}catch(e){archiveSaveData(GOLDUNLOCKKEY,legacyUnlockRaw)}}if(Array.isArray(unlocks))data.goldUnlocks=saveStringList([...(Array.isArray(data.goldUnlocks)?data.goldUnlocks:[]),...unlocks],['beetle','butterfly']);else if(unlocks!==null)archiveSaveData(GOLDUNLOCKKEY,legacyUnlockRaw,'invalid unlock list')}
  if(genuinelyNew&&data.goldLeaves===undefined)data.goldLeaves=10;
@@ -1891,7 +1957,7 @@ function makeMedievalPreview(id){
 }
 function buildCosmetics(){
  if(!save.cosmetics)save.cosmetics={owned:[],equipped:{},medievalBundle:false,enabled:true};
- const g=$('medievalGrid');if(!g)return;g.innerHTML='';if($('cosmeticGold'))$('cosmeticGold').textContent=save.goldLeaves||0;
+ const g=$('medievalGrid');if(!g)return;g.innerHTML='';if($('cosmeticGold'))$('cosmeticGold').textContent=formatLeafCount(save.goldLeaves||0);
  const toggle=$('cosmeticsToggleBtn');
  if(toggle){
   const on=save.cosmetics.enabled!==false;
@@ -2062,12 +2128,12 @@ function persistLeafPickup(){
  leafPersistTimer=setTimeout(()=>{leafPersistTimer=0;persist()},300);
 }
 function persist(){const saved=storageWrite(SAVEKEY,JSON.stringify(save));if(saved){storageWrite(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));storageWrite(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]))}refreshGoldUI();return saved}
-function refreshGoldUI(){const n=Math.max(0,save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n;if($('cosmeticGold'))$('cosmeticGold').textContent=n}
+function refreshGoldUI(){const n=formatLeafCount(save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n;if($('cosmeticGold'))$('cosmeticGold').textContent=n}
 
 const RUNSAVEKEY='big_bug_run_recovery_v1';
 function clearRunRecovery(){storageRemove(RUNSAVEKEY)}
 function createRunState(mode,p,bugId){
- return {mode,p,bugId,enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,bosses:[],shake:0,score:0,testMode:false,waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,rewardsBanked:false,endlessRewardPaid:0,recoveryPhase:'wave',pendingChoiceIds:[],pendingUpgradeAfterWave:false,finalUpgradeRemaining:0,wave50BonusRemaining:0,finalPrepDone:false,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0,goldMode:mode==='gold',goldFinale:false,goldCorruptionStart:0,goldFinaleRevealStart:0};
+ return {mode,p,bugId,enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,bosses:[],shake:0,score:0,testMode:false,waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,rewardsBanked:false,endlessRewardPaid:0,recoveryPhase:'wave',pendingChoiceIds:[],pendingUpgradeAfterWave:false,finalUpgradeRemaining:0,wave50BonusRemaining:0,finalPrepDone:false,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0,goldMode:mode==='gold',goldFinale:false,goldCorruptionStart:0,goldFinaleRevealStart:0,storyAchCleanRun:false,storyAchClearedThrough:0,storyAchUsedBoost:true};
 }
 function cloneCheckpointValue(value,enemyIndex,depth=0,entityRoot=false){
  if(value===null||typeof value==='boolean'||typeof value==='string')return value;
@@ -2177,7 +2243,7 @@ function resetGameProgress(){
  const kept=normalizeSave(save);
  if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0}
  stopGameLoop();bossMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();showGameUI(false);game=null;clearRunRecovery();
- save=normalizeSave({goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
+ save=normalizeSave({achievements:kept.achievements,goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -2253,7 +2319,7 @@ function quietButtonClick(){if(save.settings.sfx===false||performance.now()<bbAu
 function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
 function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
-function isMenuMusicScreen(){return ['home','bugs','cosmetics','base','gardenBook','settings','help','firstHelp','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
+function isMenuMusicScreen(){return ['home','achievements','bugs','cosmetics','base','gardenBook','settings','help','firstHelp','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
 function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&!game.finalPurify&&(!game.boss||game.boss.dead))}
 function shouldTitleMusicPlay(){if(game&&game.finalPurify)return false;const end=$('ending');if(end&&!end.classList.contains('hidden'))return false;return isMenuMusicScreen()||isQuietStoryMusic()}
 function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}if(titleMusicDeferredTimer){clearTimeout(titleMusicDeferredTimer);titleMusicDeferredTimer=null}hardStopMusicVoices();if(resetStep)titleMusicStep=0}
@@ -2442,7 +2508,80 @@ function bigBigAlienDeathSting(){
 
 function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
 
-function refreshScreenLeafBanks(){const n=Math.max(0,Number(save.scrap)||0);if($('bugsLeafBank'))$('bugsLeafBank').textContent=n.toLocaleString();if($('pauseLeafBank'))$('pauseLeafBank').textContent=n.toLocaleString()}
+// Display only: balances and game math always retain their exact integer values.
+function formatLeafCount(value){const n=Math.max(0,Math.floor(Number(value)||0));return n<1000000?String(n):String(Math.floor(n/100000)/10)+'M'}
+
+function buildAchievements(){
+ const list=$('achievementList');if(!list)return;
+ list.innerHTML=ACHIEVEMENT_DEFS.map(a=>{
+  const earned=save.achievements?.[a.id]===true;
+  const icon=a.currency==='gold'?'<span class="goldLeafIcon" aria-hidden="true"></span>':'<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>';
+  return `<div class="achievementRow ${earned?'earned':'locked'}"><div class="achievementText"><span class="achievementTitle">${a.title}</span><span class="achievementStatus">${earned?'COMPLETED':'NOT COMPLETED'}</span></div><span class="achievementReward">${icon}${a.reward.toLocaleString()}</span></div>`;
+ }).join('');
+}
+function storyWaveActuallyCleared(g){
+ // Require the same empty, fully spawned arena that the regular update loop checks.
+ if(!g||g.p?.hp<=0||g.waveActive||!g.intermission||(g.spawnLeft||0)>0||g.enemies.some(e=>e&&!e.dead))return false;
+ if(g.wave%5===0){
+  const bosses=g.bosses||[];
+  if(bosses.length!==bossKindsFor(g.wave).length||bosses.some(e=>e&&!e.dead&&e.hp>0))return false;
+ }
+ return true;
+}
+function grantAchievement(id,legacy=false){
+ const a=ACHIEVEMENT_DEFS.find(item=>item.id===id);
+ if(!a||save.achievements?.[id]===true)return false;
+ if(legacy){
+  // Historic proof exists only for the three ordinary milestones. Never infer boost-free runs.
+  const valid=(id==='wave10'&&(save.best>=11||save.mainGameBeaten))||
+   (id==='mosquito'&&save.endlessUnlocked===true)||
+   (id==='wave50'&&(save.best>=51||save.mainGameBeaten));
+  if(!valid)return false;
+ }else{
+  const g=game;
+  if(!g||g.mode!=='story'||g.testMode||g.over)return false;
+  if(['wave10','mosquito','wave50'].includes(id)){
+   const needed=id==='wave10'?10:id==='mosquito'?25:50;
+   if(g.wave!==needed||!storyWaveActuallyCleared(g)||(id==='mosquito'&&!save.endlessUnlocked))return false;
+  }else if(id==='wave30NoBoost'){
+   if(g.wave!==30||!g.waveActive||!g.storyAchCleanRun||g.storyAchClearedThrough!==29||g.storyAchUsedBoost)return false;
+  }else if(id==='storyNoBoost'){
+   const boss=g.finalBoss||g.boss;
+   if(g.wave!==100||!g.storyAchCleanRun||g.storyAchClearedThrough!==99||g.storyAchUsedBoost||!boss||boss.kind!=='gardenHeart'||boss.hp>0)return false;
+  }else return false;
+ }
+ save.achievements[id]=true;
+ if(a.currency==='gold')save.goldLeaves=(save.goldLeaves||0)+a.reward;
+ else save.scrap=(save.scrap||0)+a.reward;
+ // One authoritative save write contains BOTH the payout and its one-time claim flag.
+ persist();return true;
+}
+function restoreEarnedStoryMilestones(){
+ // Older saves cannot prove a boost-free run, but visiting the next wave proves the prior boss fell.
+ if(save.best>=11||save.mainGameBeaten)grantAchievement('wave10',true);
+ if(save.endlessUnlocked)grantAchievement('mosquito',true);
+ if(save.best>=51||save.mainGameBeaten)grantAchievement('wave50',true);
+}
+function recordStoryAchievementWaveClear(g){
+ if(g.mode!=='story'||g.testMode||!storyWaveActuallyCleared(g))return;
+ if(g.storyAchCleanRun){
+  if(g.storyAchClearedThrough===g.wave-1)g.storyAchClearedThrough=g.wave;
+  else g.storyAchCleanRun=false; // No skipped waves, including across recovery.
+ }
+ if(g.wave===10)grantAchievement('wave10');
+ if(g.wave===25&&save.endlessUnlocked)grantAchievement('mosquito');
+ if(g.wave===50)grantAchievement('wave50');
+}
+function maybeGrantNoBoostWave30(g){
+ if(g.mode==='story'&&!g.testMode&&g.storyAchCleanRun&&g.storyAchClearedThrough===29&&!g.storyAchUsedBoost&&g.wave===30)
+  grantAchievement('wave30NoBoost');
+}
+function maybeGrantNoBoostStory(g,boss){
+ if(g.mode==='story'&&!g.testMode&&g.storyAchCleanRun&&g.storyAchClearedThrough===99&&!g.storyAchUsedBoost&&g.wave===100&&boss&&boss.kind==='gardenHeart'&&boss.hp<=0)
+  grantAchievement('storyNoBoost');
+}
+
+function refreshScreenLeafBanks(){const n=Math.max(0,Number(save.scrap)||0),display=n>=1000000?formatLeafCount(n):n.toLocaleString();if($('bugsLeafBank'))$('bugsLeafBank').textContent=display;if($('pauseLeafBank'))$('pauseLeafBank').textContent=display}
 function buildBugScreen(){
  refreshScreenLeafBanks();
  if(!save.legendaryGolden||typeof save.legendaryGolden!=='object')save.legendaryGolden={revealed:false,owned:false};
@@ -2480,7 +2619,7 @@ function buildShop(){
    ['<span class="bbIcon bbBoltIcon shopDrawn"></span>','Quicker Reflexes',`+10% Attack Speed — ${s.magnet}/10`,permanentUpgradeLeafCost('magnet',s.magnet),'magnet'],
    ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% Pickup Range & Leaves — ${s.coins}/10`,permanentUpgradeLeafCost('coins',s.coins),'coins']
  ];
- $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${save.goldLeaves||0}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${save.scrap}</span></div>`+
+ $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${formatLeafCount(save.goldLeaves||0)}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${formatLeafCount(save.scrap)}</span></div>`+
   rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><div class="shopBuyStack"><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button><button class="btn small goldUpgradeBtn" data-buy-gold="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="goldLeafIcon" aria-hidden="true"></span>10`}</button></div></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
  $('shop').querySelectorAll('[data-buy-gold]').forEach(btn=>btn.onclick=()=>buyShopGold(btn.dataset.buyGold));
@@ -2516,6 +2655,7 @@ function startRun(startWave=1,testMode=false){
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:w,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'story',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0};
  game=Object.assign(createRunState(game.mode,game.p,game.bugId),game);
+ game.storyAchCleanRun=!testMode&&w===1;game.storyAchClearedThrough=0;game.storyAchUsedBoost=false;
  beginWave(w);if(!game.boss)titleMusicStart();if(!testMode)saveRunRecovery('run-start');
  screenCanvas();restartGameLoop();
 }
@@ -2658,6 +2798,7 @@ function useBoost(){
  if((game.coins||0)<cost){beep(145,.12,.025,'sawtooth');return}
  const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);
  game.coins-=cost;game.boostUntil=game.time+boostDuration;
+ if(game.mode==='story'){game.storyAchUsedBoost=true;saveRunRecovery('story-boost-used')}
  beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);
  flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();
 }
@@ -2721,6 +2862,7 @@ function beginWave(w){
  }
  if(w===100&&!g.finalPrepDone){showFinalPrep();return}
  g.wave=w;g.waveKills=0;g.boss=null;g.bosses=[];g.bossAdds=0;g.intermission=false;g.waveActive=true;g.spawn=0;g.normalSpawned=0;
+ maybeGrantNoBoostWave30(g);
  const bossWave=w%5===0;
  g.waveQuota=bossWave?bossKindsFor(w).length:(w===1?6:w===2?8:Math.min(activeEnemyCap(w),5+w*2));
  g.spawnLeft=g.waveQuota;
@@ -2817,6 +2959,7 @@ function completeWave(){
    save.mainGameBeaten=true;
    persist();
  }
+ recordStoryAchievementWaveClear(g);
  let heal;
  if(bossClear){
    heal=Math.max(0,Math.ceil(g.p.maxHp-g.p.hp));
@@ -2876,6 +3019,8 @@ function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
     const earlyBossExtraCut={hornet:.85,stagBeetle:.85,queenSpider:.90,moleCricket:.90};
     if(earlyBossExtraCut[k])baseHp*=earlyBossExtraCut[k];
     baseHp*=.95;
+    // Final four Story boss encounters: Waves 85, 90, 95 and 100 (both bosses in duo waves).
+    if(game.mode==='story'&&[85,90,95,100].includes(w))baseHp*=1.20;
  }
  if(k==='mosquito'){const ew=Math.max(1,w);r=8;baseHp=7;sp=Math.min(250,116+ew*1.85);damage=3.8;evo=0}
  let mosquitoInterceptorChance=.05,mosquitoFaceOnChance=.25,mosquitoSprinterChance=w>=20?.025:0;
@@ -3875,7 +4020,7 @@ function finalUpgradePick(remaining,restoring=false){
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;choices[i].apply(g.p);g.pendingChoiceIds=[];g.finalUpgradeRemaining=remaining-1;upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
 }
-$('prepLeaves').onclick=()=>{initAudio();const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);game.boostUntil=game.time+boostDuration;beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();finishFinalPrep()}; // v19.0.168 — exact standard Leaves Attack Boost effect, granted free with no Leaves deducted.
+$('prepLeaves').onclick=()=>{initAudio();const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);game.boostUntil=game.time+boostDuration;game.storyAchUsedBoost=true;saveRunRecovery('final-prep-boost-used');beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();finishFinalPrep()}; // v19.0.168 — exact standard Leaves Attack Boost effect, granted free with no Leaves deducted.
 $('prepUpgrades').onclick=()=>{initAudio();$('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';finalUpgradePick(3)};
 $('prepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalPrep()};
 
@@ -3943,7 +4088,7 @@ function updateHud(force=true,now=performance.now()){
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);const storyBossWave=g.mode==='story'&&g.wave%5===0&&g.wave!==100&&!!g.boss;setHudClass(wavePill,'storyBossWave','storyBossWave',storyBossWave);
  const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis=g.mode==='gold'?'hidden':'';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
- setHudText('coins',endless?(p.kills||0):(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',(g.mode==='gold'||g.wave===100)?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
+ setHudText('coins',endless?(p.kills||0):formatLeafCount(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',(g.mode==='gold'||g.wave===100)?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
  const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
  const et=hudNode('endlessTripleBtn');if(et){const ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`2x ATTACK BOOST<small>${left.toFixed(1)}s</small>`:`2x ATTACK BOOST<small>x${charges} / 3</small>`;setHudClass(et,'tripleHidden','hidden',!endless);setHudClass(et,'tripleActive','active',ta);setHudDisabled(et,'tripleDisabled',!ta&&charges<=0);if(HUD_CACHE.tripleHtml!==html){HUD_CACHE.tripleHtml=html;et.innerHTML=html}}
  const er=hudNode('endlessRepelBtn');if(er){const ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charges=g.endlessRepelCharge||0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>x${charges} / 3</small>`;setHudClass(er,'repelHidden','hidden',!endless);setHudClass(er,'repelActive','active',ra);setHudDisabled(er,'repelDisabled',!ra&&charges<=0);if(HUD_CACHE.repelHtml!==html){HUD_CACHE.repelHtml=html;er.innerHTML=html}}
@@ -4111,7 +4256,9 @@ function completeGameEnding(preview=false,purifyOnly=false){
  if(!game||game.over||game.finalPurify)return;
  clearEndingTimers();bossMusicStop();titleMusicStop(false);purifyMusicStop();creditsMusicStop();game.waveActive=false;game.intermission=true;game.paused=false;game.spawnLeft=0;
  game.enemies=game.enemies.filter(e=>e===game.finalBoss||(!e.dead&&e.kind==='gardenHeart'));
- const boss=game.finalBoss||game.boss;if(boss){boss.hp=0;boss.dying=true;boss.invuln=999;boss.state='chase';boss.vx=0;boss.vy=0}
+ const boss=game.finalBoss||game.boss;
+ if(!preview&&!purifyOnly)maybeGrantNoBoostStory(game,boss);
+ if(boss){boss.hp=0;boss.dying=true;boss.invuln=999;boss.state='chase';boss.vx=0;boss.vy=0}
  game.recoveryPhase='purification';
  game.finalBoss=boss;game.finalPurify={start:performance.now(),elapsed:0,preview:!!preview,purifyOnly:!!purifyOnly,finished:false};
  saveRunRecovery('purification-start');
@@ -4263,7 +4410,7 @@ function finish(won,quit=false){
  }
  if(game.mode==='gold'&&!won&&!game.testMode){
    const c=$('goldFailCount'),btn=$('goldFailContinueBtn');
-   if(c)c.textContent=save.goldLeaves||0;
+   if(c)c.textContent=formatLeafCount(save.goldLeaves||0);
    if(btn){btn.disabled=(save.goldLeaves||0)<10;btn.title=btn.disabled?'You need 10 Gold Leaves to continue':'';}
    screen('goldFail');
    return;
@@ -4272,7 +4419,7 @@ function finish(won,quit=false){
  $('overTitle').classList.toggle('quitTitle',!!quit);
  $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='gold'?(won?'GOLD WAVES CLEARED!':(game.testMode?'GOLD TEST ENDED!':'GOLD RUN ENDED!')):game.mode==='endless'?'YOU GOT SWARMED!':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
  $('overSub').textContent=game.mode==='endless'?'':(won?'You pushed deep into the garden.':'');
- $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=game.mode==='endless'?earned:coins;$('earnedLeaves').textContent=earned;const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
+ $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=formatLeafCount(game.mode==='endless'?earned:coins);$('earnedLeaves').textContent=formatLeafCount(earned);const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
  if(save.settings.music){clearTimeout(finish._menuMusicTimer);const finishAudioEpoch=bbAudioEpoch;finish._menuMusicTimer=setTimeout(()=>{if(!game||!game.over||finishAudioEpoch!==bbAudioEpoch)return;if(!titleMusicTimer&&!titleMusicDeferredTimer)titleMusicStart()},110)}
@@ -5698,6 +5845,8 @@ function enterHomeCleanly(){
  });
 }
 
+restoreEarnedStoryMilestones();
+
 const homeCosmeticsBtn=$('homeCosmeticsBtn');
 if(homeCosmeticsBtn)homeCosmeticsBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();initAudio();stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()});
 
@@ -5726,6 +5875,7 @@ document.addEventListener('click',e=>{
  if(a==='cancelReset')$('resetConfirm').classList.add('hidden');
  if(a==='confirmReset')resetGameProgress();
  if(a==='home'){if(game&&!game.over){game.paused=true;saveRunRecovery('home')}enterHomeCleanly()}
+ if(a==='achievements'){stopTitleGardenLoop();showGameUI(false);buildAchievements();screen('achievements');titleMusicStart()}
  if(a==='bugs'){stopTitleGardenLoop();showGameUI(false);buildBugScreen();screen('bugs');titleMusicStart()}
  if(a==='cosmetics'){stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
