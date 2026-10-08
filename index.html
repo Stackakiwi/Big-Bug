@@ -1441,6 +1441,17 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   .achievementReward{min-width:83px;font-size:17px;gap:4px}
   .achievementReward .leafCurrencyIcon.bbLeafIcon,.achievementReward .goldLeafIcon{width:22px;height:22px;flex-basis:22px}
 }
+/* Achievement reward icon polish — remove rectangular filter-compositing
+   artifacts on image-backed Leaves (notably iOS Safari). Keep the original
+   transparent Leaf artwork, size, tap origin, and Gold Leaf sparkle. */
+#achievements .achievementReward .leafCurrencyIcon.bbLeafIcon,
+#achievements .achievementReward .goldLeafIcon{
+  position:relative!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
 /* One small procedural canvas replaces 26 filtered, separately animated DOM nodes.
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
@@ -1484,8 +1495,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.21</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.21</div>
+  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.22</div>
+  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.22</div>
 </section>
 
  <section id="achievements" class="screen hidden" aria-label="Achievements">
