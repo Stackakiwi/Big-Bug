@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.5 — touch layout. Geometry comes from the current window,
+/* Big Bug v19.1.0-ios.6 — touch layout. Geometry comes from the current window,
    and, in the iOS app, UIKit safe areas and active reserved regions. */
 :root {
   --bb-safe-top: env(safe-area-inset-top, 0px);
@@ -246,13 +246,17 @@ html body #home.screen {
   min-width: 0; width: 100%; margin: 0; padding: 9px 4px;
   font-size: clamp(11px,3.25cqi,14px); white-space: nowrap;
 }
+#home .homeMenuRow [data-action="bugs"] {
+  display: inline-flex; align-items: center; justify-content: center; gap: .28em;
+}
+#home #homeBugsIcon { width: 1.65em; height: auto; flex: none; }
 #home .homeBestFancy {
   max-width: 100%; padding: 6px 13px; border-radius: 999px;
   background: #e4f2c499; border: 1px solid #294b2870; box-shadow: 0 3px 0 #24442255;
   text-align: center; color: #1c2c16; font-weight: 850;
 }
 @container bbMenu (max-width: 306px) {
-  #home .homeMenuRow .bbIcon, #home .homeMenuRow #homeBugsIcon { display: none; }
+  #home .homeMenuRow .bbIcon { display: none; }
   #home .homeHeader .btn, #home .homeFooter .btn { padding-inline: 8px; }
   #home .homeGoldBalance { padding-inline: 8px; }
 }

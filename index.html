@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#152316">
 <meta name="apple-mobile-web-app-title" content="Big Bug">
 <meta name="color-scheme" content="dark light">
-<link rel="icon" href="icon.svg?v=19.1.0-ios.5" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=19.1.0-ios.5">
+<link rel="icon" href="icon.svg?v=19.1.0-ios.6" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=19.1.0-ios.6">
 <title>BIG BUG</title>
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
@@ -1389,7 +1389,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
-<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.5">
+<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.6">
 </head>
 <body>
 <div id="gameStage" aria-label="Garden arena">
@@ -1437,11 +1437,11 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
       <button id="goldWavesBtn" class="btn dark goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
       <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><canvas id="gardenBookBugCanvas" class="bookBugCanvas" width="58" height="58"></canvas></span></button>
     </div>
-    <div class="homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true" style="width:1.02em;height:1.18em;vertical-align:-.22em;margin-right:.22em"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> UPGRADES</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
+    <div class="homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> UPGRADES</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.5</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.6</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -1508,13 +1508,13 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="goldShopBalance">Balance <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
   <div class="goldContinueCallout"><strong>Continue a squished run</strong><span>10 Gold Leaves · Full health</span></div>
   <button id="goldShopContinueBtn" class="btn green hidden" type="button" data-action="goldContinue">CONTINUE RUN — 10</button>
+  <p id="goldShopShortfall" class="goldStoreNote hidden" role="status"></p>
   <div class="goldPackGrid" role="group" aria-label="Optional Gold Leaf packs">
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>50</div><button id="goldPack50" class="btn" type="button" data-product-id="com.bigbug.game.gold50" disabled aria-disabled="true">—</button></div>
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>150</div><button id="goldPack150" class="btn" type="button" data-product-id="com.bigbug.game.gold150" disabled aria-disabled="true">—</button></div>
    <div class="goldPack best"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>300</div><button id="goldPack300" class="btn" type="button" data-product-id="com.bigbug.game.gold300" disabled aria-disabled="true">—</button></div>
    <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>750</div><button id="goldPack750" class="btn" type="button" data-product-id="com.bigbug.game.gold750" disabled aria-disabled="true">—</button></div>
   </div>
-  <p id="goldShopShortfall" class="goldStoreNote hidden" role="status"></p>
   <p id="storeStatus" class="goldStoreNote" role="status" aria-live="polite">Connecting to the App Store…</p>
   <div class="goldShopActions">
    <button class="btn dark" data-action="goldShopBack">BACK</button>
@@ -1987,14 +1987,14 @@ function buildCosmetics(){
   const info=document.createElement('div');info.innerHTML=`<b>${b.name}</b><div class="muted">${flavor[id]}</div>`;card.appendChild(info);
   const btn=document.createElement('button');btn.className='btn small '+(equipped?'dark':owned?'green':'');
   btn.innerHTML=equipped?'EQUIPPED':owned?'EQUIP':`<span class="goldLeafIcon" aria-hidden="true"></span> BUY — ${MEDIEVAL_COST}`;
-  btn.onclick=()=>{initAudio();if(!medievalOwned(id)){if((save.goldLeaves||0)<MEDIEVAL_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_COST;save.cosmetics.owned.push(medievalKey(id));}
+  btn.onclick=()=>{initAudio();if(!medievalOwned(id)){if(!requireGoldLeaves(MEDIEVAL_COST,'cosmetics'))return;save.goldLeaves-=MEDIEVAL_COST;save.cosmetics.owned.push(medievalKey(id));}
    save.cosmetics.equipped[id]=medievalEquipped(id)?'':'medieval';persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(880,.11,.025,'triangle');};
   card.appendChild(btn);g.appendChild(card);
  });
  const bb=$('medievalBundleBtn');
  if(bb){
   if(medievalBundlePurchased()){bb.disabled=true;bb.textContent='PURCHASED'}
-  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if((save.goldLeaves||0)<MEDIEVAL_BUNDLE_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(920,.13,.03,'triangle');bbSetTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
+  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if(!requireGoldLeaves(MEDIEVAL_BUNDLE_COST,'cosmetics'))return;save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(920,.13,.03,'triangle');bbSetTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
  }
 }
 function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);if(medievalEquipped('ladybug'))drawMedievalArmor(q,'ladybug',76);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}const gb=$('gardenBookBugCanvas');if(gb){const q=gb.getContext('2d');q.clearRect(0,0,gb.width,gb.height);q.save();q.translate(gb.width/2,gb.height/2+1);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
@@ -2181,17 +2181,24 @@ function persistLeafPickup(){
 }
 function persist(){const saved=storageWrite(SAVEKEY,JSON.stringify(save));if(saved){storageWrite(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));storageWrite(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]))}refreshGoldUI();return saved}
 const GOLD_CONTINUE_COST=10;
-let goldShopReturnScreen=null;
+let goldShopRequest=null;
+function requireGoldLeaves(cost,returnScreen){
+ if((save.goldLeaves||0)>=cost)return true;
+ if(gameScreenVisible(returnScreen))openGoldShop({cost,returnScreen});
+ return false;
+}
 function refreshGoldUI(){
  const gold=save.goldLeaves||0,n=formatLeafCount(gold);
  for(const id of ['homeGold','shopGold','goldShopCount','cosmeticGold','goldFailCount']){
   const node=$(id);if(node)node.textContent=n;
  }
- const shortfall=GOLD_CONTINUE_COST-gold,canReturn=!!goldShopReturnScreen;
- $('goldShopContinueBtn').classList.toggle('hidden',!canReturn||shortfall>0);
+ const returnScreen=goldShopRequest?.returnScreen;
+ const shortfall=(goldShopRequest?.cost||0)-gold;
+ const canContinue=returnScreen==='gameover'||returnScreen==='goldFail';
+ $('goldShopContinueBtn').classList.toggle('hidden',!canContinue||shortfall>0);
  const note=$('goldShopShortfall');
- note.classList.toggle('hidden',!canReturn||shortfall<=0);
- note.textContent=canReturn&&shortfall>0?`You need ${shortfall} more Gold ${shortfall===1?'Leaf':'Leaves'}.`:'';
+ note.classList.toggle('hidden',shortfall<=0);
+ note.textContent=shortfall>0?`You need ${shortfall} more Gold ${shortfall===1?'Leaf':'Leaves'}.`:'';
 }
 
 const RUNSAVEKEY='big_bug_run_recovery_v1';
@@ -2825,6 +2832,8 @@ function recordLittleBuddySelection(g,upgradeId){
  return true;
 }
 function refreshScreenLeafBanks(){const n=Math.max(0,Number(save.scrap)||0),display=n>=1000000?formatLeafCount(n):n.toLocaleString();if($('bugsLeafBank'))$('bugsLeafBank').textContent=display;if($('pauseLeafBank'))$('pauseLeafBank').textContent=display}
+const EARLY_BUG_GOLD_COST=20;
+const LEGENDARY_GOLD_COST=100;
 function buildBugScreen(){
  refreshScreenLeafBanks();
  if(!save.legendaryGolden||typeof save.legendaryGolden!=='object')save.legendaryGolden={revealed:false,owned:false};
@@ -2832,28 +2841,31 @@ function buildBugScreen(){
  for(const id of (save.unlocked||[]))if(BUGS[id])gardenDiscover('player:'+id);
  const grid=$('bugGrid');grid.innerHTML='';
  const normalIds=['ladybug','beetle','butterfly'];
- normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?20:25,eligible=starter||save.best>=unlockWave;const lockNote='';const leafCost=id==='beetle'?5000:7500;const actions=unlocked?`<button class="btn small green">${selected?'SELECTED':'SELECT'}</button>`:starter?'':eligible?`<button class="btn small leafBugUnlock"><span class="leafCurrencyIcon bbLeafIcon"></span>${leafCost.toLocaleString()}</button>`:`<div class="bugUnlockChoices"><button class="btn small dark" disabled>REACH WAVE ${unlockWave}</button><span>OR</span><button class="btn small goldUnlockBtn"><span class="goldLeafIcon" aria-hidden="true"></span>10</button></div>`;el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}${actions}`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);if(unlocked){el.querySelector('button').onclick=()=>{initAudio();save.selected=id;persist();buildBugScreen()}}else if(!starter){const goldBtn=el.querySelector('.goldUnlockBtn'),leafBtn=el.querySelector('.leafBugUnlock');if(goldBtn)goldBtn.onclick=()=>buyStandardBug(id,'gold');if(leafBtn)leafBtn.onclick=()=>buyStandardBug(id,'leaf')}grid.appendChild(el)});
- if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>500,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>100</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
+ normalIds.forEach(id=>{const b=BUGS[id],unlocked=save.unlocked.includes(id),selected=save.selected===id,starter=id==='ladybug';const el=document.createElement('div');el.className='card'+(selected?' selected':'');const unlockWave=id==='beetle'?20:25,eligible=starter||save.best>=unlockWave;const lockNote='';const leafCost=id==='beetle'?5000:7500;const actions=unlocked?`<button class="btn small green">${selected?'SELECTED':'SELECT'}</button>`:starter?'':eligible?`<button class="btn small leafBugUnlock"><span class="leafCurrencyIcon bbLeafIcon"></span>${leafCost.toLocaleString()}</button>`:`<div class="bugUnlockChoices"><button class="btn small dark" disabled>REACH WAVE ${unlockWave}</button><span>OR</span><button class="btn small goldUnlockBtn"><span class="goldLeafIcon" aria-hidden="true"></span>${EARLY_BUG_GOLD_COST}</button></div>`;el.innerHTML=`<div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${lockNote}${actions}`;const pv=document.createElement('canvas');pv.width=76;pv.height=76;const q=pv.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);if(medievalEquipped(id))drawMedievalArmor(q,id,50);el.querySelector('.bugPreview').appendChild(pv);if(unlocked){el.querySelector('button').onclick=()=>{initAudio();save.selected=id;persist();buildBugScreen()}}else if(!starter){const goldBtn=el.querySelector('.goldUnlockBtn'),leafBtn=el.querySelector('.leafBugUnlock');if(goldBtn)goldBtn.onclick=()=>buyStandardBug(id,'gold');if(leafBtn)leafBtn.onclick=()=>buyStandardBug(id,'leaf')}grid.appendChild(el)});
+ if(save.legendaryGolden.revealed){const b=BUGS.golden,owned=!!save.legendaryGolden.owned,selected=save.selected==='golden',el=document.createElement('div');el.className='card legendaryBugCard'+(selected?' selected':'');el.innerHTML=`<div class="legendaryKicker">✦ LEGENDARY ✦</div><div class="art bugPreview"></div><b>${b.name}</b><p class="muted">${b.desc}</p>${owned?`<button class="btn small legendarySelect">${selected?'SELECTED':'SELECT'}</button>`:`<div class="legendaryPrice"><button class="btn small legendaryLeafBuy"><span class="leafCurrencyIcon bbLeafIcon"></span>500,000</button><span>OR</span><button class="btn small legendaryGoldBuy"><span class="goldLeafIcon"></span>${LEGENDARY_GOLD_COST}</button></div>`}`;const pv=document.createElement('canvas');pv.width=128;pv.height=128;const q=pv.getContext('2d');q.translate(64,64);drawPlayableBug(q,'golden',60,true);el.querySelector('.bugPreview').appendChild(pv);if(owned)el.querySelector('button').onclick=()=>{save.selected='golden';persist();buildBugScreen();beep(988,.16,.035,'triangle')};else{el.querySelector('.legendaryLeafBuy').onclick=()=>buyLegendary('leaf');el.querySelector('.legendaryGoldBuy').onclick=()=>buyLegendary('gold')}grid.appendChild(el)}else{const mystery=document.createElement('div');mystery.className='card mysteryBugCard locked';mystery.innerHTML=`<div class="mysteryBugMark">?</div><b>???</b><p class="muted">A new bug is waiting somewhere in the garden.</p><button class="btn small dark" disabled>NOT UNLOCKED YET</button>`;grid.appendChild(mystery)}
 }
 function buyStandardBug(id,kind){
  if(!['beetle','butterfly'].includes(id)||!['leaf','gold'].includes(kind))return false;
  save=normalizeSave(save);if(save.unlocked.includes(id))return false;
  const unlockWave=id==='beetle'?20:25,leafCost=id==='beetle'?5000:7500;
- if((kind==='leaf'&&save.best<unlockWave)||(kind==='gold'&&save.best>=unlockWave)||(kind==='leaf'?save.scrap<leafCost:save.goldLeaves<10)){beep(155,.10,.022,'triangle');return false}
- if(kind==='leaf'){save.bugPurchases.push(id);save.scrap-=leafCost}else{save.goldUnlocks.push(id);save.goldLeaves-=10}
+ if((kind==='leaf'&&(save.best<unlockWave||save.scrap<leafCost))||(kind==='gold'&&save.best>=unlockWave)){beep(155,.10,.022,'triangle');return false}
+ if(kind==='gold'&&!requireGoldLeaves(EARLY_BUG_GOLD_COST,'bugs'))return false;
+ if(kind==='leaf'){save.bugPurchases.push(id);save.scrap-=leafCost}else{save.goldUnlocks.push(id);save.goldLeaves-=EARLY_BUG_GOLD_COST}
  save.unlocked.push(id);save.selected=id;persist();buildBugScreen();beep(880,.13,.035,'triangle');return true;
 }
 function buyLegendary(kind){
  if(!['leaf','gold'].includes(kind))return false;save=normalizeSave(save);
  if(save.legendaryGolden.owned||!save.legendaryGolden.revealed)return false;
- if(kind==='leaf'?save.scrap<500000:save.goldLeaves<100){beep(155,.10,.022,'triangle');return false}
- save.legendaryGolden.owned=true;if(kind==='leaf')save.scrap-=500000;else save.goldLeaves-=100;
+ if(kind==='leaf'&&save.scrap<500000){beep(155,.10,.022,'triangle');return false}
+ if(kind==='gold'&&!requireGoldLeaves(LEGENDARY_GOLD_COST,'bugs'))return false;
+ save.legendaryGolden.owned=true;if(kind==='leaf')save.scrap-=500000;else save.goldLeaves-=LEGENDARY_GOLD_COST;
  if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');bbSetTimeout(()=>beep(988,.18,.03,'sine'),100);bbSetTimeout(()=>beep(1319,.24,.025,'triangle'),210);return true;
 }
 function permanentUpgradeLeafCost(k,level){
  const costs=[500,1000,2000,3000,5000,6000,7000,8000,9000,12000];
  return costs[Math.max(0,Math.min(9,level|0))];
 }
+const UPGRADE_GOLD_COST=10;
 function buildShop(){
  const s=save.upgrades;
  const rows=[
@@ -2863,7 +2875,7 @@ function buildShop(){
    ['<span class="bbIcon bbSparkIcon shopDrawn"></span>','Garden Wisdom',`+10% Pickup Range & Leaves — ${s.coins}/10`,permanentUpgradeLeafCost('coins',s.coins),'coins']
  ];
  $('shop').innerHTML=`<div class="shopCurrency goldCurrency"><b><span class="goldLeafIcon" aria-hidden="true"></span>Gold Leaves</b><span id="shopGold" class="goldCount">${formatLeafCount(save.goldLeaves||0)}</span></div><div class="shopCurrency"><b><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves</b><span class="scrapCount">${formatLeafCount(save.scrap)}</span></div>`+
-  rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><div class="shopBuyStack"><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button><button class="btn small goldUpgradeBtn" data-buy-gold="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="goldLeafIcon" aria-hidden="true"></span>10`}</button></div></div>`).join('');
+  rows.map(r=>`<div class="shopRow"><div class="left"><span class="shopIcon">${r[0]}</span><div><b>${r[1]}</b><div class="muted">${r[2]}</div></div></div><div class="shopBuyStack"><button class="btn small green" data-buy="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>${r[3]}`}</button><button class="btn small goldUpgradeBtn" data-buy-gold="${r[4]}" ${s[r[4]]>=10?'disabled':''}>${s[r[4]]>=10?'MAX':`<span class="goldLeafIcon" aria-hidden="true"></span>${UPGRADE_GOLD_COST}`}</button></div></div>`).join('');
  $('shop').querySelectorAll('[data-buy]').forEach(btn=>btn.onclick=()=>buyShop(btn.dataset.buy));
  $('shop').querySelectorAll('[data-buy-gold]').forEach(btn=>btn.onclick=()=>buyShopGold(btn.dataset.buyGold));
 }
@@ -2874,8 +2886,9 @@ function buyShop(k){
 }
 function buyShopGold(k){
  if(!['hp','dmg','magnet','coins'].includes(k))return false;save=normalizeSave(save);const s=save.upgrades;
- if(s[k]>=10||save.goldLeaves<10){beep(155,.10,.022,'triangle');return false}
- s[k]++;save.goldLeaves-=10;persist();buildShop();beep(880,.13,.035,'triangle');bbSetTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);return true;
+ if(s[k]>=10){beep(155,.10,.022,'triangle');return false}
+ if(!requireGoldLeaves(UPGRADE_GOLD_COST,'base'))return false;
+ s[k]++;save.goldLeaves-=UPGRADE_GOLD_COST;persist();buildShop();beep(880,.13,.035,'triangle');bbSetTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);return true;
 }
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[],storyStillTime:0,closeBonusUntil:0};
@@ -4716,16 +4729,13 @@ function restoreBossFightAfterContinue(){
 function goldContinue(){
  if(!game||!game.over||game.testMode)return;
  const result=game.mode==='gold'?'goldFail':'gameover';
- const fromShop=goldShopReturnScreen===result&&gameScreenVisible('goldShop');
+ const fromShop=goldShopRequest?.returnScreen===result&&gameScreenVisible('goldShop');
  if(!fromShop&&!gameScreenVisible(result))return;
+ if(!requireGoldLeaves(GOLD_CONTINUE_COST,result))return;
  const balance=save.goldLeaves||0;
- if(balance<GOLD_CONTINUE_COST){
-   if(!fromShop)openGoldShop(result);
-   return;
- }
  save.goldLeaves=balance-GOLD_CONTINUE_COST;
  if(!persist()){save.goldLeaves=balance;refreshGoldUI();return;}
- goldShopReturnScreen=null;
+ goldShopRequest=null;
  shopMusicStop();
  game.over=false;game.paused=false;game.p.hp=game.p.maxHp;
  game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;
@@ -6187,7 +6197,7 @@ function restoreCoreHomePresentation(){
  }
 }
 function enterHomeCleanly(){
- goldShopReturnScreen=null;
+ goldShopRequest=null;
  window.BBGameTimers.resume();
  const presentation=++homePresentationGeneration;
  resetGameInput();stopGameLoop();cancelGoldMusicCues();goldMusicStop();
@@ -6208,18 +6218,18 @@ function enterHomeCleanly(){
  });
 }
 
-function openGoldShop(returnScreen=null){
- goldShopReturnScreen=returnScreen;
+function openGoldShop(request=null){
+ goldShopRequest=request;
  stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');
  window.BigBugNative?.refreshProducts();
  shopMusicStart(true);
 }
 function closeGoldShop(){
- const returnScreen=goldShopReturnScreen;
- goldShopReturnScreen=null;
- if(returnScreen&&game?.over){
+ const returnScreen=goldShopRequest?.returnScreen;
+ goldShopRequest=null;
+ if(returnScreen){
   shopMusicStop();refreshGoldUI();screen(returnScreen);
-  if(returnScreen==='gameover')titleMusicStart();
+  if(isMenuMusicScreen())titleMusicStart();
  }else enterHomeCleanly();
 }
 
@@ -6917,7 +6927,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.5"></script>
+<script src="mobile-game.js?v=19.1.0-ios.6"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js"></script>
 </body>

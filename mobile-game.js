@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.5. Game-to-native boundary; no debug unlocks. */
+/* Big Bug v19.1.0-ios.6. Game-to-native boundary; no debug unlocks. */
 (() => {
   'use strict';
   const platform=window.BBMobile;
@@ -47,7 +47,7 @@
     return true;
   }
   function getMobileState(){
-    return {version:'v19.1.0-ios.5',mode:game?.mode||'story',wave:game?.wave||1,
+    return {version:'v19.1.0-ios.6',mode:game?.mode||'story',wave:game?.wave||1,
       hp:game?.p?.hp||0,maxHp:game?.p?.maxHp||100,playing:gameplayInputAllowed(),
       visible:gameplayVisible(),paused:!!game?.paused,settings:{...save.settings},
       haptics:save.settings.haptics!==false,layout:platform.state.kind,
