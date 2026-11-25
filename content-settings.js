@@ -5,6 +5,7 @@
 const BB_CONTENT={
   useClassicContent:false,
   newStoryArenas:true,
+  arenaGroundDetails:true,
   scatteredPurpleDust:true,
   newMosquitoArena:true,
   revisedGardenUpdates:true,

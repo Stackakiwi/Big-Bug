@@ -191,7 +191,97 @@ function dustLayer(corruption,random,scaleX,scaleY){
  }
  return '<g data-story-dust="true" data-dust-count="'+count+'">'+particles+'</g>';
 }
-function floor(profile,index,corruption,lightX,width,height,terrain){
+
+// Faint marks in the playable space, using each area's existing palette.
+// Each entry contains a soft ground patch, broken highlights, and short dark marks.
+const groundDetailPaths=[
+ // Garden Grove — a broken moss seam and little grass wisps.
+ ['M67 304Q115 258 154 267Q177 273 177 288Q139 285 115 302Q90 320 73 321Z M209 513Q245 485 291 500Q277 513 244 513L223 523Z',
+  'M71 309q15-18 39-25m8-4q18-7 33-5m-66 27 7-2m124 215q15-11 33-11m8 0 11-4M281 320q3-6 8-8m-5 9 7-2M145 477q-2-6-6-9m7 6 2-8',
+  'M96 293l4-3m4 6 9-4m12 7 5-2m136 209 5-4m-35 11 7-5m-106-37 3-2'],
+ // Autumn Thicket — dry leaf veins and a shallow drift in the soil.
+ ['M202 274Q253 241 302 259Q282 272 244 275Q221 290 202 274Z M89 451q43-15 78 4q-19 16-60 11Z',
+  'M216 267q16-8 26-7m9 3 6-3m21-1 9-2M131 449q8 6 17 7m-12-6 1-5m5 8 7-2m-42 8 8 1M286 533q7 4 11 3',
+  'M149 464l8-6m-40 6 6-2m107-192 8-2m31 3 6-3m-178 93 7 2'],
+ // Moonlit Meadow — fine blades in two uneven groups.
+ ['M185 275Q223 241 265 266Q264 279 228 283Q202 283 185 291Z M101 518Q127 494 173 505Q157 521 132 526Z',
+  'M208 275q-2-11-11-17m14 14q3-9 9-15m11 19q-2-12 1-18m4 16 8-8M130 514q-2-10-10-14m15 14 5-12m9 13q5-8 13-9M309 379l-1-8m7 6 5-5',
+  'M201 279l13-2m15 4 13-5m-122 246 7-1m12-2 8-2m157-140 4-1'],
+ // Mushroom Hollow — shallow rings left in the soft earth.
+ ['M172 225q27-19 66-4q10 13-16 19q-29 7-50-15Z M84 482q21-17 59-3q13 11-11 19q-30 8-48-16Z',
+  'M182 233q21-10 45-5m-29 8q11-1 17-3M94 486q13-7 35-4m-18 10 8-4M279 411q12-4 22 0',
+  'M182 235q8 5 24 4m-106 255 9-3m151-80 5-4m18 3 4-2'],
+ // Sunflower Field — thin strips of dry stalk and two darker furrows.
+ ['M98 377Q129 316 167 306Q188 308 194 320Q143 331 113 382Z M224 545q29-47 71-61q9 11 4 26q-36 6-61 38Z',
+  'M109 371q12-20 24-30m7-6 9-6m90 204 11-12m11-11 14-6M255 261l9-6m-11 12 7-2',
+  'M112 367q14-20 26-28m106 194q9-13 22-21m-117-189 6-2m127 171 8-2'],
+ // Mossy Creek — low ripples against the existing right-hand bank.
+ ['M294 230q29-14 48-9q5 9-7 14q-23 0-43 9Z M203 513q18-16 37-19q3 10-2 18q-20 3-31 11Z',
+  'M299 235q20-8 35-7m-22 14 11-4M210 515q11-7 22-8m-10 12 7-5M107 330q9-5 21-4',
+  'M302 240l7-1m-101 286 7-3m-87-196 7 1m16 232 5-3'],
+ // Firefly Marsh — pressed reeds and faint water wrinkles.
+ ['M104 305Q133 283 160 299Q176 313 155 321Q139 317 117 326Z M238 457q29-22 64-14q1 15-27 23q-20-5-37-9Z',
+  'M114 314q11-6 20-6m-5 11 10-2m106 141q13-8 26-8m9 1 8-3M101 380q2-7 6-10m-2 13 7-6',
+  'M117 322l9-3m10 2 6-1m108 140 7-2m11-2 6-2m-48 101 6-3'],
+ // Rose Garden — a few soft petal edges and broken tendrils.
+ ['M162 229q37-25 75-8q6 13-27 18q-29-3-47 4Z M105 522q25-11 49-2q4 15-18 19q-17-8-29-6Z',
+  'M173 233q12-9 25-7m-8 5q5 4 11 0m31-4 9 2M113 528q8-6 17-2m-6 6 6 3M301 346l5 3',
+  'M171 238l8-4m23 4 10-4m-91 102 7-3m-14 195 5 3m102-79 7-2'],
+ // Tallgrass Wilds — small fans bent in the same wind as the border grass.
+ ['M110 240q33-24 69-7l7 12q-40 4-63 17Z M260 535q31-27 59-17q-8 24-53 28Z',
+  'M127 252q-5-12-13-17m16 15-2-13m5 11 8-13m5 11 9-6M279 535q-3-9-11-13m13 11 3-13m5 13 9-10M252 359l5-7',
+  'M124 254l8-2m9 1 6-3m126 287 11-3m-82 77 7-3'],
+ // Rotwood Grove — worn bark curls and little bits of chipped wood.
+ ['M172 268q32-22 68-8q-1 10-21 14q-25-1-42 3Z M101 500q30-27 61-12l-7 12q-18 0-35 12Z',
+  'M182 267q16-6 28-4m-6 5 15-3m-108 234q13-10 28-11m-10 8 8-4M287 410l8-1m-3 4 6-2',
+  'M177 273l11-5m22 4 16-3m-112 231 9-2m116 88 8-3'],
+ // Berry Bramble — small branched roots and a few dull chipped leaves.
+ ['M178 250q42-24 82-13q7 17-26 24q-27-8-51 4Z M81 424q24-17 55-12q6 9-13 16q-25-3-41 8Z',
+  'M193 254q15-13 33-11m-16 5-1-7m12 4 7-4M91 429q11-7 23-8m-9 5 5 4m15-11 5-3',
+  'M197 258l7-5m20 3 13-4m-140 180 11-5m177 60 5-3'],
+ // Stone Garden — joins between the slate and a little moss at the edges.
+ ['M89 243q42-30 81-3l-9 19q-40 2-68 14Z M215 475q33-34 70-28q9 13 2 25q-29 0-59 23Z',
+  'M102 256l16-9 10 2 9-6m7 4 9 4M226 479l13-13 14 2 7-8m6 2 9-5M305 329l9 5',
+  'M109 260l10-6 7 1m-14 7 6-1m111 223 10-10m-1 9 5-2'],
+ // Rain-soaked Hollow — incomplete ripples and damp thin seams.
+ ['M127 335q28-15 57-2q4 11-18 17q-25 4-39-15Z M248 552q28-21 61-11q9 10-5 16q-29 12-56-5Z',
+  'M139 337q13-5 32 1m-19 7 12-3M256 552q16-8 35-9m-24 13q12 1 23-4M64 235q8-6 15-5',
+  'M136 343l8 1m13 4 10-1m97 212 12-3m14 1 5-2'],
+ // Lily Pond — a few interrupted water lines in the clear channel.
+ ['M141 264q32-24 78-9q-5 17-68 21Z M183 518q43-18 77-7q3 13-26 17q-20-2-34 6Z',
+  'M151 267q21-7 40-6m-26 13 16-4M195 523q23-9 45-7m-31 13 12-3M306 394q10-4 21-3',
+  'M152 271l14-1m13 3 10-3m19 259 14-5m15 1 7-3'],
+ // Abandoned Weblands — torn threads close to the ground.
+ ['M101 314q25-33 67-27q8 12-14 29q-28 4-46 10Z M262 457q27-15 58-7q3 17-34 18q-17-6-24-11Z',
+  'M112 315l12-11 14-6m-21 15 13 3m-8-13 3 10M275 458l19-6m-14 4 10 5m8-8 8-4M178 557l8 3',
+  'M118 320l13-5m-1 6 6-2m149 144 10-3m-135 26 6-4'],
+ // Old Root Forest — shallow roots that trail out from the margins.
+ ['M165 243q30-2 57 19q34 21 63 5l7 11q-43 19-79-6q-21-14-53-17Z M73 483q38-22 68-10q5 10-18 16q-23-6-39 3Z',
+  'M171 251q26 2 48 16m10 6q21 10 39 7M92 485q17-9 32-6m-19 4-5-7M275 524l9-6',
+  'M176 254q20 3 30 9m26 15 13 3m-9-2 6-7m-144 215 9-4'],
+ // Sporewood — uneven marks left by fallen caps and matted fibres.
+ ['M155 245q24-23 61-17q15 10-6 21q-34 0-47 9Z M203 550q33-24 64-11q6 12-18 15q-19-3-43 7Z',
+  'M165 247q11-9 26-7m-12 8 9-2M215 553q7-7 21-8m7 1 10-4M295 380l5-6m-4 11 7-3',
+  'M174 253l6-3m8 2 8-3m12 305 8-4m10 1 5-4'],
+ // Withered Garden — scratches in the dry earth and curled leaf stems.
+ ['M153 278q39-22 80-4q-2 11-35 17q-18-7-36 1Z M242 539q21-17 60-17l6 12q-31 17-63 13Z',
+  'M160 285l13-10 12 2 7-5m-15 4 2 8M252 539l16-6 6 4 11-9m-9 8 2 5M96 378q5 4 10 2',
+  'M164 291l9-5m17-3 7-4m66 261 6 1m21-8 8 0'],
+ // The Bloom — faint husks and several seed-shaped scrapes.
+ ['M104 245q25-30 72-24q9 10-10 18q-32 4-56 19Z M236 504q22-26 61-9q-5 18-28 17q-17-4-32 2Z',
+  'M113 246q14-11 28-12m8 2 12-4M245 506q6-7 17-9m-9 8 9 2m11-5 10 2M112 432l6-3',
+  'M117 251l7-4m12 2 5-3m104 64 7-2m7 188 8-2'],
+ // Heart of the Garden — broken root scars and fine stone scratches.
+ ['M185 265q41-29 79-15q10 8-22 22q-31 3-52 7Z M102 428q28-22 60-15q7 13-14 24q-22-8-42 3Z M267 558q20-12 46-5l5 9q-36 6-50 1Z',
+  'M197 267q15-9 31-10m-15 3 2 5M113 430l13-8 11 2 9-6m-15 7 4 4M275 559l8-3m12 5 8-4',
+  'M200 274q13-7 22-6m-96 165 11-6m6 6 7-4m124 134 8-2'],
+];
+function groundTexture(index,colors){
+ const [patch,highlights,marks]=groundDetailPaths[index];
+ return '<g data-ground-detail="true">'+path(patch,colors[3],'opacity=".16"')+
+  stroke(marks,colors[2],1.4,.37)+stroke(highlights,colors[4],1.3,.30)+'</g>';
+}
+function floor(profile,index,corruption,lightX,width,height,terrain,groundDetails){
  // Terrain fills the surface. Individual plants retain their proportions on wide and tall screens.
  const ratio=(width/height)/(393/714);
  const scaleX=Math.min(1,1/ratio),scaleY=Math.min(1,ratio);
@@ -222,7 +312,7 @@ function floor(profile,index,corruption,lightX,width,height,terrain){
   '<radialGradient id="light" cx="'+lightX+'" cy=".38" r=".86"><stop stop-color="'+c[4]+'" stop-opacity=".14"/><stop offset=".64" stop-color="'+c[1]+'" stop-opacity="0"/><stop offset="1" stop-color="'+c[2]+'" stop-opacity=".38"/></radialGradient>'+
   '</defs>'+
   (terrain?'<rect width="393" height="714" fill="url(#turf)"/><rect width="393" height="714" fill="url(#light)"/>'+
-    bands+feature+grain+settings:'')+dustLayer(corruption,random,scaleX,scaleY)+'</svg>';
+    bands+feature+(groundDetails?groundTexture(index,c):'')+grain+settings:'')+dustLayer(corruption,random,scaleX,scaleY)+'</svg>';
 }
 function mosquitoColors(phase){
  const initial=profiles[0].colors;
@@ -237,7 +327,8 @@ function mosquitoPhase(wave){return Math.min(10,Math.floor(wave/10));}
 
 const textures=new Map();
 function texture(index,phase,terrain,corruption,width,height){
- const key=[index,phase,terrain,corruption,width,height].join(':');
+ const groundDetails=terrain&&BB_CONTENT.arenaGroundDetails;
+ const key=[index,phase,terrain,corruption,width,height,groundDetails].join(':');
  const existing=textures.get(key);
  if(existing)return existing;
  const source=profiles[index];
@@ -247,7 +338,7 @@ function texture(index,phase,terrain,corruption,width,height){
  const image=new Image();
  image.onload=()=>{art.image=image;art.state='ready';};
  image.onerror=()=>{art.state='unavailable';};
- const markup=floor({...source,colors},index,corruption,lightX,width,height,terrain);
+ const markup=floor({...source,colors},index,corruption,lightX,width,height,terrain,groundDetails);
  textures.set(key,art);
  // Bound decoded image memory while moving through areas or resizing the game.
  if(textures.size>3)textures.delete(textures.keys().next().value);
