@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.4 — viewport, save bootstrap and render budget.
+/* Big Bug v19.1.0-ios.10 — viewport, save bootstrap and render budget.
    Geometry comes from the current view and UIKit reserved regions, never a model name. */
 (() => {
   'use strict';
@@ -38,9 +38,9 @@
 
   const state = {
     native: isNative, touch, backupError, nativeLayout: null, rect: null, controls: null,
-    canvas: null, locked: null, quality: 1, frameCost: 0, pressureFrames: 0,
+    canvas: null, locked: null, quality: 1, frameCost: 0, frameGap: 1000/60,
     background: false, lastLayoutSignature: '', lastQualityAt: 0,
-    settings: { graphics: 'auto', touchControls: 'drag', haptics: true, reduceMotion: false },
+    settings: { touchControls: 'drag', haptics: true, reduceMotion: false },
     joystick: { active: false, x: 0, y: 0 }
   };
   const root = document.documentElement;
@@ -149,22 +149,33 @@
     }
     return state.canvas;
   }
+  function hasReducedRenderBudget() {
+    return !!state.nativeLayout?.lowPower || number(state.nativeLayout?.thermalState) >= 2;
+  }
   function renderScale(w,h) {
-    const low = state.settings.graphics === 'battery' || state.nativeLayout?.lowPower || number(state.nativeLayout?.thermalState) >= 2;
+    const low = hasReducedRenderBudget();
     const pixels = (low ? 650000 : 1250000) * state.quality;
     const dprLimit = !low && state.touch && state.kind === 'compact' ? 2 : 1.75;
-    const effectiveDPR = Math.min(number(devicePixelRatio,1), dprLimit) * (state.canvas?.scale || 1);
+    const effectiveDPR = Math.min(number(devicePixelRatio,1), dprLimit) * (state.canvas?.scale || 1) * Math.sqrt(state.quality);
     return Math.max(.25,Math.min(effectiveDPR,Math.sqrt(pixels/Math.max(1,w*h))));
   }
-  function targetFPS() {
-    return state.settings.graphics==='battery'||state.nativeLayout?.lowPower||number(state.nativeLayout?.thermalState)>=2 ? 30 : 60;
-  }
-  function observeFrame(cost,now) {
-    if (state.settings.graphics!=='auto' || state.background) return;
+  function targetFPS() { return 60; }
+  function observeFrame(cost,now,gap) {
+    if (state.background) return;
     state.frameCost = state.frameCost ? state.frameCost*.96+cost*.04 : cost;
-    if(now-state.lastQualityAt<2500)return;
-    const next = state.frameCost>13 ? Math.max(.5,state.quality-.15) : state.frameCost<6 ? Math.min(1,state.quality+.1) : state.quality;
-    if(next!==state.quality){state.quality=next;state.lastQualityAt=now;window.BigBugGame?.refreshViewport();}
+    if (gap>0) state.frameGap=state.frameGap*.96+Math.min(gap,50)*.04;
+    const elapsed=now-state.lastQualityAt;
+    if (elapsed<2500) return;
+    // Use missed draw deadlines as well as JavaScript work. A browser can have
+    // a low refresh cap of its own, so also require evidence of rendering load.
+    const underLoad=state.frameCost>13||(state.frameGap>19.5&&state.frameCost>7);
+    const comfortable=state.frameCost<6&&state.frameGap<18&&elapsed>=9000;
+    const next=underLoad?Math.max(.5,state.quality-.15):comfortable?Math.min(1,state.quality+.1):state.quality;
+    if (next!==state.quality){
+      state.quality=next;
+      state.lastQualityAt=now;
+      window.BigBugGame?.refreshViewport();
+    }
   }
   function setNativeLayout(payload) {
     if(!payload||!Number.isFinite(payload.width)||!Number.isFinite(payload.height)||payload.width<=0||payload.height<=0)return;
@@ -182,9 +193,8 @@
     const reduced=!!state.settings.reduceMotion||!!state.nativeLayout?.reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.body.dataset.bbReducedMotion=String(reduced);
     document.body.dataset.bbReduceMotion=String(reduced);
-    document.body.dataset.bbGraphics=state.settings.graphics;
   }
-  window.BBMobile={state,SAVE_KEYS,REVISION_KEY,computeLayout,renderScale,targetFPS,observeFrame,setNativeLayout,applySettings,
+  window.BBMobile={state,SAVE_KEYS,REVISION_KEY,computeLayout,renderScale,hasReducedRenderBudget,targetFPS,observeFrame,setNativeLayout,applySettings,
     lockArena(width,height){state.locked={width,height};},unlockArena(){state.locked=null;},
     isReducedMotion(){return document.body.dataset.bbReducedMotion==='true';}};
   const nativePending=window.__BB_NATIVE_LAYOUT__;

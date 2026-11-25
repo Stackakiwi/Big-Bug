@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.9. Game-to-native boundary; no debug unlocks. */
+/* Big Bug v19.1.0-ios.10. Game-to-native boundary; no debug unlocks. */
 (() => {
   'use strict';
   const platform=window.BBMobile;
@@ -47,7 +47,7 @@
     return true;
   }
   function getMobileState(){
-    return {version:'v19.1.0-ios.9',mode:game?.mode||'story',wave:game?.wave||1,
+    return {version:'v19.1.0-ios.10',mode:game?.mode||'story',wave:game?.wave||1,
       hp:game?.p?.hp||0,maxHp:game?.p?.maxHp||100,playing:gameplayInputAllowed(),
       visible:gameplayVisible(),paused:!!game?.paused,settings:{...save.settings},
       haptics:save.settings.haptics!==false,layout:platform.state.kind,
@@ -60,11 +60,10 @@
     window.BigBugMobileUI?.update(state);
   }
   function setMobileSetting(key,value){
-    if(!['touchControls','graphics','haptics','reduceMotion'].includes(key))return getMobileState();
-    const allowed={touchControls:['drag','joystick'],graphics:['auto','battery'],haptics:[true,false],reduceMotion:[true,false]};
+    if(!['touchControls','haptics','reduceMotion'].includes(key))return getMobileState();
+    const allowed={touchControls:['drag','joystick'],haptics:[true,false],reduceMotion:[true,false]};
     if(!allowed[key].includes(value))return getMobileState();
     save.settings[key]=value;persist();resetGameInput();platform.applySettings(save.settings);
-    if(key==='graphics'){platform.state.quality=1;resize();}
     syncMobileState(performance.now(),true);return getMobileState();
   }
   function resetJoystick(){

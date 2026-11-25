@@ -1377,7 +1377,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.9</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.10</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -1587,7 +1587,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  </div>
 </section>
 
-<script src="mobile-platform.js?v=19.1.0-ios.4"></script>
+<script src="mobile-platform.js?v=19.1.0-ios.10"></script>
 <script src="game-timers.js"></script>
 <script src="content-settings.js?v=19.1.0-ios.9"></script>
 <script src="arena-designs.js?v=19.1.0-ios.9"></script>
@@ -1693,7 +1693,6 @@ function normalizeSave(input={}){
  const selected=src.selected==='dragonfly'?'butterfly':src.selected;out.selected=out.unlocked.includes(selected)?selected:'ladybug';
  for(const id of out.unlocked)if(!out.discovered.includes('player:'+id))out.discovered.push('player:'+id);
  out.settings.touchControls=settings.touchControls==='joystick'?'joystick':'drag';
- out.settings.graphics=settings.graphics==='battery'?'battery':'auto';
  out.settings.haptics=settings.haptics!==false;out.settings.reduceMotion=settings.reduceMotion===true;
  out.iapTransactions=Object.create(null);
  if(saveObject(src.iapTransactions))for(const [id,value] of Object.entries(src.iapTransactions)){
@@ -4990,7 +4989,7 @@ function drawGoldUnknownBossCore(e){
  }
  X.restore();
 }
-function drawEnemy(e, simpleEffects=DESKTOP_PERF_RENDER||lowStoryFx()){
+function drawEnemy(e, simpleEffects=DESKTOP_PERF_RENDER||lowStoryFx(), lateStoryFight=false){
  if(game&&game.mode==='gold'&&e){
    if(e.goldBossKey==='goldUnknownBoss'){drawGoldUnknownBossCore(e);return;}
    if(!e.boss&&!e.dead&&typeof window.drawGoldAlien==='function'){window.drawGoldAlien(e);return;}
@@ -4998,12 +4997,15 @@ function drawEnemy(e, simpleEffects=DESKTOP_PERF_RENDER||lowStoryFx()){
  if(e.kind==='moleCricket'&&e.state==='burrowWait')return;
  const margin=e.r*2.7+24;if(e.x+margin<0||e.x-margin>W||e.y+margin<0||e.y-margin>H)return;
  const r=e.r,centiRun=e.kind==='centipede'&&e.state==='centiRun',animMul=e.kind==='centipede'?(centiRun?2.25:1.55):1,t=FRAME_NOW/1000*animMul+e.phase,step=Math.sin(t*13)*3.6,step2=Math.cos(t*12)*3.6;X.save();X.translate(e.x,e.y+(e.kind==='centipede'?Math.sin(t*10)*.25:Math.sin(t*8)*1.2));X.rotate(Math.atan2(game.p.y-e.y,game.p.x-e.x)+Math.PI/2+(e.kind==='hornet'?Math.PI:0)+(e.kind==='centipede'?Math.sin(t*7)*.008:Math.sin(t*5)*.025));
+ if(lateStoryFight&&!simpleEffects&&!e.dying){
+   X.fillStyle='#07100940';X.beginPath();X.ellipse(0,r*.40,r*.78,r*.33,0,0,6.283);X.fill();
+ }
  if(e.dying&&e.kind==='gardenHeart'){
    const q=Math.max(0,Math.min(1,(game.finalPurify?.elapsed||0)/6.4)),sink=q*q;
    X.rotate(q*1.30);X.translate(0,44*sink);X.scale(1-q*.20,1-q*.58);X.globalAlpha=Math.max(.025,1-q*.975);X.filter=`saturate(${Math.max(.08,1-q*.92)}) brightness(${Math.max(.58,1-q*.34)})`;
  }
- if(e.hit>0&&!e.dying){X.globalAlpha=.72;if(!simpleEffects||e.boss)X.filter='brightness(1.7)'}
- if(simpleEffects){X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetY=0}
+ if(e.hit>0&&!e.dying){X.globalAlpha=.72;if(!lateStoryFight&&(!simpleEffects||e.boss))X.filter='brightness(1.7)'}
+ if(simpleEffects||lateStoryFight){X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetY=0}
  else{X.shadowColor='#07100988';X.shadowBlur=6;X.shadowOffsetY=5}
  if(e.kind==='mosquito'){
   drawMosquitoBody(step,step2);
@@ -5630,19 +5632,19 @@ function drawFinalSavedText(){
  X.font='900 '+Math.round(Math.min(68,W*.13))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=8;X.strokeStyle='#2b1c13';X.strokeText('YOU SAVED',0,-22);X.fillStyle='#f5b02e';X.fillText('YOU SAVED',0,-22);
  X.font='1000 '+Math.round(Math.min(82,W*.16))+'px "Marker Felt","Chalkboard SE","Noteworthy",cursive';X.lineWidth=9;X.strokeStyle='#2b1c13';X.strokeText('THE GARDEN!',0,42);X.fillStyle='#78c84c';X.fillText('THE GARDEN!',0,42);X.restore();
 }
+const LATE_STORY_BOSS_WAVES=new Set([85,90,95,100]);
 function drawLateBossPurpleFall(now){
- if(game?.mode!=='story'||!game.waveActive||![85,90,95,100].includes(game.wave))return;
- const t=now*.001,count=22;
- X.save();X.globalCompositeOperation='lighter';
- for(let i=0;i<count;i++){
+ const t=now*.001;
+ X.save();
+ for(let i=0;i<22;i++){
    const seed=i*73.17+game.wave*1.91;
-   const x=((seed*19.37+Math.sin(t*.42+i*1.7)*18)% (W+30)+W+30)%(W+30)-15;
-   const speed=15+(i%6)*3.2;
-   const y=((seed*11.9+t*speed)%(H+34))-17;
+   const x=((seed*19.37+Math.sin(t*.42+i*1.7)*18)%(W+30)+W+30)%(W+30)-15;
+   const speed=15+(i%6)*3.2,y=((seed*11.9+t*speed)%(H+34))-17;
    const r=.65+(i%4)*.32,tw=.28+.48*(.5+.5*Math.sin(t*3.1+i*2.43));
-   X.globalAlpha=tw;X.fillStyle=i%3===0?'#e9b5ff':i%3===1?'#c779ef':'#9d57ca';
-   X.shadowColor='#c76cff';X.shadowBlur=3.5;X.beginPath();X.arc(x,y,r,0,6.283);X.fill();
-   if(i%5===0){X.globalAlpha=tw*.55;X.beginPath();X.arc(x,y,r*2.2,0,6.283);X.fill()}
+   X.fillStyle=i%3===0?'#e9b5ff':i%3===1?'#c779ef':'#9d57ca';
+   // Two translucent circles give the larger spores a soft edge without a live blur.
+   if(i%5===0){X.globalAlpha=tw*.22;X.beginPath();X.arc(x,y,r*2.2,0,6.283);X.fill()}
+   X.globalAlpha=tw;X.beginPath();X.arc(x,y,r,0,6.283);X.fill();
  }
  X.restore();
 }
@@ -5731,7 +5733,8 @@ function draw(now=performance.now()){
    X.clearRect(0,0,W,H);
  }
  }
- drawLateBossPurpleFall(now);
+ const lateStoryBossFight=mode==='story'&&game.waveActive&&LATE_STORY_BOSS_WAVES.has(game.wave);
+ if(lateStoryBossFight)drawLateBossPurpleFall(now);
  if(ambienceIndex===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ambienceIndex===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
  if(game?.mode==='gold'){
@@ -5773,8 +5776,10 @@ function draw(now=performance.now()){
  for(const d of game.drops){const m=28;if(d.x+m<0||d.x-m>W||d.y+m<0||d.y-m>H)continue;drawLeaves(d)}
  // Per-enemy blur and filters require extra raster work on touch devices.
  const simpleEnemyEffects=DESKTOP_PERF_RENDER||lowStoryFx()||game.enemies.length>=18||
-   window.BBMobile.state.quality<.85||window.BBMobile.targetFPS()===30;
- for(const e of game.enemies){const m=e.boss?0:Math.max(90,e.r*3);if(!e.boss&&(e.x+m<0||e.x-m>W||e.y+m<0||e.y-m>H))continue;drawEnemy(e,simpleEnemyEffects)}
+   window.BBMobile.state.quality<.85||window.BBMobile.hasReducedRenderBudget();
+ // Late Story bosses use a single contact shadow in place of blur on every path.
+ for(const e of game.enemies){const m=e.boss?0:Math.max(90,e.r*3);if(!e.boss&&(e.x+m<0||e.x-m>W||e.y+m<0||e.y-m>H))continue;drawEnemy(e,simpleEnemyEffects,lateStoryBossFight)}
+ const simpleStoryEffects=lateStoryBossFight||lowStoryFx();
  for(const f of game.fx){
    const fr=(f.r||8)*2+18;if(!f.playerShotFx&&!f.helperShotFx&&!f.tripleShotFx&&!f.scrapFly&&(f.x+fr<0||f.x-fr>W||f.y+fr<0||f.y-fr>H))continue;
    if(f.healHeart){
@@ -5812,7 +5817,7 @@ function draw(now=performance.now()){
        // The bolt exists only for the final ~0.26 s and is drawn directly, so it creates no extra FX load.
        const q=Math.max(0,f.life/Math.max(.001,max-warn)),topY=-f.y-18;
        X.globalAlpha=.38+.62*q;X.strokeStyle='#fff7ad';X.lineWidth=5;X.lineCap='round';X.lineJoin='round';
-       X.shadowColor='#e7ef73';X.shadowBlur=10;
+       X.shadowColor='#e7ef73';X.shadowBlur=lateStoryBossFight?0:10;
        X.beginPath();X.moveTo(Math.sin(seed)*7,topY);X.lineTo(-8,topY*.66);X.lineTo(8,topY*.42);X.lineTo(-5,topY*.20);X.lineTo(0,0);X.stroke();
        X.shadowBlur=0;X.strokeStyle='#fffde0';X.lineWidth=2;X.stroke();
        X.globalAlpha=.42*q;X.fillStyle='#e9ef79';X.beginPath();X.arc(0,0,(f.r||31)*(.72+.18*q),0,6.283);X.fill();
@@ -5895,11 +5900,11 @@ function draw(now=performance.now()){
        X.beginPath();X.moveTo(0,-f.r*1.65);X.lineTo(f.r*.78,0);X.lineTo(0,f.r*1.65);X.lineTo(-f.r*.78,0);X.closePath();X.fill();X.stroke();X.restore();
      }else if(f.bombardierFire){
        // Hand-drawn flame projectile for Bombardier's new Fire Burst; collision remains the normal sting circle.
-       X.save();X.translate(f.x,f.y);X.rotate(Math.atan2(f.vy||0,f.vx||1)+Math.PI/2);X.shadowColor=lowStoryFx()?'transparent':'#ff7a20';X.shadowBlur=lowStoryFx()?0:8;
+       X.save();X.translate(f.x,f.y);X.rotate(Math.atan2(f.vy||0,f.vx||1)+Math.PI/2);X.shadowColor=simpleStoryEffects?'transparent':'#ff7a20';X.shadowBlur=simpleStoryEffects?0:8;
        X.fillStyle='#e96828';X.beginPath();X.moveTo(0,-f.r*1.7);X.quadraticCurveTo(f.r*1.05,-f.r*.15,f.r*.7,f.r*.9);X.quadraticCurveTo(0,f.r*.55,-f.r*.7,f.r*.9);X.quadraticCurveTo(-f.r*1.05,-f.r*.15,0,-f.r*1.7);X.fill();
        X.fillStyle='#ffd45a';X.beginPath();X.moveTo(0,-f.r*.95);X.quadraticCurveTo(f.r*.5,0,0,f.r*.55);X.quadraticCurveTo(-f.r*.5,0,0,-f.r*.95);X.fill();X.restore();X.shadowColor='transparent';
      }else{
-       X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=lowStoryFx()?'transparent':(f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30'));X.shadowBlur=lowStoryFx()?0:6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent';
+       X.fillStyle=f.sonic?'#dff7cf':(f.venom?'#b56cff':'#ff5f55');X.shadowColor=simpleStoryEffects?'transparent':(f.sonic?'#efffd0':(f.venom?'#8d35cf':'#ff3b30'));X.shadowBlur=simpleStoryEffects?0:6;X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill();X.shadowColor='transparent';
      }
    }
    else if(f.shot){X.fillStyle=f.helper?'#c9f4ff':'#fff3a6';X.beginPath();X.arc(f.x,f.y,f.r,0,6.28);X.fill()}
@@ -5911,7 +5916,7 @@ function draw(now=performance.now()){
  let da=((p.faceTarget-p.face+Math.PI*3)%(Math.PI*2))-Math.PI;p.face+=da*.16;
  let bob=Math.sin(game.time*5.2)*1.4;
  X.fillStyle='#10241455';X.beginPath();X.ellipse(p.x,p.y+16,22,8,0,0,6.28);X.fill();
- const moveDX=(p.moveX??p.x)-p.x,moveDY=(p.moveY??p.y)-p.y,playerMoving=(moveDX*moveDX+moveDY*moveDY)>9,movePhase=game.time*(playerMoving?13:2.2),moveAmp=playerMoving?1.8:.35;X.save();X.translate(p.x,p.y+bob+((game.bugId||save.selected)==='ladybug'&&playerMoving?Math.sin(movePhase)*.45:0));X.rotate(p.face+((game.bugId||save.selected)==='ladybug'?Math.sin(movePhase*.5)*(playerMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayerStyled(X,(game.bugId||save.selected),p.r*2.05,false,movePhase,moveAmp);X.restore();
+ const moveDX=(p.moveX??p.x)-p.x,moveDY=(p.moveY??p.y)-p.y,playerMoving=(moveDX*moveDX+moveDY*moveDY)>9,movePhase=game.time*(playerMoving?13:2.2),moveAmp=playerMoving?1.8:.35;X.save();X.translate(p.x,p.y+bob+((game.bugId||save.selected)==='ladybug'&&playerMoving?Math.sin(movePhase)*.45:0));X.rotate(p.face+((game.bugId||save.selected)==='ladybug'?Math.sin(movePhase*.5)*(playerMoving?.025:.008):0));X.scale(1+Math.sin(game.time*7)*.018,1-Math.sin(game.time*7)*.018);if((p.hurtFlash||0)>0){X.shadowColor='#ff3b30';X.shadowBlur=lateStoryBossFight?0:18;X.globalAlpha=.78+.22*Math.sin(FRAME_NOW/35)}drawPlayerStyled(X,(game.bugId||save.selected),p.r*2.05,false,movePhase,moveAmp);X.restore();
 
  // Little Buddy Army holds a wide, evenly spaced protective ring around the player.
  const armyHs=p.helperArmyHelpers||[];for(const h of armyHs){
@@ -5931,7 +5936,7 @@ function draw(now=performance.now()){
  }
  drawFinalSavedText();
 }
-let gameLoopHeartbeat=0,gameLoopGeneration=0,bbSimAccumulator=0,bbNextDrawAt=0,bbDrawInterval=0;
+let gameLoopHeartbeat=0,gameLoopGeneration=0,bbSimAccumulator=0,bbNextDrawAt=0,bbDrawInterval=0,bbLastDrawAt=0;
 function stopGameLoop(){
  gameLoopGeneration++;
  if(raf){cancelAnimationFrame(raf);raf=0;}
@@ -5956,12 +5961,15 @@ function loop(now,generation=gameLoopGeneration){
   }
  }else bbSimAccumulator=0;
  const drawEvery=(game?.paused&&!game.goldDeathActive&&!game.finalPurify)?250:1000/window.BBMobile.targetFPS();
- if(bbDrawInterval!==drawEvery){bbDrawInterval=drawEvery;bbNextDrawAt=now;}
+ if(bbDrawInterval!==drawEvery){bbDrawInterval=drawEvery;bbNextDrawAt=now;bbLastDrawAt=0;}
  if(game&&now+.6>=bbNextDrawAt){
   // Keep the render deadline on its original cadence through jitter and dropped frames.
   bbNextDrawAt+=drawEvery*(1+Math.floor(Math.max(0,now-bbNextDrawAt)/drawEvery));
   draw(now);
-  window.BBMobile.observeFrame(performance.now()-began,now);
+  if(drawEvery<250){
+   window.BBMobile.observeFrame(performance.now()-began,now,bbLastDrawAt?now-bbLastDrawAt:0);
+   bbLastDrawAt=now;
+  }
  }
  syncGoldPresentation();syncGoldMusic();window.BigBugGame?.syncMobileState(now);
  if(generation===gameLoopGeneration&&game&&!window.BBMobile.state.background)raf=requestAnimationFrame(next=>loop(next,generation));
@@ -6910,8 +6918,8 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.9"></script>
+<script src="mobile-game.js?v=19.1.0-ios.10"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
-<script src="mobile-ui.js"></script>
+<script src="mobile-ui.js?v=19.1.0-ios.10"></script>
 </body>
 </html>

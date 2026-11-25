@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.2. Presentation only: no simulation, purchase grants,
+/* Big Bug v19.1.0-ios.10. Presentation only: no simulation, purchase grants,
    or save mutations live here. BigBugGame owns persisted settings and state. */
 (() => {
   'use strict';
@@ -17,10 +17,9 @@
     if (!panel) return;
     const section = document.createElement('div');
     section.id = 'bbMobileSettings'; section.className = 'bbMobileSettings';
-    section.setAttribute('aria-label', 'Touch and performance settings');
+    section.setAttribute('aria-label', 'Touch and accessibility settings');
     const rows = [
       ['touchControls', 'Touch controls', 'Tap or drag on the garden, or use a thumb stick. A control deck is available when folded.', [['drag','TAP / DRAG'],['joystick','THUMB STICK']]],
-      ['graphics', 'Performance', 'Auto balances detail and smooth play. Battery uses a lower render resolution.', [['auto','AUTO'],['battery','BATTERY']]],
       ['haptics', 'Haptics', 'Gentle feedback for game actions on supported devices.', [[true,'ON'],[false,'OFF']]],
       ['reduceMotion', 'Reduce motion', 'Reduce menu animation and screen effects. Your system preference is respected.', [[false,'SYSTEM'],[true,'REDUCED']]]
     ];
@@ -56,7 +55,6 @@
   function updateSettings(settings = {}) {
     const values = {
       touchControls: settings.touchControls === 'joystick' ? 'joystick' : 'drag',
-      graphics: settings.graphics === 'battery' ? 'battery' : 'auto',
       haptics: settings.haptics !== false,
       reduceMotion: settings.reduceMotion === true
     };
