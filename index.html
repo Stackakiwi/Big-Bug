@@ -1377,7 +1377,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.10</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.11</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -4852,14 +4852,15 @@ function drawLeaves(d){
  X.beginPath();X.moveTo(0,-r*.38);X.lineTo(r*.50,-r*.10);X.moveTo(0,-r*.05);X.lineTo(-r*.52,r*.20);X.moveTo(0,r*.25);X.lineTo(r*.45,r*.48);X.stroke();
  X.rotate(.45-Math.sin(t*2.2+(d.phase||0))*.18);X.fillStyle='#fff8c9';X.shadowColor='#fff';X.shadowBlur=8;const glow=.55+.45*Math.sin(t*7+(d.phase||0));X.globalAlpha=Math.max(.25,glow);X.font='bold '+Math.round(r*.85)+'px system-ui';X.fillText('✦',r*.45,-r*.45);X.restore();X.globalAlpha=1;
 }
-const MOSQ_WINGS=new Path2D(),MOSQ_BODY=new Path2D(),MOSQ_HEAD=new Path2D(),MOSQ_EYES=new Path2D();
+const MOSQ_WINGS=new Path2D(),MOSQ_BODY=new Path2D(),MOSQ_HEAD=new Path2D(),MOSQ_EYES=new Path2D(),MOSQ_PROBOSCIS=new Path2D();
+MOSQ_PROBOSCIS.moveTo(0,-6);MOSQ_PROBOSCIS.lineTo(0,-12);
 MOSQ_WINGS.ellipse(-5,-1,6,2.2,-.45,0,6.28);MOSQ_WINGS.ellipse(5,-1,6,2.2,.45,0,6.28);
 MOSQ_BODY.ellipse(0,4,3,6.5,0,0,6.28);MOSQ_HEAD.arc(0,-3,3.2,0,6.28);MOSQ_EYES.arc(-1.2,-3.6,.65,0,6.28);MOSQ_EYES.arc(1.2,-3.6,.65,0,6.28);
 function drawMosquitoBody(step,step2){
  X.strokeStyle='#24251f';X.lineCap='round';
  X.globalAlpha=.30;X.fillStyle='#d8e6df';X.fill(MOSQ_WINGS);X.globalAlpha=1;
  X.fillStyle='#34372f';X.fill(MOSQ_BODY);X.fillStyle='#4b4f43';X.fill(MOSQ_HEAD);X.fillStyle='#b83c33';X.fill(MOSQ_EYES);
- X.lineWidth=1.1;X.beginPath();X.moveTo(0,-6);X.lineTo(0,-12);X.stroke();
+ X.lineWidth=1.1;X.stroke(MOSQ_PROBOSCIS);
  X.lineWidth=1;X.beginPath();
  for(let side=-1;side<=1;side+=2){X.moveTo(side*2,1);X.lineTo(side*8,6+step*.18);X.moveTo(side*2,4);X.lineTo(side*7,10-step2*.14)}
  X.stroke();
@@ -5586,12 +5587,15 @@ function paintGoldArenaBackground(cacheKey){
  }
  paintArenaBackgroundFromCache(cacheKey);
 }
+const HEART_FX_BODY=new Path2D(),HEART_FX_HIGHLIGHT=new Path2D();
+HEART_FX_BODY.moveTo(0,13);HEART_FX_BODY.bezierCurveTo(-4,8,-13,2,-13,-6);HEART_FX_BODY.bezierCurveTo(-13,-13,-4,-16,1,-9);
+HEART_FX_BODY.bezierCurveTo(7,-16,15,-12,15,-5);HEART_FX_BODY.bezierCurveTo(15,3,6,9,0,13);HEART_FX_BODY.closePath();
+HEART_FX_HIGHLIGHT.moveTo(-8,-7);HEART_FX_HIGHLIGHT.quadraticCurveTo(-4,-11,0,-8);
 function drawBigBugHeartFx(x,y,size=30){
- // Gameplay-canvas version of BIG BUG's chunky HUD heart; no emoji/font rendering.
  X.save();X.translate(x,y);const sc=size/30;X.scale(sc,sc);
  X.fillStyle='#df5149';X.strokeStyle='#742b28';X.lineWidth=2.2;X.lineJoin='round';
- X.beginPath();X.moveTo(0,13);X.bezierCurveTo(-4,8,-13,2,-13,-6);X.bezierCurveTo(-13,-13,-4,-16,1,-9);X.bezierCurveTo(7,-16,15,-12,15,-5);X.bezierCurveTo(15,3,6,9,0,13);X.closePath();X.fill();X.stroke();
- X.strokeStyle='#ff8b78';X.lineWidth=2;X.beginPath();X.moveTo(-8,-7);X.quadraticCurveTo(-4,-11,0,-8);X.stroke();X.restore();
+ X.fill(HEART_FX_BODY);X.stroke(HEART_FX_BODY);
+ X.strokeStyle='#ff8b78';X.lineWidth=2;X.stroke(HEART_FX_HIGHLIGHT);X.restore();
 }
 function drawFinalArenaPurification(){
  const fp=game?.finalPurify;if(!fp)return;const t=fp.elapsed||0;
@@ -5699,6 +5703,51 @@ function paintSelectedArenaFloor(area,ai,art,modernTerrain,sparseDust){
   return;
  }
  paintClassicArenaFloor(area,ai,modernTerrain?null:art?.image,!sparseDust||art?.state==='unavailable');
+}
+const HAZARD_STROKES={web:new Map(),webline:new Map(),root:new Map(),rootFinal:new Map()};
+function hazardStrokes(style,radius){
+ const cache=HAZARD_STROKES[style],cached=cache.get(radius);
+ if(cached)return cached;
+ // Keep separate strokes, so opacity at crossings matches the original art.
+ const paths=[];
+ if(style==='web'){
+   const rings=3,spokes=8;
+   for(let ring=1;ring<=rings;ring++){
+     const path=new Path2D(),r=radius*ring/rings;
+     for(let i=0;i<=spokes;i++){
+       const a=i*6.283/spokes,x=Math.cos(a)*r,y=Math.sin(a)*r;
+       if(i===0)path.moveTo(x,y);else path.lineTo(x,y);
+     }
+     path.closePath();paths.push(path);
+   }
+   for(let i=0;i<spokes;i++){
+     const a=i*6.283/spokes,path=new Path2D();
+     path.moveTo(0,0);path.lineTo(Math.cos(a)*radius,Math.sin(a)*radius);paths.push(path);
+   }
+ }else if(style==='webline'){
+   for(let i=-2;i<=2;i++){
+     const path=new Path2D();
+     path.moveTo(-radius,i*6);path.lineTo(radius,-i*6);paths.push(path);
+   }
+ }else if(style==='rootFinal'){
+   for(let i=0;i<4;i++){
+     const a=i*1.5708+.38,path=new Path2D();
+     path.moveTo(Math.cos(a+.78)*radius*.20,Math.sin(a+.78)*radius*.20);
+     path.quadraticCurveTo(Math.cos(a+.58)*radius*.64,Math.sin(a+.58)*radius*.64,Math.cos(a)*radius,Math.sin(a)*radius);
+     paths.push(path);
+   }
+ }else{
+   for(let i=0;i<5;i++){
+     const a=i*1.25+.4,path=new Path2D();
+     path.moveTo(0,0);
+     path.quadraticCurveTo(Math.cos(a+.5)*radius*.55,Math.sin(a+.5)*radius*.55,Math.cos(a)*radius,Math.sin(a)*radius);
+     paths.push(path);
+   }
+ }
+ // Normal waves reuse just a few radii. Bound the cache for restored effects.
+ if(cache.size>=8)cache.delete(cache.keys().next().value);
+ cache.set(radius,paths);
+ return paths;
 }
 function draw(now=performance.now()){
  FRAME_NOW=now;
@@ -5844,23 +5893,17 @@ function draw(now=performance.now()){
        X.fillStyle='#ffd86a';for(let i=0,n=lowStoryFx()?2:4;i<n;i++){const yy=-f.r*(.12+i*.18),xx=Math.sin(seed+i*2.1+game.time*7)*f.r*.32;X.beginPath();X.arc(xx,yy,1.5+(i%2),0,6.28);X.fill()}
      }
      else if(f.style==='thorn'){for(let i=0;i<7;i++){let a=i*6.283/7;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r*pulse,Math.sin(a)*f.r*pulse);X.stroke()}}
-     else if(f.style==='rootFinal'){
-       X.lineWidth=3.2;X.globalAlpha=.38+.46*q;
-       for(let i=0;i<4;i++){
-         let a=i*1.5708+.38;
-         X.beginPath();X.moveTo(Math.cos(a+.78)*f.r*.20,Math.sin(a+.78)*f.r*.20);
-         X.quadraticCurveTo(Math.cos(a+.58)*f.r*.64,Math.sin(a+.58)*f.r*.64,Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke();
-       }
+     else if(f.style==='rootFinal'||f.style==='root'||f.style==='webline'){
+       if(f.style==='rootFinal'){X.lineWidth=3.2;X.globalAlpha=.38+.46*q}
+       for(const path of hazardStrokes(f.style,f.r))X.stroke(path);
      }
-     else if(f.style==='root'){for(let i=0;i<5;i++){let a=i*1.25+.4;X.beginPath();X.moveTo(0,0);X.quadraticCurveTo(Math.cos(a+.5)*f.r*.55,Math.sin(a+.5)*f.r*.55,Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}}
-     else if(f.style==='webline'){for(let i=-2;i<=2;i++){X.beginPath();X.moveTo(-f.r,i*6);X.lineTo(f.r,-i*6);X.stroke()}}
      else if(f.style!=='clamp'){X.beginPath();X.arc(0,0,f.r*pulse,0,6.28);X.stroke();if(f.style==='dark'){X.globalAlpha=.09+.13*q;X.fill()}if(f.style==='spore')for(let i=0,n=lowStoryFx()?3:6;i<n;i++){let a=i*(6.283/n)+game.time;X.beginPath();X.arc(Math.cos(a)*f.r*.55,Math.sin(a)*f.r*.55,5,0,6.28);X.fill()}}
      X.restore();X.globalAlpha=1;continue
    }
    if(f.web){
      const q=Math.max(0,f.life/f.maxLife);X.save();X.globalAlpha=.30+.35*q;X.translate(f.x,f.y);X.strokeStyle='#e8d9f4';X.lineWidth=1.7;
-     const webRings=3,webSpokes=8;for(let ring=1;ring<=webRings;ring++){X.beginPath();for(let i=0;i<=webSpokes;i++){let a=i*6.283/webSpokes,rr=f.r*ring/webRings;if(i===0)X.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}X.closePath();X.stroke()}
-     for(let i=0;i<webSpokes;i++){let a=i*6.283/webSpokes;X.beginPath();X.moveTo(0,0);X.lineTo(Math.cos(a)*f.r,Math.sin(a)*f.r);X.stroke()}X.restore();X.globalAlpha=1;continue
+     for(const path of hazardStrokes('web',f.r))X.stroke(path);
+     X.restore();X.globalAlpha=1;continue
    }
    if(f.playerDamageText){
      const q=Math.max(0,Math.min(1,f.life/(f.maxLife||.78)));
@@ -6918,7 +6961,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.10"></script>
+<script src="mobile-game.js?v=19.1.0-ios.11"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js?v=19.1.0-ios.10"></script>
 </body>
