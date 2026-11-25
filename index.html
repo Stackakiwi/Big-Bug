@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#152316">
 <meta name="apple-mobile-web-app-title" content="Big Bug">
 <meta name="color-scheme" content="dark light">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icon.svg?v=19.1.0-ios.5" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=19.1.0-ios.5">
 <title>BIG BUG</title>
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
@@ -463,16 +463,24 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #goldShop{background:rgba(3,17,10,.97);padding:18px}
 #goldShop .panel{width:min(560px,100%);max-height:94vh;background:linear-gradient(160deg,#2c2610,#171708 72%,#0b1107);border:2px solid #9b7622;border-radius:28px;padding:22px 18px 18px;box-shadow:0 10px 0 #090704,0 24px 55px #000b,inset 0 0 38px #d6a72b22}
 #goldShop h2{text-align:center;margin:0 0 6px;color:#fff0a4;font:700 31px "Marker Felt","Chalkboard SE","Noteworthy",cursive}
-#goldShop .goldShopBalance{text-align:center;margin:0 auto 15px;font-weight:1000;font-size:22px;color:#ffe47a}
+#goldShop .goldShopBalance{text-align:center;margin:0 auto 12px;font-weight:900;font-size:16px;color:#ffe47a}
+#goldShop .goldShopBalance .goldLeafIcon{width:18px;height:18px;vertical-align:-4px}
+.goldContinueCallout{display:grid;gap:3px;margin:0 0 12px;padding:12px 8px;text-align:center;border:1px solid #b89343;border-radius:14px;background:linear-gradient(140deg,#4a3815,#2d250f);color:#fff5bf}
+.goldContinueCallout strong{font-size:clamp(16px,4.4cqi,22px);line-height:1.15}
+.goldContinueCallout span{color:#ffd672;font-weight:800;font-size:13px}
 .goldPackGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.goldPack{position:relative;background:linear-gradient(145deg,#3c3316,#27220e);border:1px solid #9d7c2d;border-radius:18px;padding:15px 10px;text-align:center;box-shadow:inset 0 0 20px #f5c63a12}
+.goldPack{position:relative;min-width:0;background:linear-gradient(145deg,#3c3316,#27220e);border:1px solid #9d7c2d;border-radius:14px;padding:9px 8px;text-align:center;box-shadow:inset 0 0 20px #f5c63a12}
 .goldPack.best{border-color:#f2cf55;box-shadow:0 0 16px #eabb3240,inset 0 0 20px #f5c63a22}
 .goldPack .amount{display:flex;justify-content:center;align-items:center;font-size:27px;font-weight:1000;color:#fff3ad;margin-bottom:6px}.goldPack .amount .goldLeafIcon{width:29px;height:29px}
-.goldPack .bonus{min-height:17px;font-size:11px;font-weight:900;color:#e8cf73;letter-spacing:.4px}.goldPack .btn{min-width:0;width:100%;margin:8px 0 0;background:#e3b42c;box-shadow:inset 0 -4px #996e13,0 4px 0 #0d160c}
+.goldPack .btn{min-width:0;width:100%;margin:0;padding:6px 4px;font-size:15px;background:#e3b42c;box-shadow:inset 0 -4px #996e13,0 4px 0 #0d160c}
 .goldPack .btn:active{transform:translateY(2px)}
 .goldStoreNote{text-align:center;font-size:12px;line-height:1.35;color:#c8c6a2;margin:14px 4px 0}
+.goldStoreNote:empty{display:none}
+.goldShopActions{display:flex;gap:8px;margin-top:14px}
+.goldShopActions .btn{flex:1 1 0;min-width:0;margin:0;padding:7px 8px;font-size:12px}
+#goldShop #goldShopContinueBtn{width:100%;margin:0 0 12px;padding:9px 6px;font-size:15px}
 .goldDevTools{display:flex;gap:8px;margin:12px 0 4px;padding:10px;border:1px dashed #d8b64d88;border-radius:14px;background:#3a301255}.goldDevTools .btn{flex:1;min-width:0;margin:0;font-size:12px;padding:10px 8px}.goldDevTools .goldDevClear{background:#7b3930;color:#fff;box-shadow:inset 0 -4px #4e211d,0 4px 0 #0d160c}
-@media(max-width:390px){.goldPackGrid{gap:8px}.goldPack{padding:12px 8px}.goldPack .amount{font-size:23px}}
+@media(max-width:390px){.goldPackGrid{gap:8px}.goldPack .amount{font-size:23px}}
 
 .mosquitoCounterIcon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:18px;line-height:1;vertical-align:-4px;margin-right:2px}.mosquitoCounterIcon:before{content:""}
 #help{background:rgba(3,17,10,.97);padding:18px}
@@ -1381,7 +1389,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
-<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.4">
+<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.5">
 </head>
 <body>
 <div id="gameStage" aria-label="Garden arena">
@@ -1433,7 +1441,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.4</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.5</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -1497,18 +1505,21 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 <section id="goldShop" class="screen hidden">
  <div class="panel">
   <h2><span class="goldLeafIcon" aria-hidden="true"></span> GOLD LEAF SHOP</h2>
-  <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
-  <p class="goldStoreNote">Gold Leaves are earned in the garden. Every new player starts with 10. Optional packs help you unlock bugs, upgrades, and cosmetics. All modes can be reached through play.</p>
-  <div class="goldPackGrid" aria-label="Optional Gold Leaf packs">
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>50</div><div class="bonus">GOLD LEAVES</div><button id="goldPack50" class="btn" type="button" data-product-id="com.bigbug.game.gold50" disabled aria-disabled="true">LOADING…</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>150</div><div class="bonus">GOLD LEAVES</div><button id="goldPack150" class="btn" type="button" data-product-id="com.bigbug.game.gold150" disabled aria-disabled="true">LOADING…</button></div>
-   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>300</div><div class="bonus">GOLD LEAVES</div><button id="goldPack300" class="btn" type="button" data-product-id="com.bigbug.game.gold300" disabled aria-disabled="true">LOADING…</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>750</div><div class="bonus">GOLD LEAVES</div><button id="goldPack750" class="btn" type="button" data-product-id="com.bigbug.game.gold750" disabled aria-disabled="true">LOADING…</button></div>
+  <div class="goldShopBalance">Balance <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
+  <div class="goldContinueCallout"><strong>Continue a squished run</strong><span>10 Gold Leaves · Full health</span></div>
+  <button id="goldShopContinueBtn" class="btn green hidden" type="button" data-action="goldContinue">CONTINUE RUN — 10</button>
+  <div class="goldPackGrid" role="group" aria-label="Optional Gold Leaf packs">
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>50</div><button id="goldPack50" class="btn" type="button" data-product-id="com.bigbug.game.gold50" disabled aria-disabled="true">—</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>150</div><button id="goldPack150" class="btn" type="button" data-product-id="com.bigbug.game.gold150" disabled aria-disabled="true">—</button></div>
+   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>300</div><button id="goldPack300" class="btn" type="button" data-product-id="com.bigbug.game.gold300" disabled aria-disabled="true">—</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>750</div><button id="goldPack750" class="btn" type="button" data-product-id="com.bigbug.game.gold750" disabled aria-disabled="true">—</button></div>
   </div>
+  <p id="goldShopShortfall" class="goldStoreNote hidden" role="status"></p>
   <p id="storeStatus" class="goldStoreNote" role="status" aria-live="polite">Connecting to the App Store…</p>
-  <button id="restorePurchasesBtn" class="btn small dark" type="button">CHECK PURCHASES</button>
-  <p class="goldStoreNote">Gold Leaf packs are consumable. Checking purchases completes pending deliveries; it does not refill Gold Leaves you have spent. Reset Progress keeps your current Gold Leaves and purchased unlocks.</p>
-  <button class="btn dark" data-action="home">BACK</button>
+  <div class="goldShopActions">
+   <button class="btn dark" data-action="goldShopBack">BACK</button>
+   <button id="restorePurchasesBtn" class="btn small dark" type="button" aria-description="Delivers pending Gold Leaf packs">CHECK PURCHASES</button>
+  </div>
  </div>
 </section>
 
@@ -1636,7 +1647,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <p id="overSub">You survived.</p>
   <div class="stats"><div class="stat"><b id="overWave">0</b>Waves</div><div class="stat"><b id="overKills">0</b>Defeated</div><div class="stat"><b id="overCoins">0</b>Leaves</div></div>
   <p class="bankedLeavesNotice"><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span><span class="bankedText"><span class="bankedLabel"><b id="earnedLeaves">0</b> Leaves secured at Bug Camp</span><span class="bankedSub">Your collected Leaves are safely stored.</span></span></p>
-  <button id="goldContinueBtn" class="btn continueGold hidden" data-action="goldContinue"><span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 1</button><button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="home">HOME</button>
+  <button id="goldContinueBtn" class="btn continueGold hidden" data-action="goldContinue"><span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10</button><button class="btn green" data-action="play">NEW RUN</button><button class="btn dark" data-action="home">HOME</button>
  </div>
 </section>
 
@@ -1857,8 +1868,8 @@ function drawPlayableBug(ctx,id,size=28,glow=false,legPhase=0,legAmp=0){
  ctx.restore();
 }
 
-const MEDIEVAL_COST=20;
-const MEDIEVAL_BUNDLE_COST=50;
+const MEDIEVAL_COST=30;
+const MEDIEVAL_BUNDLE_COST=100;
 function medievalBundlePurchased(){return !!save.cosmetics?.medievalBundle}
 function medievalBundleOwned(){return save.cosmetics?.enabled!==false&&medievalBundlePurchased()}
 function grantMedievalBundle(){save.cosmetics.medievalBundle=true;for(const id of Object.keys(BUGS)){const k=medievalKey(id);if(!save.cosmetics.owned.includes(k))save.cosmetics.owned.push(k)}}
@@ -2169,7 +2180,19 @@ function persistLeafPickup(){
  leafPersistTimer=bbSetTimeout(()=>{leafPersistTimer=0;persist()},300);
 }
 function persist(){const saved=storageWrite(SAVEKEY,JSON.stringify(save));if(saved){storageWrite(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));storageWrite(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]))}refreshGoldUI();return saved}
-function refreshGoldUI(){const n=formatLeafCount(save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n;if($('cosmeticGold'))$('cosmeticGold').textContent=n}
+const GOLD_CONTINUE_COST=10;
+let goldShopReturnScreen=null;
+function refreshGoldUI(){
+ const gold=save.goldLeaves||0,n=formatLeafCount(gold);
+ for(const id of ['homeGold','shopGold','goldShopCount','cosmeticGold','goldFailCount']){
+  const node=$(id);if(node)node.textContent=n;
+ }
+ const shortfall=GOLD_CONTINUE_COST-gold,canReturn=!!goldShopReturnScreen;
+ $('goldShopContinueBtn').classList.toggle('hidden',!canReturn||shortfall>0);
+ const note=$('goldShopShortfall');
+ note.classList.toggle('hidden',!canReturn||shortfall<=0);
+ note.textContent=canReturn&&shortfall>0?`You need ${shortfall} more Gold ${shortfall===1?'Leaf':'Leaves'}.`:'';
+}
 
 const RUNSAVEKEY='big_bug_run_recovery_v1';
 function clearRunRecovery(){storageRemove(RUNSAVEKEY)}
@@ -4668,9 +4691,7 @@ function finish(won,quit=false){
    persist();refreshEndlessHome();refreshGoldWavesHome();
  }
  if(game.mode==='gold'&&!won&&!game.testMode){
-   const c=$('goldFailCount'),btn=$('goldFailContinueBtn');
-   if(c)c.textContent=formatLeafCount(save.goldLeaves||0);
-   if(btn){btn.disabled=(save.goldLeaves||0)<10;btn.title=btn.disabled?'You need 10 Gold Leaves to continue':'';}
+   refreshGoldUI();
    screen('goldFail');
    return;
  }
@@ -4679,7 +4700,7 @@ function finish(won,quit=false){
  $('overTitle').textContent=quit?'You safely escaped…QUITTER.':(game.mode==='gold'?(won?'GOLD WAVES CLEARED!':(game.testMode?'GOLD TEST ENDED!':'GOLD RUN ENDED!')):game.mode==='endless'?'YOU GOT SWARMED!':game.testMode?(won?'TEST COMPLETE!':'TEST ENDED!'):(won?'RUN COMPLETE!':'YOU GOT SQUISHED!'));
  $('overSub').textContent=game.mode==='endless'?'':(won?'You pushed deep into the garden.':'');
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=formatLeafCount(game.mode==='endless'?earned:coins);$('earnedLeaves').textContent=formatLeafCount(earned);const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
- const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
+ $('goldContinueBtn').classList.toggle('hidden',won||game.testMode);
  screen('gameover');
  if(save.settings.music){bbClearTimeout(finish._menuMusicTimer);const finishAudioEpoch=bbAudioEpoch;finish._menuMusicTimer=bbSetTimeout(()=>{if(!game||!game.over||finishAudioEpoch!==bbAudioEpoch)return;if(!titleMusicTimer&&!titleMusicDeferredTimer)titleMusicStart()},110)}
 }
@@ -4693,8 +4714,20 @@ function restoreBossFightAfterContinue(){
  titleMusicStop();bossMusicStart();return true;
 }
 function goldContinue(){
- if(!game||!game.over||game.testMode||save.goldLeaves<10)return;
- save.goldLeaves-=10;persist();game.over=false;game.paused=false;game.p.hp=game.p.maxHp;
+ if(!game||!game.over||game.testMode)return;
+ const result=game.mode==='gold'?'goldFail':'gameover';
+ const fromShop=goldShopReturnScreen===result&&gameScreenVisible('goldShop');
+ if(!fromShop&&!gameScreenVisible(result))return;
+ const balance=save.goldLeaves||0;
+ if(balance<GOLD_CONTINUE_COST){
+   if(!fromShop)openGoldShop(result);
+   return;
+ }
+ save.goldLeaves=balance-GOLD_CONTINUE_COST;
+ if(!persist()){save.goldLeaves=balance;refreshGoldUI();return;}
+ goldShopReturnScreen=null;
+ shopMusicStop();
+ game.over=false;game.paused=false;game.p.hp=game.p.maxHp;
  game.p.pendingDamage=0;game.p.goldInvulnUntil=game.time+2;
  screen('none');showGameUI(true);
  const restoredPhase=typeof restorePendingRunPhase==='function'&&restorePendingRunPhase();
@@ -6154,6 +6187,7 @@ function restoreCoreHomePresentation(){
  }
 }
 function enterHomeCleanly(){
+ goldShopReturnScreen=null;
  window.BBGameTimers.resume();
  const presentation=++homePresentationGeneration;
  resetGameInput();stopGameLoop();cancelGoldMusicCues();goldMusicStop();
@@ -6172,6 +6206,21 @@ function enterHomeCleanly(){
   resetTitleScene(performance.now(),w);startTitleGardenLoop();
   if(save.settings.music!==false){initAudio();bbSetTimeout(()=>{if(presentation===homePresentationGeneration&&isMenuMusicScreen())titleMusicStart()},45)}
  });
+}
+
+function openGoldShop(returnScreen=null){
+ goldShopReturnScreen=returnScreen;
+ stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');
+ window.BigBugNative?.refreshProducts();
+ shopMusicStart(true);
+}
+function closeGoldShop(){
+ const returnScreen=goldShopReturnScreen;
+ goldShopReturnScreen=null;
+ if(returnScreen&&game?.over){
+  shopMusicStop();refreshGoldUI();screen(returnScreen);
+  if(returnScreen==='gameover')titleMusicStart();
+ }else enterHomeCleanly();
 }
 
 restoreEarnedStoryMilestones();
@@ -6209,7 +6258,8 @@ document.addEventListener('click',e=>{
  if(a==='cosmetics'){stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()}
  if(a==='base'){stopTitleGardenLoop();showGameUI(false);buildShop();screen('base');titleMusicStart()}
  if(a==='gardenBook'){stopTitleGardenLoop();showGameUI(false);shopMusicStop();buildGardenBook('playable');screen('gardenBook');titleMusicStart()}
- if(a==='goldShop'){stopTitleGardenLoop();showGameUI(false);titleMusicStop(false);refreshGoldUI();screen('goldShop');shopMusicStart(true)}
+ if(a==='goldShop')openGoldShop();
+ if(a==='goldShopBack')closeGoldShop();
  if(BB_DEV_MODE&&a==='tempAddGold'){save.goldLeaves=(save.goldLeaves||0)+100;persist();beep(980,.10,.03,'triangle');flashBanner('TEMP +100 GOLD LEAVES',.9)}
  if(BB_DEV_MODE&&a==='tempClearGold'){save.goldLeaves=0;persist();beep(220,.10,.025,'triangle');flashBanner('TEMP GOLD CLEARED',.9)}
  if(a==='resume'){startOrResume()}
@@ -6867,8 +6917,8 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.4"></script>
-<script src="native-store.js"></script>
+<script src="mobile-game.js?v=19.1.0-ios.5"></script>
+<script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js"></script>
 </body>
 </html>

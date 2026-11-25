@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.4 — touch layout. Geometry comes from the current window,
+/* Big Bug v19.1.0-ios.5 — touch layout. Geometry comes from the current window,
    and, in the iOS app, UIKit safe areas and active reserved regions. */
 :root {
   --bb-safe-top: env(safe-area-inset-top, 0px);
@@ -459,12 +459,14 @@ html body #finalPrep .choice .upgradeMark { position: static !important; transfo
   html body .firstHelpStep p { font-size: 14px; }
 }
 @container bbMenu (max-width: 300px) {
-  html body .goldPackGrid { grid-template-columns: 1fr; }
   html body #settings .settingRow { flex-wrap: wrap; }
   html body #settings .volumeControl { flex-basis: 100%; }
   html body .bbSettingOptions { flex-wrap: wrap; }
   html body .achievementRow { flex-wrap: wrap; }
   html body .achievementReward { margin-left: auto; }
+}
+@container bbMenu (max-width: 247px) {
+  #goldShop .goldPackGrid { grid-template-columns: 1fr; }
 }
 /* Keep cinematic timers/credits intact. The game owns simulation effects. */
 @media (prefers-reduced-motion: reduce) {

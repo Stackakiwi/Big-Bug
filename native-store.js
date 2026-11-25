@@ -1,4 +1,4 @@
-/* Big Bug iOS bridge — v19.1.0-ios.2. No web checkout or simulated success. */
+/* Big Bug iOS bridge — v19.1.0-ios.5. */
 (function () {
   'use strict';
   const PACKS = Object.freeze({
@@ -41,11 +41,14 @@
       const enabled = native && paymentsAllowed && !!price && !busy && !deliveryBlocked;
       button.disabled = !enabled;
       button.setAttribute('aria-disabled', String(!enabled));
-      button.textContent = price || (native ? 'Unavailable' : 'iOS App Only');
+      button.textContent = price || '—';
       button.setAttribute('aria-label', price ? amount + ' Gold Leaves, ' + price : amount + ' Gold Leaves, unavailable');
     });
     const restore = document.getElementById('restorePurchasesBtn');
-    if (restore) restore.disabled = !native || busy;
+    if (restore) {
+      restore.hidden = !native;
+      restore.disabled = !native || busy;
+    }
   }
   function exportSnapshot() {
     try {
@@ -101,12 +104,12 @@
           if (Object.hasOwn(PACKS, product.id) && typeof product.price === 'string' && product.price.length < 80)
             prices.set(product.id, product.price);
         });
-        status(!paymentsAllowed ? 'Purchases are restricted on this device.' : prices.size ? 'Optional Gold Leaf packs. Apple confirms every purchase.' : 'Packs are unavailable. Check your connection and try again.');
+        status(!paymentsAllowed ? 'Purchases are restricted on this device.' : prices.size ? '' : 'Packs are unavailable. Check your connection and try again.');
         refreshButtons(); break;
       case 'purchasing': busy = true; status('Confirm your purchase with Apple.'); refreshButtons(); break;
       case 'delivery': queueDelivery(event.transaction); break;
       case 'delivered':
-        busy = false; deliveryBlocked = false; status('Gold Leaves saved. Thank you for supporting Big Bug.');
+        busy = false; deliveryBlocked = false; status('Gold Leaves added.');
         refreshButtons();
         if (window.BigBugGame && window.BigBugGame.getMobileState) {
           const state = window.BigBugGame.getMobileState();
@@ -187,12 +190,8 @@
     if (restore) restore.addEventListener('click', window.BigBugNative.restorePurchases);
     const refresh = document.getElementById('refreshStoreBtn');
     if (refresh) refresh.addEventListener('click', window.BigBugNative.refreshProducts);
-    document.addEventListener('click', function (event) {
-      if (event.target && event.target.closest && event.target.closest('[data-action="goldShop"]') && native)
-        post({action: 'products'});
-    });
     refreshButtons();
-    if (!native) status('Gold Leaf purchases are available in the iOS app. You can still earn Gold Leaves by playing.');
+    if (!native) status('Purchases are available in the iOS app.');
     gameReady();
     if (native) setInterval(function () {
       if (document.hidden || !window.BigBugGame || !window.BigBugGame.getMobileState) return;
