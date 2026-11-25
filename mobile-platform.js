@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.2 — viewport, save bootstrap and render budget.
+/* Big Bug v19.1.0-ios.4 — viewport, save bootstrap and render budget.
    Geometry comes from the current view and UIKit reserved regions, never a model name. */
 (() => {
   'use strict';
@@ -104,7 +104,13 @@
     }
     stage = avoidOcclusions(stage, layout?.occlusions || []);
     controls = avoidOcclusions(controls, layout?.occlusions || []);
-    state.rect = stage; state.controls = controls; state.kind = kind;
+    // The painted floor can reach underneath hardware margins. The playable
+    // field and controls still use the safe rect and stop at the Duo hinge.
+    const surface = fold ? stage : { x:0, y:0, width, height };
+    const insetLeft = stage.x - surface.x, insetTop = stage.y - surface.y;
+    const insetRight = surface.x + surface.width - stage.x - stage.width;
+    const insetBottom = surface.y + surface.height - stage.y - stage.height;
+    state.rect = stage; state.surface = surface; state.controls = controls; state.kind = kind;
     state.width = width; state.height = height;
     document.body.dataset.bbLayout = kind;
     document.body.dataset.bbCompactHeight = String(stage.height < 500);
@@ -116,11 +122,14 @@
     }
     // Menus share the calculated safe pane in an open display too, where a
     // camera or window control can be reserved without an active fold.
-    for (const [prefix,r] of [['stage',stage],['menu',stage],['control',controls]]) {
+    for (const [prefix,r] of [['stage',stage],['surface',surface],['menu',stage],['control',controls]]) {
       for (const [key,value] of Object.entries({left:r.x,top:r.y,width:r.width,height:r.height})) css('--bb-'+prefix+'-'+key,value);
     }
     const stageNode = document.getElementById('gameStage');
-    if (stageNode) Object.assign(stageNode.style,{left:stage.x+'px',top:stage.y+'px',width:stage.width+'px',height:stage.height+'px'});
+    if (stageNode) Object.assign(stageNode.style,{left:surface.x+'px',top:surface.y+'px',width:surface.width+'px',height:surface.height+'px'});
+    for (const [side,value] of Object.entries({left:insetLeft,right:insetRight,top:insetTop,bottom:insetBottom})) {
+      css('--bb-surface-inset-'+side,value);
+    }
     let logical = state.locked;
     if (!logical) {
       const ratio = stage.width / stage.height, shortSide = 390;
@@ -130,18 +139,21 @@
     const scale = Math.min(stage.width/logical.width,stage.height/logical.height);
     state.canvas = { width:logical.width,height:logical.height,scale,
       left:(stage.width-logical.width*scale)/2,top:(stage.height-logical.height*scale)/2 };
-    for (const id of ['game','arenaBg']) {
-      const node=document.getElementById(id);if(!node)continue;
-      for(const [k,v] of Object.entries({left:state.canvas.left,top:state.canvas.top,width:logical.width*scale,height:logical.height*scale})) node.style.setProperty(k,v+'px','important');
-      node.style.setProperty('inset','auto','important');
-      node.style.setProperty('left',state.canvas.left+'px','important');node.style.setProperty('top',state.canvas.top+'px','important');
+    const canvasNode = document.getElementById('game');
+    if (canvasNode) {
+      canvasNode.style.setProperty('inset','auto','important');
+      for (const [key,value] of Object.entries({
+        left:state.canvas.left+insetLeft, top:state.canvas.top+insetTop,
+        width:logical.width*scale, height:logical.height*scale
+      })) canvasNode.style.setProperty(key,value+'px','important');
     }
     return state.canvas;
   }
   function renderScale(w,h) {
     const low = state.settings.graphics === 'battery' || state.nativeLayout?.lowPower || number(state.nativeLayout?.thermalState) >= 2;
     const pixels = (low ? 650000 : 1250000) * state.quality;
-    const effectiveDPR = Math.min(number(devicePixelRatio,1), 1.75) * (state.canvas?.scale || 1);
+    const dprLimit = !low && state.touch && state.kind === 'compact' ? 2 : 1.75;
+    const effectiveDPR = Math.min(number(devicePixelRatio,1), dprLimit) * (state.canvas?.scale || 1);
     return Math.max(.25,Math.min(effectiveDPR,Math.sqrt(pixels/Math.max(1,w*h))));
   }
   function targetFPS() {

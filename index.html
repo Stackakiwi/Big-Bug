@@ -1381,7 +1381,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
-<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.3">
+<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.4">
 </head>
 <body>
 <div id="gameStage" aria-label="Garden arena">
@@ -1433,7 +1433,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.3</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.4</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -1640,7 +1640,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  </div>
 </section>
 
-<script src="mobile-platform.js"></script>
+<script src="mobile-platform.js?v=19.1.0-ios.4"></script>
 <script src="game-timers.js"></script>
 <script>
 const BB_DEV_MODE=false; // Production builds have no developer entry points.
@@ -1650,17 +1650,25 @@ const bbSetInterval=window.BBGameTimers.setInterval,bbClearInterval=window.BBGam
 
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
-let W=0,H=0,D=1,arenaBgKey='';
+let W=0,H=0,D=1,arenaBgKey='',arenaFloorBounds;
 const MOBILE_CANVAS_RENDER=window.BBMobile.state.touch;
 const DESKTOP_PERF_RENDER=!MOBILE_CANVAS_RENDER;
 // Touchscreen desktop browsers still support the existing keyboard controls.
 const DESKTOP_KEYBOARD_INPUT=!window.BBMobile.state.native;
 function canvasRenderScale(w,h){return window.BBMobile.renderScale(w,h)}
 function resize(){
- const layout=window.BBMobile.computeLayout();W=layout.width;H=layout.height;D=canvasRenderScale(W,H);
+ const platform=window.BBMobile,layout=platform.computeLayout();W=layout.width;H=layout.height;D=canvasRenderScale(W,H);
  const width=Math.max(1,Math.round(W*D)),height=Math.max(1,Math.round(H*D));
- if(C.width!==width||C.height!==height){C.width=width;C.height=height;BG.width=width;BG.height=height;arenaBgKey='';}
- X.setTransform(D,0,0,D,0,0);BGX.setTransform(D,0,0,D,0,0);
+ if(C.width!==width||C.height!==height){C.width=width;C.height=height;}
+ X.setTransform(width/W,0,0,height/H,0,0);
+ const {surface,rect}=platform.state;
+ const floorScale=Math.sqrt(width*height/(surface.width*surface.height));
+ const floorWidth=Math.max(1,Math.round(surface.width*floorScale)),floorHeight=Math.max(1,Math.round(surface.height*floorScale));
+ if(BG.width!==floorWidth||BG.height!==floorHeight){BG.width=floorWidth;BG.height=floorHeight;}
+ const x=rect.x-surface.x+layout.left,y=rect.y-surface.y+layout.top;
+ const sx=floorWidth/surface.width,sy=floorHeight/surface.height;
+ arenaFloorBounds=[Math.round(x*sx),Math.round(y*sy),Math.round((x+W*layout.scale)*sx),Math.round((y+H*layout.scale)*sy)];
+ arenaBgKey='';
 }
 function bbPrepareRunGeometry(){window.BBMobile.unlockArena();resize();window.BBMobile.lockArena(W,H);}
 addEventListener('resize',()=>{if(window.BigBugGame)window.BigBugGame.refreshViewport(true);else resize()});resize();
@@ -5515,7 +5523,18 @@ const ARENA_CACHE=document.createElement('canvas'),ARENA_CACHE_X=ARENA_CACHE.get
 let arenaCacheKey='',FRAME_NOW=0;
 function paintArenaBackgroundFromCache(cacheKey){
  if(arenaBgKey===cacheKey)return;
- BGX.setTransform(1,0,0,1,0,0);BGX.clearRect(0,0,BG.width,BG.height);BGX.drawImage(ARENA_CACHE,0,0,BG.width,BG.height);BGX.setTransform(D,0,0,D,0,0);arenaBgKey=cacheKey;
+ const [left,top,right,bottom]=arenaFloorBounds,{width,height}=ARENA_CACHE;
+ // Stretch the outermost static pixels through any hardware margins or
+ // letterboxing. No gameplay sprites or blur effects enter those margins.
+ const columns=[[0,1,0,left],[0,width,left,right-left],[width-1,1,right,BG.width-right]];
+ const rows=[[0,1,0,top],[0,height,top,bottom-top],[height-1,1,bottom,BG.height-bottom]];
+ for(const [sx,sw,dx,dw] of columns){
+  for(const [sy,sh,dy,dh] of rows){
+   if(dw>0&&dh>0)BGX.drawImage(ARENA_CACHE,sx,sy,sw,sh,dx,dy,dw,dh);
+  }
+ }
+ document.documentElement.style.setProperty('--bb-arena-shell-color',areaFor().bot);
+ arenaBgKey=cacheKey;
 }
 function paintGoldArenaBackground(cacheKey){
  if(arenaCacheKey!==cacheKey){
@@ -6848,7 +6867,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js"></script>
+<script src="mobile-game.js?v=19.1.0-ios.4"></script>
 <script src="native-store.js"></script>
 <script src="mobile-ui.js"></script>
 </body>

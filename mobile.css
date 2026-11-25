@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.3 — touch layout. Geometry comes from the current window,
+/* Big Bug v19.1.0-ios.4 — touch layout. Geometry comes from the current window,
    and, in the iOS app, UIKit safe areas and active reserved regions. */
 :root {
   --bb-safe-top: env(safe-area-inset-top, 0px);
@@ -33,6 +33,9 @@ html, body {
   background: #09170e;
 }
 body { position: fixed; inset: 0; }
+html:has(body[data-bb-playing="true"]), body[data-bb-playing="true"] {
+  background-color: var(--bb-arena-shell-color, #244329);
+}
 button, input, select, a { -webkit-tap-highlight-color: transparent; }
 button, [role="button"], input[type="range"] { touch-action: manipulation; }
 button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-visible {
@@ -67,13 +70,15 @@ body[data-bb-layout^="fold-"] .bbStickHelp { display: inline; }
   position: absolute; inset: auto; left: 0; top: 0;
   width: 100%; height: 100%; touch-action: none;
 }
+body.g159 #gameStage #game { background: transparent !important; }
+body:has(#home:not(.hidden)) #gameStage { visibility: hidden; }
 #gameStage #hud {
   position: absolute !important;
-  top: calc(var(--bb-stage-safe-top) + 10px) !important;
-  left: calc(var(--bb-stage-safe-left) + 10px) !important;
-  right: calc(var(--bb-stage-safe-right) + 64px) !important;
+  top: calc(var(--bb-surface-inset-top, 0px) + 10px) !important;
+  left: calc(var(--bb-surface-inset-left, 0px) + 10px) !important;
+  right: calc(var(--bb-surface-inset-right, 0px) + 56px) !important;
   width: auto !important; max-width: none !important;
-  display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1.1fr) minmax(0,.8fr);
+  display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,.9fr);
   gap: 5px !important; align-items: start; transform: none !important;
 }
 #gameStage #hud.hidden { display: none !important; }
@@ -84,30 +89,49 @@ body[data-bb-layout^="fold-"] .bbStickHelp { display: inline; }
 }
 #gameStage #hud .hudWave {
   position: static !important; transform: none !important; width: auto !important;
-  font-size: clamp(10px, 2.8vw, 14px) !important; letter-spacing: 0 !important;
-  min-width: 0 !important; overflow: hidden !important;
+  display: grid; grid-template-columns: auto auto; justify-self: center;
+  font-size: clamp(17px, 4.7cqi, 25px) !important; letter-spacing: 0 !important;
+  line-height: 1 !important; gap: 2px 4px !important;
+  text-shadow: 0 1px 2px #000e;
 }
-#gameStage #hud .hudWave #waveProgress { font-size: 9px !important; margin-left: 2px !important; }
+#gameStage #hud .hudWave #wave { margin-left: 0 !important; }
+#gameStage #hud .hudWave #waveProgress {
+  grid-column: 1 / -1; font-size: 10px !important; margin: 0 !important;
+  letter-spacing: .2px !important;
+}
+#gameStage #hud .hudWave #waveProgress:empty { display: none; }
 #gameStage #hud .hudLeaves { justify-content: flex-end; }
 #gameStage #pauseBtn {
   position: absolute !important;
-  top: calc(var(--bb-stage-safe-top) + 6px) !important;
-  right: calc(var(--bb-stage-safe-right) + 8px) !important;
+  top: calc(var(--bb-surface-inset-top, 0px) + 9px) !important;
+  right: calc(var(--bb-surface-inset-right, 0px) + 8px) !important;
   bottom: auto !important; left: auto !important;
-  width: 48px !important; height: 48px !important; min-height: 48px;
-  border-radius: 16px !important; margin: 0 !important; font-size: 21px !important;
-  box-shadow: 0 3px 0 #07150d, inset 0 1px #e4f2d54d !important;
+  width: 44px !important; height: 44px !important; min-height: 44px;
+  display: grid; place-items: center; padding: 0; margin: 0 !important;
+  border: 0; border-radius: 12px; background: transparent;
+  font-size: 17px; font-weight: 800; line-height: 1;
+  text-shadow: 0 1px 2px #000c; box-shadow: none; isolation: isolate;
+}
+#gameStage #pauseBtn::before {
+  content: ""; position: absolute; inset: 6px; z-index: -1;
+  border: 1px solid #f1ffdf55; border-radius: 9px;
+  background: #12241666; pointer-events: none;
+}
+#gameStage #pauseBtn::after { content: none; }
+#gameStage #pauseBtn:active::before { background: #122416b3; }
+@media (prefers-contrast: more) {
+  #gameStage #pauseBtn::before { background: #122416d9; border-color: #f1ffdfb3; }
 }
 #gameStage #bossbar {
   position: absolute !important;
-  top: calc(var(--bb-stage-safe-top) + 58px) !important;
+  top: calc(var(--bb-surface-inset-top, 0px) + 58px) !important;
   left: 50% !important; right: auto !important;
   width: min(72%, 420px) !important; transform: translateX(-50%) !important;
 }
 #gameStage #bossbar .bossName { font-size: 12px; }
 #gameStage #telegraph {
   position: absolute !important;
-  top: calc(var(--bb-stage-safe-top) + 105px) !important;
+  top: calc(var(--bb-surface-inset-top, 0px) + 105px) !important;
   max-width: calc(100% - 24px); text-align: center; font-size: 13px;
   pointer-events: none;
 }
@@ -155,6 +179,12 @@ html body #base .panel:before, html body #bugs .panel:before { display: none; }
 /* Classic Home positions within the current safe pane. */
 html body #home.screen {
   isolation: isolate; gap: 10px;
+  left: var(--bb-surface-left, 0px); top: var(--bb-surface-top, 0px);
+  width: var(--bb-surface-width, 100vw); height: var(--bb-surface-height, 100dvh);
+  padding: calc(var(--bb-surface-inset-top, 0px) + 12px)
+           calc(var(--bb-surface-inset-right, 0px) + 12px)
+           calc(var(--bb-surface-inset-bottom, 0px) + 14px)
+           calc(var(--bb-surface-inset-left, 0px) + 12px) !important;
 }
 #home #titleGarden {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -436,9 +466,6 @@ html body #finalPrep .choice .upgradeMark { position: static !important; transfo
   html body .achievementRow { flex-wrap: wrap; }
   html body .achievementReward { margin-left: auto; }
 }
-@media (max-width: 360px) {
-  #gameStage #hud .hudWave #waveProgress { display: none !important; }
-}
 /* Keep cinematic timers/credits intact. The game owns simulation effects. */
 @media (prefers-reduced-motion: reduce) {
   html body .screen:not(#ending) *, html body .screen:not(#ending) *::before,
@@ -463,9 +490,7 @@ body[data-bb-reduce-motion="true"] #mobileActions button {
 /* Stage/deck queries are independent of the full display, so a narrow Split View
    or an active fold does not inherit desktop-sized HUD content. */
 @container bbStage (max-width: 360px) {
-  #gameStage #hud .hudWave #waveProgress { display: none !important; }
-  #gameStage #hud .pill { font-size: 11px !important; }
-  #gameStage #hud .hudWave { font-size: 11px !important; }
+  #gameStage #hud .pill:not(.hudWave) { font-size: 11px !important; }
 }
 body[data-bb-layout="fold-horizontal"][data-bb-deck-compact="true"] #mobileRunSummary,
 body[data-bb-layout="fold-horizontal"][data-bb-deck-compact="true"] #mobileControlHint { display: none; }
