@@ -1,0 +1,540 @@
+/* Big Bug v19.1.0-ios.2 — touch layout. Geometry comes from the current window,
+   and, in the iOS app, UIKit safe areas and active reserved regions. */
+:root {
+  --bb-safe-top: env(safe-area-inset-top, 0px);
+  --bb-safe-right: env(safe-area-inset-right, 0px);
+  --bb-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --bb-safe-left: env(safe-area-inset-left, 0px);
+  --bb-app-width: 100vw;
+  --bb-app-height: 100dvh;
+  --bb-stage-left: 0px;
+  --bb-stage-top: 0px;
+  --bb-stage-width: var(--bb-app-width);
+  --bb-stage-height: var(--bb-app-height);
+  --bb-stage-safe-top: var(--bb-safe-top);
+  --bb-stage-safe-right: var(--bb-safe-right);
+  --bb-stage-safe-bottom: var(--bb-safe-bottom);
+  --bb-stage-safe-left: var(--bb-safe-left);
+  --bb-menu-left: 0px;
+  --bb-menu-top: 0px;
+  --bb-menu-width: var(--bb-app-width);
+  --bb-menu-height: var(--bb-app-height);
+  --bb-menu-safe-top: var(--bb-safe-top);
+  --bb-menu-safe-right: var(--bb-safe-right);
+  --bb-menu-safe-bottom: var(--bb-safe-bottom);
+  --bb-menu-safe-left: var(--bb-safe-left);
+  --bb-ui-gap: 10px;
+}
+html, body {
+  width: 100%; height: 100%; margin: 0; padding: 0;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+  background: #09170e;
+}
+body { position: fixed; inset: 0; }
+button, input, select, a { -webkit-tap-highlight-color: transparent; }
+button, [role="button"], input[type="range"] { touch-action: manipulation; }
+button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid #ffe18b !important; outline-offset: 4px;
+}
+button { -webkit-appearance: none; appearance: none; }
+button:disabled { cursor: default; }
+.bbTouchHelp, .bbStickHelp, .bbDuoHelp { display: none; }
+body[data-bb-touch="true"] .bbDesktopHelp,
+body[data-bb-touch="true"] #pcControlsRow { display: none !important; }
+body[data-bb-touch="true"] .bbTouchHelp { display: inline; }
+body[data-bb-control="joystick"] .bbDragHelp,
+body[data-bb-layout^="fold-"] .bbDragHelp { display: none; }
+body[data-bb-control="joystick"] .bbStickHelp,
+body[data-bb-native="true"] .bbDuoHelp,
+body[data-bb-layout^="fold-"] .bbStickHelp { display: inline; }
+.bbVisuallyHidden {
+  position: absolute !important; width: 1px !important; height: 1px !important;
+  padding: 0 !important; margin: -1px !important; overflow: hidden !important;
+  clip: rect(0,0,0,0); white-space: nowrap !important; border: 0 !important;
+}
+
+/* Stage-local positions keep canvas input, HUD, and hardware geometry in one space. */
+#gameStage {
+  position: fixed; left: var(--bb-stage-left); top: var(--bb-stage-top);
+  width: var(--bb-stage-width); height: var(--bb-stage-height);
+  overflow: hidden; isolation: isolate; contain: layout paint;
+  container-type: inline-size; container-name: bbStage;
+  background: #101b12; touch-action: none;
+}
+#gameStage #arenaBg, #gameStage #game {
+  position: absolute; inset: auto; left: 0; top: 0;
+  width: 100%; height: 100%; touch-action: none;
+}
+#gameStage #hud {
+  position: absolute !important;
+  top: calc(var(--bb-stage-safe-top) + 10px) !important;
+  left: calc(var(--bb-stage-safe-left) + 10px) !important;
+  right: calc(var(--bb-stage-safe-right) + 64px) !important;
+  width: auto !important; max-width: none !important;
+  display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1.1fr) minmax(0,.8fr);
+  gap: 5px !important; align-items: start; transform: none !important;
+}
+#gameStage #hud.hidden { display: none !important; }
+#gameStage #hud .pill {
+  min-width: 0; min-height: 34px; padding: 6px 4px !important;
+  font-size: clamp(11px, 2.9vw, 15px) !important; line-height: 1.15;
+  justify-self: stretch; justify-content: center; white-space: nowrap;
+}
+#gameStage #hud .hudWave {
+  position: static !important; transform: none !important; width: auto !important;
+  font-size: clamp(10px, 2.8vw, 14px) !important; letter-spacing: 0 !important;
+  min-width: 0 !important; overflow: hidden !important;
+}
+#gameStage #hud .hudWave #waveProgress { font-size: 9px !important; margin-left: 2px !important; }
+#gameStage #hud .hudLeaves { justify-content: flex-end; }
+#gameStage #pauseBtn {
+  position: absolute !important;
+  top: calc(var(--bb-stage-safe-top) + 6px) !important;
+  right: calc(var(--bb-stage-safe-right) + 8px) !important;
+  bottom: auto !important; left: auto !important;
+  width: 48px !important; height: 48px !important; min-height: 48px;
+  border-radius: 16px !important; margin: 0 !important; font-size: 21px !important;
+  box-shadow: 0 3px 0 #07150d, inset 0 1px #e4f2d54d !important;
+}
+#gameStage #bossbar {
+  position: absolute !important;
+  top: calc(var(--bb-stage-safe-top) + 58px) !important;
+  left: 50% !important; right: auto !important;
+  width: min(72%, 420px) !important; transform: translateX(-50%) !important;
+}
+#gameStage #bossbar .bossName { font-size: 12px; }
+#gameStage #telegraph {
+  position: absolute !important;
+  top: calc(var(--bb-stage-safe-top) + 105px) !important;
+  max-width: calc(100% - 24px); text-align: center; font-size: 13px;
+  pointer-events: none;
+}
+
+/* All menu panels scroll on their own, including compact windows and folded poses. */
+html body .screen, html body #story, html body #ending, html body #goldFinaleOutro {
+  position: fixed; left: var(--bb-menu-left); top: var(--bb-menu-top);
+  width: var(--bb-menu-width); height: var(--bb-menu-height);
+  right: auto; bottom: auto;
+}
+html body .screen, html body #story {
+  padding: calc(var(--bb-menu-safe-top) + 12px) calc(var(--bb-menu-safe-right) + 12px)
+           calc(var(--bb-menu-safe-bottom) + 14px) calc(var(--bb-menu-safe-left) + 12px) !important;
+  overflow-y: auto !important; overflow-x: hidden !important;
+  overscroll-behavior: contain; touch-action: pan-y !important;
+  align-items: center; justify-content: flex-start !important;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-block: 16px;
+  container-type: inline-size; container-name: bbMenu;
+}
+html body .screen > .panel, html body #firstHelp .firstHelpPanel,
+html body #goldFail .goldFailPanel, html body #story .storyLeaf {
+  flex: 0 0 auto; width: min(680px,100%) !important; max-width: 100% !important;
+  max-height: none !important; height: auto !important;
+  margin: auto 0 !important; overflow: visible !important;
+  padding: clamp(16px,3.6vw,26px) !important;
+  border-radius: 22px !important;
+  touch-action: pan-y !important; contain: none;
+}
+html body .screen > .panel > .btn, html body #storyContinue {
+  max-width: 100%; min-height: 48px; min-width: 0;
+}
+html body .screen .btn, html body .screen button.toggleBtn,
+html body .screen button.gardenTab, html body .screen .gardenBookClose,
+html body #storyContinue, html body .screen button.pcControlBtn {
+  min-height: 44px !important; min-width: 44px;
+}
+html body .screen h2 { font-size: clamp(22px,6.2vw,34px); overflow-wrap: anywhere; }
+html body .screen p { line-height: 1.4; }
+html body .screen .grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+html body .screen button, html body #storyContinue { touch-action: pan-y; }
+html body .screen .muted { opacity: .85; }
+html body #base .panel:before, html body #bugs .panel:before { display: none; }
+
+/* Home uses real layout flow; hidden desktop spacers never consume touch space. */
+html body #home.screen {
+  inset: auto !important; left: var(--bb-menu-left) !important; top: var(--bb-menu-top) !important;
+  right: auto !important; bottom: auto !important;
+  width: var(--bb-menu-width) !important; height: var(--bb-menu-height) !important;
+  display: grid; grid-template-columns: repeat(3,minmax(0,150px));
+  grid-auto-rows: auto; justify-content: center !important; align-items: center;
+  align-content: safe center; gap: 9px 8px;
+  padding-inline: calc(var(--bb-menu-safe-left) + 14px) calc(var(--bb-menu-safe-right) + 14px) !important;
+  background: linear-gradient(#cce8b4,#92bd69 44%,#365f31);
+}
+html body #home #titleGarden {
+  position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important;
+  pointer-events: none; z-index: 0 !important;
+}
+html body #home > :where(:not(#titleGarden)) {
+  position: relative !important; inset: auto !important; transform: none !important;
+  width: auto; max-width: 100%; min-width: 0; grid-column: 1 / -1;
+  margin: 0 !important; z-index: 1;
+}
+html body #home .homeTextLayoutKeeper, html body #home .homeResetLayoutKeeper,
+html body #home .homeReleaseSpacer, html body #home .versionStamp { display: none !important; }
+html body #home #globalSettingsBtn {
+  grid-row: 1; grid-column: 1; justify-self: start; width: 100%;
+  padding: 10px 7px !important; font-size: 12px !important; border-radius: 14px !important;
+}
+html body #home .homeGoldBalance {
+  grid-row: 1; grid-column: 2 / 4; justify-self: end;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  max-width: 180px; min-height: 44px !important; padding: 8px 12px !important;
+  border-radius: 14px !important; font-size: 17px !important;
+}
+html body #home .homeGoldBalance small { font-size: 12px; }
+html body #home .bugHero {
+  grid-row: 2; grid-column: 1; justify-self: center; align-self: center;
+  width: 88px; height: 100px; font-size: 0; animation: none; filter: none;
+}
+html body #home #homeBugHero { display: block; width: 88px; height: 88px; margin-top: 5px; }
+html body #home .logo {
+  grid-row: 2; grid-column: 2 / 4; justify-self: start; padding-block: 9px 11px;
+  font-size: clamp(58px,13vw,86px) !important; line-height: .78 !important;
+  letter-spacing: -4px !important; text-align: center;
+  text-shadow: 0 4px 0 #612f18,0 7px 10px #16351b55;
+}
+html body #home > .btn[data-action="play"] {
+  grid-row: 3; width: 100%; max-width: 370px; justify-self: center;
+  min-height: 52px !important; font-size: 22px !important; padding: 12px !important;
+}
+html body #home #endlessBtn { grid-row: 4; }
+html body #home #goldWavesBtn { grid-row: 5; }
+html body #home #endlessBtn, html body #home #goldWavesBtn {
+  width: 100%; max-width: 370px; justify-self: center;
+  min-height: 50px !important; padding: 10px 8px !important;
+  font-size: 16px !important; border-radius: 16px !important;
+}
+html body #home #endlessBtn small, html body #home #goldWavesBtn small { font-size: 10px !important; }
+html body #home .homeMenuRow {
+  grid-row: 6; display: grid; grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 7px; width: 100%; justify-self: stretch; transform: none !important;
+}
+html body #home .homeMenuRow .btn {
+  min-width: 0 !important; width: 100%; min-height: 46px !important;
+  margin: 0 !important; padding: 9px 4px !important; border-radius: 13px !important;
+  font-size: clamp(10px,2.7vw,13px) !important; white-space: nowrap;
+}
+html body #home #homeAchievementsBtn {
+  grid-row: 7; grid-column: 1 / 3; justify-self: stretch;
+  width: 100% !important; transform: none !important; transform-origin: center;
+  font-size: 12px !important; line-height: 1.2 !important;
+  padding: 10px 6px !important; border-radius: 13px !important;
+}
+html body #home #homeAchievementsBtn:active:not(:disabled) { transform: translateY(1px) !important; }
+html body #home #gardenBookBtn {
+  grid-row: 7; grid-column: 3; width: 100% !important; height: 44px !important;
+  min-height: 44px; border-radius: 13px; justify-self: stretch;
+  display: flex; justify-content: center; align-items: center;
+  padding: 4px !important; margin: 0 !important; transform: none !important;
+}
+html body #home #gardenBookBtn .bookGlyph { transform: scale(.52); transform-origin: center; }
+html body #home .homeBestFancy {
+  grid-row: 8; font-size: 12px !important; line-height: 1.6;
+  text-align: center; justify-self: center; margin-top: 3px !important;
+  font-weight: 850; letter-spacing: .2px; transform: none !important;
+  color: #f3f7d9; text-shadow: 0 1px 1px #152f16;
+}
+html body #home .homeBestFancy:before { display: none; }
+html body #home #homeCreditsBtn {
+  grid-row: 9; grid-column: 1; justify-self: start;
+  min-height: 44px !important; min-width: 44px; padding: 9px 8px !important;
+  font-size: 11px !important; border-radius: 12px !important;
+}
+html body #home .versionCorner {
+  grid-row: 9; grid-column: 2 / 4; justify-self: end; align-self: center;
+  color: #f3f6df !important; font: 650 10px/1.2 system-ui,sans-serif !important;
+  opacity: .8 !important; pointer-events: none;
+}
+html body #home.hidden { display: none !important; }
+
+/* Touch-friendly gameplay actions. Root keeps their original IDs and handlers. */
+#mobileActions {
+  position: fixed; z-index: 8;
+  left: calc(var(--bb-stage-left) + var(--bb-stage-safe-left) + 12px);
+  right: auto; top: auto;
+  bottom: calc(var(--bb-app-height) - var(--bb-stage-top) - var(--bb-stage-height) + var(--bb-stage-safe-bottom) + 12px);
+  width: calc(var(--bb-stage-width) - var(--bb-stage-safe-left) - var(--bb-stage-safe-right) - 24px);
+  display: flex; justify-content: flex-end; gap: 8px; align-items: flex-end;
+  pointer-events: none;
+}
+#mobileActions #boostBtn, #mobileActions #endlessTripleBtn, #mobileActions #endlessRepelBtn {
+  position: relative !important; inset: auto !important; flex: 0 1 104px;
+  width: auto !important; min-width: 44px !important; min-height: 54px !important; height: auto !important;
+  padding: 9px 8px !important; margin: 0 !important; border-radius: 16px !important;
+  font-size: 11px !important; line-height: 1.15; pointer-events: auto;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important; touch-action: manipulation;
+}
+#mobileActions button small { font-size: 10px !important; line-height: 1.2; margin-top: 3px; }
+#mobileActions button:disabled { opacity: .62; }
+body:not([data-bb-playing="true"]) #mobileActions { display: none; }
+#mobileControlDeck {
+  position: fixed; left: var(--bb-control-left, 0px); top: var(--bb-control-top, 0px);
+  width: var(--bb-control-width, 100%); height: var(--bb-control-height, 0px);
+  z-index: 6; box-sizing: border-box; padding: 18px;
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows: 1fr auto; align-items: center; gap: 10px;
+  border: 1px solid #426242; border-radius: 22px;
+  background: radial-gradient(ellipse at 10% 0%,#2e573543,transparent 60%),linear-gradient(145deg,#17321f,#0a2114);
+  color: #f7f1d5; overflow: hidden; touch-action: none;
+}
+#mobileControlDeck.hidden { display: none !important; }
+#mobileJoystick {
+  position: relative; width: clamp(104px,24vw,160px); aspect-ratio: 1;
+  max-width: 100%; justify-self: center; align-self: center;
+  border-radius: 50%; border: 2px solid #b0d99488;
+  background: radial-gradient(circle at 50% 50%,#accf8d1a 0 50%,#4e70473b 51% 70%,#122b1877 71%);
+  box-shadow: inset 0 0 0 8px #87af6b0a,0 5px 18px #0003;
+  touch-action: none; user-select: none; -webkit-user-select: none;
+}
+#mobileJoystick:before, #mobileJoystick:after { content: ""; position: absolute; background: #c3dfaa25; pointer-events: none; }
+#mobileJoystick:before { left: 50%; top: 12%; width: 1px; height: 76%; }
+#mobileJoystick:after { top: 50%; left: 12%; height: 1px; width: 76%; }
+#mobileJoystickThumb {
+  position: absolute; width: 40%; height: 40%; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  border: 2px solid #e1efccaa; border-radius: 50%;
+  background: linear-gradient(145deg,#b5d293,#71995f);
+  box-shadow: inset 0 -4px #547348,0 3px 9px #0004;
+  pointer-events: none; will-change: transform;
+}
+#mobileJoystick.active { border-color: #e4efc6; }
+#mobileRunSummary { align-self: start; min-width: 0; padding: 3px 0 16px; margin-top: 4px; }
+#mobileRunSummary p { margin: 8px 0; }
+#mobileModeLabel { display: block; color: #afd18c; font-size: 10px; letter-spacing: 1.3px; font-weight: 850; text-transform: uppercase; }
+#mobileWaveValue { display: block; margin-block: 6px; font-size: clamp(20px,4.5vw,30px); font-weight: 900; line-height: 1.1; }
+#mobileHealthValue { display: block; color: #e0e8c6; font-size: 13px; font-weight: 750; }
+#mobileControlHint { grid-column: 1 / -1; text-align: center; font-size: 11px; line-height: 1.35; color: #b6c7ac; align-self: end; margin: 0; }
+body[data-bb-layout^="fold-"] {
+  background: #050b07;
+  --bb-menu-left: var(--bb-stage-left); --bb-menu-top: var(--bb-stage-top);
+  --bb-menu-width: var(--bb-stage-width); --bb-menu-height: var(--bb-stage-height);
+  --bb-menu-safe-top: 0px; --bb-menu-safe-right: 0px;
+  --bb-menu-safe-bottom: 0px; --bb-menu-safe-left: 0px;
+}
+body[data-bb-layout^="fold-"] #gameStage { border-radius: 18px; }
+body[data-bb-layout="fold-horizontal"] #mobileJoystick {
+  width: min(160px,calc(var(--bb-control-height) - 72px));
+}
+body[data-bb-layout^="fold-"] #mobileActions {
+  left: calc(var(--bb-control-left) + var(--bb-control-width) * .47);
+  top: calc(var(--bb-control-top) + var(--bb-control-height) - 132px);
+  bottom: auto; width: calc(var(--bb-control-width) * .53 - 18px);
+  flex-wrap: wrap; justify-content: flex-end; gap: 6px;
+}
+body[data-bb-layout^="fold-"] #mobileActions button { flex: 1 1 74px !important; min-height: 48px !important; font-size: 10px !important; }
+body[data-bb-layout="fold-vertical"] #mobileControlDeck { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; padding: 16px 12px; }
+body[data-bb-layout="fold-vertical"] #mobileJoystick { grid-row: 2; width: min(160px,75%); align-self: start; }
+body[data-bb-layout="fold-vertical"] #mobileRunSummary { grid-row: 1; text-align: center; padding-bottom: 4px; }
+body[data-bb-layout="fold-vertical"] #mobileActions {
+  left: calc(var(--bb-control-left) + 12px);
+  top: calc(var(--bb-control-top) + var(--bb-control-height) - 156px);
+  width: calc(var(--bb-control-width) - 24px);
+}
+/* Optional joystick stays at the thumb edge in ordinary portrait/landscape play. */
+body:not([data-bb-layout^="fold-"])[data-bb-control="joystick"] #mobileControlDeck {
+  left: calc(var(--bb-stage-left) + var(--bb-stage-safe-left) + 12px); top: auto;
+  bottom: calc(var(--bb-app-height) - var(--bb-stage-top) - var(--bb-stage-height) + var(--bb-stage-safe-bottom) + 12px);
+  width: 124px; height: 124px; padding: 0; display: block;
+  border: 0; background: transparent; overflow: visible; pointer-events: none;
+}
+body:not([data-bb-layout^="fold-"])[data-bb-control="joystick"] #mobileJoystick {
+  width: 124px; height: 124px; pointer-events: auto; background-color: #14351a66;
+}
+body:not([data-bb-layout^="fold-"])[data-bb-control="joystick"] #mobileRunSummary,
+body:not([data-bb-layout^="fold-"])[data-bb-control="joystick"] #mobileControlHint { display: none; }
+body:not([data-bb-layout^="fold-"])[data-bb-control="joystick"] #mobileActions {
+  left: calc(var(--bb-stage-left) + var(--bb-stage-safe-left) + 148px);
+  width: calc(var(--bb-stage-width) - var(--bb-stage-safe-left) - var(--bb-stage-safe-right) - 160px);
+  flex-wrap: wrap; gap: 6px;
+}
+
+/* Native settings use the existing garden material and explicit selected states. */
+.bbMobileSettings { display: grid; gap: 10px; margin: 12px 0; }
+.bbMobileSetting { padding: 14px; background: linear-gradient(145deg,#173b25,#12321f); border: 1px solid #426445; border-radius: 18px; }
+.bbMobileSetting .settingText b { display: block; color: #fff8e7; font-size: 18px; }
+.bbMobileSetting .settingText .muted { font-size: 13px; margin-top: 4px; line-height: 1.4; }
+.bbSettingOptions { display: flex; gap: 8px; margin-top: 12px; }
+.bbSettingOptions button {
+  flex: 1 1 0; min-width: 0; min-height: 44px; padding: 9px 8px; border-radius: 12px;
+  background: #2b4733; border: 1px solid #729365; color: #e6efdc; font: 800 13px/1.15 system-ui,sans-serif;
+}
+.bbSettingOptions button[aria-pressed="true"] { background: #9ac768; border-color: #c4e397; color: #17321d; box-shadow: inset 0 -3px #5f8c42; }
+html body #settings .settingRow { gap: 12px; padding: 13px; }
+html body #settings .volumeControl { min-width: 0; flex: 0 1 52%; gap: 8px; }
+html body #settings .volumeControl input[type="range"] { min-width: 44px; width: 100%; height: 44px; }
+html body #settings .volumeValue { min-width: 39px; font-size: 13px; }
+html body #settings .toggleBtn { flex: 0 0 auto; min-width: 66px !important; }
+html body #settings #settingsBackBtn, html body #settings .settingsHelpBtn,
+html body #help .helpBack { display: block; width: 100%; margin: 14px 0 0 !important; }
+
+/* Upgrade cards remain large enough to tap while all four Gold choices are reachable. */
+html body #upgrade .panel, html body #finalPrep .panel { width: min(760px,100%) !important; }
+html body #upgrade h2, html body #finalPrep h2 { font-size: clamp(23px,5.8vw,33px) !important; line-height: 1.12 !important; margin: 0 0 8px !important; }
+html body #upgrade #upgradeSub { font-size: 16px !important; line-height: 1.3 !important; margin: 6px 0 16px !important; }
+html body #upgrade #choices, html body #upgrade #choices:has(> .choice:nth-child(4):last-child),
+html body #finalPrep .grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 12px !important; max-width: none !important; }
+html body #upgrade #choices .choice {
+  min-height: 140px !important; padding: 16px 13px !important;
+  grid-template-columns: minmax(0,1fr) 46px !important; grid-template-rows: auto 1fr !important;
+  gap: 8px !important; border-radius: 14px !important;
+  box-shadow: 0 3px 0 #214d2b,0 0 9px #39dd5955 !important;
+}
+html body #upgrade #choices .choice b { font-size: 21px !important; line-height: 1.12 !important; margin: 0 !important; overflow-wrap: anywhere; }
+html body #upgrade #choices .choice p { font-size: 15px !important; line-height: 1.3 !important; margin: 0 !important; }
+html body #upgrade #choices .choice .upgradeMark { width: 46px !important; height: 54px !important; position: static !important; transform: none !important; }
+html body #upgrade #choices .choice .upgradeMark > svg,
+html body #upgrade #choices .choice .upgradeMark > canvas,
+html body #upgrade #choices .choice .upgradeMark > .bbUpgradeIcon,
+html body #upgrade #choices .choice .upgradeMark > .buddyUpgradeIcon,
+html body #upgrade #choices .choice .upgradeMark > .bbSwordSvg,
+html body #upgrade #choices .choice .upgradeMark > .leafCurrencyIcon { width: 46px !important; height: 46px !important; }
+html body #upgrade #choices .choice .upgradeMark > .bbHeartIcon { font-size: 36px !important; }
+html body #upgrade #choices .choice.noDesc { min-height: 116px !important; }
+html body #upgrade #choices .choice.bbRare { border-color: #c37af1 !important; box-shadow: 0 3px 0 #583176,0 0 9px #a33aef66 !important; }
+html body #finalPrep .choice { min-height: 156px !important; padding: 16px !important; }
+html body #finalPrep .choice b { font-size: 22px !important; }
+html body #finalPrep .choice p { font-size: 15px !important; }
+html body #finalPrep .choice .upgradeMark { position: static !important; transform: none !important; margin: 0 auto 8px !important; }
+
+/* Small windows receive one-column content instead of smaller targets or clipped text. */
+@container bbMenu (max-width: 440px) {
+  html body .screen .grid, html body #upgrade #choices,
+  html body #upgrade #choices:has(> .choice:nth-child(4):last-child),
+  html body #finalPrep .grid { grid-template-columns: 1fr !important; }
+  html body #upgrade #choices .choice { min-height: 104px !important; grid-template-columns: minmax(0,1fr) 50px !important; padding: 14px !important; }
+  html body #upgrade #choices .choice b { font-size: 23px !important; }
+  html body #upgrade #choices .choice p { font-size: 16px !important; }
+  html body #upgrade #choices .choice.noDesc { min-height: 90px !important; }
+  html body #bugs .card p, html body #bugs .card .muted { font-size: 16px !important; }
+  html body #bugs .card .btn { font-size: 15px !important; }
+  html body #bugs .card b { font-size: 22px !important; }
+  html body .medievalCard { grid-template-columns: 76px minmax(0,1fr) !important; }
+  html body .medievalPreview { width: 76px; height: 76px; }
+  html body .medievalCard .btn { min-width: 0 !important; width: 100%; }
+  html body #base .shopRow { display: grid; grid-template-columns: 1fr; padding: 14px; gap: 12px; }
+  html body #base .shopBuyStack { display: flex; gap: 8px; }
+  html body #base .shopBuyStack .btn { flex: 1 1 0; min-width: 0 !important; margin: 0 !important; }
+  html body #base .shopRow b { font-size: 19px; }
+  html body #base .shopRow .muted { font-size: 14px; }
+  html body .medievalGrid { grid-template-columns: 1fr !important; gap: 12px !important; }
+  html body .medievalBundleBox { flex-direction: column; align-items: stretch; }
+  html body .medievalBundleBox .btn { min-width: 0; width: 100%; }
+  html body .gardenTabs { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  html body .gardenTab { width: 100%; padding: 10px; }
+  html body .gardenBookGrid { grid-template-columns: 1fr !important; }
+  html body .achievementRow { gap: 9px; padding: 13px 11px; }
+  html body .achievementRow .achievementTitle { font-size: 16px; }
+  html body .achievementReward { min-width: 76px; font-size: 16px; }
+  html body #help .helpGrid { grid-template-columns: 1fr; }
+  html body #settings .settingRow { padding: 13px !important; gap: 10px !important; }
+  html body #settings .settingRow b { font-size: 17px !important; }
+  html body #settings .settingRow .muted { font-size: 13px !important; }
+  html body .firstHelpStep { grid-template-columns: 34px minmax(0,1fr); gap: 9px; padding: 12px 10px; }
+  html body .firstHelpNum { width: 32px; height: 32px; font-size: 16px; }
+  html body .firstHelpStep strong { font-size: 18px; }
+  html body .firstHelpStep p { font-size: 14px; }
+}
+@container bbMenu (max-width: 300px) {
+  html body .goldPackGrid { grid-template-columns: 1fr; }
+  html body #settings .settingRow { flex-wrap: wrap; }
+  html body #settings .volumeControl { flex-basis: 100%; }
+  html body .bbSettingOptions { flex-wrap: wrap; }
+  html body .achievementRow { flex-wrap: wrap; }
+  html body .achievementReward { margin-left: auto; }
+}
+@media (max-width: 360px) {
+  html body #home.screen { gap: 7px 6px; }
+  html body #home .logo { font-size: 58px !important; }
+  html body #home .bugHero, html body #home #homeBugHero { width: 75px; height: 84px; }
+  html body #home .homeGoldBalance { padding: 8px !important; font-size: 15px !important; }
+  html body #home .homeMenuRow .btn { font-size: 10px !important; }
+  #gameStage #hud .hudWave #waveProgress { display: none !important; }
+}
+@media (min-width: 650px) and (max-height: 600px) {
+  html body #home.screen { grid-template-columns: repeat(6,minmax(0,110px)); gap: 8px 12px; }
+  html body #home #globalSettingsBtn { grid-row: 1; grid-column: 1 / 3; width: auto; min-width: 108px; }
+  html body #home .homeGoldBalance { grid-row: 1; grid-column: 5 / 7; }
+  html body #home .bugHero { grid-row: 2 / 4; grid-column: 1; }
+  html body #home .logo { grid-row: 2 / 4; grid-column: 2 / 4; font-size: 72px !important; }
+  html body #home > .btn[data-action="play"] { grid-row: 2; grid-column: 4 / 7; min-height: 48px !important; }
+  html body #home #endlessBtn { grid-row: 3; grid-column: 4 / 7; min-height: 46px !important; }
+  html body #home #goldWavesBtn { grid-row: 4; grid-column: 4 / 7; min-height: 46px !important; }
+  html body #home .homeMenuRow { grid-row: 5; grid-column: 4 / 7; }
+  html body #home #homeAchievementsBtn { grid-row: 4; grid-column: 1 / 3; }
+  html body #home #gardenBookBtn { grid-row: 4; grid-column: 3; }
+  html body #home .homeBestFancy { grid-row: 5; grid-column: 1 / 4; font-size: 11px !important; }
+  html body #home #homeCreditsBtn { grid-row: 6; grid-column: 1 / 3; }
+  html body #home .versionCorner { grid-row: 6; grid-column: 4 / 7; }
+}
+body[data-bb-layout^="fold-"] #home.screen { align-content: start; }
+body[data-bb-layout^="fold-"] #home .logo { font-size: 58px !important; }
+body[data-bb-layout^="fold-"] #home .bugHero, body[data-bb-layout^="fold-"] #home #homeBugHero { width: 76px; height: 84px; }
+body[data-bb-layout^="fold-"] #home > .btn, body[data-bb-layout^="fold-"] #home .homeMenuRow { grid-column: 1 / -1; }
+
+/* Keep cinematic timers/credits intact. The game owns simulation effects. */
+@media (prefers-reduced-motion: reduce) {
+  html body .screen:not(#ending) *, html body .screen:not(#ending) *::before,
+  html body .screen:not(#ending) *::after, #mobileActions button {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important; transition-duration: .001ms !important;
+  }
+}
+body[data-bb-reduce-motion="true"] .screen:not(#ending) *,
+body[data-bb-reduce-motion="true"] .screen:not(#ending) *::before,
+body[data-bb-reduce-motion="true"] .screen:not(#ending) *::after,
+body[data-bb-reduce-motion="true"] #mobileActions button {
+  animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+}
+@media (prefers-contrast: more) {
+  .screen .muted, #mobileControlHint { opacity: 1 !important; }
+  #mobileJoystick { border-width: 3px; }
+  #mobileActions button { border-width: 2px; }
+}
+
+/* Stage/deck queries are independent of the full display, so a narrow Split View
+   or an active fold does not inherit desktop-sized HUD content. */
+@container bbStage (max-width: 360px) {
+  #gameStage #hud .hudWave #waveProgress { display: none !important; }
+  #gameStage #hud .pill { font-size: 11px !important; }
+  #gameStage #hud .hudWave { font-size: 11px !important; }
+}
+body[data-bb-layout="fold-horizontal"][data-bb-deck-compact="true"] #mobileRunSummary,
+body[data-bb-layout="fold-horizontal"][data-bb-deck-compact="true"] #mobileControlHint { display: none; }
+body[data-bb-layout="fold-horizontal"][data-bb-deck-compact="true"] #mobileControlDeck {
+  grid-template-rows: 1fr;
+}
+body[data-bb-layout="fold-horizontal"][data-bb-deck-compact="true"] #mobileJoystick {
+  width: min(144px,calc(var(--bb-control-height) - 36px));
+}
+body[data-bb-layout="fold-horizontal"][data-bb-deck-compact="true"] #mobileActions {
+  display: grid; grid-template-columns: 1fr; align-content: center;
+  top: calc(var(--bb-control-top) + 16px);
+  height: calc(var(--bb-control-height) - 32px);
+}
+body[data-bb-layout="fold-horizontal"][data-bb-deck-tiny="true"] #mobileActions {
+  left: calc(var(--bb-control-left) + var(--bb-control-width) * .36);
+  width: calc(var(--bb-control-width) * .64 - 12px);
+  grid-template-columns: repeat(3,minmax(44px,1fr));
+  top: calc(var(--bb-control-top) + 4px);
+  height: calc(var(--bb-control-height) - 8px);
+  align-items: center;
+}
+
+/* Required unlock dialogs use the same safe pane as other menus. */
+html body #mosquitoUnlockPopup {
+  inset: auto !important;
+  left: var(--bb-stage-left) !important; top: var(--bb-stage-top) !important;
+  width: var(--bb-stage-width) !important; height: var(--bb-stage-height) !important;
+  box-sizing: border-box; overflow-y: auto !important; overflow-x: hidden;
+  align-items: safe center !important; touch-action: pan-y !important;
+  padding: 16px !important; overscroll-behavior: contain;
+}
+html body #mosquitoUnlockPopup > div { flex: 0 0 auto; max-width: 100%; box-sizing: border-box; }
+
+/* Timer deadlines and CSS timelines both pause while the app is inactive. */
+body.bb-suspended *, body.bb-suspended *::before, body.bb-suspended *::after {
+  animation-play-state: paused !important;
+}
