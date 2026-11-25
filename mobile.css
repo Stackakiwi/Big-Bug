@@ -129,12 +129,6 @@ body:has(#home:not(.hidden)) #gameStage { visibility: hidden; }
   width: min(72%, 420px) !important; transform: translateX(-50%) !important;
 }
 #gameStage #bossbar .bossName { font-size: 12px; }
-#gameStage #telegraph {
-  position: absolute !important;
-  top: calc(var(--bb-surface-inset-top, 0px) + 105px) !important;
-  max-width: calc(100% - 24px); text-align: center; font-size: 13px;
-  pointer-events: none;
-}
 
 /* All menu panels scroll on their own, including compact windows and folded poses. */
 html body .screen, html body #story, html body #ending, html body #goldFinaleOutro {
