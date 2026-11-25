@@ -1377,7 +1377,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.7</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.8</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -1589,6 +1589,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 <script src="mobile-platform.js?v=19.1.0-ios.4"></script>
 <script src="game-timers.js"></script>
+<script src="content-settings.js?v=19.1.0-ios.8"></script>
+<script src="arena-designs.js?v=19.1.0-ios.8"></script>
 <script>
 const BB_DEV_MODE=false; // Production builds have no developer entry points.
 const bbSetTimeout=window.BBGameTimers.setTimeout,bbClearTimeout=window.BBGameTimers.clearTimeout;
@@ -1945,7 +1947,7 @@ function makeBugPreview(id){
  const q=c.getContext('2d');q.translate(38,38);drawPlayableBug(q,id,50,false);return c;
 }
 
-const GARDEN_STORY={
+const CLASSIC_GARDEN_STORY={
 5:{title:'The First Obstacle',text:'You defeated the Hornet but it looks like his friends are here to stay.'},
 10:{title:'The “King”',text:'That one was tough but you still crushed him.'},
 15:{title:'Sticky Situation',text:'She almost trapped you in her webs but you escaped.'},
@@ -1966,6 +1968,29 @@ const GARDEN_STORY={
 90:{title:'Not Themselves',text:'The Hornet and Tyrant returned corrupted, something is controlling them.'},
 95:{title:'The Last Guardians',text:'They also were infected, you look ahead to see a poisoned garden.'},
 100:{title:'The Garden Is Quiet',text:'The Spore Behemoth is gone. The spores fade. The garden is safe again.'}
+};
+
+const GARDEN_STORY={
+ 5:{title:"Some Welcome",text:"The Hornet goes down. The little bugs are still coming. You get the feeling nobody told them the fight was over."},
+ 10:{title:"The “King”",text:"Big jaws. Short reign."},
+ 15:{title:"Still Sticky",text:"You pull a strand of the Venom Queen’s web off your shell. Now it’s stuck to your foot.",butterflyText:"You pull a strand of the Venom Queen’s web off your wings. Now it’s stuck to your foot."},
+ 20:{title:"Back in the Hole",text:"The Mole Thing retreats underground. You decide you’ve seen enough of the part that sticks out."},
+ 25:{title:"A Pinch of Purple",text:"A few purple grains catch the light beside the Big Blood Sucker. You spot a few more farther up the trail."},
+ 30:{title:"Out of the Sky",text:"The Sky Lancer’s wings kick up the purple dust. You watch it drift into the next patch of grass."},
+ 35:{title:"It Sticks",text:"There’s more dust here than back at the creek. Some of it is packed into the joints of the Praying Tyrant’s legs."},
+ 40:{title:"Too Many Legs",text:"Way too many legs!"},
+ 45:{title:"Pinch Pinch Pinch",text:"The Pincher is down. You wait for its claws to stop twitching before you walk past."},
+ 50:{title:"Boom!",text:"The Thunder Cicada is quiet now. Your feet are still buzzing."},
+ 55:{title:"The Burnt Patch",text:"The Bombardier’s flames catch a patch of purple mushrooms. When the fire goes out, there’s bare earth where they stood."},
+ 60:{title:"Under the Dust",text:"The Dusk Moth’s last gust blows the dust aside. Fine purple threads run between the roots underneath."},
+ 65:{title:"Friend or Foe?",text:"The Pond Skater kept driving you back toward the bank you’d just left. You look across the water and wonder what it saw over there."},
+ 70:{title:"A Hole in the Dirt",text:"The Thorn Weevil leaves a row of holes in the soil. Purple dust sifts up from the deepest one."},
+ 75:{title:"A Family Grudge",text:"The Old Webber still held a grudge about the Venom Queen. Its newest webs are speckled with the same purple dust."},
+ 80:{title:"Down to the Roots",text:"The Root Borer tears open the soil. Purple mushrooms line the exposed roots and disappear into the dark below."},
+ 85:{title:"Under the Shell",text:"Sporeback’s eyes are empty. When it falls, the little caps on its back keep twitching."},
+ 90:{title:"Not Themselves",text:"You recognize the Hornet and the Praying Tyrant. The same growth you saw on Sporeback now covers both of them. They turn toward you at the exact same time."},
+ 95:{title:"The Last Guardians",text:"The Venom Queen and Big Blood Sucker were covered in spores too. Past them, the purple threads in the ground all lead to the heart of the garden."},
+ 100:{title:"The Garden Is Quiet",text:"The Spore Behemoth goes still. The last of the purple dust settles and fades. A leaf rustles. Just the wind this time."}
 };
 function storyCorruptionLevelFromWave(w=0){
  if(w<25)return 0;
@@ -2010,7 +2035,19 @@ function applyStoryLeafCorruption(w=0){
  leaf.style.boxShadow=`0 10px 0 #1c3820,0 24px 55px #000a,inset 0 0 0 4px #fff4c966,inset 0 0 ${Math.round(22+28*c)}px rgba(154,93,170,${edge.toFixed(3)})`;
 }
 let pendingBossUpgrade=false,storyNoteTestWaves=null,storyNoteTestIndex=0;
-function presentGardenUpdateNote(w){const beat=GARDEN_STORY[w];if(!beat)return false;applyStoryLeafCorruption(w);$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');return true}
+function presentGardenUpdateNote(w){
+ const classic=BB_CONTENT.useClassicContent||!BB_CONTENT.revisedGardenUpdates||BB_CONTENT.classicGardenUpdateWaves.includes(w);
+ const beat=(classic?CLASSIC_GARDEN_STORY:GARDEN_STORY)[w];
+ if(!beat)return false;
+ const bugId=game?.bugId??save.selected;
+ applyStoryLeafCorruption(w);
+ $('storyTitle').textContent=beat.title;
+ $('storyText').textContent=bugId==='butterfly'?(beat.butterflyText??beat.text):beat.text;
+ const story=$('story');
+ story.style.display='flex';
+ story.classList.remove('hidden');
+ return true;
+}
 function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;if(game){game.recoveryPhase='storyNote';game.paused=true;saveRunRecovery('story-note')}presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');bbSetTimeout(()=>beep(523,.11,.009,'sine'),90)}
 function startGardenStoryNotesTest(){if(!BB_DEV_MODE)return;storyNoteTestWaves=Object.keys(GARDEN_STORY).map(Number).sort((a,b)=>a-b);storyNoteTestIndex=0;pendingBossUpgrade=false;if(!storyNoteTestWaves.length)return;if(presentGardenUpdateNote(storyNoteTestWaves[0])){const b=$('storyContinue');if(b)b.textContent='NEXT NOTE →';beep(392,.08,.012,'triangle')}}
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');if(storyNoteTestWaves){storyNoteTestIndex++;if(storyNoteTestIndex<storyNoteTestWaves.length){presentGardenUpdateNote(storyNoteTestWaves[storyNoteTestIndex]);beep(620,.06,.01,'triangle');return}storyNoteTestWaves=null;storyNoteTestIndex=0;story.classList.add('hidden');story.style.display='';applyStoryLeafCorruption(0);$('storyContinue').textContent='Follow the trail →';beep(620,.07,.012,'triangle');return}story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
@@ -5501,7 +5538,7 @@ function drawEnemy(e, simpleEffects=DESKTOP_PERF_RENDER||lowStoryFx()){
 }
 const ARENA_CACHE=document.createElement('canvas'),ARENA_CACHE_X=ARENA_CACHE.getContext('2d');
 let arenaCacheKey='',FRAME_NOW=0;
-function paintArenaBackgroundFromCache(cacheKey){
+function paintArenaBackgroundFromCache(cacheKey,shellColor=areaFor().bot){
  if(arenaBgKey===cacheKey)return;
  const [left,top,right,bottom]=arenaFloorBounds,{width,height}=ARENA_CACHE;
  // Stretch the outermost static pixels through any hardware margins or
@@ -5513,7 +5550,7 @@ function paintArenaBackgroundFromCache(cacheKey){
    if(dw>0&&dh>0)BGX.drawImage(ARENA_CACHE,sx,sy,sw,sh,dx,dy,dw,dh);
   }
  }
- document.documentElement.style.setProperty('--bb-arena-shell-color',areaFor().bot);
+ document.documentElement.style.setProperty('--bb-arena-shell-color',shellColor);
  arenaBgKey=cacheKey;
 }
 function paintGoldArenaBackground(cacheKey){
@@ -5609,18 +5646,7 @@ function drawLateBossPurpleFall(now){
  }
  X.restore();
 }
-function draw(now=performance.now()){
- FRAME_NOW=now;
- X.globalAlpha=1;X.filter='none';X.globalCompositeOperation='source-over';X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetX=0;X.shadowOffsetY=0;
- const area=areaFor(),ai=areaIndex(),cacheable=Number.isInteger(ai),cacheKey='arena:'+(game?.mode==='gold'?'gold:':'story:')+ai+':'+C.width+'x'+C.height;
- X.clearRect(0,0,W,H);
- const finalPurifyOpaque=!!(game?.finalPurify&&ai===19&&cacheable&&arenaCacheKey===cacheKey);
- if(game?.mode==='gold'){
-   paintGoldArenaBackground(cacheKey);
- }else if(finalPurifyOpaque){
-   X.save();X.globalAlpha=1;X.globalCompositeOperation='source-over';X.fillStyle=area.bot||'#17251a';X.fillRect(0,0,W,H);
-   X.drawImage(ARENA_CACHE,0,0,ARENA_CACHE.width,ARENA_CACHE.height,0,0,W,H);X.restore();
- }else if(cacheable&&arenaCacheKey===cacheKey){paintArenaBackgroundFromCache(cacheKey)}else{
+function paintClassicArenaFloor(area,ai,dustImage,classicDust){
  // layered garden floor: same Big Bug palette, with more depth and hand-drawn detail
  let bg=X.createLinearGradient(0,0,0,H);bg.addColorStop(0,area.top);bg.addColorStop(.55,area.mid);bg.addColorStop(1,area.bot);X.fillStyle=bg;X.fillRect(0,0,W,H);
  // full-screen garden floor: the whole visible field is playable
@@ -5646,7 +5672,8 @@ function draw(now=performance.now()){
    X.globalAlpha=.82;for(let i=0;i<8;i++){const x=(i*157+55)%W,y=(i*113+120)%H;X.strokeStyle='#ad8a94';X.lineWidth=3;X.beginPath();X.moveTo(x,y+7);X.lineTo(x,y-5);X.stroke();X.fillStyle='#8b5182';X.beginPath();X.ellipse(x,y-8,9+(i%3)*2,4.5,0,0,6.28);X.fill()}
    X.restore();
  }
- drawStoryCorruptionDust(ai);
+ if(dustImage)X.drawImage(dustImage,0,0,W,H);
+ else if(classicDust)drawStoryCorruptionDust(ai);
 
  // area-aware leaf litter: quantity and placement now change with each map
  const leafCounts=[28,24,12,10,18,10,8,14,26,18,16,6,8,5,4,14,8,12,4,2];
@@ -5657,16 +5684,56 @@ function draw(now=performance.now()){
  for(let i=0;i<12;i++){let x=(i*137+76)%W,y=(i*173+130)%H;X.fillStyle=i%2?'#8c865f':'#6f7654';X.beginPath();X.ellipse(x,y,3+(i%3),2+(i%2),i*.4,0,6.28);X.fill()}
  // faint vignette
  let vg=X.createRadialGradient(W/2,H*.48,80,W/2,H*.48,Math.max(W,H)*.72);vg.addColorStop(.55,'#0000');vg.addColorStop(1,area.vignette);X.fillStyle=vg;X.fillRect(0,0,W,H);
+}
+function paintSelectedArenaFloor(area,ai,art,modernTerrain,sparseDust){
+ if(modernTerrain&&art.state!=='unavailable'){
+  if(art.image)X.drawImage(art.image,0,0,W,H);
+  else{
+   const gradient=X.createLinearGradient(0,0,0,H);
+   gradient.addColorStop(0,art.colors[0]);gradient.addColorStop(.53,art.colors[1]);gradient.addColorStop(1,art.colors[2]);
+   X.fillStyle=gradient;X.fillRect(0,0,W,H);
+  }
+  if(!sparseDust)drawStoryCorruptionDust(ai);
+  return;
+ }
+ paintClassicArenaFloor(area,ai,modernTerrain?null:art?.image,!sparseDust||art?.state==='unavailable');
+}
+function draw(now=performance.now()){
+ FRAME_NOW=now;
+ X.globalAlpha=1;X.filter='none';X.globalCompositeOperation='source-over';X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetX=0;X.shadowOffsetY=0;
+ const area=areaFor(),ai=areaIndex(),cacheable=Number.isInteger(ai);
+ const mode=game?.mode;
+ const useNew=cacheable&&!BB_CONTENT.useClassicContent;
+ const mosquitoArt=useNew&&mode==='endless'&&BB_CONTENT.newMosquitoArena;
+ const storyArt=useNew&&mode==='story'&&BB_CONTENT.newStoryArenas&&!BB_CONTENT.classicStoryAreas.includes(area.name);
+ const modernTerrain=mosquitoArt||storyArt;
+ const sparseDust=useNew&&mode==='story'&&BB_CONTENT.scatteredPurpleDust&&!BB_CONTENT.classicDustAreas.includes(area.name);
+ const corruption=sparseDust?storyCorruptionLevelFromArea(ai):0;
+ const phase=mosquitoArt?BBArenaDesigns.mosquitoPhase(game.wave):-1;
+ const art=modernTerrain||corruption>0?BBArenaDesigns.texture(mosquitoArt?0:ai,phase,modernTerrain,corruption,C.width,C.height):null;
+ const shell=modernTerrain&&art.state!=='unavailable'?art.colors[2]:area.bot;
+ const ambienceIndex=mosquitoArt?0:ai;
+ const baseKey='arena:'+(mode==='gold'?'gold:':'story:')+ai+':'+C.width+'x'+C.height;
+ const cacheKey=art?'arena:design:'+art.key+':'+art.state:baseKey;
+ X.clearRect(0,0,W,H);
+ const finalPurifyOpaque=!!(game?.finalPurify&&ai===19&&cacheable&&arenaCacheKey===cacheKey);
+ if(game?.mode==='gold'){
+   paintGoldArenaBackground(cacheKey);
+ }else if(finalPurifyOpaque){
+   X.save();X.globalAlpha=1;X.globalCompositeOperation='source-over';X.fillStyle=area.bot||'#17251a';X.fillRect(0,0,W,H);
+   X.drawImage(ARENA_CACHE,0,0,ARENA_CACHE.width,ARENA_CACHE.height,0,0,W,H);X.restore();
+ }else if(cacheable&&arenaCacheKey===cacheKey){paintArenaBackgroundFromCache(cacheKey,shell)}else{
+ paintSelectedArenaFloor(area,ai,art,modernTerrain,sparseDust);
  if(cacheable){
    if(ARENA_CACHE.width!==C.width||ARENA_CACHE.height!==C.height){ARENA_CACHE.width=C.width;ARENA_CACHE.height=C.height}
-   ARENA_CACHE_X.setTransform(1,0,0,1,0,0);ARENA_CACHE_X.clearRect(0,0,ARENA_CACHE.width,ARENA_CACHE.height);ARENA_CACHE_X.drawImage(C,0,0);arenaCacheKey=cacheKey;paintArenaBackgroundFromCache(cacheKey);
+   ARENA_CACHE_X.setTransform(1,0,0,1,0,0);ARENA_CACHE_X.clearRect(0,0,ARENA_CACHE.width,ARENA_CACHE.height);ARENA_CACHE_X.drawImage(C,0,0);arenaCacheKey=cacheKey;paintArenaBackgroundFromCache(cacheKey,shell);
    // Static pixels now live on #arenaBg, so the gameplay canvas only redraws moving content.
    X.clearRect(0,0,W,H);
  }
  }
  drawLateBossPurpleFall(now);
- if(ai===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
- if(ai===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
+ if(ambienceIndex===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
+ if(ambienceIndex===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
  if(game?.mode==='gold'){
    const gt=FRAME_NOW*.001;X.save();X.globalCompositeOperation='screen';
    const sx=W*(.5+.22*Math.sin(gt*.24)),sy=H*.13;
@@ -5700,7 +5767,7 @@ function draw(now=performance.now()){
    }
  }
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
- if(ai===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
+ if(ambienceIndex===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
  if(!game)return;
  drawFinalArenaPurification();
  for(const d of game.drops){const m=28;if(d.x+m<0||d.x-m>W||d.y+m<0||d.y-m>H)continue;drawLeaves(d)}
@@ -6843,7 +6910,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.7"></script>
+<script src="mobile-game.js?v=19.1.0-ios.8"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js"></script>
 </body>
