@@ -1178,8 +1178,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  filter:drop-shadow(0 2px 2px #5b3508aa)!important;
 }
 
-#bigBigFallingName{position:fixed;z-index:10000;pointer-events:none;font-weight:1000;font-size:15px;letter-spacing:1px;color:#ffe15b;text-shadow:0 0 5px #fff0a0,0 0 11px #ffc62e;transform:translate(-50%,-50%);animation:bigBigNameFall 1.45s cubic-bezier(.35,.02,.8,.45) forwards}
-@keyframes bigBigNameFall{0%{opacity:1;transform:translate(-50%,-50%) rotate(0deg)}18%{transform:translate(calc(-50% + 9px),calc(-50% - 3px)) rotate(8deg)}36%{transform:translate(calc(-50% - 8px),calc(-50% + 5px)) rotate(-11deg)}100%{opacity:.05;transform:translate(calc(-50% + 34px),calc(100vh + 80px)) rotate(145deg)}}
 
 #goldFinaleOutro{position:fixed;inset:0;z-index:1400;display:none;overflow:hidden;pointer-events:none;background:transparent;color:white}
 #goldFinaleOutro.play{display:block}
@@ -1323,7 +1321,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
-<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.13">
+<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.14">
 </head>
 <body>
 <div id="gameStage" aria-label="Garden arena">
@@ -1341,6 +1339,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="bossHealthRow hidden" id="bossRow1"><div class="bossName" id="bossName1">BIG BUG</div><div class="bossBar"><i id="bossFill1" style="width:100%"></i></div></div>
 </div>
 <button id="pauseBtn" class="hidden" aria-label="Pause game">Ⅱ</button>
+<div id="goldFinaleTitle" hidden role="status">BIG BUG</div>
 </div>
 <div id="mobileActions" aria-label="Abilities"><button id="boostBtn" class="hidden" aria-label="Use attack boost"><span class="bbIcon bbBoltIcon" aria-hidden="true"></span> BOOST<small>100 LEAVES</small></button>
 <button id="endlessTripleBtn" class="hidden">2x ATTACK BOOST<small>EMPTY</small></button>
@@ -1374,7 +1373,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.13</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.14</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -2104,44 +2103,46 @@ let game=null, last=0, raf=0, audio=null;
 let homePresentationGeneration=0,drag=false;
 const pcKeys={w:false,a:false,s:false,d:false};
 
-const BB_HUD_FADE_TARGETS={
- health:()=>document.querySelector('#hud .hudHealth'),
- wave:()=>document.querySelector('#hud .hudWave'),
- pause:()=>document.getElementById('pauseBtn'),
- bossbar:()=>document.getElementById('bossbar')
-};
-const bbHudFadeTimers=new Map();
+const GOLD_FINALE_DURATION=3.30;
+const GOLD_FINALE_NAME_BEAT=2.12;
+const GOLD_FINALE_DARKEN_SECONDS=10;
+const goldFinaleStage=document.getElementById('gameStage');
+const goldFinaleTitle=document.getElementById('goldFinaleTitle');
+let goldFinalePresentation=null;
+function isGoldFinale(g=game){return g?.mode==='gold'&&g.wave===50&&g.goldFinale===true}
+function isGoldFinaleRevealing(g=game){return isGoldFinale(g)&&g.goldFinaleRevealUntil>g.time}
+function goldFinaleAge(g=game){
+ return Math.max(0,g.time-(g.goldFinaleRevealStart??g.time));
+}
+function goldFinaleEase(progress){
+ const q=Math.max(0,Math.min(1,progress));
+ return q*q*(3-2*q);
+}
 function resetBigBigHudFades(){
- for(const t of bbHudFadeTimers.values())bbClearTimeout(t);bbHudFadeTimers.clear();
- for(const key of Object.keys(BB_HUD_FADE_TARGETS)){
-   const el=BB_HUD_FADE_TARGETS[key]?.();if(!el)continue;
-   el.style.transition='';el.style.opacity='';el.style.pointerEvents='';
+ if(!goldFinalePresentation)return;
+ goldFinalePresentation=null;
+ document.body.classList.remove('gold-finale');
+ goldFinaleStage.classList.remove('gold-finale-hud-away');
+ for(const name of ['--gold-reveal-age','--gold-floor-light','--gold-title-alpha'])goldFinaleStage.style.removeProperty(name);
+ goldFinaleTitle.hidden=true;
+ $('pauseBtn').inert=false;$('hud').inert=false;$('bossbar').inert=false;
+}
+function syncGoldFinalePresentation(age,light,reduced){
+ if(!goldFinalePresentation){
+   document.body.classList.add('gold-finale');
+   $('pauseBtn').inert=true;$('hud').inert=true;$('bossbar').inert=true;
  }
- if(game)game.bbHudFaded={health:false,wave:false,pause:false,bossbar:false};
-}
-function startBigBigHudFade(key){
- if(!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale)return;
- game.bbHudFaded ||= {health:false,wave:false,pause:false,bossbar:false};
- if(game.bbHudFaded[key])return;
- const el=BB_HUD_FADE_TARGETS[key]?.();if(!el)return;
- game.bbHudFaded[key]=true;
- // Force a known visible start, then transition only opacity for five seconds.
- el.style.transition='none';el.style.opacity='1';void el.offsetWidth;
- el.style.transition='opacity 5s linear';el.style.opacity='0';
- if(bbHudFadeTimers.has(key))bbClearTimeout(bbHudFadeTimers.get(key));
- bbHudFadeTimers.set(key,bbSetTimeout(()=>{
-   bbHudFadeTimers.delete(key);
-   // Once the pause control is fully invisible, do not leave an invisible clickable hotspot.
-   if(key==='pause'&&el)el.style.pointerEvents='none';
- },5050));
-}
-function syncBigBigHudFades(boss){
- if(!game||game.mode!=='gold'||game.wave!==50||!game.goldFinale||!boss||boss.dead||boss.goldPhase!==2||!(boss.max>0))return;
- const pct=100*boss.hp/boss.max;
- if(pct<=75)startBigBigHudFade('health');
- if(pct<=50)startBigBigHudFade('wave');
- if(pct<=25)startBigBigHudFade('pause');
- if(pct<=20)startBigBigHudFade('bossbar');
+ const titleAlpha=goldFinaleEase((age-GOLD_FINALE_NAME_BEAT)/.25)*(1-goldFinaleEase((age-2.92)/.34));
+ const away=age>=(reduced?.95:1.94);
+ const revealFrame=Math.min(age,GOLD_FINALE_DURATION);
+ const prev=goldFinalePresentation;
+ if(prev&&prev.age===revealFrame&&prev.light===light&&prev.away===away)return;
+ goldFinalePresentation={age:revealFrame,light,away};
+ goldFinaleStage.style.setProperty('--gold-reveal-age',revealFrame.toFixed(3));
+ goldFinaleStage.style.setProperty('--gold-floor-light',light.toFixed(4));
+ goldFinaleStage.style.setProperty('--gold-title-alpha',titleAlpha.toFixed(3));
+ goldFinaleStage.classList.toggle('gold-finale-hud-away',away);
+ goldFinaleTitle.hidden=titleAlpha<=0;
 }
 const BB_LOW_FX_DEVICE=((navigator.hardwareConcurrency||8)<=4)||((navigator.deviceMemory||8)<=4);
 function lowStoryFx(){return !!(BB_LOW_FX_DEVICE&&game&&game.mode==='story'&&game.wave>=15)}
@@ -2278,6 +2279,7 @@ function restoreRecoveredRun(){
   // Helpers that were already exiting a cleared wave have no gameplay work to resume.
   if(p.helperArmyWave===0&&Array.isArray(p.helperArmyHelpers))p.helperArmyHelpers=[];
   if(game.boss&&!game.boss.dead){configureBossHud(game.wave);updateBossHud()}else $('bossbar').style.display='none';
+  if(isGoldFinale())$('bossName0').textContent=goldFinaleAge()>=GOLD_FINALE_NAME_BEAT?'BIG BUG':'???';
   updateHud(true);refreshPauseStats();$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');
   if(['purification','goldDeath','goldOutro'].includes(game.recoveryPhase))restorePendingRunPhase();
   restartGameLoop();return true;
@@ -3049,17 +3051,6 @@ function bb22Trace(msg){
   console.log('[BB22]',line);
  }catch(err){console.error('[BB22 trace error]',err)}
 }
-function dropQuestionName(){
- const n=document.getElementById('bossName0')||document.getElementById('bossName');
- if(!n||!document.body)return false;
- const r=n.getBoundingClientRect();
- const f=document.createElement('div');f.id='bigBigFallingName';f.textContent='???';
- f.style.left=((Number.isFinite(r.left)?r.left:0)+(Number.isFinite(r.width)?r.width/2:0))+'px';
- f.style.top=((Number.isFinite(r.top)?r.top:0)+(Number.isFinite(r.height)?r.height/2:0))+'px';
- document.body.appendChild(f);
- bbSetTimeout(()=>{try{if(f&&f.remove)f.remove()}catch(_){ }},1550);
- return true;
-}
 function spawnBigBloodSuckerBossMosquitos(){
  if(!game||game.mode!=='story')return;
  const kinds=bossKindsFor(game.wave);
@@ -3154,7 +3145,7 @@ function completeWave(){
    if(g.wave===50){
      if(g.goldFinale){
        bb22Trace('W50 PHASE 2 COMPLETE -> GOLD VICTORY');
-       g.goldFinale=false;g.goldFinaleRevealUntil=0;g.goldFinaleRevealStart=0;
+       g.goldFinaleRevealUntil=0;
        bbSetTimeout(()=>{if(game===g&&!g.over)startGoldFinaleOutro()},500);return;
      }
      // Defensive fallback only: if an external/test path somehow clears phase 1 without a lethal hit,
@@ -3292,16 +3283,17 @@ function damageEnemy(e,d,source='player'){
    const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.83: BIG BUG finale +25% HP (4,500 -> 5,625)
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
-   g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+3.30;
-   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;g.bbHudFaded={health:false,wave:false,pause:false,bossbar:false};
+   g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+GOLD_FINALE_DURATION;
+   e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;
    e._goldTier=tier;e.maxHp=fullHp;e.max=fullHp;e.hp=fullHp;e.damage=14+tier*3.4;e.speed=0;
    e.x=W/2;e.y=Math.max(145,H*.24);e.enterX=e.x;e.enterY=e.y;e.state='chase';e.stateT=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
-   e.invuln=3.30;e._dash=0;e._hunt=0;e._bc=.18;e._goldCycle=0;
+   e.invuln=GOLD_FINALE_DURATION;e._dash=0;e._hunt=0;e._bc=.18;e._goldCycle=0;
    g.boss=e;g.bosses=[e];
-   updateHud();configureBossHud(50);updateBossHud();
-   try{dropQuestionName()}catch(_){ }
-   bigBigRevealSting();
-   // Let the player see ??? destabilize before the final name lands.
+   // Phase one's attacks end with it. Keep the arena clear until the new fight starts.
+   g.fx=[];g.p.pendingDamage=0;resetGameInput();
+   updateHud();updateBossHud();
+   syncGoldFinalePresentation(0,1,window.BBMobile.isReducedMotion());
+   bigBigRevealSting();saveRunRecovery('gold-finale-reveal');
    bb22Trace('SAME-BOSS PHASE 2 BIG BIG hp='+e.hp+'/'+e.max+' enemies='+g.enemies.length+' wave='+g.wave);
    return;
  }
@@ -3917,7 +3909,11 @@ function update(dt,now){
    }
    return;
  }
- if(g.paused||g.over)return;p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);if((p.goldInvulnUntil||0)>0&&g.time>=p.goldInvulnUntil)p.goldInvulnUntil=0;
+ if(g.paused||g.over)return;
+ if(isGoldFinaleRevealing(g)){
+   g.time+=dt;p.lastAttack=now;return;
+ }
+ p.hurtFlash=Math.max(0,(p.hurtFlash||0)-dt);if((p.goldInvulnUntil||0)>0&&g.time>=p.goldInvulnUntil)p.goldInvulnUntil=0;
  // Flush accumulated contact damage into one readable popup roughly six times per second.
  if((p.pendingDamage||0)>=1&&now-(p.lastDamagePopup||0)>=165){const pendingWhole=Math.floor(p.pendingDamage);showPlayerDamage(pendingWhole);p.pendingDamage-=pendingWhole;p.lastDamagePopup=now}
  g.time+=dt;
@@ -3959,7 +3955,7 @@ function update(dt,now){
  }
  g.aiFrame=(g.aiFrame||0)+1;
  if(g.mode!=='endless')buildStoryEnemyGrid();
- const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),stillFast=(g.mode==='story'||g.mode==='endless')&&(p.storyStillTime||0)>=.35,baseAttackDelay=stillFast?p.rate/1.25:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;const bigBigRevealActive=g.mode==='gold'&&g.wave===50&&g.goldFinale&&(g.goldFinaleRevealUntil||0)>g.time;if(bigBigRevealActive){p.lastAttack=now}else if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
+ const rapid=boostActive()||(g.mode==='endless'&&endlessFiveActive()),stillFast=(g.mode==='story'||g.mode==='endless')&&(p.storyStillTime||0)>=.35,baseAttackDelay=stillFast?p.rate/1.25:p.rate,attackDelay=rapid?Math.max(85,baseAttackDelay*.18):baseAttackDelay;if(now-p.lastAttack>attackDelay){p.lastAttack=now;const t=nearestEnemy();if(t)shootAt(t)}
  if(combatTransitionActive(g))return;
  // Little Buddy Army: ten buddies glide into a wide protective ring around the player.
  if(g.mode==='story'&&p.helperArmyWave===g.wave&&g.wave%5!==0){
@@ -4325,7 +4321,7 @@ function setHudDisabled(el,key,on){if(HUD_CACHE[key]!==on||el.disabled!==on){HUD
 function updateHud(force=true,now=performance.now()){
  if(!force&&now-(HUD_CACHE.lastPaint||0)<40)return;HUD_CACHE.lastPaint=now;
  const p=game.p,g=game,active=boostActive();
- setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',(g.mode==='gold'&&g.goldFinale)?'BIG BUG':(g.mode==='gold'?'WAVE':(g.wave===100?'FINAL WAVE':'WAVE')));setHudText('wave',((g.mode==='gold'&&g.goldFinale)||(g.mode!=='gold'&&g.wave===100))?'':g.wave);
+ setHudText('hp',Math.max(0,Math.ceil(p.hp)));setHudText('maxhp',Math.ceil(p.maxHp));setHudText('waveLabel',g.mode==='gold'?'WAVE':(g.wave===100?'FINAL WAVE':'WAVE'));setHudText('wave',(g.mode!=='gold'&&g.wave===100)?'':g.wave);
  const wavePill=hudNode('wave').parentElement,waveDouble=g.wave>=10&&g.wave<100,waveTriple=g.wave>=100;setHudClass(wavePill,'waveDouble','waveDouble',waveDouble);setHudClass(wavePill,'waveTriple','waveTriple',waveTriple);const storyBossWave=g.mode==='story'&&g.wave%5===0&&g.wave!==100&&!!g.boss;setHudClass(wavePill,'storyBossWave','storyBossWave',storyBossWave);
  const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis=g.mode==='gold'?'hidden':'';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
@@ -4588,7 +4584,7 @@ function reloadHomeAfterGoldFinale(){
 }
 function startGoldFinaleOutro(){
  if(!game)return;
- resetBigBigHudFades();clearEndingTimers();bossMusicStop();endlessMusicStop();goldMusicStop();cancelGoldMusicCues();titleMusicStop(false);creditsMusicStop();goldFinaleCreditsStop();hardStopAllAudioVoices(.02);clearRunRecovery();
+ clearEndingTimers();bossMusicStop();endlessMusicStop();goldMusicStop();cancelGoldMusicCues();titleMusicStop(false);creditsMusicStop();goldFinaleCreditsStop();hardStopAllAudioVoices(.02);clearRunRecovery();
  game.over=true;game.paused=true;game.waveActive=false;game.intermission=true;game.recoveryPhase='goldOutro';bankGoldVictoryForOutro();
  showGameUI(false);$('bossbar').style.display='none';screens.forEach(id=>$(id)?.classList.add('hidden'));
  const o=$('goldFinaleOutro');if(!o)return;
@@ -4909,19 +4905,32 @@ function drawGoldUnknownBossCore(e){
  const deathAge=e.goldDying&&e.goldDeathStartedAt?Math.max(0,(performance.now()-e.goldDeathStartedAt)/1000):0;
  const dying=!!e.goldDying;
  const tier=e._goldTier||Math.max(1,Math.floor((game?.wave||5)/5));
- const revealStart=(game?.goldFinaleRevealStart||0),revealAge=(e.goldPhase===2&&revealStart)?Math.max(0,game.time-revealStart):99;
- const revealing=e.goldPhase===2&&revealAge<3.30;
- // Keep the familiar ??? look for the first beat, then rapidly flicker between old/new before locking to BIG BIG.
- const flickerBand=revealing&&revealAge>=.96&&revealAge<2.04;
- const finalLook=e.goldPhase===2&&(!revealing||revealAge>=2.04||(flickerBand&&((Math.floor(revealAge*22)&1)===0)));
- const glitchPower=revealing?Math.max(0,1-Math.abs(revealAge-1.40)/1.24):0;
- const jx=glitchPower*Math.sin(revealAge*91)*5.2,jy=glitchPower*Math.cos(revealAge*73)*3.1;
+ const finale=e.goldPhase===2&&isGoldFinale(),revealAge=finale?goldFinaleAge():GOLD_FINALE_DURATION;
+ const revealing=finale&&revealAge<GOLD_FINALE_DURATION;
+ const reduced=revealing&&window.BBMobile.isReducedMotion();
+ const glitchTime=Math.floor(revealAge*12)/12;
+ const finalLook=finale&&(revealAge>=2.06||(!reduced&&((revealAge>=1.02&&revealAge<1.19)||(revealAge>=1.47&&revealAge<1.72))));
+ const glitchPower=revealing&&!reduced?goldFinaleEase((revealAge-.25)/.55)*(1-goldFinaleEase((revealAge-1.72)/.5)):0;
+ const jx=glitchPower*Math.sin(glitchTime*91)*r*.35,jy=glitchPower*Math.cos(glitchTime*73)*r*.14;
  const deathJitter=dying?Math.min(1,deathAge/2.8):0;
  const djx=dying?Math.sin(deathAge*46)*7*deathJitter:0,djy=dying?Math.cos(deathAge*39)*5*deathJitter:0;
  X.save();X.translate(e.x+jx+djx,e.y+jy+djy);
  if(dying){const collapse=Math.max(0,Math.min(1,(deathAge-2.55)/1.55));X.rotate(Math.sin(deathAge*18)*.10*deathJitter+collapse*.72);X.scale(1-collapse*.42,1-collapse*.58);X.globalAlpha=Math.max(.04,1-Math.max(0,(deathAge-3.65)/1.1));}
  else X.rotate(Math.sin(t*.7)*.025*Math.min(tier,6)+(revealing?Math.sin(revealAge*65)*.018*glitchPower:0));
  if(!finalLook){X.fillStyle='#241703';X.beginPath();X.ellipse(0,0,r*1.28,r*1.18,0,0,tau);X.fill();}
+ if(finalLook){
+   // The old shell splits open into two angular, gold-edged plates.
+   for(const side of [-1,1]){
+     X.save();X.scale(side,1);
+     X.fillStyle='#714105';X.strokeStyle='#f6bd38';X.lineWidth=2.4;X.lineJoin='round';
+     X.beginPath();X.moveTo(r*.13,-r*.79);X.lineTo(r*.82,-r*1.13);X.lineTo(r*1.44,-r*.86);
+     X.lineTo(r*1.21,r*.08);X.lineTo(r*.72,r*.84);X.lineTo(r*.22,r*1.16);X.lineTo(r*.37,r*.22);X.closePath();X.fill();X.stroke();
+     X.fillStyle='#d19010';X.beginPath();X.moveTo(r*.78,-r*1.02);X.lineTo(r*1.28,-r*.82);
+     X.lineTo(r*.80,r*.24);X.lineTo(r*.43,r*.69);X.lineTo(r*.65,-r*.26);X.closePath();X.fill();
+     X.strokeStyle='#362102';X.lineWidth=2;X.beginPath();X.moveTo(r*.84,-r*.55);X.lineTo(r*.98,-r*.28);X.lineTo(r*.63,r*.29);X.stroke();
+     X.restore();
+   }
+ }
  X.strokeStyle='#b97b08';X.lineWidth=Math.max(5,r*.12);X.lineCap='round';
  for(let i=0;i<6;i++){const a=i*tau/6+.16*Math.sin(t*3+i),bend=.28*Math.sin(t*4+i);X.beginPath();X.moveTo(Math.cos(a)*r*.48,Math.sin(a)*r*.44);X.quadraticCurveTo(Math.cos(a+bend)*r*1.02,Math.sin(a+bend)*r*.94,Math.cos(a)*r*1.48,Math.sin(a)*r*1.30);X.stroke()}
  X.fillStyle='#d99c16';X.strokeStyle='#553003';X.lineWidth=3;X.beginPath();
@@ -4933,11 +4942,14 @@ function drawGoldUnknownBossCore(e){
  X.globalAlpha=.9;X.strokeStyle='#ffd84a';X.lineWidth=2;const spikes=Math.min(3+tier,12);
  for(let i=0;i<spikes;i++){const a=i*tau/spikes+t*.12,rr=r*(1.38+.035*tier);X.beginPath();X.moveTo(Math.cos(a)*r*1.12,Math.sin(a)*r*1.05);X.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);X.stroke()}
  if(tier>=3){X.fillStyle='#fff0a0';const motes=Math.min(tier-1,8);for(let i=0;i<motes;i++){const a=t*(.7+.03*tier)+i*tau/motes,rr=r*(1.58+.03*Math.sin(t*2+i));X.beginPath();X.arc(Math.cos(a)*rr,Math.sin(a)*rr,2.2+(tier>=7?1:0),0,tau);X.fill()}}
- if(revealing){
-   // Hand-drawn-looking glitch streaks: brief, sharp, and local to the boss rather than a full-screen effect.
-   const g=Math.max(0,Math.min(1,glitchPower));X.save();X.globalCompositeOperation='source-over';X.globalAlpha=.18+.42*g;
-   for(let i=0;i<4;i++){const yy=(-.72+i*.46)*r+Math.sin(revealAge*77+i*9)*r*.07,off=Math.sin(revealAge*103+i*5)*r*.34;X.fillStyle=i%2?'#fff0a0':'#b97b08';X.fillRect(-r*.78+off,yy,r*(1.10+.18*(i%2)),Math.max(2,r*.045));}
-   if(revealAge>1.76&&revealAge<2.26){const flash=1-Math.abs(revealAge-2.01)/.25;X.globalAlpha=Math.max(0,flash)*.45;X.fillStyle='#fff4bd';X.beginPath();X.arc(0,0,r*(1.12+flash*.22),0,tau);X.fill();}
+ if(glitchPower>0){
+   X.save();
+   for(let i=0;i<7;i++){
+     const y=(-.94+i*.30)*r,offset=Math.sin(glitchTime*69+i*4.1)*r*.63;
+     X.globalAlpha=.28+.64*glitchPower;
+     X.fillStyle=i%2?'#100900':'#e8a928';
+     X.fillRect(-r*(1.15-i*.035)+offset,y,r*(1.40+.58*(i%3)),r*(i%2?.10:.027));
+   }
    X.restore();
  }
  if(dying){
@@ -5718,6 +5730,25 @@ function hazardStrokes(style,radius){
  cache.set(radius,paths);
  return paths;
 }
+function drawGoldRevealGlitch(age){
+ // Limit the brightest effects to moving strips, keeping the arena readable.
+ const strength=goldFinaleEase(age/.26)*(1-goldFinaleEase((age-1.85)/.62));
+ if(strength<=0)return;
+ const tick=Math.floor(age*11);
+ X.save();
+ X.fillStyle='#100900';X.globalAlpha=.20*strength;X.fillRect(0,0,W,H);
+ for(let i=0;i<9;i++){
+   const y=H*((i*83+tick*53)%387)/387;
+   const h=H*(i%3===0?.074:.019);
+   const x=W*((i*19+tick*7)%52-18)/52;
+   X.globalAlpha=(i%3===0?.68:.44)*strength;
+   X.fillStyle=i%3===0?'#080500':'#d69115';
+   X.fillRect(x,y,W*(.45+(i%4)*.17),h);
+   X.globalAlpha=.64*strength;X.fillStyle='#f6c24d';
+   X.fillRect(Math.max(0,x+W*.08),y+h,W*(.22+.03*(i%5)),Math.max(1,H*.002));
+ }
+ X.restore();
+}
 function draw(now=performance.now()){
  FRAME_NOW=now;
  X.globalAlpha=1;X.filter='none';X.globalCompositeOperation='source-over';X.shadowColor='transparent';X.shadowBlur=0;X.shadowOffsetX=0;X.shadowOffsetY=0;
@@ -5755,11 +5786,22 @@ function draw(now=performance.now()){
  if(lateStoryBossFight)drawLateBossPurpleFall(now);
  if(ambienceIndex===2){for(let i=0;i<22;i++){let x=(i*97+41)%W,y=(i*151+37)%H;let tw=.35+.35*Math.sin(FRAME_NOW/650+i);X.globalAlpha=tw;X.fillStyle='#d9f4d7';X.beginPath();X.arc(x,y,1.2+(i%3)*.35,0,6.28);X.fill()}X.globalAlpha=1}
  if(ambienceIndex===6){for(let i=0;i<24;i++){let x=(i*89+23)%W,y=(i*139+51)%H,tw=.35+.55*Math.sin(FRAME_NOW/420+i*1.7);X.globalAlpha=Math.max(.08,tw);X.fillStyle='#e8ff79';X.beginPath();X.arc(x,y,1.5+(i%2),0,6.28);X.fill()}X.globalAlpha=1}
- if(game?.mode==='gold'){
-   const gt=FRAME_NOW*.001;X.save();X.globalCompositeOperation='screen';
+ const finale=isGoldFinale(),revealAge=finale?goldFinaleAge():0;
+ let floorLight=1;
+ if(finale){
+   const reduced=window.BBMobile.isReducedMotion();
+   const fade=(revealAge-GOLD_FINALE_DURATION)/GOLD_FINALE_DARKEN_SECONDS;
+   const deathFade=game.goldDeathActive&&game.goldDeathBoss?.goldDeathStartedAt
+     ?(now-game.goldDeathBoss.goldDeathStartedAt)/4500:0;
+   floorLight=game.over&&game.recoveryPhase==='goldOutro'?0:1-goldFinaleEase(Math.max(fade,deathFade));
+   syncGoldFinalePresentation(revealAge,floorLight,reduced);
+   if(revealAge<GOLD_FINALE_DURATION&&!reduced)drawGoldRevealGlitch(revealAge);
+ }else if(goldFinalePresentation)resetBigBigHudFades();
+ if(game?.mode==='gold'&&floorLight>0){
+   const gt=FRAME_NOW*.001;X.save();X.globalCompositeOperation='screen';X.globalAlpha=floorLight;
    const sx=W*(.5+.22*Math.sin(gt*.24)),sy=H*.13;
    for(let j=0;j<5;j++){X.save();X.translate(sx,sy);X.rotate(gt*.025+j*1.25);const rg=X.createLinearGradient(0,0,W*.8,0);rg.addColorStop(0,'#fff1a82c');rg.addColorStop(.5,'#ffd34b12');rg.addColorStop(1,'#ffd34b00');X.fillStyle=rg;X.beginPath();X.moveTo(0,-10);X.lineTo(W*.8,-42);X.lineTo(W*.8,42);X.lineTo(0,10);X.fill();X.restore()}
-   for(let j=0;j<12;j++){const gx=(j*157+41)%W,gy=(j*91+Math.sin(gt*1.2+j)*30+H)%H,rr=2+2*(.5+.5*Math.sin(gt*3.4+j));X.globalAlpha=.3+.55*(.5+.5*Math.sin(gt*4+j));X.strokeStyle='#fff4b0';X.lineWidth=1;X.beginPath();X.moveTo(gx-rr*2,gy);X.lineTo(gx+rr*2,gy);X.moveTo(gx,gy-rr*2);X.lineTo(gx,gy+rr*2);X.stroke()}
+   for(let j=0;j<12;j++){const gx=(j*157+41)%W,gy=(j*91+Math.sin(gt*1.2+j)*30+H)%H,rr=2+2*(.5+.5*Math.sin(gt*3.4+j));X.globalAlpha=floorLight*(.3+.55*(.5+.5*Math.sin(gt*4+j)));X.strokeStyle='#fff4b0';X.lineWidth=1;X.beginPath();X.moveTo(gx-rr*2,gy);X.lineTo(gx+rr*2,gy);X.moveTo(gx,gy-rr*2);X.lineTo(gx,gy+rr*2);X.stroke()}
    X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
 
    const t=FRAME_NOW*.001;
@@ -5768,24 +5810,13 @@ function draw(now=performance.now()){
      const x=(i*97+31+Math.sin(t*.7+i*1.9)*24)%W;
      const raw=(i*139+47-FRAME_NOW*(.012+(i%4)*.002))%H,y=raw<0?raw+H:raw;
      const tw=.20+.34*(.5+.5*Math.sin(t*2.2+i));
-     X.globalAlpha=tw;X.fillStyle=i%3===0?'#fff0a0':'#e9bd45';
+     X.globalAlpha=floorLight*tw;X.fillStyle=i%3===0?'#fff0a0':'#e9bd45';
      X.beginPath();X.arc(x,y,1.2+(i%3)*.55,0,6.28);X.fill();
    }
    const sweep=(Math.sin(t*.55)*.5+.5)*W;
    const gg=X.createLinearGradient(sweep-90,0,sweep+90,0);gg.addColorStop(0,'#fff0');gg.addColorStop(.5,'#ffe58b22');gg.addColorStop(1,'#fff0');
-   X.globalAlpha=.55;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
+   X.globalAlpha=.55*floorLight;X.fillStyle=gg;X.fillRect(0,0,W,H);X.restore();X.globalAlpha=1;X.globalCompositeOperation='source-over';
 
-   if(game.goldFinale){
-     const darkAge=Math.max(0,game.time-(game.goldFinaleRevealStart||game.time));
-     const darkQ=Math.min(1,darkAge/.82);
-     if(darkQ>0){
-       // Nearly solid black at full reveal so the brightest central Gold lighting cannot bleed through.
-       // Combat entities are drawn after this pass, so they remain fully readable.
-       X.save();X.globalCompositeOperation='source-over';X.globalAlpha=.965*darkQ;
-       X.fillStyle='#000';X.fillRect(0,0,W,H);X.restore();
-       X.globalAlpha=1;X.globalCompositeOperation='source-over';
-     }
-   }
  }
  // Final arena: a denser but still lightweight drifting spore layer makes the source of the corruption unmistakable.
  if(ambienceIndex===19){const pf=game?.finalPurify?Math.max(0,1-Math.max(0,(game.finalPurify.elapsed-.65))/10.4):1;for(let i=0;i<28;i++){const x=(i*97+33+Math.sin(FRAME_NOW/1300+i)*18)%W,y=(i*137+51-(FRAME_NOW*.010*(1+(i%3)*.12)))%H,yy=y<0?y+H:y;X.globalAlpha=pf*(.18+.28*(.5+.5*Math.sin(FRAME_NOW/520+i*1.9)));X.fillStyle=i%3===0?'#efb4e7':'#bd77bc';X.beginPath();X.arc(x,yy,1.4+(i%3)*.65,0,6.28);X.fill()}X.globalAlpha=1}
@@ -5996,7 +6027,7 @@ function syncGoldPresentation(){
  const outro=$('goldFinaleOutro'),goldOutroVisible=!!(outro?.classList.contains('play')&&!outro.classList.contains('black'));
  const active=!!(game&&game.mode==='gold'&&!gameScreenVisible('home')&&!gameScreenVisible('ending')&&((!game.over&&!outro?.classList.contains('play'))||goldOutroVisible));
  document.body.classList.toggle('g159',active);
- if(active&&game.goldFinale&&$('wave'))$('wave').textContent='';
+
 }
 function repairWaveAfterSystemInterruption(){
  // A hidden Pause panel is also normal while Settings/Help is open. Only explicit
@@ -6700,8 +6731,8 @@ function bossTick(e,dt){
    e.invuln=left>0?left:0;
    if(left>0){
      e.x=W/2;e.y=Math.max(145,H*.24);e.vx=0;e.vy=0;e._dash=0;e._hunt=0;
-     const revealAge=Math.max(0,game.time-(game.goldFinaleRevealStart||game.time));
-     e.goldBossName=revealAge<1.84?'???':'BIG BUG';e.name=e.goldBossName;
+     const revealAge=goldFinaleAge();
+     e.goldBossName=revealAge<GOLD_FINALE_NAME_BEAT?'???':'BIG BUG';e.name=e.goldBossName;
      return;
    }
    game.goldFinaleRevealUntil=0;
@@ -6808,8 +6839,7 @@ let __bbGoldBossNameNodes=null;
 function syncGoldBossName(){
  if(!G())return;
  const b=(game.bosses||[]).find(q=>q&&!q.dead&&q.goldBossKey==='goldUnknownBoss');
- const revealAge=(game?.goldFinaleRevealStart&&b?.goldPhase===2)?Math.max(0,game.time-game.goldFinaleRevealStart):99;
- const label=b?.goldPhase===2&&revealAge>=1.84?'BIG BUG':'???';
+ const label=isGoldFinale()&&b?.goldPhase===2&&goldFinaleAge()>=GOLD_FINALE_NAME_BEAT?'BIG BUG':'???';
  if(!__bbGoldBossNameNodes){
   const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
   __bbGoldBossNameNodes=[];
@@ -6817,18 +6847,10 @@ function syncGoldBossName(){
   const extra=document.querySelectorAll('.bossName,.boss-name,.bossTitle,.boss-title');
   for(let i=0;i<extra.length;i++)if(!__bbGoldBossNameNodes.includes(extra[i]))__bbGoldBossNameNodes.push(extra[i]);
  }
- for(let i=0;i<__bbGoldBossNameNodes.length;i++){const n=__bbGoldBossNameNodes[i];n.textContent=label;n.style.color='#ffe15b';n.style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e'}
-}
-function dropQuestionName(){
- const n=document.getElementById('bossName0')||document.getElementById('bossName');
- if(!n||!document.body)return false;
- const r=n.getBoundingClientRect();
- const f=document.createElement('div');f.id='bigBigFallingName';f.textContent='???';
- f.style.left=((Number.isFinite(r.left)?r.left:0)+(Number.isFinite(r.width)?r.width/2:0))+'px';
- f.style.top=((Number.isFinite(r.top)?r.top:0)+(Number.isFinite(r.height)?r.height/2:0))+'px';
- document.body.appendChild(f);
- bbSetTimeout(()=>{try{if(f&&f.remove)f.remove()}catch(_){ }},1550);
- return true;
+ for(const n of __bbGoldBossNameNodes){
+   if(n.textContent===label&&n.style.color)continue;
+   n.textContent=label;n.style.color='#ffe15b';n.style.textShadow='0 0 5px #fff0a0,0 0 11px #ffc62e';
+ }
 }
 const U=window.update;if(typeof U==='function')window.update=function(dt){
  sync();
@@ -6884,15 +6906,14 @@ const U=window.update;if(typeof U==='function')window.update=function(dt){
      if(!Number.isFinite(alien.x))alien.x=W/2;if(!Number.isFinite(alien.y))alien.y=Math.max(145,H*.24);
      if(!Number.isFinite(alien.vx))alien.vx=0;if(!Number.isFinite(alien.vy))alien.vy=0;
      if(!Number.isFinite(alien._dvx))alien._dvx=0;if(!Number.isFinite(alien._dvy))alien._dvy=0;
-     alien.dead=false;alien.boss=true;alien.goldBossKey='goldUnknownBoss';alien.goldBossName='BIG BUG';alien.name='BIG BUG';
+     alien.dead=false;alien.boss=true;alien.goldBossKey='goldUnknownBoss';
      const pad=Math.max(42,alien.r*1.65);
      alien.x=Math.max(pad,Math.min(W-pad,alien.x));
      alien.y=Math.max(118+pad*.35,Math.min(H-pad,alien.y));
      if(!alien.__bb33VisibleTrace){alien.__bb33VisibleTrace=true;bb22Trace('FINALE VISIBILITY LOCK x='+Math.round(alien.x)+' y='+Math.round(alien.y)+' r='+alien.r+' boss='+alien.boss+' key='+alien.goldBossKey)}
    }
-   alien.goldBossName=alien.goldPhase===2?'BIG BUG':'???';alien.name=alien.goldBossName;syncGoldBossName();
+   syncGoldBossName();
    const pct=Math.max(0,Math.min(100,(alien.hp/alien.max)*100));
-   syncBigBigHudFades(alien);
    for(const id of ['bossFill0','bossFill1']){const f=document.getElementById(id);if(f){f.style.width=pct+'%';f.style.background='linear-gradient(90deg,#9b6108,#e3a91c 42%,#ffe16a 72%,#fff1a6)'}}
  }
 
@@ -6929,7 +6950,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.13"></script>
+<script src="mobile-game.js?v=19.1.0-ios.14"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js?v=19.1.0-ios.10"></script>
 </body>

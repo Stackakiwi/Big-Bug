@@ -575,3 +575,33 @@ html body #mosquitoUnlockPopup > div { flex: 0 0 auto; max-width: 100%; box-sizi
 body.bb-suspended *, body.bb-suspended *::before, body.bb-suspended *::after {
   animation-play-state: paused !important;
 }
+
+/* Wave 50's reveal follows the simulation clock, including after pause and restore. */
+body.gold-finale #gameStage { background: #000; }
+body.gold-finale #gameStage #arenaBg { opacity: var(--gold-floor-light, 1); }
+body.gold-finale #gameStage :is(#hud .pill, #pauseBtn, #bossbar) {
+  --drop: clamp(0, calc((var(--gold-reveal-age, 0) - var(--drop-start, .31)) / 1.27), 1);
+  translate: calc(var(--drop) * var(--drop-side, 0px)) calc(var(--drop) * var(--drop) * 112vh);
+  rotate: calc(var(--drop) * var(--drop-tilt, -19deg));
+  opacity: clamp(0, calc(2 - 2 * var(--drop)), 1);
+  pointer-events: none !important;
+}
+body.gold-finale #gameStage .hudHealth { --drop-start: .31; --drop-side: -38px; --drop-tilt: -34deg; }
+body.gold-finale #gameStage .hudWave { --drop-start: .44; --drop-side: 16px; --drop-tilt: 23deg; }
+body.gold-finale #gameStage #pauseBtn { --drop-start: .53; --drop-side: 34px; --drop-tilt: 56deg; }
+body.gold-finale #gameStage #bossbar { --drop-start: .62; --drop-side: -19px; --drop-tilt: -14deg; }
+body.gold-finale .gold-finale-hud-away :is(#hud, #pauseBtn, #bossbar) { visibility: hidden; }
+body.gold-finale :is(#mobileRunSummary, #mobileControlHint) { display: none !important; }
+#goldFinaleTitle {
+  position: absolute; z-index: 9; pointer-events: none;
+  left: 0; right: 0; top: 62%; text-align: center;
+  color: #ffe087; font: 1000 clamp(38px, 10cqi, 96px)/1 "Marker Felt", "Chalkboard SE", ui-rounded, system-ui, sans-serif;
+  letter-spacing: .07em;
+  text-shadow: 0 2px #7b3906, 0 5px #341903, 0 0 24px #e78c28b0;
+  opacity: var(--gold-title-alpha, 0);
+}
+#goldFinaleTitle[hidden] { display: none; }
+body[data-bb-reduced-motion="true"].gold-finale #gameStage :is(#hud .pill, #pauseBtn, #bossbar) {
+  translate: none; rotate: none;
+  opacity: clamp(0, calc(1.22 - var(--gold-reveal-age, 0) * 1.45), 1);
+}
