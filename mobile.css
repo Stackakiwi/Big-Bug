@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.2 — touch layout. Geometry comes from the current window,
+/* Big Bug v19.1.0-ios.3 — touch layout. Geometry comes from the current window,
    and, in the iOS app, UIKit safe areas and active reserved regions. */
 :root {
   --bb-safe-top: env(safe-area-inset-top, 0px);
@@ -152,103 +152,95 @@ html body .screen button, html body #storyContinue { touch-action: pan-y; }
 html body .screen .muted { opacity: .85; }
 html body #base .panel:before, html body #bugs .panel:before { display: none; }
 
-/* Home uses real layout flow; hidden desktop spacers never consume touch space. */
+/* Classic Home positions within the current safe pane. */
 html body #home.screen {
-  inset: auto !important; left: var(--bb-menu-left) !important; top: var(--bb-menu-top) !important;
-  right: auto !important; bottom: auto !important;
-  width: var(--bb-menu-width) !important; height: var(--bb-menu-height) !important;
-  display: grid; grid-template-columns: repeat(3,minmax(0,150px));
-  grid-auto-rows: auto; justify-content: center !important; align-items: center;
-  align-content: safe center; gap: 9px 8px;
-  padding-inline: calc(var(--bb-menu-safe-left) + 14px) calc(var(--bb-menu-safe-right) + 14px) !important;
-  background: linear-gradient(#cce8b4,#92bd69 44%,#365f31);
+  isolation: isolate; gap: 10px;
 }
-html body #home #titleGarden {
-  position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important;
-  pointer-events: none; z-index: 0 !important;
+#home #titleGarden {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: -1;
 }
-html body #home > :where(:not(#titleGarden)) {
-  position: relative !important; inset: auto !important; transform: none !important;
-  width: auto; max-width: 100%; min-width: 0; grid-column: 1 / -1;
-  margin: 0 !important; z-index: 1;
+#home .homeHeader, #home .homeFooter {
+  display: flex; align-items: center; gap: 8px; width: 100%; flex: 0 0 auto;
 }
-html body #home .homeTextLayoutKeeper, html body #home .homeResetLayoutKeeper,
-html body #home .homeReleaseSpacer, html body #home .versionStamp { display: none !important; }
-html body #home #globalSettingsBtn {
-  grid-row: 1; grid-column: 1; justify-self: start; width: 100%;
-  padding: 10px 7px !important; font-size: 12px !important; border-radius: 14px !important;
+#home .homeHeader { justify-content: space-between; }
+#home .homeFooter { justify-content: flex-end; margin-top: auto; }
+#home .homeHeader .btn, #home .homeFooter .btn {
+  padding: 9px 12px; margin: 0; font-size: 12px;
 }
-html body #home .homeGoldBalance {
-  grid-row: 1; grid-column: 2 / 4; justify-self: end;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  max-width: 180px; min-height: 44px !important; padding: 8px 12px !important;
-  border-radius: 14px !important; font-size: 17px !important;
+#home .homeGoldBalance {
+  min-height: 44px; padding: 8px 13px; font-size: 16px; white-space: nowrap;
 }
-html body #home .homeGoldBalance small { font-size: 12px; }
-html body #home .bugHero {
-  grid-row: 2; grid-column: 1; justify-self: center; align-self: center;
-  width: 88px; height: 100px; font-size: 0; animation: none; filter: none;
+#home .homeGoldBalance .goldLeafIcon { width: 20px; height: 20px; vertical-align: -5px; }
+#home .homeGoldBalance small { margin-left: 2px; }
+#home .versionCorner {
+  margin-right: auto; pointer-events: none;
+  color: #e8efce; opacity: .9; font: 650 10px/1.2 system-ui,sans-serif;
 }
-html body #home #homeBugHero { display: block; width: 88px; height: 88px; margin-top: 5px; }
-html body #home .logo {
-  grid-row: 2; grid-column: 2 / 4; justify-self: start; padding-block: 9px 11px;
-  font-size: clamp(58px,13vw,86px) !important; line-height: .78 !important;
-  letter-spacing: -4px !important; text-align: center;
-  text-shadow: 0 4px 0 #612f18,0 7px 10px #16351b55;
+#home .homeContent {
+  display: grid; justify-items: center; gap: 12px;
+  width: min(490px,100%); flex: 0 0 auto;
+  margin-top: clamp(0px,calc(var(--bb-menu-height) * .08 - 35px),38px);
 }
-html body #home > .btn[data-action="play"] {
-  grid-row: 3; width: 100%; max-width: 370px; justify-self: center;
-  min-height: 52px !important; font-size: 22px !important; padding: 12px !important;
+#home .homeBrand { display: grid; justify-items: center; gap: 9px; }
+#home .bugHero {
+  --hero-size: clamp(62px,calc(var(--bb-menu-height) * .145),112px);
+  width: var(--hero-size); height: var(--hero-size); animation: none;
 }
-html body #home #endlessBtn { grid-row: 4; }
-html body #home #goldWavesBtn { grid-row: 5; }
-html body #home #endlessBtn, html body #home #goldWavesBtn {
-  width: 100%; max-width: 370px; justify-self: center;
-  min-height: 50px !important; padding: 10px 8px !important;
-  font-size: 16px !important; border-radius: 16px !important;
+#home #homeBugHero { width: 100%; height: 100%; }
+#home .logo {
+  font-size: clamp(47px,min(18cqi,calc(var(--bb-menu-height) * .112)),110px);
+  letter-spacing: -.065em; padding-bottom: 6px;
 }
-html body #home #endlessBtn small, html body #home #goldWavesBtn small { font-size: 10px !important; }
-html body #home .homeMenuRow {
-  grid-row: 6; display: grid; grid-template-columns: repeat(3,minmax(0,1fr));
-  gap: 7px; width: 100%; justify-self: stretch; transform: none !important;
+#home .homeModes {
+  --book-size: clamp(46px,13cqi,80px);
+  position: relative; display: grid; justify-items: center; gap: 10px; width: 100%;
 }
-html body #home .homeMenuRow .btn {
-  min-width: 0 !important; width: 100%; min-height: 46px !important;
-  margin: 0 !important; padding: 9px 4px !important; border-radius: 13px !important;
-  font-size: clamp(10px,2.7vw,13px) !important; white-space: nowrap;
+#home .homeModes .btn {
+  min-width: 0; width: min(220px,calc(100% - 2 * (var(--book-size) + 5px)));
+  min-height: 48px !important; margin: 0; padding: 9px 6px;
+  font-size: clamp(13px,4.6cqi,18px); line-height: 1.15;
 }
-html body #home #homeAchievementsBtn {
-  grid-row: 7; grid-column: 1 / 3; justify-self: stretch;
-  width: 100% !important; transform: none !important; transform-origin: center;
-  font-size: 12px !important; line-height: 1.2 !important;
-  padding: 10px 6px !important; border-radius: 13px !important;
+#home .homeModes [data-action="play"] { font-size: clamp(18px,5cqi,21px); }
+#home .homeModes small { font-size: 9px; line-height: 1.2; }
+#home #gardenBookBtn {
+  position: absolute; inset: 50% 0 auto auto;
+  width: var(--book-size); height: var(--book-size);
+  transform: translateY(-50%) rotate(-2deg);
 }
-html body #home #homeAchievementsBtn:active:not(:disabled) { transform: translateY(1px) !important; }
-html body #home #gardenBookBtn {
-  grid-row: 7; grid-column: 3; width: 100% !important; height: 44px !important;
-  min-height: 44px; border-radius: 13px; justify-self: stretch;
-  display: flex; justify-content: center; align-items: center;
-  padding: 4px !important; margin: 0 !important; transform: none !important;
+#home .homeMenuRow {
+  display: grid; grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 6px; width: min(412px,100%);
 }
-html body #home #gardenBookBtn .bookGlyph { transform: scale(.52); transform-origin: center; }
-html body #home .homeBestFancy {
-  grid-row: 8; font-size: 12px !important; line-height: 1.6;
-  text-align: center; justify-self: center; margin-top: 3px !important;
-  font-weight: 850; letter-spacing: .2px; transform: none !important;
-  color: #f3f7d9; text-shadow: 0 1px 1px #152f16;
+#home .homeMenuRow .btn {
+  min-width: 0; width: 100%; margin: 0; padding: 9px 4px;
+  font-size: clamp(11px,3.25cqi,14px); white-space: nowrap;
 }
-html body #home .homeBestFancy:before { display: none; }
-html body #home #homeCreditsBtn {
-  grid-row: 9; grid-column: 1; justify-self: start;
-  min-height: 44px !important; min-width: 44px; padding: 9px 8px !important;
-  font-size: 11px !important; border-radius: 12px !important;
+#home .homeBestFancy {
+  max-width: 100%; padding: 6px 13px; border-radius: 999px;
+  background: #e4f2c499; border: 1px solid #294b2870; box-shadow: 0 3px 0 #24442255;
+  text-align: center; color: #1c2c16; font-weight: 850;
 }
-html body #home .versionCorner {
-  grid-row: 9; grid-column: 2 / 4; justify-self: end; align-self: center;
-  color: #f3f6df !important; font: 650 10px/1.2 system-ui,sans-serif !important;
-  opacity: .8 !important; pointer-events: none;
+@container bbMenu (max-width: 306px) {
+  #home .homeMenuRow .bbIcon, #home .homeMenuRow #homeBugsIcon { display: none; }
+  #home .homeHeader .btn, #home .homeFooter .btn { padding-inline: 8px; }
+  #home .homeGoldBalance { padding-inline: 8px; }
 }
-html body #home.hidden { display: none !important; }
+@container bbMenu (min-width: 560px) {
+  #home #gardenBookBtn .bookGlyph { transform: scale(1.55); }
+}
+@media (orientation: landscape) and (max-height: 550px) {
+  @container bbMenu (min-width: 480px) {
+    #home .homeContent {
+      grid-template-columns: minmax(120px,1fr) minmax(0,1.9fr);
+      width: min(720px,100%); margin-top: 0; gap: 9px 16px;
+    }
+    #home .homeBrand { grid-row: 1 / 4; align-self: center; }
+    #home .homeModes { grid-column: 2; }
+    #home .homeModes .btn { min-height: 44px !important; }
+    #home .homeMenuRow, #home .homeBestFancy { grid-column: 2; }
+  }
+}
 
 /* Touch-friendly gameplay actions. Root keeps their original IDs and handlers. */
 #mobileActions {
@@ -445,34 +437,8 @@ html body #finalPrep .choice .upgradeMark { position: static !important; transfo
   html body .achievementReward { margin-left: auto; }
 }
 @media (max-width: 360px) {
-  html body #home.screen { gap: 7px 6px; }
-  html body #home .logo { font-size: 58px !important; }
-  html body #home .bugHero, html body #home #homeBugHero { width: 75px; height: 84px; }
-  html body #home .homeGoldBalance { padding: 8px !important; font-size: 15px !important; }
-  html body #home .homeMenuRow .btn { font-size: 10px !important; }
   #gameStage #hud .hudWave #waveProgress { display: none !important; }
 }
-@media (min-width: 650px) and (max-height: 600px) {
-  html body #home.screen { grid-template-columns: repeat(6,minmax(0,110px)); gap: 8px 12px; }
-  html body #home #globalSettingsBtn { grid-row: 1; grid-column: 1 / 3; width: auto; min-width: 108px; }
-  html body #home .homeGoldBalance { grid-row: 1; grid-column: 5 / 7; }
-  html body #home .bugHero { grid-row: 2 / 4; grid-column: 1; }
-  html body #home .logo { grid-row: 2 / 4; grid-column: 2 / 4; font-size: 72px !important; }
-  html body #home > .btn[data-action="play"] { grid-row: 2; grid-column: 4 / 7; min-height: 48px !important; }
-  html body #home #endlessBtn { grid-row: 3; grid-column: 4 / 7; min-height: 46px !important; }
-  html body #home #goldWavesBtn { grid-row: 4; grid-column: 4 / 7; min-height: 46px !important; }
-  html body #home .homeMenuRow { grid-row: 5; grid-column: 4 / 7; }
-  html body #home #homeAchievementsBtn { grid-row: 4; grid-column: 1 / 3; }
-  html body #home #gardenBookBtn { grid-row: 4; grid-column: 3; }
-  html body #home .homeBestFancy { grid-row: 5; grid-column: 1 / 4; font-size: 11px !important; }
-  html body #home #homeCreditsBtn { grid-row: 6; grid-column: 1 / 3; }
-  html body #home .versionCorner { grid-row: 6; grid-column: 4 / 7; }
-}
-body[data-bb-layout^="fold-"] #home.screen { align-content: start; }
-body[data-bb-layout^="fold-"] #home .logo { font-size: 58px !important; }
-body[data-bb-layout^="fold-"] #home .bugHero, body[data-bb-layout^="fold-"] #home #homeBugHero { width: 76px; height: 84px; }
-body[data-bb-layout^="fold-"] #home > .btn, body[data-bb-layout^="fold-"] #home .homeMenuRow { grid-column: 1 / -1; }
-
 /* Keep cinematic timers/credits intact. The game owns simulation effects. */
 @media (prefers-reduced-motion: reduce) {
   html body .screen:not(#ending) *, html body .screen:not(#ending) *::before,
