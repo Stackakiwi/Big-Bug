@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#152316">
 <meta name="apple-mobile-web-app-title" content="Big Bug">
 <meta name="color-scheme" content="dark light">
-<link rel="icon" href="icon.svg?v=19.1.0-ios.6" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=19.1.0-ios.6">
+<link rel="icon" href="icon.svg?v=19.1.0-ios.7" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=19.1.0-ios.7">
 <title>BIG BUG</title>
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
@@ -19,26 +19,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #arenaBg,#game{position:fixed;inset:0;width:100%;height:100%;display:block}#arenaBg{z-index:0;pointer-events:none;background:#101b12}#game{z-index:1;background:transparent}.bugPreview canvas{position:static!important;inset:auto!important;width:76px!important;height:76px!important;display:block!important}
 .hidden{display:none!important}
 .screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:auto}
-.titleScreen{background:linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);color:var(--ink)}
-.logo{font-size:clamp(56px,16vw,110px);line-height:.78;font-weight:1000;letter-spacing:-5px;text-align:center;color:#f4a51c;text-shadow:0 5px 0 #612f18,0 9px 18px #16351b99;transform:rotate(-3deg)}
-.logo small{display:block;font-size:.26em;letter-spacing:2px;color:#f8f3df;text-shadow:0 2px #264d22;margin-top:18px}
-.logo .logoBugWord{color:#77c84b}
-.bugHero{font-size:100px;filter:drop-shadow(0 12px 5px #254d2255);animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}
-.btn{border:0;border-radius:18px;padding:14px 22px;background:#f3a623;color:#2a2416;font-size:18px;font-weight:950;box-shadow:inset 0 -4px #b96917,0 5px 0 #1f3b20;min-width:220px;margin:7px;cursor:pointer}
-.btn.green{background:#77c84b;box-shadow:inset 0 -4px #438c2e,0 5px 0 #1f3b20}
-.btn.red{background:#d84d48;color:white;box-shadow:inset 0 -4px #8f2926,0 5px 0 #1f3b20}
-.btn.dark{background:#223827;color:white;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
 .btn.small{min-width:0;font-size:14px;padding:10px 14px}
-#endlessBtn:disabled{opacity:.62;filter:saturate(.55);cursor:default;box-shadow:inset 0 -4px #101c12,0 5px 0 #0b120d}
-#goldWavesBtn{position:relative!important;overflow:hidden!important;background:linear-gradient(180deg,#f3c94a 0%,#c98d16 42%,#8a580d 100%)!important;border:2px solid #ffe58a!important;color:#fff8c8!important;text-shadow:0 2px #5a3504,0 0 8px #fff2a266!important;box-shadow:inset 0 2px 0 #fff5b788,inset 0 -5px #6b4109,0 5px 0 #352508,0 0 16px #ffd84f55!important;text-align:center!important}
-#goldWavesBtn:disabled{opacity:.58;filter:saturate(.55);cursor:default}
-#goldWavesBtn small{display:block;font-size:9px;line-height:1.05;margin-top:4px;letter-spacing:.25px;opacity:.82}
-#goldWavesBtn:before,#goldWavesBtn:after{content:"✦";position:absolute;z-index:1;color:#fff7c7;pointer-events:none;text-shadow:0 0 4px #fff,0 0 9px #ffd84f;animation:goldWaveButtonSparkle 1.6s ease-in-out infinite}
-#goldWavesBtn:before{left:15%;top:21%;font-size:12px}
-#goldWavesBtn:after{right:14%;bottom:19%;font-size:9px;animation-delay:.7s}
-@keyframes goldWaveButtonSparkle{0%,100%{opacity:.2;transform:scale(.65) rotate(0deg)}50%{opacity:1;transform:scale(1.18) rotate(20deg)}}
-#endlessBtn .endlessUnlockNote{display:block;font-size:9px;line-height:1;margin-top:4px;letter-spacing:.35px;opacity:.78}
 .tag{margin:10px 0 18px;font-weight:850;opacity:.8}
 .panel{width:min(720px,100%);max-height:92vh;overflow:auto;background:#15271aee;border:2px solid #d9efbf33;border-radius:24px;padding:20px;box-shadow:0 25px 80px #0008}
 .panel h2{margin:0 0 6px;font-size:28px}.panel p{opacity:.72}
@@ -60,7 +42,7 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 .scrapIcon:before{content:"";position:absolute;left:8px;top:1px;width:1.5px;height:15px;background:#3f7c2f;border-radius:99px;transform:rotate(5deg)}
 .scrapIcon:after{content:"";position:absolute;left:7px;bottom:-4px;width:7px;height:2px;background:#6e9d3c;border-radius:99px;transform:rotate(58deg);transform-origin:left center}
 .scrapCount{font-weight:1000;color:#ffd48a}.enemyLegend{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.enemyLegend .mini{background:#1d3322;border:1px solid #ffffff16;border-radius:14px;padding:9px;font-size:12px}.enemyLegend b{display:block;color:#f6e9c7;font-size:13px}
-@media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:16px}.logo{font-size:68px}.bugHero{font-size:78px}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:16px}}
 
 .leafCurrencyIcon{display:inline-block;font-size:20px;line-height:1;vertical-align:-3px;margin-right:4px;filter:drop-shadow(0 1px 1px #0008) drop-shadow(0 0 3px #d9ff66aa)}
 
@@ -211,10 +193,8 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #base .shopIcon{font-size:38px;width:48px;text-align:center;filter:drop-shadow(0 3px 3px #0007)}
 #base .shopRow b{font-size:20px;color:#fff8e7}
 #base .shopRow .muted{font-size:15px;line-height:1.3;color:#d2d8cd;opacity:.82;margin-top:4px}
-#base .shopRow .btn{min-width:118px;margin:0 0 0 8px;border-radius:18px;padding:13px 12px;font-size:17px}
-#base>.panel>.btn[data-action="home"]{display:block;width:100%;margin:16px 0 2px;min-height:58px}
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
-@media(max-width:430px){#base{padding:12px}#base .panel{padding:18px 12px 14px}#base .panel h2{font-size:29px}#base .shopRow{padding:12px 10px;min-height:96px}#base .shopIcon{font-size:33px;width:40px}#base .shopRow b{font-size:18px}#base .shopRow .muted{font-size:14px}#base .shopRow .btn{min-width:105px;font-size:16px;padding:12px 9px}}
+@media(max-width:430px){#base{padding:12px}#base .panel{padding:18px 12px 14px}#base .panel h2{font-size:29px}#base .shopRow{padding:12px 10px;min-height:96px}#base .shopIcon{font-size:33px;width:40px}#base .shopRow b{font-size:18px}#base .shopRow .muted{font-size:14px}}
 
 
 #bugs .panel h2,
@@ -270,13 +250,6 @@ body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bot
 #upgrade .buddyArmyWrap canvas:nth-child(2){left:15px;top:2px;z-index:2}
 #upgrade .buddyArmyWrap canvas:nth-child(3){right:0;top:17px;transform:rotate(13deg)}
 
-.titleScreen{
-  background:
-    radial-gradient(ellipse at 14% 17%,#e3f1c455 0 7%,transparent 25%),
-    radial-gradient(ellipse at 84% 31%,#416d3650 0 8%,transparent 28%),
-    radial-gradient(ellipse at 28% 83%,#254a2d55 0 10%,transparent 31%),
-    linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);
-}
 
 
 #goldFail{position:fixed;inset:0;z-index:1600;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(circle at 50% 42%,#3b2909aa 0%,#100b05ee 52%,#030201f5 100%)}
@@ -382,8 +355,6 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 }
 
 
-.bugHero{width:112px;height:112px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 12px 5px #254d2255)}
-.bugHero canvas{width:112px;height:112px;display:block;animation:bob 1.8s ease-in-out infinite}
 .bbIcon{display:inline-block;position:relative;width:1.15em;height:1.15em;vertical-align:-.19em;flex:0 0 auto}
 .bbHeartIcon{width:1.12em;height:1em;transform:rotate(-45deg);border-radius:20% 0 20% 20%;background:#df5149;box-shadow:inset 2px 2px #ff8b78,0 2px 0 #742b28}
 .bbHeartIcon:before,.bbHeartIcon:after{content:"";position:absolute;background:inherit;border-radius:50%;width:100%;height:100%}.bbHeartIcon:before{top:-50%;left:0}.bbHeartIcon:after{left:50%;top:0}
@@ -404,7 +375,6 @@ to{transform:translateX(calc(100vw + 85px)) rotate(5deg)}}
 .goldLeafIcon:before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 36'%3E%3Cg transform='rotate(-26)'%3E%3Cpath d='M0 -12 C11 -7.4 11.4 3.4 0 12 C-11.4 3.4 -11 -7.4 0 -12 Z' fill='%23f4c62f' stroke='%23fff2a6' stroke-width='2'/%3E%3Cpath d='M0 -9.4 V9.8 M0 -4.6 L6 -1.2 M0 -.6 L-6.2 2.4 M0 3 L5.4 5.8' fill='none' stroke='%23956b12' stroke-width='1.6' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
 .goldLeafIcon:after{content:"✦";position:absolute;right:-6px;top:-7px;color:#fff7c7;font-size:11px;text-shadow:0 0 5px #fff,0 0 9px #ffd33d;animation:goldTwinkle 1.35s ease-in-out infinite}
 @keyframes goldTwinkle{0%,100%{opacity:.3;transform:scale(.65) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(22deg)}}
-.homeGoldBalance{position:relative;background:linear-gradient(180deg,#fff3a6 0%,#ffd84e 20%,#e8a91e 68%,#bd7610 100%)!important;border:2px solid #fff1a0!important;border-radius:999px;padding:11px 18px;color:#3b2704!important;font-size:18px;font-weight:1000;box-shadow:inset 0 3px 2px #fffbd9cc,inset 0 -4px 3px #8f540d88,0 4px 0 #704109,0 7px 15px #0006,0 0 16px #ffd84f66!important;text-shadow:0 1px 0 #fff0a0;pointer-events:auto;cursor:pointer;font-family:inherit;min-height:48px;overflow:hidden}.homeGoldBalance:after{content:"";position:absolute;left:10%;top:4px;width:55%;height:8px;border-radius:999px;background:linear-gradient(90deg,#fff0,#fffbd9dd,#fff0);transform:skewX(-24deg);pointer-events:none}.homeGoldBalance .goldLeafIcon{width:25px;height:25px;vertical-align:-7px;margin-right:4px;filter:drop-shadow(0 1px 0 #fff2a8) drop-shadow(0 2px 2px #74480066)}.homeGoldBalance small{font-size:12px;letter-spacing:.9px;color:#4a2d03!important;margin-left:5px;text-shadow:0 1px 0 #fff0a0}
 .goldCurrency{border-color:#a77c24!important;background:linear-gradient(145deg,#3a3218,#27240f)!important;color:#fff2b0}.goldCount{font-size:25px;color:#ffd94d;font-weight:1000}
 .goldUnlockBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #1f3b20!important}.continueGold{background:#e7b72e!important;box-shadow:inset 0 -4px #9b6c13,0 5px 0 #1f3b20!important}
 #gameover #goldContinueBtn{display:block;margin:14px auto;width:min(100%,470px)}.continueGold:disabled{opacity:.48;filter:saturate(.55);cursor:default}
@@ -455,7 +425,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 
 #base .shopBuyStack{display:flex;flex-direction:column;gap:7px;flex:0 0 118px}
-#base .shopBuyStack .btn{width:100%;min-width:0!important;margin:0!important}
 #base .shopBuyStack .goldUpgradeBtn{background:linear-gradient(#f1c642,#c98e16)!important;color:#2a210b!important;border:1px solid #ffe889;box-shadow:inset 0 -4px #8d6110,0 4px 0 #132214,0 0 10px #ffd84f44!important}
 #base .shopBuyStack .goldUpgradeBtn .goldLeafIcon{width:20px;height:20px;vertical-align:-5px;margin-right:3px}
 #help .helpBugSvg{width:1.35em;height:1.5em;display:block;flex:0 0 auto;overflow:visible}#help h2 .helpBugSvg{display:inline-block;width:30px;height:34px;margin-right:7px;vertical-align:-.22em}#help .helpSwordSvg{width:22px;height:22px}
@@ -538,12 +507,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
   box-shadow:inset 0 2px 0 #c8e7a755,inset 0 -4px 0 #214b2a,0 5px 0 #18351f,0 8px 14px #0004;
   text-shadow:0 2px 0 #17341f;
 }
-.btn.dark:after{content:"";position:absolute;left:9%;right:38%;top:4px;height:5px;border-radius:999px;background:linear-gradient(90deg,transparent,#fff7c480,transparent);pointer-events:none}
-.btn.dark[data-action="bugs"]{background:linear-gradient(180deg,#ef7064,#ce4a43 60%,#a93634);border-color:#ff9b8d;box-shadow:inset 0 2px 0 #ffd1c755,inset 0 -4px 0 #8b2e2c,0 5px 0 #542b22,0 8px 14px #0004;text-shadow:0 2px 0 #7c2727}
-.btn.dark[data-action="base"]{background:linear-gradient(180deg,#f2be43,#d58b25 60%,#a65d1d);border-color:#ffdd76;color:#35220a;box-shadow:inset 0 2px 0 #fff3bd99,inset 0 -4px 0 #874715,0 5px 0 #4e391c,0 8px 14px #0004;text-shadow:0 1px 0 #ffe699}
-#endlessBtn.btn.dark:not(:disabled){background:linear-gradient(180deg,#5e9ea5,#35767e 60%,#24555e);border-color:#8fcbd0;box-shadow:inset 0 2px 0 #d5ffff55,inset 0 -4px 0 #1b454d,0 5px 0 #17353a,0 8px 14px #0004;text-shadow:0 2px 0 #183f45}
-#endlessBtn.btn.dark:disabled{background:linear-gradient(180deg,#72806b,#596753 60%,#414e40);border-color:#94a28c;color:#e9eddf;opacity:.78;filter:none;box-shadow:inset 0 2px 0 #dce4d133,inset 0 -4px 0 #354137,0 5px 0 #263229;text-shadow:0 2px 0 #29342b}
-#globalSettingsBtn.btn.dark{background:linear-gradient(180deg,#8eaa70,#668952 62%,#496b43);border-color:#bed19c;color:#fffbe8;box-shadow:inset 0 2px 0 #eef9cf66,inset 0 -4px 0 #3a5c37,0 4px 0 #29472c,0 7px 12px #0004;text-shadow:0 2px 0 #355230}
 #settings .settingsHelpBtn{background:linear-gradient(180deg,#4ca8a1,#317c78 60%,#245e5c);border-color:#83d1c8;box-shadow:inset 0 2px 0 #d8fff666,inset 0 -4px 0 #1d4f4d,0 5px 0 #173b3a,0 8px 14px #0004;text-shadow:0 2px 0 #1a4b48}
 #settings .btn.dark[data-action="home"],#settings .btn.dark[data-action="settingsBack"],#help .btn.dark[data-action="settings"],#bugs .btn.dark[data-action="home"],#base .btn.dark[data-action="home"],#goldShop .btn.dark[data-action="home"]{background:linear-gradient(180deg,#9b744d,#765337 60%,#563c2b);border-color:#c59a6d;box-shadow:inset 0 2px 0 #efd1a555,inset 0 -4px 0 #493126,0 5px 0 #2c251b,0 8px 14px #0004;text-shadow:0 2px 0 #493224}
 #resetConfirm .btn.dark[data-action="cancelReset"]{background:linear-gradient(180deg,#7f9292,#5f7070 60%,#485757);border-color:#aabcbc;box-shadow:inset 0 2px 0 #e6ffff44,inset 0 -4px 0 #394646,0 4px 0 #293535;text-shadow:0 2px 0 #344141}
@@ -553,13 +516,17 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 
 .btn{
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;cursor:pointer;
+  min-width:220px;margin:7px;padding:14px 22px;border-radius:18px;
+  font-size:18px;font-weight:950;transition:transform .08s ease,filter .12s ease;
   background:linear-gradient(180deg,#f4c454 0%,#df982d 60%,#b96d20 100%);
   color:#35220a;
   border:1px solid #ffe083;
   box-shadow:inset 0 2px 0 #fff4c999,inset 0 -4px 0 #92521a,0 5px 0 #4e391c,0 8px 14px #0004;
   text-shadow:0 1px 0 #ffe9a7;
 }
+.btn:hover:not(:disabled){filter:brightness(1.06)}
+.btn:active:not(:disabled){transform:translateY(2px)}
 .btn:after{content:"";position:absolute;left:9%;right:38%;top:4px;height:5px;border-radius:999px;background:linear-gradient(90deg,transparent,#fff7c480,transparent);pointer-events:none}
 .btn.green{
   background:linear-gradient(180deg,#8bd65e 0%,#62b747 58%,#418f39 100%);
@@ -698,7 +665,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #bugs .card b{font-size:19px!important}
 #bugs .card p{margin:5px 0!important;line-height:1.22!important}
 #bugs .card .muted{font-size:13px!important}
-#bugs .card .btn{margin:7px 0 1px!important;padding:10px 14px!important;border-radius:13px!important}
 #bugs>.panel>.btn[data-action="home"]{width:100%!important;margin:11px 0 0!important;min-height:48px!important}
 
 #base .shopCurrency{padding:10px 13px!important;margin:0 0 8px!important;border-radius:12px!important;font-size:18px!important}
@@ -713,8 +679,11 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #base .shopRow b{font-size:18px!important}
 #base .shopRow .muted{font-size:13px!important;line-height:1.2!important;margin-top:2px!important}
 #base .shopBuyStack{flex-basis:108px!important;gap:5px!important}
-#base .shopBuyStack .btn{padding:9px 7px!important;border-radius:12px!important;font-size:15px!important}
-#base>.panel>.btn[data-action="home"]{margin:11px 0 0!important;min-height:48px!important}
+#base .shopBuyStack .btn{
+  width:100%;min-width:0!important;margin:0!important;padding:9px 7px!important;
+  border-radius:12px!important;font-size:17px!important;min-height:46px!important;
+}
+#base>.panel>.btn[data-action="home"]{display:block;width:100%;margin:11px 0 0!important;min-height:48px!important}
 
 /* Remove some glossy/generic UI feel on these two screens only. */
 #bugs .btn,#base .btn{
@@ -734,7 +703,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 
 
 #bugs .bugUnlockChoices{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:9px}
-#bugs .bugUnlockChoices .btn{min-width:0!important;flex:1;margin:0!important}
 #bugs .bugUnlockChoices>span{font-size:12px;font-weight:900;opacity:.65}
 #bugs .leafBugUnlock{background:linear-gradient(#72c84b,#4ea936)!important}
 
@@ -746,7 +714,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #bugs .card .bugPreview canvas{width:68px!important;height:68px!important}
 #bugs .card b{font-size:22px!important;line-height:1.12!important}
 #bugs .card p,#bugs .card .muted{font-size:15.5px!important;line-height:1.3!important}
-#bugs .card .btn{font-size:17px!important;padding:11px 15px!important}
 
 #bugs .panel{width:min(760px,96vw)!important}
 #bugs .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:stretch!important;gap:12px!important}
@@ -755,9 +722,7 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #bugs .card .bugPreview canvas{width:74px!important;height:74px!important}
 #bugs .card b{font-size:21px!important;line-height:1.02!important;margin-bottom:4px!important}
 #bugs .card p,#bugs .card .muted{font-size:15px!important;line-height:1.22!important;margin:4px 0 0!important}
-#bugs .card .btn{margin-top:auto!important}
 #bugs .bugUnlockChoices,#bugs .legendaryPrice{margin-top:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;gap:7px!important}
-#bugs .bugUnlockChoices .btn,#bugs .legendaryPrice .btn{width:100%!important;min-width:0!important;margin:0!important;padding:10px 8px!important;font-size:15px!important}
 #bugs .bugUnlockChoices>span,#bugs .legendaryPrice>span{font-size:11px!important;line-height:1!important;font-weight:1000!important;opacity:.7!important;align-self:center!important}
 #bugs .legendaryBugCard{min-height:268px!important;padding:13px 14px 12px!important}
 #bugs .legendaryKicker{font-size:10px!important;letter-spacing:1.05px!important;margin-bottom:3px!important}
@@ -820,28 +785,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 body:has(#gameover:not(.hidden)) #endlessTripleBtn,
 body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 
-#gardenBookBtn{
- min-width:44px;min-height:44px;margin:0;padding:0;border:0;
- background:transparent;box-shadow:none;display:flex;align-items:center;justify-content:center;cursor:pointer;
-}
-#gardenBookBtn .bookGlyph{
- display:block;position:relative;width:45px;height:39px;margin:0;
- border:3px solid #183b25;border-radius:5px 8px 8px 5px;
- background:#5f8d42;
- box-shadow:inset 5px 0 0 #345d34,inset 0 -4px 0 #3c682f,0 4px 0 #17351f;
-}
-#gardenBookBtn .bookGlyph:before{
- content:"";position:absolute;left:7px;top:3px;bottom:3px;width:2px;
- background:#d7dfa1;border-left:1px solid #244b2c;opacity:.9
-}
-#gardenBookBtn .bookGlyph:after{display:none!important;content:none!important}
-#gardenBookBtn .bookBugCanvas{
- position:absolute;left:12px;top:4px;width:29px;height:29px;display:block;
- transform:rotate(2deg);filter:drop-shadow(0 1px 0 #d7dfa166);
-}
-@media(max-width:390px){
- #gardenBookBtn .bookGlyph{width:43px;height:37px}
-}
 #gardenBook{overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;overscroll-behavior-y:contain;height:100dvh!important;min-height:100vh!important;display:block!important;background:linear-gradient(180deg,#4f713e,#223b2a);padding:18px 10px 28px}
 #gardenBook.hidden{display:none!important}
 #gardenBook .gardenBookPanel{
@@ -973,7 +916,7 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 .medievalCard{position:relative;background:linear-gradient(150deg,#183722,#10291a);border:1px solid #486143;border-radius:12px;padding:12px 9px 10px;text-align:center;box-shadow:0 4px 0 #07120b}
 .medievalCard.equipped{border-color:#e2b84e;box-shadow:0 4px 0 #70531b,0 0 14px #e6bd4b55}
 .medievalPreview{width:94px;height:94px;margin:0 auto 5px;display:block}.medievalCard b{display:block;color:#fff0c5;font-size:18px}.medievalCard .muted{min-height:34px;margin:4px 0 8px;line-height:1.25}
-.medievalCard .btn{min-width:0;width:100%;margin:2px 0 0;padding:10px 6px;font-size:13px}
+.medievalCard .btn{min-width:0;width:100%;margin:2px 0 0;padding:10px 6px;font-size:15px!important;min-height:44px!important}
 .cosmeticNote{text-align:center;font-size:12px;color:#9faa91;margin:12px 8px 2px}
 .medievalBundleBox{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 4px;padding:14px;background:linear-gradient(145deg,#382f18,#211d11);border:1px solid #9d7d31;border-radius:14px;box-shadow:inset 0 0 18px #d8b34a12}
 .medievalBundleBox b{display:block;color:#ffe382;font-size:20px}.medievalBundleBox .muted{margin-top:3px;color:#d8d0ab}
@@ -1001,7 +944,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #settings .settingRow b{font-size:18px}#settings .settingRow .muted{color:#c7d3c5;opacity:.82}
 #settings .settingsDanger{border-top-color:#527057;margin-top:20px}
 #settings #resetConfirm{border-radius:13px}
-.btn{transition:transform .08s ease,filter .12s ease}.btn:hover:not(:disabled){filter:brightness(1.06)}.btn:active:not(:disabled){transform:translateY(2px)}
 .panel{scrollbar-width:thin;scrollbar-color:#5f8d60 #0b2013}
 @media(max-width:600px){#help .panel,#settings .panel{width:100%;padding:18px 14px;border-radius:16px}#help .helpGrid{grid-template-columns:1fr;gap:9px}#help .helpBossCard{grid-column:auto}#help .helpCard,#help .helpCard:nth-child(n){min-height:92px;padding:12px 13px}#help .helpCard b{font-size:18px;margin-bottom:5px}#help .helpCard .muted{font-size:14px}#help h2,#settings .panel h2{font-size:31px;margin-bottom:15px}}
 @media(min-width:900px){#help .panel{width:min(820px,92vw)}#help .helpCard{min-height:120px}#help .helpCard b{font-size:21px}#help .helpCard .muted{font-size:16px}}
@@ -1034,14 +976,12 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 #bugs .card{min-height:245px;padding:18px!important}
 #bugs .card b{font-size:25px!important;line-height:1.12!important}
 #bugs .card p,#bugs .card .muted{font-size:18px!important;line-height:1.4!important}
-#bugs .card .btn{font-size:16px!important;min-height:46px!important}
 #base .shopCurrency{font-size:22px!important;padding:16px 18px!important}
 #base .shopRow{min-height:116px!important;padding:17px 15px!important}
 #base .shopRow b{font-size:22px!important}
 #base .shopRow .muted{font-size:17px!important;line-height:1.35!important}
-#base .shopRow .btn{font-size:17px!important;min-height:46px!important}
 .cosmeticToggleRow{font-size:19px!important}.cosmeticBalance{font-size:17px!important;padding:9px 16px!important}
-.medievalCard{padding:15px 12px 13px!important}.medievalCard b{font-size:21px!important}.medievalCard .muted{font-size:16px!important;line-height:1.35!important}.medievalCard .btn{font-size:15px!important;min-height:44px!important}
+.medievalCard{padding:15px 12px 13px!important}.medievalCard b{font-size:21px!important}.medievalCard .muted{font-size:16px!important;line-height:1.35!important}
 .medievalBundleBox{padding:17px!important}.medievalBundleBox b{font-size:22px!important}.medievalBundleBox .muted{font-size:16px!important;line-height:1.35!important}.cosmeticNote{font-size:15px!important;line-height:1.4!important}
 .mysteryBugCard{display:flex!important;flex-direction:column;align-items:center;justify-content:center;text-align:center!important;border:2px dashed #66806a!important;background:linear-gradient(145deg,#132b1b,#0b2114)!important;opacity:.86}
 .mysteryBugMark{width:76px;height:76px;margin:0 auto 10px;border:2px dashed #91a98f;border-radius:50%;display:flex;align-items:center;justify-content:center;font:900 52px/1 ui-rounded,system-ui,sans-serif;color:#dbe4d4;background:#0b1d12;box-shadow:inset 0 0 18px #0007}
@@ -1126,7 +1066,6 @@ body:has(#gameover:not(.hidden)) #endlessRepelBtn{display:none!important}
 .legendaryBugCard{position:relative;overflow:hidden;border:2px solid #f2c94c!important;background:radial-gradient(circle at 50% 25%,#6b541f,#24361e 64%,#122419)!important;box-shadow:0 4px 0 #72510d,0 0 18px #ffd84f77,inset 0 0 24px #f4c62f22!important}.legendaryBugCard:after{content:"";position:absolute;inset:-80% -30%;background:linear-gradient(105deg,transparent 42%,#fff6b855 49%,transparent 56%);animation:legendSweep 3.6s linear infinite;pointer-events:none}.legendaryKicker{font-size:12px;font-weight:1000;letter-spacing:1.5px;color:#ffe88b;margin-bottom:2px}.legendaryBugCard b{color:#fff0a2!important;text-shadow:0 2px #513500;font-size:20px}.legendaryBugCard .bugPreview{height:112px;overflow:visible!important}.legendaryBugCard .bugPreview canvas{width:112px!important;height:112px!important;overflow:visible!important}.legendaryPrice{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}.legendaryPrice .btn{min-width:112px;margin:3px;padding:9px 8px}.legendaryPrice>span{font-size:11px;font-weight:1000;color:#ffe9a0}.legendaryLeafBuy{background:#78c84b!important}.legendaryGoldBuy,.legendarySelect{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}@keyframes legendSweep{to{transform:translateX(80%)}}
 #legendaryReveal{position:fixed;inset:0;z-index:3000;background:#061009eF;display:flex;align-items:center;justify-content:center;padding:20px}.legendaryRevealCard{width:min(520px,96vw);text-align:center;padding:26px 22px 22px;border:3px solid #f1c94c;border-radius:22px;background:radial-gradient(circle at 50% 24%,#6b541f,#17301f 56%,#091a10);box-shadow:0 0 35px #ffd84f88,0 14px 60px #000d;color:#fff3bd}.legendaryRevealCard canvas{width:150px;height:150px;filter:drop-shadow(0 0 14px #ffd84f)}.legendaryRevealCard small{display:block;letter-spacing:2px;color:#f4cf55;font-weight:1000}.legendaryRevealCard h2{font-size:clamp(30px,7vw,45px);line-height:.95;margin:9px 0 12px;color:#ffe276;text-shadow:0 3px #6d4305}.legendaryRevealCard p{font-size:18px;line-height:1.35;color:#f5efd3;opacity:1}.legendaryRevealBtn{background:#e6b62c!important;box-shadow:inset 0 -4px #9d7116,0 5px 0 #4e3609!important}.hidden#legendaryReveal{display:none!important}
 
-#homeCosmeticsBtn{position:relative;z-index:65;pointer-events:auto!important;touch-action:manipulation}
 
 #finalPrep{background:rgba(2,14,8,.94);backdrop-filter:blur(3px)}
 #finalPrep .panel{position:relative;overflow:hidden;width:min(520px,100%);background:linear-gradient(160deg,#0c2818,#06190f 62%,#031008);color:#efe6bd;border:1px solid #35563a;border-radius:10px;box-shadow:0 8px 0 #010805,0 18px 42px #000c,inset 0 0 30px #173b2445;padding:20px}
@@ -1273,7 +1212,13 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 #bugs .card b{font-size:31px!important;line-height:1.08!important}
 #bugs .card p,#bugs .card .muted{font-size:23px!important;line-height:1.34!important}
-#bugs .card .btn{font-size:20px!important;min-height:50px!important}
+#bugs .card .btn{
+  margin:auto 0 1px!important;padding:11px 15px!important;border-radius:13px!important;
+  font-size:20px!important;min-height:50px!important;
+}
+#bugs :is(.bugUnlockChoices,.legendaryPrice) .btn{
+  width:100%!important;min-width:0!important;margin:0!important;padding:10px 8px!important;
+}
 
 
 #bugs .grid{align-items:stretch!important}
@@ -1320,15 +1265,6 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
 
 .testJump,.creditsTestBtn,.purifyTestBtn{display:none!important}
 
-/* Achievements: upper-left Home button matches the exact highlighted placement. */
-#home #homeAchievementsBtn{
-  min-width: 0;
-  background:linear-gradient(180deg,#f5c34c,#d89a2d 63%,#a76b1f)!important;
-  border:2px solid #ffe4a1!important;color:#35260e!important;
-  box-shadow:inset 0 2px #fff3c59c,inset 0 -4px #8b581d,0 5px 0 #5c451f,0 7px 13px #0004!important;
-  text-shadow:0 1px #ffedbd!important;font:1000 clamp(11px,2.5vw,17px)/1.1 ui-rounded,system-ui,-apple-system,sans-serif;
-  letter-spacing:-.3px;white-space:nowrap;cursor:pointer;
-}
 #achievements{justify-content:flex-start!important;align-items:center!important;overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;
   -webkit-overflow-scrolling:touch!important;padding:20px 12px!important;
   background:radial-gradient(ellipse at 50% 0%,#274b3055 0 20%,transparent 48%),linear-gradient(#0a1e12,#041109)!important}
@@ -1389,7 +1325,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
-<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.6">
+<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.7">
 </head>
 <body>
 <div id="gameStage" aria-label="Garden arena">
@@ -1420,7 +1356,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div id="mobileRunSummary"><span id="mobileModeLabel">STORY</span><span>WAVE <b id="mobileWaveValue">1</b></span><span>HEALTH <b id="mobileHealthValue">100 / 100</b></span></div>
  <p id="mobileControlHint">Drag the thumbstick to move. Attacks are automatic.</p>
 </div>
-<section id="home" class="screen titleScreen">
+<section id="home" class="screen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <div class="homeHeader">
     <button id="homeAchievementsBtn" class="btn" data-action="achievements" aria-label="Open Achievements">ACHIEVEMENTS</button>
@@ -1433,15 +1369,15 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     </div>
     <div class="homeModes">
       <button class="btn green" data-action="play">PLAY</button>
+      <button id="goldWavesBtn" class="btn dark hidden" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
       <button id="endlessBtn" class="btn dark" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 25 TO UNLOCK</small></button>
-      <button id="goldWavesBtn" class="btn dark goldWavesBtn" style="display:none" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
       <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><canvas id="gardenBookBugCanvas" class="bookBugCanvas" width="58" height="58"></canvas></span></button>
     </div>
     <div class="homeMenuRow"><button class="btn dark small" data-action="bugs"><canvas id="homeBugsIcon" width="34" height="38" aria-hidden="true"></canvas> BUGS</button><button class="btn dark small" data-action="base"><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> UPGRADES</button><button id="homeCosmeticsBtn" class="btn dark small" data-action="cosmetics">COSMETICS</button></div>
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.6</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.7</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -1690,8 +1626,6 @@ function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
  if(id!=='none'){resetGameInput();document.body.dataset.bbPlaying='false'}else document.body.dataset.bbPlaying=String(!!game&&!game.over);
  syncGoldPresentation();syncGoldMusic();
- const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
- if(id==='home')paintHomeHero();
  if(id!=='none'){
   const t=$('telegraph');if(t){t.classList.add('hidden');bbClearTimeout(flashBanner._t)}
  }
@@ -1791,17 +1725,9 @@ function refreshEndlessHome(){const unlocked=!!save.endlessUnlocked,b=$('endless
 function refreshCreditsHome(){const b=$('homeCreditsBtn');if(b)b.classList.toggle('hidden',!save.mainGameBeaten)}
 function goldWavesUnlocked(){return !!(save.mainGameBeaten&&save.legendaryGolden?.owned)}
 function refreshGoldWavesHome(){
- const b=$('goldWavesBtn'),m=$('endlessBtn');if(!b)return;
- const unlocked=goldWavesUnlocked();
- b.style.display=unlocked?'':'none';
- b.disabled=!unlocked;
- if(!unlocked)return;
- if(m){
-   b.className=m.className;
-   b.id='goldWavesBtn';
-   b.parentNode.insertBefore(b,m);
- }
- b.innerHTML='GOLD WAVES';
+ const button=$('goldWavesBtn'),unlocked=goldWavesUnlocked();
+ button.classList.toggle('hidden',!unlocked);
+ button.disabled=!unlocked;
 }
 
 if(save.upgrades){save.upgrades.choices=0;for(const k of ['hp','dmg','magnet','coins'])save.upgrades[k]=Math.min(10,Math.max(0,save.upgrades[k]||0));}
@@ -1977,7 +1903,7 @@ function buildCosmetics(){
  if(toggle){
   const on=save.cosmetics.enabled!==false;
   toggle.textContent=on?'ON':'OFF';toggle.classList.toggle('on',on);toggle.classList.toggle('off',!on);
-  toggle.onclick=()=>{initAudio();save.cosmetics.enabled=save.cosmetics.enabled===false;persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(save.cosmetics.enabled?760:260,.07,.018,'triangle')};
+  toggle.onclick=()=>{initAudio();save.cosmetics.enabled=save.cosmetics.enabled===false;persist();buildCosmetics();buildBugScreen();paintMenuLadybugs();beep(save.cosmetics.enabled?760:260,.07,.018,'triangle')};
  }
  const flavor={ladybug:'Royal Garden Knight — plated shell, mantle & shield',beetle:'Iron Guard — reinforced horn & shell',butterfly:'Winged Herald — surcoat & banner wings'};
  ['ladybug','beetle','butterfly'].forEach(id=>{
@@ -1988,16 +1914,31 @@ function buildCosmetics(){
   const btn=document.createElement('button');btn.className='btn small '+(equipped?'dark':owned?'green':'');
   btn.innerHTML=equipped?'EQUIPPED':owned?'EQUIP':`<span class="goldLeafIcon" aria-hidden="true"></span> BUY — ${MEDIEVAL_COST}`;
   btn.onclick=()=>{initAudio();if(!medievalOwned(id)){if(!requireGoldLeaves(MEDIEVAL_COST,'cosmetics'))return;save.goldLeaves-=MEDIEVAL_COST;save.cosmetics.owned.push(medievalKey(id));}
-   save.cosmetics.equipped[id]=medievalEquipped(id)?'':'medieval';persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(880,.11,.025,'triangle');};
+   save.cosmetics.equipped[id]=medievalEquipped(id)?'':'medieval';persist();buildCosmetics();buildBugScreen();paintMenuLadybugs();beep(880,.11,.025,'triangle');};
   card.appendChild(btn);g.appendChild(card);
  });
  const bb=$('medievalBundleBtn');
  if(bb){
   if(medievalBundlePurchased()){bb.disabled=true;bb.textContent='PURCHASED'}
-  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if(!requireGoldLeaves(MEDIEVAL_BUNDLE_COST,'cosmetics'))return;save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(920,.13,.03,'triangle');bbSetTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
+  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if(!requireGoldLeaves(MEDIEVAL_BUNDLE_COST,'cosmetics'))return;save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();paintMenuLadybugs();beep(920,.13,.03,'triangle');bbSetTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
  }
 }
-function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);if(medievalEquipped('ladybug'))drawMedievalArmor(q,'ladybug',76);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}const gb=$('gardenBookBugCanvas');if(gb){const q=gb.getContext('2d');q.clearRect(0,0,gb.width,gb.height);q.save();q.translate(gb.width/2,gb.height/2+1);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
+function paintMenuLadybugs(){
+ const icons=[
+  ['homeBugHero',76,2],['bugParadeIcon',35,2],
+  ['homeBugsIcon',25,2],['gardenBookBugCanvas',25,1]
+ ];
+ for(const [id,size,offsetY] of icons){
+  const canvas=$(id);
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.save();
+  ctx.translate(canvas.width/2,canvas.height/2+offsetY);
+  drawPlayableBug(ctx,'ladybug',size,false);
+  if(id==='homeBugHero'&&medievalEquipped('ladybug'))drawMedievalArmor(ctx,'ladybug',size);
+  ctx.restore();
+ }
+}
 
 function makeBugPreview(id){
  const c=document.createElement('canvas');c.width=76;c.height=76;c.style.width='76px';c.style.height='76px';c.setAttribute('aria-hidden','true');
@@ -2309,15 +2250,15 @@ function restoreRecoveredRun(){
   updateHud(true);refreshPauseStats();$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');
   if(['purification','goldDeath','goldOutro'].includes(game.recoveryPhase))restorePendingRunPhase();
   restartGameLoop();return true;
- }catch(e){game=null;archiveSaveData(RUNSAVEKEY,storageRead(RUNSAVEKEY),'restore failed');clearRunRecovery();showGameUI(false);screen('home');startTitleGardenLoop();return false}
+ }catch(e){game=null;archiveSaveData(RUNSAVEKEY,storageRead(RUNSAVEKEY),'restore failed');clearRunRecovery();enterHomeCleanly();return false}
 }
 
 function resetGameProgress(){
  const kept=normalizeSave(save);
  if(leafPersistTimer){bbClearTimeout(leafPersistTimer);leafPersistTimer=0}
- stopGameLoop();bossMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();showGameUI(false);game=null;clearRunRecovery();
+ game=null;clearRunRecovery();
  save=normalizeSave({iapTransactions:kept.iapTransactions,achievements:kept.achievements,achievementEarned:kept.achievementEarned,achievementProgress:kept.achievementProgress,goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
- persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
+ persist();buildBugScreen();buildShop();$('resetConfirm').classList.add('hidden');enterHomeCleanly();
  beep(180,.10,.022,'triangle');
 }
 let settingsOpenedFromPause=false;
@@ -3967,7 +3908,7 @@ function update(dt,now){
    g.finalPurify.elapsed=Math.max(0,(now-g.finalPurify.start)/1000);g.time+=dt;
    if(g.finalPurify.elapsed>=14.6&&!g.finalPurify.finished){
      g.finalPurify.finished=true;const preview=!!g.finalPurify.preview,purifyOnly=!!g.finalPurify.purifyOnly;
-     g.finalPurify=null;purifyMusicStop();if(purifyOnly){g.over=true;clearRunRecovery();returnHomeAfterEnding()}else playEndingCredits(preview);
+     g.finalPurify=null;purifyMusicStop();if(purifyOnly){g.over=true;clearRunRecovery();enterHomeCleanly()}else playEndingCredits(preview);
    }
    return;
  }
@@ -4390,10 +4331,6 @@ function updateHud(force=true,now=performance.now()){
 }
 let endingTimers=[];
 function clearEndingTimers(){endingTimers.forEach(bbClearTimeout);endingTimers=[]}
-function returnHomeAfterEnding(){
- clearEndingTimers();const go=$('goldFinaleOutro');if(go)go.classList.remove('play','black','reveal','thanks');stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();goldFinaleCreditsStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
- enterHomeCleanly();
-}
 
 
 let creditsChaseRAF=0,creditsChaseState=null;
@@ -4516,7 +4453,7 @@ function startVictorySequence(preview=false,purifyOnly=false){
  roll.style.animation='none';roll.style.visibility='hidden';scene.style.display='';scene.classList.remove('play','cleaning');void scene.offsetHeight;buildVictorySpores();paintVictoryBoss();scene.classList.add('play','cleaning');
  // A low, fading final pulse while the corruption dies out.
  beep(92,.65,.025,'sawtooth');endingTimers.push(bbSetTimeout(()=>beep(69,.9,.016,'sine'),800));endingTimers.push(bbSetTimeout(()=>beep(138,.75,.012,'triangle'),2450));
- endingTimers.push(bbSetTimeout(()=>{scene.classList.remove('play','cleaning');scene.style.display='none';if(purifyOnly){returnHomeAfterEnding();return}roll.style.visibility='';playEndingCredits(preview,true)},10850));
+ endingTimers.push(bbSetTimeout(()=>{scene.classList.remove('play','cleaning');scene.style.display='none';if(purifyOnly){enterHomeCleanly();return}roll.style.visibility='';playEndingCredits(preview,true)},10850));
 }
 function playEndingCredits(preview=false,alreadyOpen=false){
  paintEndingLadybugs();
@@ -4534,7 +4471,7 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  creditsMusicStart();
  endingTimers.push(bbSetTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},36500));
  endingTimers.push(bbSetTimeout(()=>{prompt.classList.add('show');continueMysteryMusicStart()},39500));
- endingTimers.push(bbSetTimeout(returnHomeAfterEnding,44500));
+ endingTimers.push(bbSetTimeout(enterHomeCleanly,44500));
 }
 function skipEndingCredits(){
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
@@ -4543,7 +4480,7 @@ function skipEndingCredits(){
  clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();
  roll.style.animation='none';roll.style.visibility='hidden';$('endingBackdrop').style.opacity='0';
  end.dataset.phase='mystery';prompt.classList.add('show');continueMysteryMusicStart();
- endingTimers.push(bbSetTimeout(returnHomeAfterEnding,5000));
+ endingTimers.push(bbSetTimeout(enterHomeCleanly,5000));
 }
 $('ending').addEventListener('pointerup',skipEndingCredits);
 
@@ -6154,8 +6091,10 @@ document.addEventListener('change',e=>{
  const vol=Math.max(0,Math.min(100,Number(e.target.value)||0));save.settings.volume=vol;persist();initAudio();if(vol>0)beep(760,.045,.012,'triangle');
 });
 
-function cleanupGoldFinaleForHome(){
+function resetEndingPresentation(){
  clearEndingTimers();
+ stopCreditsNameEntrances();
+ stopCreditsChase();
  goldFinaleCreditsStop();
  const go=$('goldFinaleOutro');
  if(go){
@@ -6163,59 +6102,39 @@ function cleanupGoldFinaleForHome(){
   go.removeAttribute('style');
  }
  const ending=$('ending');
- if(ending){
-  ending.dataset.phase='';
-  ending.classList.add('hidden');
- }
+ if(ending)ending.dataset.phase='';
  $('continuePrompt')?.classList.remove('show');
  const eb=$('endingBackdrop');if(eb)eb.style.opacity='1';
  const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}
  const cr=$('creditsRoll');if(cr)cr.style.visibility='';
- document.body.classList.remove('gold157');syncGoldPresentation();
+ document.body.classList.remove('gold157');
 }
-function restoreCoreHomePresentation(){
- const home=$('home');if(!home)return;
- home.classList.remove('hidden');
- // Only clear transient inline visibility/opacity. Keep intentional layout/display rules.
- const core=[
-  home.querySelector('.logo'),
-  home.querySelector('.bugHero'),
-  home.querySelector('[data-action="play"]'),
-  home.querySelector('.homeMenuRow'),
-  home.querySelector('.homeBestFancy'),
-  home.querySelector('.homeGoldBalance'),
-  $('gardenBookBtn'),
-  $('globalSettingsBtn'),
-  $('homeCreditsBtn'),
-  $('titleGarden')
- ];
- for(const el of core){
-  if(!el)continue;
-  el.style.opacity='';
-  el.style.visibility='';
-  el.style.pointerEvents='';
- }
+function refreshHomeMenu(){
+ $('homeBest').textContent=save.best;
+ refreshEndlessHome();
+ refreshGoldWavesHome();
+ refreshCreditsHome();
+ refreshGoldUI();
+ paintMenuLadybugs();
 }
 function enterHomeCleanly(){
  goldShopRequest=null;
  window.BBGameTimers.resume();
  const presentation=++homePresentationGeneration;
- resetGameInput();stopGameLoop();cancelGoldMusicCues();goldMusicStop();
+ stopGameLoop();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
- cleanupGoldFinaleForHome();
- if(game&&game.mode==='gold'){game.mode='home';game.over=true;}
+ resetEndingPresentation();
+ if(game?.mode==='gold'){game.mode='home';game.over=true;}
  bossMusicStop();shopMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);
- showGameUI(false);stopTitleGardenLoop();screen('home');restoreCoreHomePresentation();
- $('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();refreshGoldUI();
- requestAnimationFrame(()=>{
-  if(presentation!==homePresentationGeneration||!gameScreenVisible('home'))return;
-  // Re-assert after layout only while this Home transition still owns the screen.
-  cleanupGoldFinaleForHome();screen('home');restoreCoreHomePresentation();
-  resizeTitleGarden();
-  const w=titleGarden?.getBoundingClientRect().width||innerWidth;
-  resetTitleScene(performance.now(),w);startTitleGardenLoop();
-  if(save.settings.music!==false){initAudio();bbSetTimeout(()=>{if(presentation===homePresentationGeneration&&isMenuMusicScreen())titleMusicStart()},45)}
- });
+ showGameUI(false);stopTitleGardenLoop();screen('home');
+ refreshHomeMenu();
+ resizeTitleGarden();
+ resetTitleScene(performance.now(),titleWidth||innerWidth);
+ startTitleGardenLoop();
+ if(save.settings.music!==false){
+  initAudio();
+  bbSetTimeout(()=>{if(presentation===homePresentationGeneration&&isMenuMusicScreen())titleMusicStart()},45);
+ }
 }
 
 function openGoldShop(request=null){
@@ -6235,8 +6154,6 @@ function closeGoldShop(){
 
 restoreEarnedStoryMilestones();
 
-const homeCosmeticsBtn=$('homeCosmeticsBtn');
-if(homeCosmeticsBtn)homeCosmeticsBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();initAudio();stopTitleGardenLoop();showGameUI(false);buildCosmetics();screen('cosmetics');titleMusicStart()});
 
 document.addEventListener('click',e=>{
  const pack=e.target.closest('[data-gold-pack]');if(pack)return;
@@ -6563,10 +6480,9 @@ function paintHelpGameIcons(){
   q.fillStyle='#6c5d4d';q.beginPath();q.ellipse(0,8,7,15,0,0,Math.PI*2);q.fill();q.fillStyle='#3b3028';q.beginPath();q.arc(0,-8,7,0,Math.PI*2);q.fill();eye(-2.5,-9,1.7);eye(2.5,-9,1.7);ln(-2,-14,-7,-21,1.5);ln(2,-14,7,-21,1.5);ln(0,-15,0,-28,2,'#30251b');
  }
  q.restore()})}
-paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();refreshGoldUI();
+paintHelpGameIcons();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();refreshHomeMenu();
 const bbHasRecovery=!!loadRunRecovery();
 if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFirstHelpSeen=localStorage.getItem(FIRSTHELPKEY)==='1'}catch(e){}if(!bbFirstHelpSeen){stopTitleGardenLoop();showGameUI(false);screen('firstHelp')}}
-const BB_BUILD_VERSION='19.1.0-ios.1';
 </script>
 
 <script>
@@ -6927,7 +6843,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.6"></script>
+<script src="mobile-game.js?v=19.1.0-ios.7"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js"></script>
 </body>

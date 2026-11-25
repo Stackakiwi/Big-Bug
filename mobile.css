@@ -1,4 +1,4 @@
-/* Big Bug v19.1.0-ios.6 — touch layout. Geometry comes from the current window,
+/* Big Bug v19.1.0-ios.7 — touch layout. Geometry comes from the current window,
    and, in the iOS app, UIKit safe areas and active reserved regions. */
 :root {
   --bb-safe-top: env(safe-area-inset-top, 0px);
@@ -176,9 +176,14 @@ html body .screen button, html body #storyContinue { touch-action: pan-y; }
 html body .screen .muted { opacity: .85; }
 html body #base .panel:before, html body #bugs .panel:before { display: none; }
 
-/* Classic Home positions within the current safe pane. */
+/* Home screen */
 html body #home.screen {
-  isolation: isolate; gap: 10px;
+  isolation: isolate; gap: 10px; color: var(--ink);
+  background:
+    radial-gradient(ellipse at 14% 17%,#e3f1c455 0 7%,transparent 25%),
+    radial-gradient(ellipse at 84% 31%,#416d3650 0 8%,transparent 28%),
+    radial-gradient(ellipse at 28% 83%,#254a2d55 0 10%,transparent 31%),
+    linear-gradient(#cce8b4 0%,#91bd68 42%,#365f31 100%);
   left: var(--bb-surface-left, 0px); top: var(--bb-surface-top, 0px);
   width: var(--bb-surface-width, 100vw); height: var(--bb-surface-height, 100dvh);
   padding: calc(var(--bb-surface-inset-top, 0px) + 12px)
@@ -190,6 +195,47 @@ html body #home.screen {
   position: absolute; inset: 0; width: 100%; height: 100%;
   pointer-events: none; z-index: -1;
 }
+#goldWavesBtn{background:linear-gradient(180deg,#f3c94a 0%,#c98d16 42%,#8a580d 100%)!important;border:2px solid #ffe58a!important;color:#fff8c8!important;text-shadow:0 2px #5a3504,0 0 8px #fff2a266!important;box-shadow:inset 0 2px 0 #fff5b788,inset 0 -5px #6b4109,0 5px 0 #352508,0 0 16px #ffd84f55!important;text-align:center!important}
+#goldWavesBtn:disabled{opacity:.58;filter:saturate(.55);cursor:default}
+#goldWavesBtn small{display:block;font-size:9px;line-height:1.2;margin-top:4px;letter-spacing:.25px;opacity:.82}
+#goldWavesBtn:before,#goldWavesBtn:after{content:"✦";position:absolute;z-index:1;color:#fff7c7;pointer-events:none;text-shadow:0 0 4px #fff,0 0 9px #ffd84f;animation:goldWaveButtonSparkle 1.6s ease-in-out infinite}
+#goldWavesBtn:before{left:15%;top:21%;font-size:12px}
+#goldWavesBtn:after{right:14%;bottom:19%;font-size:9px;animation-delay:.7s}
+@keyframes goldWaveButtonSparkle{0%,100%{opacity:.2;transform:scale(.65) rotate(0deg)}50%{opacity:1;transform:scale(1.18) rotate(20deg)}}
+#endlessBtn .endlessUnlockNote{display:block;font-size:9px;line-height:1.2;margin-top:4px;letter-spacing:.35px;opacity:.78}
+.homeGoldBalance{position:relative;background:linear-gradient(180deg,#fff3a6 0%,#ffd84e 20%,#e8a91e 68%,#bd7610 100%)!important;border:2px solid #fff1a0!important;border-radius:999px;padding:8px 13px;color:#3b2704!important;font-size:16px;font-weight:1000;box-shadow:inset 0 3px 2px #fffbd9cc,inset 0 -4px 3px #8f540d88,0 4px 0 #704109,0 7px 15px #0006,0 0 16px #ffd84f66!important;text-shadow:0 1px 0 #fff0a0;pointer-events:auto;cursor:pointer;font-family:inherit;min-height:44px;overflow:hidden;white-space:nowrap}.homeGoldBalance:after{content:"";position:absolute;left:10%;top:4px;width:55%;height:8px;border-radius:999px;background:linear-gradient(90deg,#fff0,#fffbd9dd,#fff0);transform:skewX(-24deg);pointer-events:none}.homeGoldBalance .goldLeafIcon{width:20px;height:20px;vertical-align:-5px;margin-right:4px;filter:drop-shadow(0 1px 0 #fff2a8) drop-shadow(0 2px 2px #74480066)}.homeGoldBalance small{font-size:12px;letter-spacing:.9px;color:#4a2d03!important;margin-left:2px;text-shadow:0 1px 0 #fff0a0}
+.btn.dark[data-action="bugs"]{background:linear-gradient(180deg,#ef7064,#ce4a43 60%,#a93634);border-color:#ff9b8d;box-shadow:inset 0 2px 0 #ffd1c755,inset 0 -4px 0 #8b2e2c,0 5px 0 #542b22,0 8px 14px #0004;text-shadow:0 2px 0 #7c2727}
+.btn.dark[data-action="base"]{background:linear-gradient(180deg,#f2be43,#d58b25 60%,#a65d1d);border-color:#ffdd76;color:#35220a;box-shadow:inset 0 2px 0 #fff3bd99,inset 0 -4px 0 #874715,0 5px 0 #4e391c,0 8px 14px #0004;text-shadow:0 1px 0 #ffe699}
+#endlessBtn.btn.dark:not(:disabled){background:linear-gradient(180deg,#5e9ea5,#35767e 60%,#24555e);border-color:#8fcbd0;box-shadow:inset 0 2px 0 #d5ffff55,inset 0 -4px 0 #1b454d,0 5px 0 #17353a,0 8px 14px #0004;text-shadow:0 2px 0 #183f45}
+#endlessBtn.btn.dark:disabled{background:linear-gradient(180deg,#72806b,#596753 60%,#414e40);border-color:#94a28c;color:#e9eddf;opacity:.78;filter:none;cursor:default;box-shadow:inset 0 2px 0 #dce4d133,inset 0 -4px 0 #354137,0 5px 0 #263229;text-shadow:0 2px 0 #29342b}
+#globalSettingsBtn.btn.dark{background:linear-gradient(180deg,#8eaa70,#668952 62%,#496b43);border-color:#bed19c;color:#fffbe8;box-shadow:inset 0 2px 0 #eef9cf66,inset 0 -4px 0 #3a5c37,0 4px 0 #29472c,0 7px 12px #0004;text-shadow:0 2px 0 #355230}
+
+#gardenBookBtn .bookGlyph{
+ display:block;position:relative;width:45px;height:39px;margin:0;
+ border:3px solid #183b25;border-radius:5px 8px 8px 5px;
+ background:#5f8d42;
+ box-shadow:inset 5px 0 0 #345d34,inset 0 -4px 0 #3c682f,0 4px 0 #17351f;
+}
+#gardenBookBtn .bookGlyph:before{
+ content:"";position:absolute;left:7px;top:3px;bottom:3px;width:2px;
+ background:#d7dfa1;border-left:1px solid #244b2c;opacity:.9
+}
+#gardenBookBtn .bookBugCanvas{
+ position:absolute;left:12px;top:4px;width:29px;height:29px;display:block;
+ transform:rotate(2deg);filter:drop-shadow(0 1px 0 #d7dfa166);
+}
+@media(max-width:390px){
+ #gardenBookBtn .bookGlyph{width:43px;height:37px}
+}
+#home #homeAchievementsBtn{
+  min-width: 0;
+  background:linear-gradient(180deg,#f5c34c,#d89a2d 63%,#a76b1f)!important;
+  border:2px solid #ffe4a1!important;color:#35260e!important;
+  box-shadow:inset 0 2px #fff3c59c,inset 0 -4px #8b581d,0 5px 0 #5c451f,0 7px 13px #0004!important;
+  text-shadow:0 1px #ffedbd!important;font:1000 clamp(11px,2.5vw,17px)/1.1 ui-rounded,system-ui,-apple-system,sans-serif;
+  letter-spacing:-.3px;white-space:nowrap;cursor:pointer;
+}
+
 #home .homeHeader, #home .homeFooter {
   display: flex; align-items: center; gap: 8px; width: 100%; flex: 0 0 auto;
 }
@@ -198,11 +244,6 @@ html body #home.screen {
 #home .homeHeader .btn, #home .homeFooter .btn {
   padding: 9px 12px; margin: 0; font-size: 12px;
 }
-#home .homeGoldBalance {
-  min-height: 44px; padding: 8px 13px; font-size: 16px; white-space: nowrap;
-}
-#home .homeGoldBalance .goldLeafIcon { width: 20px; height: 20px; vertical-align: -5px; }
-#home .homeGoldBalance small { margin-left: 2px; }
 #home .versionCorner {
   margin-right: auto; pointer-events: none;
   color: #e8efce; opacity: .9; font: 650 10px/1.2 system-ui,sans-serif;
@@ -215,13 +256,16 @@ html body #home.screen {
 #home .homeBrand { display: grid; justify-items: center; gap: 9px; }
 #home .bugHero {
   --hero-size: clamp(62px,calc(var(--bb-menu-height) * .145),112px);
-  width: var(--hero-size); height: var(--hero-size); animation: none;
+  width: var(--hero-size); height: var(--hero-size);
+  display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 12px 5px #254d2255);
 }
-#home #homeBugHero { width: 100%; height: 100%; }
+#home #homeBugHero { width:100%;height:100%;display:block;animation:bob 1.8s ease-in-out infinite; }
 #home .logo {
+  line-height:.78;font-weight:1000;text-align:center;color:#f4a51c;text-shadow:0 5px 0 #612f18,0 9px 18px #16351b99;transform:rotate(-3deg);
   font-size: clamp(47px,min(18cqi,calc(var(--bb-menu-height) * .112)),110px);
   letter-spacing: -.065em; padding-bottom: 6px;
 }
+#home .logoBugWord { color:#77c84b; }
 #home .homeModes {
   --book-size: clamp(46px,13cqi,80px);
   position: relative; display: grid; justify-items: center; gap: 10px; width: 100%;
@@ -232,10 +276,11 @@ html body #home.screen {
   font-size: clamp(13px,4.6cqi,18px); line-height: 1.15;
 }
 #home .homeModes [data-action="play"] { font-size: clamp(18px,5cqi,21px); }
-#home .homeModes small { font-size: 9px; line-height: 1.2; }
 #home #gardenBookBtn {
   position: absolute; inset: 50% 0 auto auto;
-  width: var(--book-size); height: var(--book-size);
+  display: flex; align-items: center; justify-content: center;
+  width: var(--book-size); height: var(--book-size); min-width: 44px; min-height: 44px;
+  margin: 0; padding: 0; border: 0; background: transparent; cursor: pointer;
   transform: translateY(-50%) rotate(-2deg);
 }
 #home .homeMenuRow {
@@ -250,6 +295,7 @@ html body #home.screen {
   display: inline-flex; align-items: center; justify-content: center; gap: .28em;
 }
 #home #homeBugsIcon { width: 1.65em; height: auto; flex: none; }
+#home #homeCosmeticsBtn { touch-action: manipulation; }
 #home .homeBestFancy {
   max-width: 100%; padding: 6px 13px; border-radius: 999px;
   background: #e4f2c499; border: 1px solid #294b2870; box-shadow: 0 3px 0 #24442255;
@@ -441,7 +487,7 @@ html body #finalPrep .choice .upgradeMark { position: static !important; transfo
   html body .medievalCard .btn { min-width: 0 !important; width: 100%; }
   html body #base .shopRow { display: grid; grid-template-columns: 1fr; padding: 14px; gap: 12px; }
   html body #base .shopBuyStack { display: flex; gap: 8px; }
-  html body #base .shopBuyStack .btn { flex: 1 1 0; min-width: 0 !important; margin: 0 !important; }
+  html body #base .shopBuyStack .btn { flex: 1 1 0; }
   html body #base .shopRow b { font-size: 19px; }
   html body #base .shopRow .muted { font-size: 14px; }
   html body .medievalGrid { grid-template-columns: 1fr !important; gap: 12px !important; }
