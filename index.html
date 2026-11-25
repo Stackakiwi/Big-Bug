@@ -1321,7 +1321,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
-<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.14">
+<link rel="stylesheet" href="mobile.css?v=19.1.0-ios.15">
 </head>
 <body>
 <div id="gameStage" aria-label="Garden arena">
@@ -1365,7 +1365,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     </div>
     <div class="homeModes">
       <button class="btn green" data-action="play">PLAY</button>
-      <button id="goldWavesBtn" class="btn dark hidden" data-action="goldWaves" disabled>GOLD WAVES<small class="goldWavesUnlockNote">BEAT THE GAME + OWN GOLDEN LADYBUG</small></button>
+      <button id="goldWavesBtn" class="btn dark hidden" data-action="goldWaves" disabled>GOLD WAVES</button>
       <button id="endlessBtn" class="btn dark" data-action="endless" disabled><span class="bbUiIcon bbLock"></span>MOSQUITO MODE<small class="endlessUnlockNote">BEAT WAVE 25 TO UNLOCK</small></button>
       <button id="gardenBookBtn" data-action="gardenBook" aria-label="Open Garden Book" title="Garden Book"><span class="bookGlyph" aria-hidden="true"><canvas id="gardenBookBugCanvas" class="bookBugCanvas" width="58" height="58"></canvas></span></button>
     </div>
@@ -1373,7 +1373,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.14</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.15</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -2103,14 +2103,16 @@ let game=null, last=0, raf=0, audio=null;
 let homePresentationGeneration=0,drag=false;
 const pcKeys={w:false,a:false,s:false,d:false};
 
-const GOLD_FINALE_DURATION=3.30;
-const GOLD_FINALE_NAME_BEAT=2.12;
+const GOLD_FINALE_DURATION=7.30;
 const GOLD_FINALE_DARKEN_SECONDS=10;
 const goldFinaleStage=document.getElementById('gameStage');
 const goldFinaleTitle=document.getElementById('goldFinaleTitle');
 let goldFinalePresentation=null;
 function isGoldFinale(g=game){return g?.mode==='gold'&&g.wave===50&&g.goldFinale===true}
 function isGoldFinaleRevealing(g=game){return isGoldFinale(g)&&g.goldFinaleRevealUntil>g.time}
+// Checkpoints made during the original reveal keep their timing.
+function goldFinaleDuration(g=game){return g.goldFinaleDuration??3.30}
+function goldFinaleNameBeat(g=game){return goldFinaleDuration(g)-1.18}
 function goldFinaleAge(g=game){
  return Math.max(0,g.time-(g.goldFinaleRevealStart??g.time));
 }
@@ -2132,9 +2134,10 @@ function syncGoldFinalePresentation(age,light,reduced){
    document.body.classList.add('gold-finale');
    $('pauseBtn').inert=true;$('hud').inert=true;$('bossbar').inert=true;
  }
- const titleAlpha=goldFinaleEase((age-GOLD_FINALE_NAME_BEAT)/.25)*(1-goldFinaleEase((age-2.92)/.34));
+ const duration=goldFinaleDuration();
+ const titleAlpha=goldFinaleEase((age-goldFinaleNameBeat())/.25)*(1-goldFinaleEase((age-duration+.38)/.34));
  const away=age>=(reduced?.95:1.94);
- const revealFrame=Math.min(age,GOLD_FINALE_DURATION);
+ const revealFrame=Math.min(age,duration);
  const prev=goldFinalePresentation;
  if(prev&&prev.age===revealFrame&&prev.light===light&&prev.away===away)return;
  goldFinalePresentation={age:revealFrame,light,away};
@@ -2279,7 +2282,7 @@ function restoreRecoveredRun(){
   // Helpers that were already exiting a cleared wave have no gameplay work to resume.
   if(p.helperArmyWave===0&&Array.isArray(p.helperArmyHelpers))p.helperArmyHelpers=[];
   if(game.boss&&!game.boss.dead){configureBossHud(game.wave);updateBossHud()}else $('bossbar').style.display='none';
-  if(isGoldFinale())$('bossName0').textContent=goldFinaleAge()>=GOLD_FINALE_NAME_BEAT?'BIG BUG':'???';
+  if(isGoldFinale())$('bossName0').textContent=goldFinaleAge()>=goldFinaleNameBeat()?'BIG BUG':'???';
   updateHud(true);refreshPauseStats();$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');
   if(['purification','goldDeath','goldOutro'].includes(game.recoveryPhase))restorePendingRunPhase();
   restartGameLoop();return true;
@@ -2536,9 +2539,13 @@ function bigBigRevealSting(){
  scheduleGoldMusicCue(run,420,()=>{if(live())beep(123,.42,.021,'triangle','music');});
  scheduleGoldMusicCue(run,910,()=>{if(live()){beep(164,.40,.021,'sawtooth','music');beep(82,.48,.013,'sine','music');}});
  scheduleGoldMusicCue(run,1380,()=>{if(live())beep(220,.40,.024,'triangle','music');});
- scheduleGoldMusicCue(run,1860,()=>{if(live()){beep(65,.46,.040,'square','music');beep(330,.38,.025,'triangle','music');}});
- scheduleGoldMusicCue(run,2700,()=>{if(live()){beep(98,.42,.030,'sawtooth','music');beep(392,.32,.020,'triangle','music');}});
- scheduleGoldMusicCue(run,3300,()=>{if(live())syncGoldMusic();});
+ scheduleGoldMusicCue(run,2460,()=>{if(live())beep(62,.57,.024,'sawtooth','music');});
+ scheduleGoldMusicCue(run,3600,()=>{if(live())beep(74,.64,.027,'triangle','music');});
+ scheduleGoldMusicCue(run,4680,()=>{if(live())beep(55,.62,.030,'sawtooth','music');});
+ const revealMs=Math.round(goldFinaleNameBeat(run)*1000),fightMs=Math.round(goldFinaleDuration(run)*1000);
+ scheduleGoldMusicCue(run,revealMs-260,()=>{if(live()){beep(65,.46,.040,'square','music');beep(330,.38,.025,'triangle','music');}});
+ scheduleGoldMusicCue(run,fightMs-600,()=>{if(live()){beep(98,.42,.030,'sawtooth','music');beep(392,.32,.020,'triangle','music');}});
+ scheduleGoldMusicCue(run,fightMs,()=>{if(live())syncGoldMusic();});
 }
 function bigBigAlienDeathSting(){
  cancelGoldMusicCues();goldMusicStop();bossMusicStop();hardStopMusicVoices();
@@ -3283,11 +3290,12 @@ function damageEnemy(e,d,source='player'){
    const g=game,heal=Math.ceil(g.p.maxHp*.20),tier=10,fullHp=5625; // v19.0.83: BIG BUG finale +25% HP (4,500 -> 5,625)
    g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
    g.wave=50;g.waveKills=0;g.waveActive=true;g.intermission=false;g.paused=false;g.spawn=0;g.spawnLeft=0;g.waveQuota=1;
-   g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;g.goldFinaleRevealUntil=g.time+GOLD_FINALE_DURATION;
+   g.goldFinale=true;g.goldCorruptionStart=g.time;g.goldFinaleRevealStart=g.time;
+   g.goldFinaleDuration=GOLD_FINALE_DURATION;g.goldFinaleRevealUntil=g.time+g.goldFinaleDuration;
    e.dead=false;e.goldPhase=2;e.goldBossKey='goldUnknownBoss';e.goldBossName='???';e.name='???';e.goldElite=true;e.boss=true;
    e._goldTier=tier;e.maxHp=fullHp;e.max=fullHp;e.hp=fullHp;e.damage=14+tier*3.4;e.speed=0;
    e.x=W/2;e.y=Math.max(145,H*.24);e.enterX=e.x;e.enterY=e.y;e.state='chase';e.stateT=0;e.vx=0;e.vy=0;e.knockX=0;e.knockY=0;
-   e.invuln=GOLD_FINALE_DURATION;e._dash=0;e._hunt=0;e._bc=.18;e._goldCycle=0;
+   e.invuln=g.goldFinaleDuration;e._dash=0;e._hunt=0;e._bc=.18;e._goldCycle=0;
    g.boss=e;g.bosses=[e];
    // Phase one's attacks end with it. Keep the arena clear until the new fight starts.
    g.fx=[];g.p.pendingDamage=0;resetGameInput();
@@ -4905,12 +4913,15 @@ function drawGoldUnknownBossCore(e){
  const deathAge=e.goldDying&&e.goldDeathStartedAt?Math.max(0,(performance.now()-e.goldDeathStartedAt)/1000):0;
  const dying=!!e.goldDying;
  const tier=e._goldTier||Math.max(1,Math.floor((game?.wave||5)/5));
- const finale=e.goldPhase===2&&isGoldFinale(),revealAge=finale?goldFinaleAge():GOLD_FINALE_DURATION;
- const revealing=finale&&revealAge<GOLD_FINALE_DURATION;
+ const finale=e.goldPhase===2&&isGoldFinale(),revealAge=finale?goldFinaleAge():0;
+ const revealing=finale&&revealAge<goldFinaleDuration();
  const reduced=revealing&&window.BBMobile.isReducedMotion();
  const glitchTime=Math.floor(revealAge*12)/12;
- const finalLook=finale&&(revealAge>=2.06||(!reduced&&((revealAge>=1.02&&revealAge<1.19)||(revealAge>=1.47&&revealAge<1.72))));
- const glitchPower=revealing&&!reduced?goldFinaleEase((revealAge-.25)/.55)*(1-goldFinaleEase((revealAge-1.72)/.5)):0;
+ const nameBeat=finale?goldFinaleNameBeat():0;
+ const shellFlicker=!reduced&&((revealAge>=1.02&&revealAge<1.19)||(revealAge>=1.47&&revealAge<1.72)
+   ||(revealAge>=3.25&&revealAge<3.49)||(revealAge>=5.12&&revealAge<5.51));
+ const finalLook=finale&&(revealAge>=nameBeat-.06||shellFlicker);
+ const glitchPower=revealing&&!reduced?goldFinaleEase((revealAge-.25)/.55)*(1-goldFinaleEase((revealAge-nameBeat+.40)/.5)):0;
  const jx=glitchPower*Math.sin(glitchTime*91)*r*.35,jy=glitchPower*Math.cos(glitchTime*73)*r*.14;
  const deathJitter=dying?Math.min(1,deathAge/2.8):0;
  const djx=dying?Math.sin(deathAge*46)*7*deathJitter:0,djy=dying?Math.cos(deathAge*39)*5*deathJitter:0;
@@ -5732,7 +5743,8 @@ function hazardStrokes(style,radius){
 }
 function drawGoldRevealGlitch(age){
  // Limit the brightest effects to moving strips, keeping the arena readable.
- const strength=goldFinaleEase(age/.26)*(1-goldFinaleEase((age-1.85)/.62));
+ const surge=.78+.22*Math.cos(age*3.2);
+ const strength=surge*goldFinaleEase(age/.26)*(1-goldFinaleEase((age-goldFinaleNameBeat()+.27)/.62));
  if(strength<=0)return;
  const tick=Math.floor(age*11);
  X.save();
@@ -5790,12 +5802,12 @@ function draw(now=performance.now()){
  let floorLight=1;
  if(finale){
    const reduced=window.BBMobile.isReducedMotion();
-   const fade=(revealAge-GOLD_FINALE_DURATION)/GOLD_FINALE_DARKEN_SECONDS;
+   const fade=(revealAge-goldFinaleDuration())/GOLD_FINALE_DARKEN_SECONDS;
    const deathFade=game.goldDeathActive&&game.goldDeathBoss?.goldDeathStartedAt
      ?(now-game.goldDeathBoss.goldDeathStartedAt)/4500:0;
    floorLight=game.over&&game.recoveryPhase==='goldOutro'?0:1-goldFinaleEase(Math.max(fade,deathFade));
    syncGoldFinalePresentation(revealAge,floorLight,reduced);
-   if(revealAge<GOLD_FINALE_DURATION&&!reduced)drawGoldRevealGlitch(revealAge);
+   if(isGoldFinaleRevealing()&&!reduced)drawGoldRevealGlitch(revealAge);
  }else if(goldFinalePresentation)resetBigBigHudFades();
  if(game?.mode==='gold'&&floorLight>0){
    const gt=FRAME_NOW*.001;X.save();X.globalCompositeOperation='screen';X.globalAlpha=floorLight;
@@ -6732,7 +6744,7 @@ function bossTick(e,dt){
    if(left>0){
      e.x=W/2;e.y=Math.max(145,H*.24);e.vx=0;e.vy=0;e._dash=0;e._hunt=0;
      const revealAge=goldFinaleAge();
-     e.goldBossName=revealAge<GOLD_FINALE_NAME_BEAT?'???':'BIG BUG';e.name=e.goldBossName;
+     e.goldBossName=revealAge<goldFinaleNameBeat()?'???':'BIG BUG';e.name=e.goldBossName;
      return;
    }
    game.goldFinaleRevealUntil=0;
@@ -6839,7 +6851,7 @@ let __bbGoldBossNameNodes=null;
 function syncGoldBossName(){
  if(!G())return;
  const b=(game.bosses||[]).find(q=>q&&!q.dead&&q.goldBossKey==='goldUnknownBoss');
- const label=isGoldFinale()&&b?.goldPhase===2&&goldFinaleAge()>=GOLD_FINALE_NAME_BEAT?'BIG BUG':'???';
+ const label=isGoldFinale()&&b?.goldPhase===2&&goldFinaleAge()>=goldFinaleNameBeat()?'BIG BUG':'???';
  if(!__bbGoldBossNameNodes){
   const ids=['bossName','bossName0','bossName1','bossLabel','bossTitle'];
   __bbGoldBossNameNodes=[];
@@ -6950,7 +6962,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.14"></script>
+<script src="mobile-game.js?v=19.1.0-ios.15"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js?v=19.1.0-ios.10"></script>
 </body>
