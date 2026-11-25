@@ -1373,7 +1373,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
     <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   </div>
   <div class="homeFooter">
-    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.15</div>
+    <div class="versionCorner" aria-hidden="true">v19.1.0-ios.16</div>
     <button id="homeCreditsBtn" class="btn dark small hidden" data-action="credits" aria-label="Credits">CREDITS</button>
     <button id="globalSettingsBtn" class="btn dark small" data-action="settings" aria-label="Settings">⚙️ SETTINGS</button>
   </div>
@@ -2084,7 +2084,7 @@ function addLeafRunBonus(p,tenths,forager=false){
 const UP=[
  {id:'sharp',icon:'',name:'Freshly Sharpened',desc:'+10% damage',rarity:'common',apply:p=>p.damage*=1.10},
  {id:'heart',icon:'',name:'Clover Heart',desc:'+20 max HP',rarity:'common',apply:p=>{const n=20;p.maxHp+=n;p.hp=Math.min(p.maxHp,p.hp+n)}},
- {id:'speed',icon:'',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{p.rate=Math.max(360,p.rate/1.10)}},
+ {id:'speed',icon:'',name:'Dragonfly Reflexes',desc:'+10% attack speed',rarity:'common',apply:p=>{p.rate=Math.min(p.rate,Math.max(p.storyAttackFloor,p.rate/1.10))}},
  {id:'crit',icon:'',name:'Lucky Bug',desc:'+5% critical chance',rarity:'rare',apply:p=>p.crit=Math.min(.35,p.crit+.05)},
  {id:'triple',icon:'',name:'Triple Shot',desc:'Fire 3 attacks at once for 5 waves',rarity:'epic',apply:p=>{p.tripleShot=true;p.tripleShotUntilWave=game.wave+5}},
  {id:'magnet',icon:'',name:'Pollen Pull',desc:'+65% Leaf range',rarity:'rare',apply:p=>p.magnet+=65},
@@ -2267,7 +2267,8 @@ function restoreRecoveredRun(){
   initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(false);resetBigBigHudFades();
   const s=snap.state;
   if(snap.viewport&&Number.isFinite(snap.viewport.width)&&Number.isFinite(snap.viewport.height)&&snap.viewport.width>=200&&snap.viewport.height>=200&&snap.viewport.width<=4000&&snap.viewport.height<=4000){window.BBMobile.lockArena(snap.viewport.width,snap.viewport.height);resize();}else bbPrepareRunGeometry();
-  game=createRunState(s.mode,basePlayer(),s.bugId);
+  const startingPlayer=basePlayer(s.bugId);
+  game=createRunState(s.mode,startingPlayer,s.bugId);
   for(const key of Object.keys(s))if(!['__proto__','constructor','prototype','bossIndex','bossIndices','finalBossIndex','goldDeathBossIndex'].includes(key))game[key]=s[key];
   resolveCheckpointRefs(game.p,game.enemies);resolveCheckpointRefs(game.fx,game.enemies);for(const e of game.enemies)resolveCheckpointRefs(e,game.enemies);
   game.boss=Number.isInteger(s.bossIndex)?game.enemies[s.bossIndex]||null:null;
@@ -2275,7 +2276,13 @@ function restoreRecoveredRun(){
   game.finalBoss=Number.isInteger(s.finalBossIndex)?game.enemies[s.finalBossIndex]||null:null;
   game.goldDeathBoss=Number.isInteger(s.goldDeathBossIndex)?game.enemies[s.goldDeathBossIndex]||null:null;
   game.over=false;game.testMode=false;game.paused=true;
-  const p=game.p;normalizeLeafRunBalance(p);p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y));p.moveX=p.x;p.moveY=p.y;
+  const p=game.p;
+  if(s.mode==='story'&&!Number.isFinite(p.storyAttackFloor)){
+    p.storyAttackFloor=startingPlayer.storyAttackFloor;
+    // Older saves may carry the old floor even when this bug starts faster.
+    p.rate=Math.min(p.rate,startingPlayer.rate);
+  }
+  normalizeLeafRunBalance(p);p.x=Math.max(p.r,Math.min(W-p.r,p.x));p.y=Math.max(p.r,Math.min(H-p.r,p.y));p.moveX=p.x;p.moveY=p.y;
   const shift=performance.now()-saveNumber(snap.savedAt);
   for(const key of ['lastAttack','lastMeteor','helperShot','superBuddyShot','lastDamagePopup'])if(Number.isFinite(p[key]))p[key]+=shift;
   for(const e of game.enemies)if(Number.isFinite(e.goldDeathStartedAt))e.goldDeathStartedAt+=shift;
@@ -2871,7 +2878,7 @@ function buyShopGold(k){
  if(!requireGoldLeaves(UPGRADE_GOLD_COST,'base'))return false;
  s[k]++;save.goldLeaves-=UPGRADE_GOLD_COST;persist();buildShop();beep(880,.13,.035,'triangle');bbSetTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);return true;
 }
-function basePlayer(){
+function basePlayer(bugId=save.selected){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[],storyStillTime:0,closeBonusUntil:0};
  const u=save.upgrades||{};
  p.maxHp=Math.round(p.maxHp*(1+.10*(u.hp||0)));
@@ -2883,7 +2890,10 @@ function basePlayer(){
  p.leafBonusTenths=0;
  p.leafForagerPicks=0;
  p.hp=p.maxHp;
- (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
+ (BUGS[bugId]||BUGS.ladybug).bonus(p);
+ // Keep the 360 ms floor for the default bug and scale it for faster starting builds.
+ p.storyAttackFloor=Math.min(360,p.rate/2);
+ return p;
 }
 function startRun(startWave=1,testMode=false){
  window.BBGameTimers.resume();
@@ -4187,6 +4197,7 @@ function rememberUpgradeChoices(kind,choices,afterWave=true){
  game.recoveryPhase=kind;game.pendingChoiceIds=choices.map(u=>u.id);game.pendingUpgradeAfterWave=!!afterWave;
  saveRunRecovery('choices-open');
 }
+function storySpeedUpgradeAvailable(u){return u.id!=='speed'||game.p.rate>game.p.storyAttackFloor}
 function recoveredUpgradeChoices(pool){return (game.pendingChoiceIds||[]).map(id=>pool.find(u=>u.id===id)).filter(Boolean)}
 function clearPendingUpgrade(){game.pendingChoiceIds=[];game.pendingUpgradeAfterWave=false;game.recoveryPhase='wave'}
 function openUpgrade(afterWave=false,restoring=false){
@@ -4219,7 +4230,8 @@ function openUpgrade(afterWave=false,restoring=false){
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;initAudio();picks[i].apply(g.p);clearPendingUpgrade();$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;upgradePickSound('common');updateHud();if(afterWave)beginWave(g.wave+1);saveRunRecovery('upgrade-picked')});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';upgradePopSound();return;
 }
-const choices=restoring?recoveredUpgradeChoices(UP):[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=UP.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(u.id!=='greed'||leafForagerRoom(g.p)>0)&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
+const available=UP.filter(storySpeedUpgradeAvailable);
+const choices=restoring?recoveredUpgradeChoices(available):[];const helper=UP.find(u=>u.id==='clone'),triple=UP.find(u=>u.id==='triple'),army=UP.find(u=>u.id==='helperArmy'),pollen=g.mode==='gold'?null:UP.find(u=>u.id==='magnet'),pool=available.filter(u=>u.id!=='clone'&&u.id!=='triple'&&u.id!=='helperArmy'&&u.id!=='magnet'&&(u.id!=='greed'||leafForagerRoom(g.p)>0)&&(g.mode!=='gold'||!/leaf|leaves|pollen/i.test((u.name||'')+' '+(u.desc||''))));
  const count=3;
  if(!choices.length){
  while(choices.length<count&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
@@ -4255,7 +4267,7 @@ function finishFinalPrep(){
 }
 function finalUpgradePick(remaining,restoring=false){
  const g=game;g.paused=true;g.finalUpgradeRemaining=remaining;let picked=false;
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafForagerRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
+ const pool=UP.filter(u=>storySpeedUpgradeAvailable(u)&&u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafForagerRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){let u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  rememberUpgradeChoices('finalUpgrade',choices,true);
  $('upgradeTitle').textContent='FINAL PREPARATION — '+(4-remaining)+' / 3';
@@ -4276,7 +4288,7 @@ function openWave50BonusUpgrades(){
 function wave50BonusPick(restoring=false){
  const g=game,remaining=g.wave50BonusRemaining||0;if(remaining<=0){closeUpgrade();g.paused=false;beginWave(g.wave+1);return}
  g.paused=true;let picked=false;
- const pool=UP.filter(u=>u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafForagerRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
+ const pool=UP.filter(u=>storySpeedUpgradeAvailable(u)&&u.id!=='clone'&&u.id!=='helperArmy'&&(u.id!=='triple'||!g.p.tripleShot)&&(u.id!=='greed'||leafForagerRoom(g.p)>0)),choices=restoring?recoveredUpgradeChoices(pool):[];
  while(choices.length<3&&choices.length<pool.length){const u=pool[Math.floor(Math.random()*pool.length)];if(!choices.includes(u))choices.push(u)}
  rememberUpgradeChoices('wave50',choices,true);
  $('upgradeTitle').textContent='WAVE 50 CLEARED!';$('upgradeSub').textContent='Choose 3 upgrades — '+remaining+' remaining';
@@ -6962,7 +6974,7 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
-<script src="mobile-game.js?v=19.1.0-ios.15"></script>
+<script src="mobile-game.js?v=19.1.0-ios.16"></script>
 <script src="native-store.js?v=19.1.0-ios.5"></script>
 <script src="mobile-ui.js?v=19.1.0-ios.10"></script>
 </body>
