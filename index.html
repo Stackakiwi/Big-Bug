@@ -6,7 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#152316">
+<meta name="apple-mobile-web-app-title" content="Big Bug">
+<meta name="color-scheme" content="dark light">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>BIG BUG</title>
 <style>
 :root{--ink:#172018;--cream:#f8f3df;--leaf:#5e9e43;--leaf2:#8bc34a;--orange:#f6a623;--red:#d9574f;--panel:#17301e}
@@ -590,15 +593,6 @@ html:has(#ending:not(.hidden)),body:has(#ending:not(.hidden)){background:#020503
 #boostBtn{background:linear-gradient(180deg,#5f9f4d,#447f3d 58%,#2d6133);border-color:#86bb68}
 #endlessTripleBtn{background:linear-gradient(180deg,#8a65b4,#68458f 60%,#493367);border-color:#b493d7}
 #endlessRepelBtn{background:linear-gradient(180deg,#52a9a4,#327e7a 60%,#235c59);border-color:#86d4cc}
-body:has(#endlessTripleBtn:not(.hidden)) #endlessTripleBtn{left:12px!important;min-width:116px!important;width:116px!important;font-size:11px!important;padding:5px 7px!important;white-space:normal!important;line-height:1.05!important}
-body:has(#endlessTripleBtn:not(.hidden)) #boostBtn{left:136px!important;min-width:96px!important;width:96px!important}
-body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:240px!important;min-width:104px!important;width:104px!important}
-@media(max-width:400px){
- body:has(#endlessTripleBtn:not(.hidden)) #endlessTripleBtn{left:8px!important;min-width:104px!important;width:104px!important;font-size:10px!important;padding:5px 5px!important}
- body:has(#endlessTripleBtn:not(.hidden)) #boostBtn{left:118px!important;min-width:84px!important;width:84px!important;font-size:11px!important;padding:5px 5px!important}
- body:has(#endlessTripleBtn:not(.hidden)) #endlessRepelBtn{left:208px!important;min-width:96px!important;width:96px!important;font-size:9px!important;padding:5px 4px!important}
-}
-
 #pauseBtn{background:linear-gradient(180deg,#76947c,#536f5b 60%,#3b5545);border-color:#9fb5a2}
 #storyContinue{position:relative;background:linear-gradient(180deg,#6e9c4f,#4f763c 60%,#385d32);border-color:#91b66b;box-shadow:inset 0 2px 0 #eaffc855,inset 0 -4px 0 #304f2b,0 4px 0 #294627,0 7px 12px #0004}
 /* Remove the recently-added green HUD boxes; preserve their four-column layout. */
@@ -1456,10 +1450,12 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
    A continuous curve keeps velocity smooth across the whole achievement burst. */
 .achievementClaimFx{position:fixed;inset:0;z-index:3100;display:block;pointer-events:none;contain:layout paint}
 </style>
+<link rel="stylesheet" href="mobile.css">
 </head>
 <body>
+<div id="gameStage" aria-label="Garden arena">
 <canvas id="arenaBg" aria-hidden="true"></canvas>
-<canvas id="game"></canvas>
+<canvas id="game" aria-label="Big Bug play area. Tap or drag to move. Attacks are automatic."></canvas>
 
 <div id="hud" class="hidden">
   <div class="pill hudHealth"><span class="bbIcon bbHeartIcon" aria-hidden="true"></span> <span id="hp">100</span>/<span id="maxhp">100</span></div>
@@ -1472,11 +1468,19 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="bossHealthRow hidden" id="bossRow1"><div class="bossName" id="bossName1">BIG BUG</div><div class="bossBar"><i id="bossFill1" style="width:100%"></i></div></div>
 </div>
 <div id="telegraph" class="telegraph hidden">WAVE 1</div>
-<button id="boostBtn" class="hidden"><span class="bbIcon bbBoltIcon" aria-hidden="true"></span> BOOST<small>100 LEAVES</small></button>
+<button id="pauseBtn" class="hidden" aria-label="Pause game">Ⅱ</button>
+</div>
+<div id="mobileActions" aria-label="Abilities"><button id="boostBtn" class="hidden" aria-label="Use attack boost"><span class="bbIcon bbBoltIcon" aria-hidden="true"></span> BOOST<small>100 LEAVES</small></button>
 <button id="endlessTripleBtn" class="hidden">2x ATTACK BOOST<small>EMPTY</small></button>
 <button id="endlessRepelBtn" class="hidden">REPELLENT<small>EMPTY</small></button>
-<button id="pauseBtn" class="hidden">Ⅱ</button>
 
+
+</div>
+<div id="mobileControlDeck" class="hidden" role="region" aria-label="Touch controls" aria-hidden="true">
+ <div id="mobileJoystick" role="application" aria-label="Movement thumbstick"><span id="mobileJoystickThumb"></span></div>
+ <div id="mobileRunSummary"><span id="mobileModeLabel">STORY</span><span>WAVE <b id="mobileWaveValue">1</b></span><span>HEALTH <b id="mobileHealthValue">100 / 100</b></span></div>
+ <p id="mobileControlHint">Drag the thumbstick to move. Attacks are automatic.</p>
+</div>
 <section id="home" class="screen titleScreen">
   <canvas id="titleGarden" aria-hidden="true"></canvas>
   <button id="homeAchievementsBtn" class="btn" data-action="achievements" aria-label="Open Achievements">ACHIEVEMENTS</button>
@@ -1495,8 +1499,8 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <div class="muted homeBestFancy">BEST WAVE&nbsp; <b id="homeBest">0</b><span id="endlessBestWrap" class="hidden"> &nbsp;•&nbsp; MOSQUITO MODE&nbsp; <b id="homeEndlessBest">0</b></span></div>
   <button class="btn red small homeResetLayoutKeeper" tabindex="-1" aria-hidden="true" style="margin-top:12px">RESET GAME</button>
   <div class="homeReleaseSpacer" aria-hidden="true"></div>
-  <div class="versionStamp" aria-hidden="true">v19.0.196-rc.22</div>
-  <div class="versionCorner" aria-hidden="true">v19.0.196-rc.22</div>
+  <div class="versionStamp" aria-hidden="true">v19.1.0-ios.2</div>
+  <div class="versionCorner" aria-hidden="true">v19.1.0-ios.2</div>
 </section>
 
  <section id="achievements" class="screen hidden" aria-label="Achievements">
@@ -1558,14 +1562,16 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="panel">
   <h2><span class="goldLeafIcon" aria-hidden="true"></span> GOLD LEAF SHOP</h2>
   <div class="goldShopBalance">You have <span class="goldLeafIcon" aria-hidden="true"></span><span id="goldShopCount">0</span></div>
-  <p class="goldStoreNote">Gold Leaves are earned in the garden. Every new player starts with 10. Optional Steam packs will also be available; purchases are not connected in this build.</p>
-  <div class="goldPackGrid" aria-label="Planned Gold Leaf packs">
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>50</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$0.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>150</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$1.99</button></div>
-   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>300</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$2.99</button></div>
-   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>750</div><div class="bonus">GOLD LEAVES</div><button class="btn" type="button" disabled aria-disabled="true">$4.99</button></div>
+  <p class="goldStoreNote">Gold Leaves are earned in the garden. Every new player starts with 10. Optional packs help you unlock bugs, upgrades, and cosmetics. All modes can be reached through play.</p>
+  <div class="goldPackGrid" aria-label="Optional Gold Leaf packs">
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>50</div><div class="bonus">GOLD LEAVES</div><button id="goldPack50" class="btn" type="button" data-product-id="com.bigbug.game.gold50" disabled aria-disabled="true">LOADING…</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>150</div><div class="bonus">GOLD LEAVES</div><button id="goldPack150" class="btn" type="button" data-product-id="com.bigbug.game.gold150" disabled aria-disabled="true">LOADING…</button></div>
+   <div class="goldPack best"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>300</div><div class="bonus">GOLD LEAVES</div><button id="goldPack300" class="btn" type="button" data-product-id="com.bigbug.game.gold300" disabled aria-disabled="true">LOADING…</button></div>
+   <div class="goldPack"><div class="amount"><span class="goldLeafIcon" aria-hidden="true"></span>750</div><div class="bonus">GOLD LEAVES</div><button id="goldPack750" class="btn" type="button" data-product-id="com.bigbug.game.gold750" disabled aria-disabled="true">LOADING…</button></div>
   </div>
-  <p class="goldStoreNote" style="margin-top:14px">Steam checkout will be connected separately before real-money purchases go live.</p>
+  <p id="storeStatus" class="goldStoreNote" role="status" aria-live="polite">Connecting to the App Store…</p>
+  <button id="restorePurchasesBtn" class="btn small dark" type="button">CHECK PURCHASES</button>
+  <p class="goldStoreNote">Gold Leaf packs are consumable. Checking purchases completes pending deliveries; it does not refill Gold Leaves you have spent. Reset Progress keeps your current Gold Leaves and purchased unlocks.</p>
   <button class="btn dark" data-action="home">BACK</button>
  </div>
 </section>
@@ -1576,7 +1582,7 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
   <h2>HOW TO PLAY</h2>
   <p class="firstHelpIntro">A few things to know before your first run.</p>
   <div class="firstHelpSteps">
-   <div class="firstHelpStep"><div class="firstHelpNum">1</div><div><strong>Move &amp; Dodge</strong><p>Click or drag to move your bug, or choose WASD in Settings. On WASD, use 1/2/3 for upgrade choices (4 for the fourth Gold choice) and Space for your attack boost.</p></div></div>
+   <div class="firstHelpStep"><div class="firstHelpNum">1</div><div><strong>Move &amp; Dodge</strong><p>Tap or drag to guide your bug. Attacks are automatic. Choose Thumbstick in Settings if you prefer. When the controls sit beside or below the arena, use the thumbstick to move.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">2</div><div><strong>Attacks Are Automatic</strong><p>Your bug automatically attacks the <b>closest enemy</b>, so focus on positioning and staying alive.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">3</div><div><strong>Collect &amp; Save Leaves</strong><p><span class="leafCurrencyIcon bbLeafIcon" aria-hidden="true"></span>Leaves carry over between runs. Pick them up and save them — you will need a lot of them.</p></div></div>
    <div class="firstHelpStep"><div class="firstHelpNum">4</div><div><strong>Permanent Upgrades Matter</strong><p>Spend saved Leaves on <span class="firstHelpImportant">Permanent Upgrades</span> between runs. They are a big part of getting farther.</p></div></div>
@@ -1609,13 +1615,13 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  <div class="panel">
   <h2>HOW TO PLAY</h2>
   <div class="helpGrid">
-   <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted">Click or drag to move, or choose WASD in Settings. WASD runs can be played entirely from the keyboard; attacks are automatic.</div></div>
+   <div class="helpCard"><b><svg class="helpBugSvg" viewBox="0 0 64 72" aria-hidden="true"><g fill="none" stroke="#24211e" stroke-width="5" stroke-linecap="round"><path d="M18 27 7 20M17 36 5 36M18 46 7 54M46 27 57 20M47 36 59 36M46 46 57 54"/></g><ellipse cx="32" cy="18" rx="14" ry="10" fill="#24211e"/><circle cx="27" cy="16" r="2.2" fill="#f8f3df"/><circle cx="37" cy="16" r="2.2" fill="#f8f3df"/><ellipse cx="32" cy="42" rx="21" ry="25" fill="#d9473f" stroke="#24211e" stroke-width="4"/><path d="M32 18v49" stroke="#24211e" stroke-width="4"/><g fill="#24211e"><circle cx="23" cy="34" r="4"/><circle cx="22" cy="50" r="4"/><circle cx="41" cy="34" r="4"/><circle cx="42" cy="50" r="4"/></g></svg> Move</b><div class="muted"><span class="bbDesktopHelp">Click or drag to move, or choose WASD in Settings. Your bug attacks automatically.</span><span class="bbTouchHelp"><span class="bbDragHelp">Tap the arena or drag your finger to move.</span><span class="bbStickHelp">Drag the thumb stick to move.</span> Your bug attacks automatically. <span class="bbDuoHelp">On iPhone Duo, when the screen folds into two panes, drag the thumb stick on the control deck. Tap Keep Going after a layout change to resume.</span></span></div></div>
    <div class="helpCard"><b><span class="leafCurrencyIcon bbLeafIcon helpLeafIcon" aria-hidden="true"></span> Grow Stronger</b><div class="muted">Collect Leaves and choose upgrades between waves.</div></div>
    <div class="helpCard"><b><svg class="bbSwordSvg helpSwordSvg" viewBox="0 0 48 48" aria-hidden="true"><path d="M36.8 4.8 40.9 2.9 42.5 10.5 25.8 28.6l-6.4-6.4z" fill="#f4f1df" stroke="#29322d" stroke-width="1.7" stroke-linejoin="round"/><path d="m37.4 7.3 2.6 2.6-15.5 16.8-2.9-2.9z" fill="#c8d0cc" opacity=".9"/><path d="m16.2 20.1 11.7 11.7" stroke="#d69b35" stroke-width="5" stroke-linecap="round"/><path d="m16.2 26.4 5.6 5.6" stroke="#593b1e" stroke-width="4" stroke-linecap="round"/><path d="m14.3 28.3 5.4 5.4" stroke="#7b4a27" stroke-width="5" stroke-linecap="round"/><circle cx="13.2" cy="34.8" r="3.3" fill="#d69b35" stroke="#593b1e" stroke-width="1.5"/></svg> Attack</b><div class="muted">Spend Leaves for a short attack boost.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Fight Smart</b><div class="muted">Standing still fires faster in Story and Mosquito Mode. In Story Mode, get close to an enemy to hit harder.</div></div>
    <div class="helpCard helpBossCard"><b><canvas class="helpGameBugIcon" data-help-bug="hornet" width="64" height="64" aria-hidden="true"></canvas> Bosses</b><div class="muted">A boss appears every 5 waves. Learn its attacks and keep moving.</div></div>
    <div class="helpCard"><b><span class="bbIcon bbSparkIcon" aria-hidden="true"></span> Upgrades</b><div class="muted">Spend Leaves on permanent upgrades between runs.</div></div>
-   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 25 to unlock. On WASD: 1 = 2x Attack Boost, 2 = Health Boost, 3 = Repellent.</div></div>
+   <div class="helpCard"><b><canvas class="helpGameBugIcon helpMosquitoIcon" data-help-bug="mosquito" width="64" height="64" aria-hidden="true"></canvas> Mosquito Mode</b><div class="muted">Beat Wave 25 to unlock. <span class="bbTouchHelp">Tap your attack boost, health boost, or repellent button to use that ability.</span><span class="bbDesktopHelp">On WASD: 1 = 2x Attack Boost, 2 = Health Boost, 3 = Repellent.</span></div></div>
   </div>
   <button class="btn dark helpBack" data-action="settingsFromHelp">BACK TO SETTINGS</button>
  </div>
@@ -1698,40 +1704,41 @@ body.g159 #upgrade .choice .buddyUpgradeIcon{
  </div>
 </section>
 
+<script src="mobile-platform.js"></script>
+<script src="game-timers.js"></script>
 <script>
 const BB_DEV_MODE=false; // Production builds have no developer entry points.
+const bbSetTimeout=window.BBGameTimers.setTimeout,bbClearTimeout=window.BBGameTimers.clearTimeout;
+const bbSetInterval=window.BBGameTimers.setInterval,bbClearInterval=window.BBGameTimers.clearInterval;
 
 
 const C=document.getElementById('game'),X=C.getContext('2d',{alpha:true});
 const BG=document.getElementById('arenaBg'),BGX=BG.getContext('2d',{alpha:false});
 let W=0,H=0,D=1,arenaBgKey='';
-const MOBILE_CANVAS_RENDER=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'');
+const MOBILE_CANVAS_RENDER=window.BBMobile.state.touch;
 const DESKTOP_PERF_RENDER=!MOBILE_CANVAS_RENDER;
-function canvasRenderScale(w,h){
- const nativeD=Math.min(devicePixelRatio||1,1.5);
- if(MOBILE_CANVAS_RENDER)return nativeD;
- // Desktop integrated GPUs were still drawing millions of transparent pixels each frame.
- // Keep logical coordinates identical, but cap the backing buffer much more aggressively.
- const desktopD=Math.min(nativeD,.82);
- const maxDesktopPixels=1600000;
- return Math.min(desktopD,Math.sqrt(maxDesktopPixels/Math.max(1,w*h)));
-}
+// Touchscreen desktop browsers still support the existing keyboard controls.
+const DESKTOP_KEYBOARD_INPUT=!window.BBMobile.state.native;
+function canvasRenderScale(w,h){return window.BBMobile.renderScale(w,h)}
 function resize(){
- W=innerWidth;H=innerHeight;D=canvasRenderScale(W,H);
- C.width=Math.max(1,Math.floor(W*D));C.height=Math.max(1,Math.floor(H*D));X.setTransform(D,0,0,D,0,0);
- BG.width=Math.max(1,Math.floor(W*D));BG.height=Math.max(1,Math.floor(H*D));BGX.setTransform(D,0,0,D,0,0);arenaBgKey='';
-} addEventListener('resize',resize);resize();
+ const layout=window.BBMobile.computeLayout();W=layout.width;H=layout.height;D=canvasRenderScale(W,H);
+ const width=Math.max(1,Math.round(W*D)),height=Math.max(1,Math.round(H*D));
+ if(C.width!==width||C.height!==height){C.width=width;C.height=height;BG.width=width;BG.height=height;arenaBgKey='';}
+ X.setTransform(D,0,0,D,0,0);BGX.setTransform(D,0,0,D,0,0);
+}
+function bbPrepareRunGeometry(){window.BBMobile.unlockArena();resize();window.BBMobile.lockArena(W,H);}
+addEventListener('resize',()=>{if(window.BigBugGame)window.BigBugGame.refreshViewport(true);else resize()});resize();
 
 const $=id=>document.getElementById(id);
 const screens=['home','achievements','bugs','cosmetics','base','gardenBook','goldShop','settings','help','firstHelp','upgrade','pause','goldFail','gameover','finalPrep','ending'];
 function screen(id){
  screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));
- if(id!=='none')resetGameInput();
+ if(id!=='none'){resetGameInput();document.body.dataset.bbPlaying='false'}else document.body.dataset.bbPlaying=String(!!game&&!game.over);
  syncGoldPresentation();syncGoldMusic();
  const sb=$('globalSettingsBtn');if(sb)sb.classList.toggle('hidden',id!=='home');
  if(id==='home')paintHomeHero();
  if(id!=='none'){
-  const t=$('telegraph');if(t){t.classList.add('hidden');clearTimeout(flashBanner._t)}
+  const t=$('telegraph');if(t){t.classList.add('hidden');bbClearTimeout(flashBanner._t)}
  }
 }
 // Leaf rewards first, then Gold Leaf rewards. Each group is ranked approximately easiest to hardest.
@@ -1762,8 +1769,13 @@ function storageNotice(){
  notice.textContent='Saving is unavailable. Progress in this session may be lost when you close the game.';document.body.appendChild(notice);
 }
 function storageRead(key){try{return localStorage.getItem(key)}catch(e){storageNotice();return null}}
-function storageWrite(key,value){try{localStorage.setItem(key,value);return true}catch(e){storageNotice();return false}}
-function storageRemove(key){try{localStorage.removeItem(key);return true}catch(e){storageNotice();return false}}
+function storageWrite(key,value){try{localStorage.setItem(key,value);bbStorageChanged(key);return true}catch(e){storageNotice();return false}}
+function bbStorageChanged(key){
+ if(!window.BBMobile.SAVE_KEYS.includes(key)||key===window.BBMobile.REVISION_KEY)return;
+ try{const k=window.BBMobile.REVISION_KEY,n=Math.max(0,Number(localStorage.getItem(k))||0)+1;localStorage.setItem(k,String(n));}catch(_){}
+ window.BigBugGame?.queueNativeBackup();
+}
+function storageRemove(key){try{localStorage.removeItem(key);bbStorageChanged(key);return true}catch(e){storageNotice();return false}}
 function archiveSaveData(key,raw,reason='invalid'){
  if(typeof raw!=='string')return;
  // One bounded backup per source key avoids an unbounded collection of bad saves.
@@ -1789,6 +1801,15 @@ function normalizeSave(input={}){
  for(const id of bugs)if(cos.equipped?.[id]==='medieval'&&out.cosmetics.owned.includes('medieval:'+id))out.cosmetics.equipped[id]='medieval';
  const selected=src.selected==='dragonfly'?'butterfly':src.selected;out.selected=out.unlocked.includes(selected)?selected:'ladybug';
  for(const id of out.unlocked)if(!out.discovered.includes('player:'+id))out.discovered.push('player:'+id);
+ out.settings.touchControls=settings.touchControls==='joystick'?'joystick':'drag';
+ out.settings.graphics=settings.graphics==='battery'?'battery':'auto';
+ out.settings.haptics=settings.haptics!==false;out.settings.reduceMotion=settings.reduceMotion===true;
+ out.iapTransactions=Object.create(null);
+ if(saveObject(src.iapTransactions))for(const [id,value] of Object.entries(src.iapTransactions)){
+  if(/^\d{1,30}$/.test(id)&&saveObject(value)&&typeof value.productID==='string'&&Number.isSafeInteger(value.amount)&&value.amount>0)
+   out.iapTransactions[id]={productID:value.productID,amount:value.amount,appliedAt:saveNumber(value.appliedAt)};
+ }
+
  out.endlessUnlocked=src.endlessUnlocked===true||out.mainGameBeaten||out.best>=26;
  return out;
 }
@@ -1837,7 +1858,7 @@ const BUGS={
  golden:{name:'The Legendary Golden Ladybug',art:'golden',desc:'The Perfect Bug — Stronger, faster, and tougher.',bonus:p=>{p.maxHp=Math.round(p.maxHp*1.5);p.hp=p.maxHp;p.damage*=1.5;p.rate/=1.5;p.speed*=1.5;p.crit+=.20}}
 };
 function allPermanentMaxed(){const u=save.upgrades||{};return ['hp','dmg','magnet','coins'].every(k=>(u[k]||0)>=10)}
-function syncLegendaryGolden(showNotice=false){if(!allPermanentMaxed())return false;const newly=!save.legendaryGolden.revealed;save.legendaryGolden.revealed=true;if(save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');if((newly||showNotice)&&!save.legendaryGolden.noticeSeen){save.legendaryGolden.noticeSeen=true;persist();setTimeout(showLegendaryReveal,80)}return newly}
+function syncLegendaryGolden(showNotice=false){if(!allPermanentMaxed())return false;const newly=!save.legendaryGolden.revealed;save.legendaryGolden.revealed=true;if(save.legendaryGolden.owned&&!save.unlocked.includes('golden'))save.unlocked.push('golden');if((newly||showNotice)&&!save.legendaryGolden.noticeSeen){save.legendaryGolden.noticeSeen=true;persist();bbSetTimeout(showLegendaryReveal,80)}return newly}
 function showLegendaryReveal(){let d=$('legendaryReveal');if(!d){d=document.createElement('div');d.id='legendaryReveal';d.innerHTML='<div class="legendaryRevealCard"><div class="legendaryStars">✦ &nbsp; ✦ &nbsp; ✦</div><canvas id="legendaryRevealBug" width="150" height="150"></canvas><small>THE GARDEN HAS REVEALED A LEGEND</small><h2>THE LEGENDARY<br>GOLDEN LADYBUG</h2><p>You maxed every permanent Power Up. A legendary bug is now waiting in The Bug Parade.</p><button class="btn legendaryRevealBtn">SEE THE LEGEND</button></div>';document.body.appendChild(d);d.querySelector('button').onclick=()=>{d.remove();screen('bugs');buildBugScreen()};const c=d.querySelector('canvas'),q=c.getContext('2d');q.translate(75,75);drawPlayableBug(q,'golden',82,true)}d.classList.remove('hidden')}
 
 
@@ -2018,7 +2039,7 @@ function buildCosmetics(){
  const bb=$('medievalBundleBtn');
  if(bb){
   if(medievalBundlePurchased()){bb.disabled=true;bb.textContent='PURCHASED'}
-  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if((save.goldLeaves||0)<MEDIEVAL_BUNDLE_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(920,.13,.03,'triangle');setTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
+  else{bb.disabled=false;bb.innerHTML=`<span class="goldLeafIcon" aria-hidden="true"></span> BUY BUNDLE — ${MEDIEVAL_BUNDLE_COST}`;bb.onclick=()=>{initAudio();if((save.goldLeaves||0)<MEDIEVAL_BUNDLE_COST){beep(155,.10,.022,'triangle');return}save.goldLeaves-=MEDIEVAL_BUNDLE_COST;grantMedievalBundle();persist();buildCosmetics();buildBugScreen();paintHomeHero();beep(920,.13,.03,'triangle');bbSetTimeout(()=>beep(1180,.12,.025,'sine'),70)}}
  }
 }
 function paintHomeHero(){const c=$('homeBugHero');if(c){const q=c.getContext('2d');q.clearRect(0,0,c.width,c.height);q.save();q.translate(c.width/2,c.height/2+2);drawPlayableBug(q,'ladybug',76,false);if(medievalEquipped('ladybug'))drawMedievalArmor(q,'ladybug',76);q.restore()}const p=$('bugParadeIcon');if(p){const q=p.getContext('2d');q.clearRect(0,0,p.width,p.height);q.save();q.translate(p.width/2,p.height/2+2);drawPlayableBug(q,'ladybug',35,false);q.restore()}const b=$('homeBugsIcon');if(b){const q=b.getContext('2d');q.clearRect(0,0,b.width,b.height);q.save();q.translate(b.width/2,b.height/2+2);drawPlayableBug(q,'ladybug',25,false);q.restore()}const gb=$('gardenBookBugCanvas');if(gb){const q=gb.getContext('2d');q.clearRect(0,0,gb.width,gb.height);q.save();q.translate(gb.width/2,gb.height/2+1);drawPlayableBug(q,'ladybug',25,false);q.restore()}}
@@ -2094,7 +2115,7 @@ function applyStoryLeafCorruption(w=0){
 }
 let pendingBossUpgrade=false,storyNoteTestWaves=null,storyNoteTestIndex=0;
 function presentGardenUpdateNote(w){const beat=GARDEN_STORY[w];if(!beat)return false;applyStoryLeafCorruption(w);$('storyTitle').textContent=beat.title;$('storyText').textContent=beat.text;const story=$('story');story.style.display='flex';story.classList.remove('hidden');return true}
-function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;if(game){game.recoveryPhase='storyNote';game.paused=true;saveRunRecovery('story-note')}presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');setTimeout(()=>beep(523,.11,.009,'sine'),90)}
+function showGardenUpdate(w){const beat=GARDEN_STORY[w];if(!beat){if(game&&game.mode==='story'&&w===50)openWave50BonusUpgrades();else openUpgrade(true);return}pendingBossUpgrade=true;if(game){game.recoveryPhase='storyNote';game.paused=true;saveRunRecovery('story-note')}presentGardenUpdateNote(w);beep(392,.08,.012,'triangle');bbSetTimeout(()=>beep(523,.11,.009,'sine'),90)}
 function startGardenStoryNotesTest(){if(!BB_DEV_MODE)return;storyNoteTestWaves=Object.keys(GARDEN_STORY).map(Number).sort((a,b)=>a-b);storyNoteTestIndex=0;pendingBossUpgrade=false;if(!storyNoteTestWaves.length)return;if(presentGardenUpdateNote(storyNoteTestWaves[0])){const b=$('storyContinue');if(b)b.textContent='NEXT NOTE →';beep(392,.08,.012,'triangle')}}
 $('storyContinue').onclick=()=>{initAudio();const story=$('story');if(storyNoteTestWaves){storyNoteTestIndex++;if(storyNoteTestIndex<storyNoteTestWaves.length){presentGardenUpdateNote(storyNoteTestWaves[storyNoteTestIndex]);beep(620,.06,.01,'triangle');return}storyNoteTestWaves=null;storyNoteTestIndex=0;story.classList.add('hidden');story.style.display='';applyStoryLeafCorruption(0);$('storyContinue').textContent='Follow the trail →';beep(620,.07,.012,'triangle');return}story.classList.add('hidden');story.style.display='';beep(620,.07,.012,'triangle');if(pendingBossUpgrade){pendingBossUpgrade=false;if(game&&game.mode==='story'&&game.wave===50)openWave50BonusUpgrades();else openUpgrade(true)}};
 // Leaf earnings balance (rc.15): never alter or cap permanent Garden Wisdom.
@@ -2164,7 +2185,7 @@ const BB_HUD_FADE_TARGETS={
 };
 const bbHudFadeTimers=new Map();
 function resetBigBigHudFades(){
- for(const t of bbHudFadeTimers.values())clearTimeout(t);bbHudFadeTimers.clear();
+ for(const t of bbHudFadeTimers.values())bbClearTimeout(t);bbHudFadeTimers.clear();
  for(const key of Object.keys(BB_HUD_FADE_TARGETS)){
    const el=BB_HUD_FADE_TARGETS[key]?.();if(!el)continue;
    el.style.transition='';el.style.opacity='';el.style.pointerEvents='';
@@ -2180,8 +2201,8 @@ function startBigBigHudFade(key){
  // Force a known visible start, then transition only opacity for five seconds.
  el.style.transition='none';el.style.opacity='1';void el.offsetWidth;
  el.style.transition='opacity 5s linear';el.style.opacity='0';
- if(bbHudFadeTimers.has(key))clearTimeout(bbHudFadeTimers.get(key));
- bbHudFadeTimers.set(key,setTimeout(()=>{
+ if(bbHudFadeTimers.has(key))bbClearTimeout(bbHudFadeTimers.get(key));
+ bbHudFadeTimers.set(key,bbSetTimeout(()=>{
    bbHudFadeTimers.delete(key);
    // Once the pause control is fully invisible, do not leave an invisible clickable hotspot.
    if(key==='pause'&&el)el.style.pointerEvents='none';
@@ -2201,7 +2222,7 @@ function lowStoryFx(){return !!(BB_LOW_FX_DEVICE&&game&&game.mode==='story'&&gam
 let leafPersistTimer=0;
 function persistLeafPickup(){
  if(leafPersistTimer)return;
- leafPersistTimer=setTimeout(()=>{leafPersistTimer=0;persist()},300);
+ leafPersistTimer=bbSetTimeout(()=>{leafPersistTimer=0;persist()},300);
 }
 function persist(){const saved=storageWrite(SAVEKEY,JSON.stringify(save));if(saved){storageWrite(GOLDKEY,String(Math.max(0,save.goldLeaves||0)));storageWrite(GOLDUNLOCKKEY,JSON.stringify(save.goldUnlocks||[]))}refreshGoldUI();return saved}
 function refreshGoldUI(){const n=formatLeafCount(save.goldLeaves||0);if($('homeGold'))$('homeGold').textContent=n;const q=$('shopGold');if(q)q.textContent=n;if($('goldShopCount'))$('goldShopCount').textContent=n;if($('cosmeticGold'))$('cosmeticGold').textContent=n}
@@ -2238,7 +2259,7 @@ function saveRunRecovery(reason='checkpoint'){
   state.finalBossIndex=enemyIndex.has(game.finalBoss)?enemyIndex.get(game.finalBoss):null;
   state.goldDeathBossIndex=enemyIndex.has(game.goldDeathBoss)?enemyIndex.get(game.goldDeathBoss):null;
   state.recoveryPhase=checkpointPhase(game);
-  const snap={v:3,reason,savedAt:performance.now(),state};
+  const snap={v:3,reason,savedAt:performance.now(),viewport:{width:W,height:H},state};
   return storageWrite(RUNSAVEKEY,JSON.stringify(snap));
  }catch(e){storageNotice();return false}
 }
@@ -2294,7 +2315,9 @@ function restoreRecoveredRun(){
  const snap=loadRunRecovery();if(!snap)return false;
  try{
   initAudio();titleMusicStop();stopTitleGardenLoop();hideAll();showGameUI(false);resetBigBigHudFades();
-  const s=snap.state;game=createRunState(s.mode,basePlayer(),s.bugId);
+  const s=snap.state;
+  if(snap.viewport&&Number.isFinite(snap.viewport.width)&&Number.isFinite(snap.viewport.height)&&snap.viewport.width>=200&&snap.viewport.height>=200&&snap.viewport.width<=4000&&snap.viewport.height<=4000){window.BBMobile.lockArena(snap.viewport.width,snap.viewport.height);resize();}else bbPrepareRunGeometry();
+  game=createRunState(s.mode,basePlayer(),s.bugId);
   for(const key of Object.keys(s))if(!['__proto__','constructor','prototype','bossIndex','bossIndices','finalBossIndex','goldDeathBossIndex'].includes(key))game[key]=s[key];
   resolveCheckpointRefs(game.p,game.enemies);resolveCheckpointRefs(game.fx,game.enemies);for(const e of game.enemies)resolveCheckpointRefs(e,game.enemies);
   game.boss=Number.isInteger(s.bossIndex)?game.enemies[s.bossIndex]||null:null;
@@ -2317,9 +2340,9 @@ function restoreRecoveredRun(){
 
 function resetGameProgress(){
  const kept=normalizeSave(save);
- if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0}
+ if(leafPersistTimer){bbClearTimeout(leafPersistTimer);leafPersistTimer=0}
  stopGameLoop();bossMusicStop();endlessMusicStop();purifyMusicStop();creditsMusicStop();showGameUI(false);game=null;clearRunRecovery();
- save=normalizeSave({achievements:kept.achievements,achievementEarned:kept.achievementEarned,achievementProgress:kept.achievementProgress,goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
+ save=normalizeSave({iapTransactions:kept.iapTransactions,achievements:kept.achievements,achievementEarned:kept.achievementEarned,achievementProgress:kept.achievementProgress,goldLeaves:kept.goldLeaves,goldUnlocks:kept.goldUnlocks,bugPurchases:kept.bugPurchases,legendaryGolden:{owned:kept.legendaryGolden.owned,revealed:kept.legendaryGolden.owned,noticeSeen:kept.legendaryGolden.owned},settings:kept.settings,cosmetics:kept.cosmetics});
  persist();buildBugScreen();buildShop();$('homeBest').textContent='0';refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();$('resetConfirm').classList.add('hidden');screen('home');resetTitleScene(performance.now(),titleGarden.getBoundingClientRect().width);startTitleGardenLoop();if(save.settings.music)titleMusicStart();
  beep(180,.10,.022,'triangle');
 }
@@ -2330,7 +2353,7 @@ function buildSettings(){
  const vol=Math.max(0,Math.min(100,Number(save.settings.volume??50)));save.settings.volume=vol;
  if($('volumeSlider'))$('volumeSlider').value=vol;if($('volumeValue'))$('volumeValue').textContent=`${Math.round(vol)}%`;
  const pcMode=save.settings.pcControls==='wasd'?'wasd':'mouse';save.settings.pcControls=pcMode;
- const pcRow=$('pcControlsRow');if(pcRow)pcRow.classList.toggle('hidden',!DESKTOP_PERF_RENDER);
+ const pcRow=$('pcControlsRow');if(pcRow)pcRow.classList.toggle('hidden',!DESKTOP_KEYBOARD_INPUT);
  if($('pcMouseBtn'))$('pcMouseBtn').classList.toggle('selected',pcMode==='mouse');
  if($('pcWasdBtn'))$('pcWasdBtn').classList.toggle('selected',pcMode==='wasd');
  const settingsBack=$('settingsBackBtn');if(settingsBack)settingsBack.textContent='BACK';
@@ -2391,26 +2414,26 @@ function beep(f=440,d=.05,g=.025,type='sine',category='sfx'){
  bbAllVoices.add(voice);if(category==='music')bbMusicVoices.add(voice);
  o.onended=()=>{bbAudioVoices=Math.max(0,bbAudioVoices-1);bbAllVoices.delete(voice);bbMusicVoices.delete(voice)};o.start();o.stop(audio.currentTime+d)
 }
-function quietButtonClick(){if(save.settings.sfx===false||performance.now()<bbAudioTransitionUntil)return;initAudio();const epoch=bbAudioEpoch;setTimeout(()=>{if(epoch!==bbAudioEpoch||!audio||save.settings.sfx===false||performance.now()<bbAudioTransitionUntil)return;beep(720,.020,.0048,'triangle');setTimeout(()=>{if(epoch===bbAudioEpoch)beep(980,.016,.0032,'sine')},12)},0)}
-function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');setTimeout(()=>beep(620,.08,.020,'triangle'),55);setTimeout(()=>beep(840,.12,.018,'sine'),115)}
-function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');setTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);setTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
+function quietButtonClick(){if(save.settings.sfx===false||performance.now()<bbAudioTransitionUntil)return;initAudio();const epoch=bbAudioEpoch;bbSetTimeout(()=>{if(epoch!==bbAudioEpoch||!audio||save.settings.sfx===false||performance.now()<bbAudioTransitionUntil)return;beep(720,.020,.0048,'triangle');bbSetTimeout(()=>{if(epoch===bbAudioEpoch)beep(980,.016,.0032,'sine')},12)},0)}
+function upgradePopSound(){if(!audio)return;beep(420,.07,.022,'sine');bbSetTimeout(()=>beep(620,.08,.020,'triangle'),55);bbSetTimeout(()=>beep(840,.12,.018,'sine'),115)}
+function upgradePickSound(r='common'){if(!audio)return;const base=r==='epic'?620:r==='rare'?540:470;beep(base,.06,.028,'triangle');bbSetTimeout(()=>beep(base*1.28,.08,.024,'triangle'),55);bbSetTimeout(()=>beep(base*1.62,.13,.018,'sine'),115)}
 let titleMusicTimer=null,titleMusicStep=0;
 function isMenuMusicScreen(){return ['home','achievements','bugs','cosmetics','base','gardenBook','settings','help','firstHelp','gameover'].some(id=>$(id)&&!$(id).classList.contains('hidden'))}
 function isQuietStoryMusic(){return !!(game&&game.mode==='story'&&!game.over&&!game.finalPurify&&(!game.boss||game.boss.dead))}
 function shouldTitleMusicPlay(){if(game&&game.finalPurify)return false;const end=$('ending');if(end&&!end.classList.contains('hidden'))return false;return isMenuMusicScreen()||isQuietStoryMusic()}
-function titleMusicStop(resetStep=true){if(titleMusicTimer){clearTimeout(titleMusicTimer);titleMusicTimer=null}if(titleMusicDeferredTimer){clearTimeout(titleMusicDeferredTimer);titleMusicDeferredTimer=null}hardStopMusicVoices();if(resetStep)titleMusicStep=0}
+function titleMusicStop(resetStep=true){if(titleMusicTimer){bbClearTimeout(titleMusicTimer);titleMusicTimer=null}if(titleMusicDeferredTimer){bbClearTimeout(titleMusicDeferredTimer);titleMusicDeferredTimer=null}hardStopMusicVoices();if(resetStep)titleMusicStep=0}
 function titleMusicStart(){
  if(isMenuMusicScreen())goldMusicStop();
  if(!audio||save.settings.music===false||titleMusicTimer)return;
  const wait=bbAudioTransitionUntil-performance.now();
- if(wait>0){if(!titleMusicDeferredTimer)titleMusicDeferredTimer=setTimeout(()=>{titleMusicDeferredTimer=null;if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart()},wait+8);return}
+ if(wait>0){if(!titleMusicDeferredTimer)titleMusicDeferredTimer=bbSetTimeout(()=>{titleMusicDeferredTimer=null;if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart()},wait+8);return}
  // Soft, playful garden-loop shared by Home/menu/help and reused quietly during normal Story gameplay.
  const regular=[523,659,784,659,587,698,784,698,523,659,880,784,587,659,698,659],medieval=[440,523,587,659,587,523,494,440,392,440,523,587,659,698,659,587];
- const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),med=medievalBundleOwned(),notes=med?medieval:regular,gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035,n=notes[titleMusicStep%notes.length];beep(n,med?.34:.28,gain,med?'triangle':'sine','music');if(titleMusicStep%4===0)beep(n/2,med?.46:.34,bassGain,med?'sine':'triangle','music');if(med&&titleMusicStep%8===6)beep(n*1.5,.13,quiet?.0011:.0025,'triangle','music');titleMusicStep++;titleMusicTimer=setTimeout(tick,med?455:420)};
+ const tick=()=>{if(!shouldTitleMusicPlay()){titleMusicStop(false);return}const quiet=isQuietStoryMusic()&&!isMenuMusicScreen(),med=medievalBundleOwned(),notes=med?medieval:regular,gain=quiet?.0024:.0065,bassGain=quiet?.0013:.0035,n=notes[titleMusicStep%notes.length];beep(n,med?.34:.28,gain,med?'triangle':'sine','music');if(titleMusicStep%4===0)beep(n/2,med?.46:.34,bassGain,med?'sine':'triangle','music');if(med&&titleMusicStep%8===6)beep(n*1.5,.13,quiet?.0011:.0025,'triangle','music');titleMusicStep++;titleMusicTimer=bbSetTimeout(tick,med?455:420)};
  tick();
 }
 let purifyMusicTimer=null,purifyMusicStep=0;
-function purifyMusicStop(resetStep=true){if(purifyMusicTimer){clearTimeout(purifyMusicTimer);purifyMusicTimer=null}hardStopMusicVoices();if(resetStep)purifyMusicStep=0}
+function purifyMusicStop(resetStep=true){if(purifyMusicTimer){bbClearTimeout(purifyMusicTimer);purifyMusicTimer=null}hardStopMusicVoices();if(resetStep)purifyMusicStep=0}
 function purifyMusicStart(resetStep=true){
  if(resetStep)purifyMusicStop();else if(purifyMusicTimer)return;
  if(!audio||save.settings.music===false||!game||!game.finalPurify)return;
@@ -2424,66 +2447,66 @@ function purifyMusicStart(resetStep=true){
    beep(n,.30,.0072,'sine','music');
    if(purifyMusicStep%2===0)beep(h,.38,.0034,'triangle','music');
    if(purifyMusicStep%4===3)beep(sparkle[Math.floor(purifyMusicStep/4)%sparkle.length],.12,.0022,'sine','music');
-   purifyMusicStep++;purifyMusicTimer=setTimeout(tick,390);
+   purifyMusicStep++;purifyMusicTimer=bbSetTimeout(tick,390);
  };
  tick();
 }
 let endlessMusicTimer=null,endlessMusicStep=0;
-function endlessMusicStop(resetStep=true){if(endlessMusicTimer){clearTimeout(endlessMusicTimer);endlessMusicTimer=null}hardStopMusicVoices();if(resetStep)endlessMusicStep=0}
+function endlessMusicStop(resetStep=true){if(endlessMusicTimer){bbClearTimeout(endlessMusicTimer);endlessMusicTimer=null}hardStopMusicVoices();if(resetStep)endlessMusicStep=0}
 function endlessMusicStart(resetStep=true){
  if(resetStep)endlessMusicStop();else if(endlessMusicTimer)return;
  if(!audio||save.settings.music===false||!game||game.mode!=='endless'||game.over||game.paused)return;
  const melody=[659,784,880,1047,880,988,1175,988,784,932,1047,1319,1175,988,880,1047];
  const pulse=[165,196,220,196,175,220,247,220];
- const tick=()=>{if(!game||game.mode!=='endless'||game.over||game.paused){endlessMusicStop(false);return}const n=melody[endlessMusicStep%melody.length];beep(n,.13,.0058,endlessMusicStep%3===1?'triangle':'sine','music');if(endlessMusicStep%2===0)beep(pulse[Math.floor(endlessMusicStep/2)%pulse.length],.17,.0032,'triangle','music');if(endlessMusicStep%4===3)beep(n*1.5,.07,.0024,'sine','music');endlessMusicStep++;endlessMusicTimer=setTimeout(tick,215)};
+ const tick=()=>{if(!game||game.mode!=='endless'||game.over||game.paused){endlessMusicStop(false);return}const n=melody[endlessMusicStep%melody.length];beep(n,.13,.0058,endlessMusicStep%3===1?'triangle':'sine','music');if(endlessMusicStep%2===0)beep(pulse[Math.floor(endlessMusicStep/2)%pulse.length],.17,.0032,'triangle','music');if(endlessMusicStep%4===3)beep(n*1.5,.07,.0024,'sine','music');endlessMusicStep++;endlessMusicTimer=bbSetTimeout(tick,215)};
  tick();
 }
 let shopMusicTimer=null,shopMusicStep=0;
-function shopMusicStop(){if(shopMusicTimer){clearTimeout(shopMusicTimer);shopMusicTimer=null}hardStopMusicVoices();shopMusicStep=0}
-function shopSparkle(){if(!audio||save.settings.sfx===false)return;beep(1047,.10,.012,'sine');setTimeout(()=>beep(1319,.12,.010,'triangle'),55);setTimeout(()=>beep(1568,.16,.008,'sine'),115)}
+function shopMusicStop(){if(shopMusicTimer){bbClearTimeout(shopMusicTimer);shopMusicTimer=null}hardStopMusicVoices();shopMusicStep=0}
+function shopSparkle(){if(!audio||save.settings.sfx===false)return;beep(1047,.10,.012,'sine');bbSetTimeout(()=>beep(1319,.12,.010,'triangle'),55);bbSetTimeout(()=>beep(1568,.16,.008,'sine'),115)}
 function shopMusicStart(withSparkle=true){
  shopMusicStop();if(!audio||save.settings.music===false)return;
  // Brighter, quicker shop loop with tiny bell-like accents. Oscillator-only to stay lightweight.
  const melody=[659,784,988,784,698,880,1047,880,784,988,1175,988,698,880,988,784];
  const bass=[220,247,262,247,233,262,294,262];
- const tick=()=>{if($('goldShop')?.classList.contains('hidden')){shopMusicStop();return}const n=melody[shopMusicStep%melody.length];beep(n,.19,.0085,shopMusicStep%4===2?'triangle':'sine','music');if(shopMusicStep%2===0)beep(bass[Math.floor(shopMusicStep/2)%bass.length],.25,.0045,'triangle','music');if(shopMusicStep%4===3)beep(n*2,.09,.0035,'sine','music');shopMusicStep++;shopMusicTimer=setTimeout(tick,300)};
+ const tick=()=>{if($('goldShop')?.classList.contains('hidden')){shopMusicStop();return}const n=melody[shopMusicStep%melody.length];beep(n,.19,.0085,shopMusicStep%4===2?'triangle':'sine','music');if(shopMusicStep%2===0)beep(bass[Math.floor(shopMusicStep/2)%bass.length],.25,.0045,'triangle','music');if(shopMusicStep%4===3)beep(n*2,.09,.0035,'sine','music');shopMusicStep++;shopMusicTimer=bbSetTimeout(tick,300)};
  if(withSparkle)shopSparkle();tick();
 }
 let creditsMusicTimer=null,creditsMusicStep=0;
-function creditsMusicStop(){if(creditsMusicTimer){clearTimeout(creditsMusicTimer);creditsMusicTimer=null}hardStopMusicVoices();creditsMusicStep=0}
+function creditsMusicStop(){if(creditsMusicTimer){bbClearTimeout(creditsMusicTimer);creditsMusicTimer=null}hardStopMusicVoices();creditsMusicStep=0}
 function creditsMusicStart(){
  creditsMusicStop();if(!audio||save.settings.music===false)return;
  const melody=[392,440,523,440,349,392,440,330,349,392,523,494,440,392,349,330],harmony=[196,220,262,220,175,196,220,165];
- const tick=()=>{if($('ending')?.classList.contains('hidden')){creditsMusicStop();return}const n=melody[creditsMusicStep%melody.length],h=harmony[Math.floor(creditsMusicStep/2)%harmony.length];beep(n,.58,.0065,'sine','music');if(creditsMusicStep%2===0)beep(h,.82,.0045,'triangle','music');if(creditsMusicStep%4===0)beep(n/2,.95,.0028,'sine','music');creditsMusicStep++;creditsMusicTimer=setTimeout(tick,620)};tick();
+ const tick=()=>{if($('ending')?.classList.contains('hidden')){creditsMusicStop();return}const n=melody[creditsMusicStep%melody.length],h=harmony[Math.floor(creditsMusicStep/2)%harmony.length];beep(n,.58,.0065,'sine','music');if(creditsMusicStep%2===0)beep(h,.82,.0045,'triangle','music');if(creditsMusicStep%4===0)beep(n/2,.95,.0028,'sine','music');creditsMusicStep++;creditsMusicTimer=bbSetTimeout(tick,620)};tick();
 }
 function continueMysteryMusicStart(){
  if(!audio||save.settings.music===false)return;
  const notes=[294,349,440,523,466,392,330,440,587];
  const delays=[0,430,860,1290,1780,2270,2760,3290,3820];
- notes.forEach((n,i)=>endingTimers.push(setTimeout(()=>{
+ notes.forEach((n,i)=>endingTimers.push(bbSetTimeout(()=>{
    if($('ending')?.classList.contains('hidden')||!$('continuePrompt')?.classList.contains('show'))return;
    beep(n,.42,i===3||i===8?.007:.0055,i%3===1?'triangle':'sine','music');
    if(i===0||i===4||i===8)beep(n/2,.72,.0028,'triangle','music');
  },delays[i])));
 }
 let bossMusicTimer=null,bossMusicStep=0,bossMusicEpoch=0;
-function bossMusicStop(){bossMusicEpoch++;if(bossMusicTimer){clearTimeout(bossMusicTimer);bossMusicTimer=null}hardStopMusicVoices();bossMusicStep=0}
+function bossMusicStop(){bossMusicEpoch++;if(bossMusicTimer){bbClearTimeout(bossMusicTimer);bossMusicTimer=null}hardStopMusicVoices();bossMusicStep=0}
 function bossMusicStart(){
  if(game?.mode==='gold'){syncGoldMusic();return;}
  titleMusicStop(false);bossMusicStop();if(!audio||save.settings.music===false)return;const musicEpoch=bossMusicEpoch;
  const finalBoss=game?.boss?.kind==='gardenHeart';
  if(finalBoss){
    // Spore Behemoth: slower, lower, dissonant pulse with a breathing fungal feel.
-   beep(73,.42,.040,'sawtooth','music');setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(109,.34,.025,'triangle','music')},170);setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(82,.52,.022,'sine','music')},330);
+   beep(73,.42,.040,'sawtooth','music');bbSetTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(109,.34,.025,'triangle','music')},170);bbSetTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(82,.52,.022,'sine','music')},330);
    const notes=[73,87,82,110,73,98,77,116,69,87,104,82,73,110,92,77];
-   const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.23,.019,'sawtooth','music');if(bossMusicStep%2===0)beep(n*1.5,.16,.008,'triangle','music');if(bossMusicStep%4===3)beep(55,.28,.013,'square','music');if(bossMusicStep%8===6)beep(147,.5,.006,'sine','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,235)};
-   bossMusicTimer=setTimeout(tick,520);return;
+   const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.23,.019,'sawtooth','music');if(bossMusicStep%2===0)beep(n*1.5,.16,.008,'triangle','music');if(bossMusicStep%4===3)beep(55,.28,.013,'square','music');if(bossMusicStep%8===6)beep(147,.5,.006,'sine','music');bossMusicStep++}bossMusicTimer=bbSetTimeout(tick,235)};
+   bossMusicTimer=bbSetTimeout(tick,520);return;
  }
  // Standard boss theme.
- beep(115,.20,.038,'sawtooth','music');setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(172,.18,.030,'square','music')},110);setTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(230,.22,.024,'sawtooth','music')},210);
+ beep(115,.20,.038,'sawtooth','music');bbSetTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(172,.18,.030,'square','music')},110);bbSetTimeout(()=>{if(musicEpoch===bossMusicEpoch&&game?.boss&&!game.boss.dead&&!game.finalPurify)beep(230,.22,.024,'sawtooth','music')},210);
  const notes=[146,174,196,174,130,174,220,196,146,196,233,174,130,164,196,220];
- const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=setTimeout(tick,150)};
- bossMusicTimer=setTimeout(tick,380);
+ const tick=()=>{if(musicEpoch!==bossMusicEpoch)return;if(!game||game.over||game.finalPurify||!game.boss||game.boss.dead){bossMusicStop();return}if(!game.paused){const n=notes[bossMusicStep%notes.length];beep(n,.12,.018,'square','music');if(bossMusicStep%4===0)beep(n/2,.16,.014,'sawtooth','music');if(bossMusicStep%2===1)beep(78,.055,.010,'triangle','music');bossMusicStep++}bossMusicTimer=bbSetTimeout(tick,150)};
+ bossMusicTimer=bbSetTimeout(tick,380);
 }
 // Gold has one scheduler. Reveal/death/outro sequences explicitly take ownership.
 let goldMusicTimer=null,goldMusicOwner='',goldMusicStep=0,goldMusicRun=null,goldMusicGeneration=0;
@@ -2494,11 +2517,11 @@ const GOLD_WAVE_BASS=[220,247,196,220,174,196,220,165],GOLD_WAVE_ALIEN=[311,466,
 const GOLD_BOSS_MOTIF=[220,277,330,415,330,277,247,311,370,466,370,311,262,330,392,494];
 const GOLD_BOSS_HIGH=[880,1109,988,1245,1047,1319,1175,1480],GOLD_BOSS_LOW=[110,123.47,98,110,87.31,103.83,92.5,116.54];
 function cancelGoldMusicCues(){
- goldCueGeneration++;for(const timer of goldCueTimers)clearTimeout(timer);goldCueTimers.clear();
+ goldCueGeneration++;for(const timer of goldCueTimers)bbClearTimeout(timer);goldCueTimers.clear();
 }
 function scheduleGoldMusicCue(run,delay,callback){
  const generation=goldCueGeneration;
- const timer=setTimeout(()=>{
+ const timer=bbSetTimeout(()=>{
   goldCueTimers.delete(timer);
   if(generation===goldCueGeneration&&game===run&&run.mode==='gold'&&!run.over)callback();
  },delay);
@@ -2507,7 +2530,7 @@ function scheduleGoldMusicCue(run,delay,callback){
 function goldMusicStop(){
  goldMusicGeneration++;
  const hadMusic=!!(goldMusicTimer||goldMusicOwner);
- if(goldMusicTimer)clearTimeout(goldMusicTimer);
+ if(goldMusicTimer)bbClearTimeout(goldMusicTimer);
  goldMusicTimer=null;goldMusicOwner='';goldMusicRun=null;goldMusicStep=0;
  if(hadMusic)hardStopMusicVoices();
 }
@@ -2552,7 +2575,7 @@ function syncGoldMusic(){
   goldMusicTimer=null;
   if(game!==run||goldMusicDesiredOwner()!==owner){syncGoldMusic();return;}
   const tempo=playGoldMusicBeat(owner,goldMusicStep++);
-  goldMusicTimer=setTimeout(tick,tempo);
+  goldMusicTimer=bbSetTimeout(tick,tempo);
  };
  tick();
 }
@@ -2582,7 +2605,7 @@ function bigBigAlienDeathSting(){
  for(const [ms,n,d,v,w] of seq)scheduleGoldMusicCue(run,ms,()=>{if(run.goldDeathActive)beep(n,d,v,w,'music');});
 }
 
-function showGameUI(on){$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
+function showGameUI(on){document.body.dataset.bbPlaying=String(on);$('hud').classList.toggle('hidden',!on);$('pauseBtn').classList.toggle('hidden',!on);$('boostBtn').classList.toggle('hidden',!on);if(!on){$('endlessTripleBtn')?.classList.add('hidden');$('endlessRepelBtn')?.classList.add('hidden')}}
 
 // Display only: balances and game math always retain their exact integer values.
 function formatLeafCount(value){const n=Math.max(0,Math.floor(Number(value)||0));return n<1000000?String(n):String(Math.floor(n/100000)/10)+'M'}
@@ -2670,7 +2693,7 @@ function playAchievementClaimLeaves(iconRect,currency){
  // Decorative only. One-time payout was already persisted by collectAchievement().
  const x=iconRect.left+iconRect.width/2,y=iconRect.top+iconRect.height/2;
  if(!Number.isFinite(x)||!Number.isFinite(y))return;
- const reduced=!!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+ const reduced=window.BBMobile.isReducedMotion();
  let fx=achievementClaimFxState;
  if(!fx){
   const canvas=document.createElement('canvas');canvas.className='achievementClaimFx';canvas.setAttribute('aria-hidden','true');
@@ -2694,7 +2717,7 @@ function playAchievementClaimLeaves(iconRect,currency){
  if(!fx.raf)fx.raf=requestAnimationFrame(now=>achievementClaimFrame(now,fx));
 }
 // Procedural Web Audio chimes only: no sound files, recordings, or generated assets.
-// Schedule the whole cascading sequence on the audio clock, not setTimeout / visual frames.
+// Schedule the whole cascading sequence on the audio clock, not bbSetTimeout / visual frames.
 function playAchievementClaimCascade(currency){
  if(window.__bbButtonClickActive)window.__bbButtonSfxPlayed=true;
  if(!audio||audio.state==='closed'||save.settings.sfx===false||document.hidden||performance.now()<bbAudioTransitionUntil)return;
@@ -2858,7 +2881,7 @@ function buyLegendary(kind){
  if(save.legendaryGolden.owned||!save.legendaryGolden.revealed)return false;
  if(kind==='leaf'?save.scrap<500000:save.goldLeaves<100){beep(155,.10,.022,'triangle');return false}
  save.legendaryGolden.owned=true;if(kind==='leaf')save.scrap-=500000;else save.goldLeaves-=100;
- if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');setTimeout(()=>beep(988,.18,.03,'sine'),100);setTimeout(()=>beep(1319,.24,.025,'triangle'),210);return true;
+ if(!save.unlocked.includes('golden'))save.unlocked.push('golden');save.selected='golden';persist();buildBugScreen();beep(659,.16,.035,'triangle');bbSetTimeout(()=>beep(988,.18,.03,'sine'),100);bbSetTimeout(()=>beep(1319,.24,.025,'triangle'),210);return true;
 }
 function permanentUpgradeLeafCost(k,level){
  const costs=[500,1000,2000,3000,5000,6000,7000,8000,9000,12000];
@@ -2885,7 +2908,7 @@ function buyShop(k){
 function buyShopGold(k){
  if(!['hp','dmg','magnet','coins'].includes(k))return false;save=normalizeSave(save);const s=save.upgrades;
  if(s[k]>=10||save.goldLeaves<10){beep(155,.10,.022,'triangle');return false}
- s[k]++;save.goldLeaves-=10;persist();buildShop();beep(880,.13,.035,'triangle');setTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);return true;
+ s[k]++;save.goldLeaves-=10;persist();buildShop();beep(880,.13,.035,'triangle');bbSetTimeout(()=>beep(1120,.10,.025,'sine'),65);syncLegendaryGolden(true);return true;
 }
 function basePlayer(){
  const p={x:W/2,y:H/2,r:18,hp:100,maxHp:100,damage:10,rate:720,crit:0,fireballs:0,frost:0,greed:1,magnet:80,thorns:0,meteor:0,clones:0,fireflies:0,speed:280,moveX:W/2,moveY:H/2,attackCount:0,tripleShot:false,tripleShotUntilWave:0,lastAttack:0,lastMeteor:0,kills:0,face:-Math.PI/2,faceTarget:-Math.PI/2,helperShot:0,helpers:[],helperArmyWave:0,helperArmyReadyAt:0,helperArmyFormedAt:0,helperArmyHelpers:[],storyStillTime:0,closeBonusUntil:0};
@@ -2902,8 +2925,10 @@ function basePlayer(){
  (BUGS[save.selected]||BUGS.ladybug).bonus(p);return p;
 }
 function startRun(startWave=1,testMode=false){
+ window.BBGameTimers.resume();
  if(testMode&&!BB_DEV_MODE)return;
  if(!BB_DEV_MODE)startWave=1;
+ bbPrepareRunGeometry();
  homePresentationGeneration++;resetGameInput();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
@@ -2923,17 +2948,19 @@ function makeGoldPlayer(){
  finally{save.selected=old}
 }
 function startGoldWaves(testMode=false,startWave=1){
+ window.BBGameTimers.resume();
  if(testMode&&!BB_DEV_MODE)return;
  homePresentationGeneration++;resetGameInput();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
  if(!testMode&&!goldWavesUnlocked())return;
+ bbPrepareRunGeometry();
  initAudio();titleMusicStop(false);shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  const p=makeGoldPlayer();
  p.damage=30; // v19.0.59 — Gold Mode only: start at exactly 30 damage.
  game={p,bugId:'golden',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:!!testMode,mode:'gold',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,goldMode:true,goldFinale:false,goldCorruptionStart:0,goldFinaleRevealStart:0};
  game=Object.assign(createRunState(game.mode,game.p,game.bugId),game);
- beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);saveRunRecovery('gold-run-start');$('pauseBtn')?.classList.add('hidden');titleMusicStart();screenCanvas();restartGameLoop();
+ beginWave(testMode?Math.max(1,Math.min(50,Number(startWave)||1)):1);saveRunRecovery('gold-run-start');$('pauseBtn')?.classList.remove('hidden');titleMusicStart();screenCanvas();restartGameLoop();
 }
 const GOLD_BOSSES=[
  {wave:5,key:'goldUnknownBoss',name:'???',base:'beetle'},
@@ -2952,9 +2979,11 @@ function goldBossFor(w){return GOLD_BOSSES.find(b=>b.wave===w)||GOLD_BOSSES[Math
 function goldWaveQuota(w){return Math.min(12,4+Math.floor((Math.max(1,w)-1)/5))}
 
 function startEndless(){
+ window.BBGameTimers.resume();
  homePresentationGeneration++;resetGameInput();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
  if(!save.endlessUnlocked)return;
+ bbPrepareRunGeometry();
  initAudio();titleMusicStop();shopMusicStop();endlessMusicStop();stopTitleGardenLoop();hideAll();showGameUI(true);clearRunRecovery();
  game={p:basePlayer(),bugId:save.selected||'ladybug',enemies:[],drops:[],fx:[],time:0,wave:1,spawn:0,paused:false,over:false,boss:null,shake:0,score:0,testMode:false,mode:'endless',
        waveQuota:0,spawnLeft:0,waveKills:0,waveActive:false,nextSpawn:0,intermission:false,banner:0,bannerText:'',bossAdds:0,coins:0,boostUntil:0,endlessHealthCharge:0,endlessHealthUntil:0,endlessTripleCharge:0,endlessTripleUntil:0,endlessRepelCharge:0,endlessRepelUntil:0};
@@ -3027,7 +3056,7 @@ function useEndlessHealth(){
  if(endlessHealthActive()){beep(310,.06,.018,'triangle');return}
  if(!(game.endlessHealthCharge>0)){beep(145,.10,.020,'sawtooth');return}
  game.endlessHealthCharge--;game.endlessHealthUntil=game.time+10;
- beep(300,.09,.030,'sine');setTimeout(()=>beep(470,.10,.024,'triangle'),70);
+ beep(300,.09,.030,'sine');bbSetTimeout(()=>beep(470,.10,.024,'triangle'),70);
  flashBanner('♥ HEALTH BOOST! 10 SECONDS',.85);updateHud();
 }
 function useEndlessTriple(){
@@ -3035,7 +3064,7 @@ function useEndlessTriple(){
  if(endlessFiveActive()){beep(340,.06,.018,'triangle');return}
  if(!(game.endlessTripleCharge>0)){beep(145,.10,.020,'sawtooth');return}
  game.endlessTripleCharge--;game.endlessTripleUntil=game.time+6;
- beep(460,.06,.030,'triangle');setTimeout(()=>beep(700,.07,.026,'triangle'),55);setTimeout(()=>beep(980,.11,.020,'sine'),110);
+ beep(460,.06,.030,'triangle');bbSetTimeout(()=>beep(700,.07,.026,'triangle'),55);bbSetTimeout(()=>beep(980,.11,.020,'sine'),110);
  flashBanner('⚡ 2x ATTACK BOOST! RAPID + DOUBLE DAMAGE + 2 SHOT',.9);updateHud();
 }
 function useEndlessRepel(){
@@ -3043,7 +3072,7 @@ function useEndlessRepel(){
  if(endlessRepelActive()){beep(310,.06,.018,'triangle');return}
  if(!(game.endlessRepelCharge>0)){beep(145,.10,.020,'sawtooth');return}
  game.endlessRepelCharge--;game.endlessRepelUntil=game.time+5;
- beep(430,.11,.030,'triangle');setTimeout(()=>beep(620,.08,.020,'sine'),65);
+ beep(430,.11,.030,'triangle');bbSetTimeout(()=>beep(620,.08,.020,'sine'),65);
  flashBanner('MOSQUITO REPELLENT! 5 SECONDS',.9);updateHud();
 }
 function useBoost(){
@@ -3056,12 +3085,12 @@ function useBoost(){
  const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);
  game.coins-=cost;game.boostUntil=game.time+boostDuration;
  if(game.mode==='story'){game.storyAchUsedBoost=true;saveRunRecovery('story-boost-used')}
- beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);
+ beep(380,.08,.035,'square');bbSetTimeout(()=>beep(620,.09,.028,'triangle'),70);bbSetTimeout(()=>beep(920,.12,.022,'sine'),145);
  flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();
 }
 function flashBanner(text,sec=1.25){
  const el=$('telegraph');el.textContent=text;el.classList.remove('hidden');
- clearTimeout(flashBanner._t);flashBanner._t=setTimeout(()=>el.classList.add('hidden'),sec*1000);
+ bbClearTimeout(flashBanner._t);flashBanner._t=bbSetTimeout(()=>el.classList.add('hidden'),sec*1000);
 }
 const BB22TRACE=[];
 function bb22Trace(msg){
@@ -3080,7 +3109,7 @@ function dropQuestionName(){
  f.style.left=((Number.isFinite(r.left)?r.left:0)+(Number.isFinite(r.width)?r.width/2:0))+'px';
  f.style.top=((Number.isFinite(r.top)?r.top:0)+(Number.isFinite(r.height)?r.height/2:0))+'px';
  document.body.appendChild(f);
- setTimeout(()=>{try{if(f&&f.remove)f.remove()}catch(_){ }},1550);
+ bbSetTimeout(()=>{try{if(f&&f.remove)f.remove()}catch(_){ }},1550);
  return true;
 }
 function spawnBigBloodSuckerBossMosquitos(){
@@ -3148,7 +3177,7 @@ function completeWave(){
  if(g&&g.mode==='gold'&&g.wave>=50)bb22Trace('completeWave ENTER wave='+g.wave+' active='+g.waveActive+' inter='+g.intermission+' enemies='+(g.enemies?g.enemies.length:'?'));
  if(g.p.hp<=0)return;
  if(!g.waveActive||g.intermission){if(g&&g.mode==='gold'&&g.wave>=50)bb22Trace('completeWave EARLY RETURN');return;}
- if(leafPersistTimer){clearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
+ if(leafPersistTimer){bbClearTimeout(leafPersistTimer);leafPersistTimer=0;persist()}
  g.waveActive=false;g.intermission=true;g.paused=true;
  g.recoveryPhase=g.mode==='gold'&&g.wave===50?'goldOutro':g.mode==='story'&&g.wave%5===0?'storyNote':'upgrade';
  g.pendingUpgradeAfterWave=true;g.pendingChoiceIds=[];
@@ -3165,12 +3194,12 @@ function completeWave(){
      const speed=330+(i%4)*18;h.leaving=true;h.target=null;h.vx=nx*speed;h.vy=ny*speed;
    }
    const exitStart=performance.now();
-   const exitTimer=setInterval(()=>{
-     if(!game||game!==g){clearInterval(exitTimer);return}
+   const exitTimer=bbSetInterval(()=>{
+     if(!game||game!==g){bbClearInterval(exitTimer);return}
      const dt=.016;
      for(const h of army){h.x+=h.vx*dt;h.y+=h.vy*dt}
      if(performance.now()-exitStart>900||army.every(h=>h.x<-55||h.x>W+55||h.y<-65||h.y>H+65)){
-       clearInterval(exitTimer);
+       bbClearInterval(exitTimer);
        if(game===g)g.p.helperArmyHelpers=[];
      }
    },16);
@@ -3182,19 +3211,19 @@ function completeWave(){
      if(g.goldFinale){
        bb22Trace('W50 PHASE 2 COMPLETE -> GOLD VICTORY');
        g.goldFinale=false;g.goldFinaleRevealUntil=0;g.goldFinaleRevealStart=0;
-       setTimeout(()=>{if(game===g&&!g.over)startGoldFinaleOutro()},500);return;
+       bbSetTimeout(()=>{if(game===g&&!g.over)startGoldFinaleOutro()},500);return;
      }
      // Defensive fallback only: if an external/test path somehow clears phase 1 without a lethal hit,
      // restart the same Wave 50 boss rather than entering a hidden replacement wave.
      bb22Trace('W50 PHASE 1 cleared unexpectedly; restarting Wave 50 safely');
-     g.paused=false;setTimeout(()=>{if(game===g&&!g.over)beginWave(50)},120);return;
+     g.paused=false;bbSetTimeout(()=>{if(game===g&&!g.over&&g.intermission&&!g.waveActive)beginWave(50)},120);return;
    }
    const bossClear=g.wave%5===0;
    if(bossClear){
      const heal=Math.ceil(g.p.maxHp*.20);g.p.hp=Math.min(g.p.maxHp,g.p.hp+heal);
      flashBanner('GOLD BOSS DOWN! +'+heal+' HP',1.25);
       saveRunRecovery('wave-clear');
-     setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},380);
+     bbSetTimeout(()=>{if(game===g&&!g.over&&g.intermission&&!gameScreenVisible('upgrade'))openUpgrade(true)},380);
    }else{
      g.paused=false;
      beginWave(g.wave+1);
@@ -3206,7 +3235,7 @@ function completeWave(){
    if(g.wave%5===0){g.p.speed*=1.04;g.p.rate=Math.max(70,g.p.rate*.96);flashBanner('SWARM CLEAR!  •  SPEED UP!',1.15)}
    else flashBanner('SWARM CLEAR!',1.0);
     saveRunRecovery('wave-clear');
-   setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},360);return
+   bbSetTimeout(()=>{if(game===g&&!g.over&&g.intermission&&!gameScreenVisible('upgrade'))openUpgrade(true)},360);return
  }
  const bossClear=g.wave%5===0;
  let mosquitoModeJustUnlocked=false;
@@ -3237,7 +3266,7 @@ function completeWave(){
    else if(mosquitoModeJustUnlocked)showMosquitoModeUnlockPopup(()=>{if(game===g&&!g.over)showGardenUpdate(g.wave)});
    else showGardenUpdate(g.wave);
  }else{
-   setTimeout(()=>{if(game===g&&!g.over)openUpgrade(true)},420);
+   bbSetTimeout(()=>{if(game===g&&!g.over&&g.intermission&&!gameScreenVisible('upgrade'))openUpgrade(true)},420);
  }
 }
 function spawnEnemy(type='normal', forcedKind=null, bossSlot=0){
@@ -3334,7 +3363,7 @@ function damageEnemy(e,d,source='player'){
    try{dropQuestionName()}catch(_){ }
    bigBigRevealSting();
    // Let the player see ??? destabilize before the final name lands.
-   setTimeout(()=>{if(game===g&&g.goldFinale&&e&&!e.dead&&e.goldPhase===2)flashBanner('BIG BUG',1.55)},1840);
+   bbSetTimeout(()=>{if(game===g&&g.goldFinale&&e&&!e.dead&&e.goldPhase===2)flashBanner('BIG BUG',1.55)},1840);
    bb22Trace('SAME-BOSS PHASE 2 BIG BIG hp='+e.hp+'/'+e.max+' enemies='+g.enemies.length+' wave='+g.wave);
    return;
  }
@@ -3346,8 +3375,8 @@ function damageEnemy(e,d,source='player'){
    if(Array.isArray(g.fx))for(const f of g.fx){if(f&&(f.sting||f.enemyShot||f.goldShot)){f.vx=0;f.vy=0;f.damage=0;}}
    try{$('pauseBtn').disabled=true}catch(_){ }
    bigBigAlienDeathSting();flashBanner('BIG BUG IS BREAKING APART!',1.15);
-   setTimeout(()=>{if(game===g&&g.goldDeathActive&&e.goldDying){try{$('bossbar').style.display='none'}catch(_){}}},1100);
-   setTimeout(()=>{
+   bbSetTimeout(()=>{if(game===g&&g.goldDeathActive&&e.goldDying){try{$('bossbar').style.display='none'}catch(_){}}},1100);
+   bbSetTimeout(()=>{
      if(game!==g||!g.goldDeathActive||!e.goldDying)return;
      g.goldDeathActive=false;e.goldDying=false;e.dead=true;g.waveKills++;g.p.kills++;g.score++;
      if(Array.isArray(g.fx))g.fx=g.fx.filter(f=>!(f&&(f.sting||f.enemyShot||f.goldShot)));
@@ -3662,7 +3691,7 @@ function enemyMove(e,dt){
          // Two staggered lance fans make the new attack clearly visible while preserving dodge lanes.
          for(const off of [-.34,-.17,0,.17,.34])game.fx.push({x:e.x,y:e.y,vx:Math.cos(a+off)*300,vy:Math.sin(a+off)*300,life:2.85,r:5.4,sting:true,damage:dmg});
          const lanceA=a,owner=game;
-         setTimeout(()=>{
+         bbSetTimeout(()=>{
            if(game!==owner||owner.paused||combatTransitionActive(owner)||e.dead||e.hp<=0)return;
            for(const off of [-.255,-.085,.085,.255])game.fx.push({x:e.x,y:e.y,vx:Math.cos(lanceA+off)*315,vy:Math.sin(lanceA+off)*315,life:2.65,r:5.1,sting:true,damage:dmg});
          },150);
@@ -3968,7 +3997,9 @@ function update(dt,now){
  g.time+=dt;
  // Endless Health Boost: ten seconds of slightly faster emergency recovery; it remains the only Endless healing source.
  if(g.mode==='endless'&&endlessHealthActive()&&p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+p.maxHp*.15*dt);
- if(DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd'){
+ const joystick=window.BBMobile.state.joystick;
+ if(joystick.active){p.moveX=p.x+joystick.x*1000;p.moveY=p.y+joystick.y*1000;}
+ else if(DESKTOP_KEYBOARD_INPUT&&save.settings.pcControls==='wasd'){
    let kx=(pcKeys.d?1:0)-(pcKeys.a?1:0),ky=(pcKeys.s?1:0)-(pcKeys.w?1:0);
    if(kx||ky){const kd=Math.hypot(kx,ky)||1;kx/=kd;ky/=kd;p.moveX=p.x+kx*1000;p.moveY=p.y+ky*1000}
    else{p.moveX=p.x;p.moveY=p.y}
@@ -4111,7 +4142,7 @@ function update(dt,now){
        dx=p.x-d.x;dy=p.y-d.y;d2=dx*dx+dy*dy;
      }
    }
-   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.healDrop){const healed=Math.min(d.healAmount||10,Math.max(0,p.maxHp-p.hp));p.hp=Math.min(p.maxHp,p.hp+(d.healAmount||10));d.dead=true;game.fx.push({x:d.x,y:d.y-8,vx:0,vy:-24,life:.72,maxLife:.72,r:0,healHeart:true});burst(d.x,d.y,5,.28,'#ff8b78');beep(620,.055,.018,'sine');if(healed>0)flashBanner('+'+healed+' HP',.7)}else if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+10;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');setTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ 10 GOLD LEAVES FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;const leafHud=$('hudCurrencyIcon')||document.querySelector('#hud .hudLeaves');const leafRect=leafHud?.getBoundingClientRect();const leafTX=leafRect?leafRect.left+leafRect.width*.5:W*.72,leafTY=leafRect?leafRect.top+leafRect.height*.5:42;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.52,maxLife:.52,r:10,scrapFly:true,tx:leafTX,ty:leafTY});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
+   const pick=p.r+d.r+5;if(d2<pick*pick){if(d.healDrop){const healed=Math.min(d.healAmount||10,Math.max(0,p.maxHp-p.hp));p.hp=Math.min(p.maxHp,p.hp+(d.healAmount||10));d.dead=true;game.fx.push({x:d.x,y:d.y-8,vx:0,vy:-24,life:.72,maxLife:.72,r:0,healHeart:true});burst(d.x,d.y,5,.28,'#ff8b78');beep(620,.055,.018,'sine');if(healed>0)flashBanner('+'+healed+' HP',.7)}else if(d.goldLeaf){save.goldLeaves=(save.goldLeaves||0)+10;persist();d.dead=true;burst(d.x,d.y,16,.7,'#ffd84d');game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.7,r:16,killPop:true});beep(1040,.10,.04,'triangle');bbSetTimeout(()=>beep(1320,.12,.03,'sine'),70);flashBanner('✦ 10 GOLD LEAVES FOUND! ✦',1.4)}else{game.score+=d.v;game.coins=(game.coins||0)+d.v;d.dead=true;const leafHud=$('hudCurrencyIcon')||document.querySelector('#hud .hudLeaves');const leafRect=leafHud?.getBoundingClientRect();const canvasRect=C.getBoundingClientRect(),leafTX=leafRect&&canvasRect.width?(leafRect.left+leafRect.width*.5-canvasRect.left)*W/canvasRect.width:W*.72,leafTY=leafRect&&canvasRect.height?(leafRect.top+leafRect.height*.5-canvasRect.top)*H/canvasRect.height:42;game.fx.push({x:d.x,y:d.y,vx:0,vy:0,life:.52,maxLife:.52,r:10,scrapFly:true,tx:leafTX,ty:leafTY});burst(d.x,d.y,5,.3);beep(720,.04,.018,'triangle')}}
  }
  for(const f of g.fx){
    f.life-=dt;
@@ -4123,7 +4154,7 @@ function update(dt,now){
         const dx=p.x-f.x,dy=p.y-f.y,rr=(f.r||31)+p.r*.45;
         if(dx*dx+dy*dy<rr*rr)hurtPlayer(f.damage||17);
         game.shake=Math.max(game.shake||0,1.8);
-        beep(118,.055,.018,'sawtooth');setTimeout(()=>beep(840,.035,.010,'triangle'),18);
+        beep(118,.055,.018,'sawtooth');bbSetTimeout(()=>beep(840,.035,.010,'triangle'),18);
       }
       continue;
    }
@@ -4238,7 +4269,7 @@ function openUpgrade(afterWave=false,restoring=false){
    if((g.endlessTripleCharge||0)<3)endlessUp.push({id:'endlessTriple',name:'2x ATTACK BOOST',desc:'',rarity:'rare',apply:p=>{g.endlessTripleCharge=Math.min(3,(g.endlessTripleCharge||0)+1)}});
    if((g.endlessHealthCharge||0)<3)endlessUp.push({id:'endlessHealth',name:'HEALTH BOOST',desc:'',rarity:'common',apply:p=>{g.endlessHealthCharge=Math.min(3,(g.endlessHealthCharge||0)+1)}});
    if((g.endlessRepelCharge||0)<3)endlessUp.push({id:'endlessRepel',name:'MOSQUITO REPELLENT',desc:'',rarity:'rare',apply:p=>{g.endlessRepelCharge=Math.min(3,(g.endlessRepelCharge||0)+1)}});
-   if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)setTimeout(()=>{if(game===g&&!g.over)beginWave(g.wave+1)},260);return}
+   if(!endlessUp.length){$('upgrade').classList.add('hidden');$('upgrade').style.display='none';g.paused=false;flashBanner('ABILITY STORAGE FULL — NEXT SWARM!',.9);if(afterWave)bbSetTimeout(()=>{if(game===g&&!g.over&&g.intermission&&!g.waveActive)beginWave(g.wave+1)},260);return}
    rememberUpgradeChoices('upgrade',endlessUp,afterWave);
    $('choices').innerHTML=endlessUp.map(u=>upgradeChoiceHtml(u)).join('');
    paintUpgradeBuddyIcons($('choices'),endlessUp);
@@ -4304,7 +4335,7 @@ function finalUpgradePick(remaining,restoring=false){
  [...$('choices').children].forEach((el,i)=>el.onclick=()=>{if(picked||game!==g||g.over)return;picked=true;choices[i].apply(g.p);g.pendingChoiceIds=[];g.finalUpgradeRemaining=remaining-1;upgradePickSound(choices[i].rarity);if(remaining>1)finalUpgradePick(remaining-1);else{$('upgrade').classList.add('hidden');$('upgrade').style.display='none';finishFinalPrep()}});
  $('upgrade').classList.remove('hidden');$('upgrade').style.display='flex';
 }
-$('prepLeaves').onclick=()=>{initAudio();const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);game.boostUntil=game.time+boostDuration;game.storyAchUsedBoost=true;saveRunRecovery('final-prep-boost-used');beep(380,.08,.035,'square');setTimeout(()=>beep(620,.09,.028,'triangle'),70);setTimeout(()=>beep(920,.12,.022,'sine'),145);flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();finishFinalPrep()}; // v19.0.168 — exact standard Leaves Attack Boost effect, granted free with no Leaves deducted.
+$('prepLeaves').onclick=()=>{initAudio();const boostDuration=Math.min(10,5+Math.max(0,(game.wave||1)-1)*.05);game.boostUntil=game.time+boostDuration;game.storyAchUsedBoost=true;saveRunRecovery('final-prep-boost-used');beep(380,.08,.035,'square');bbSetTimeout(()=>beep(620,.09,.028,'triangle'),70);bbSetTimeout(()=>beep(920,.12,.022,'sine'),145);flashBanner('⚡ BOOST! DOUBLE DAMAGE + RAPID ATTACK',.75);updateHud();finishFinalPrep()}; // v19.0.168 — exact standard Leaves Attack Boost effect, granted free with no Leaves deducted.
 $('prepUpgrades').onclick=()=>{initAudio();$('finalPrep').classList.add('hidden');$('finalPrep').style.display='none';finalUpgradePick(3)};
 $('prepBuddy').onclick=()=>{initAudio();const p=game.p;p.superBuddy=true;p.superBuddyShot=0;finishFinalPrep()};
 
@@ -4373,12 +4404,12 @@ function updateHud(force=true,now=performance.now()){
  const endless=g.mode==='endless',coinPill=hudNode('coins').parentElement,coinVis=g.mode==='gold'?'hidden':'';if(HUD_CACHE.coinVis!==coinVis){HUD_CACHE.coinVis=coinVis;coinPill.style.visibility=coinVis}
  const currencyIcon=hudNode('hudCurrencyIcon');if(currencyIcon){const iconClass=endless?'mosquitoCounterIcon':'leafCurrencyIcon bbLeafIcon';if(HUD_CACHE.currencyIconClass!==iconClass){HUD_CACHE.currencyIconClass=iconClass;currencyIcon.className=iconClass}}
  setHudText('coins',endless?(p.kills||0):formatLeafCount(g.coins||0));setHudText('dmg',Math.round(p.damage*(active?2:1)));setHudText('waveProgress',(g.mode==='gold'||g.wave===100)?'':(endless?'':(g.wave%5===0?(g.boss?' BOSS':' CLEAR'):'')));
- const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html}}
+ const b=hudNode('boostBtn');if(b){const healthMode=endless,ba=healthMode?endlessHealthActive():active,left=ba?Math.max(0,(healthMode?g.endlessHealthUntil:g.boostUntil)-g.time):0,charges=g.endlessHealthCharge||0,disabled=healthMode?!ba&&charges<=0:!ba&&(g.coins||0)<boostCost(),html=healthMode?(ba?`♥ HEALTH<small>${left.toFixed(1)}s</small>`:`♥ HEALTH<small>x${charges} / 3</small>`):(ba?`⚡ BOOST<small>${left.toFixed(1)}s</small>`:`⚡ BOOST<small>${boostCost()} LEAVES</small>`);setHudClass(b,'boostActive','active',ba);setHudDisabled(b,'boostDisabled',disabled);if(HUD_CACHE.boostHtml!==html){HUD_CACHE.boostHtml=html;b.innerHTML=html;b.setAttribute('aria-label',healthMode?'Use health boost':'Use attack boost')}}
  const et=hudNode('endlessTripleBtn');if(et){const ta=endlessFiveActive(),left=ta?Math.max(0,g.endlessTripleUntil-g.time):0,charges=g.endlessTripleCharge||0,html=ta?`2x ATTACK BOOST<small>${left.toFixed(1)}s</small>`:`2x ATTACK BOOST<small>x${charges} / 3</small>`;setHudClass(et,'tripleHidden','hidden',!endless);setHudClass(et,'tripleActive','active',ta);setHudDisabled(et,'tripleDisabled',!ta&&charges<=0);if(HUD_CACHE.tripleHtml!==html){HUD_CACHE.tripleHtml=html;et.innerHTML=html}}
  const er=hudNode('endlessRepelBtn');if(er){const ra=endlessRepelActive(),left=ra?Math.max(0,g.endlessRepelUntil-g.time):0,charges=g.endlessRepelCharge||0,html=ra?`REPELLENT<small>${left.toFixed(1)}s</small>`:`REPELLENT<small>x${charges} / 3</small>`;setHudClass(er,'repelHidden','hidden',!endless);setHudClass(er,'repelActive','active',ra);setHudDisabled(er,'repelDisabled',!ra&&charges<=0);if(HUD_CACHE.repelHtml!==html){HUD_CACHE.repelHtml=html;er.innerHTML=html}}
 }
 let endingTimers=[];
-function clearEndingTimers(){endingTimers.forEach(clearTimeout);endingTimers=[]}
+function clearEndingTimers(){endingTimers.forEach(bbClearTimeout);endingTimers=[]}
 function returnHomeAfterEnding(){
  clearEndingTimers();const go=$('goldFinaleOutro');if(go)go.classList.remove('play','black','reveal','thanks');stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();goldFinaleCreditsStop();$('ending').dataset.phase='';$('ending').classList.add('hidden');$('continuePrompt').classList.remove('show');$('endingBackdrop').style.opacity='1';const vs=$('victoryScene');if(vs){vs.classList.remove('play','cleaning');vs.style.display=''}const cr=$('creditsRoll');if(cr)cr.style.visibility='';
  enterHomeCleanly();
@@ -4504,8 +4535,8 @@ function startVictorySequence(preview=false,purifyOnly=false){
  const end=$('ending'),scene=$('victoryScene'),roll=$('creditsRoll'),prompt=$('continuePrompt');end.dataset.phase='victory';screens.forEach(s=>$(s)?.classList.add('hidden'));end.classList.remove('hidden');prompt.classList.remove('show');$('endingBackdrop').style.opacity='1';
  roll.style.animation='none';roll.style.visibility='hidden';scene.style.display='';scene.classList.remove('play','cleaning');void scene.offsetHeight;buildVictorySpores();paintVictoryBoss();scene.classList.add('play','cleaning');
  // A low, fading final pulse while the corruption dies out.
- beep(92,.65,.025,'sawtooth');endingTimers.push(setTimeout(()=>beep(69,.9,.016,'sine'),800));endingTimers.push(setTimeout(()=>beep(138,.75,.012,'triangle'),2450));
- endingTimers.push(setTimeout(()=>{scene.classList.remove('play','cleaning');scene.style.display='none';if(purifyOnly){returnHomeAfterEnding();return}roll.style.visibility='';playEndingCredits(preview,true)},10850));
+ beep(92,.65,.025,'sawtooth');endingTimers.push(bbSetTimeout(()=>beep(69,.9,.016,'sine'),800));endingTimers.push(bbSetTimeout(()=>beep(138,.75,.012,'triangle'),2450));
+ endingTimers.push(bbSetTimeout(()=>{scene.classList.remove('play','cleaning');scene.style.display='none';if(purifyOnly){returnHomeAfterEnding();return}roll.style.visibility='';playEndingCredits(preview,true)},10850));
 }
 function playEndingCredits(preview=false,alreadyOpen=false){
  paintEndingLadybugs();
@@ -4521,9 +4552,9 @@ function playEndingCredits(preview=false,alreadyOpen=false){
  roll.style.animation='none';void roll.offsetHeight;roll.style.animation='creditsRise 36s linear forwards';
  resetCreditsNameEntrances();
  creditsMusicStart();
- endingTimers.push(setTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},36500));
- endingTimers.push(setTimeout(()=>{prompt.classList.add('show');continueMysteryMusicStart()},39500));
- endingTimers.push(setTimeout(returnHomeAfterEnding,44500));
+ endingTimers.push(bbSetTimeout(()=>{$('endingBackdrop').style.opacity='0';creditsMusicStop()},36500));
+ endingTimers.push(bbSetTimeout(()=>{prompt.classList.add('show');continueMysteryMusicStart()},39500));
+ endingTimers.push(bbSetTimeout(returnHomeAfterEnding,44500));
 }
 function skipEndingCredits(){
  const end=$('ending'),roll=$('creditsRoll'),prompt=$('continuePrompt');
@@ -4532,7 +4563,7 @@ function skipEndingCredits(){
  clearEndingTimers();stopCreditsNameEntrances();stopCreditsChase();purifyMusicStop();creditsMusicStop();
  roll.style.animation='none';roll.style.visibility='hidden';$('endingBackdrop').style.opacity='0';
  end.dataset.phase='mystery';prompt.classList.add('show');continueMysteryMusicStart();
- endingTimers.push(setTimeout(returnHomeAfterEnding,5000));
+ endingTimers.push(bbSetTimeout(returnHomeAfterEnding,5000));
 }
 $('ending').addEventListener('pointerup',skipEndingCredits);
 
@@ -4579,21 +4610,21 @@ function goldVictoryMusicStart(){
   [2180,784,.18,.027,'triangle'],[2350,988,.18,.028,'triangle'],[2520,1319,.30,.029,'sine'],
   [2860,1568,.10,.014,'sine'],[2980,1976,.10,.012,'sine'],[3120,2349,.15,.010,'sine']
  ];
- for(const [ms,n,d,v,w] of seq)endingTimers.push(setTimeout(()=>{const o=$('goldFinaleOutro');if(o&&o.classList.contains('play'))beep(n,d,v,w,'music')},ms));
+ for(const [ms,n,d,v,w] of seq)endingTimers.push(bbSetTimeout(()=>{const o=$('goldFinaleOutro');if(o&&o.classList.contains('play'))beep(n,d,v,w,'music')},ms));
 }
 function goldFinaleRevealHit(){
  if(!audio||save.settings.sfx===false)return;
  // Loud, fun "BIG BUG!" reveal hit: chunky low thump + bright gold fanfare.
  beep(110,.22,.050,'square');
- setTimeout(()=>beep(220,.18,.040,'triangle'),35);
- setTimeout(()=>beep(659,.16,.032,'triangle'),80);
- setTimeout(()=>beep(988,.20,.030,'sine'),125);
- setTimeout(()=>beep(1319,.28,.025,'sine'),175);
- setTimeout(()=>beep(1760,.34,.020,'sine'),230);
+ bbSetTimeout(()=>beep(220,.18,.040,'triangle'),35);
+ bbSetTimeout(()=>beep(659,.16,.032,'triangle'),80);
+ bbSetTimeout(()=>beep(988,.20,.030,'sine'),125);
+ bbSetTimeout(()=>beep(1319,.28,.025,'sine'),175);
+ bbSetTimeout(()=>beep(1760,.34,.020,'sine'),230);
 }
 let goldFinaleCreditsTimer=null,goldFinaleCreditsStep=0;
 function goldFinaleCreditsStop(){
- if(goldFinaleCreditsTimer){clearTimeout(goldFinaleCreditsTimer);goldFinaleCreditsTimer=null}
+ if(goldFinaleCreditsTimer){bbClearTimeout(goldFinaleCreditsTimer);goldFinaleCreditsTimer=null}
  goldFinaleCreditsStep=0;
  hardStopMusicVoices();
 }
@@ -4610,7 +4641,7 @@ function goldFinaleCreditsStart(){
   if(goldFinaleCreditsStep%2===0)beep(h,.82,.0045,'triangle','music');
   if(goldFinaleCreditsStep%4===0)beep(n/2,.95,.0028,'sine','music');
   goldFinaleCreditsStep++;
-  goldFinaleCreditsTimer=setTimeout(tick,620);
+  goldFinaleCreditsTimer=bbSetTimeout(tick,620);
  };
  tick();
 }
@@ -4629,7 +4660,7 @@ function reloadHomeAfterGoldFinale(){
  const o=$('goldFinaleOutro');if(o){o.classList.add('black');o.classList.remove('reveal','thanks')}
  // Replace rather than stacking another history entry. Cache-busting is deliberately avoided
  // so GitHub/PWA behavior stays normal; this is only a clean same-build document reset.
- setTimeout(()=>{
+ bbSetTimeout(()=>{
   try{window.location.reload()}catch(_){enterHomeCleanly()}
  },60);
 }
@@ -4643,7 +4674,7 @@ function startGoldFinaleOutro(){
  goldVictoryMusicStart();
 
  // BIG BUG reveal: keep the working animation, add a loud celebratory impact exactly when it appears.
- endingTimers.push(setTimeout(()=>{
+ endingTimers.push(bbSetTimeout(()=>{
   if(game&&game.over&&o.classList.contains('play')){
    o.classList.add('reveal');
    goldFinaleRevealHit();
@@ -4652,19 +4683,19 @@ function startGoldFinaleOutro(){
 
  // Once the title has flown away, cut to full black, start the ORIGINAL credits music,
  // and fade in "Thanks for playing". Hold this black ending for a full 10 seconds.
- endingTimers.push(setTimeout(()=>{
+ endingTimers.push(bbSetTimeout(()=>{
   if(game&&game.over&&o.classList.contains('play')){
    hardStopAllAudioVoices(.02);
    o.classList.add('black');
    o.classList.remove('reveal');
    goldFinaleCreditsStart();
-   endingTimers.push(setTimeout(()=>{
+   endingTimers.push(bbSetTimeout(()=>{
     if(o.classList.contains('play')&&o.classList.contains('black'))o.classList.add('thanks');
    },900));
   }
  },4450));
 
- endingTimers.push(setTimeout(()=>{
+ endingTimers.push(bbSetTimeout(()=>{
   if(!o.classList.contains('play'))return;
   reloadHomeAfterGoldFinale();
  },14450));
@@ -4673,7 +4704,7 @@ function startGoldFinaleOutro(){
 function finish(won,quit=false){
  if(!game||game.over||game.finalPurify||game.goldDeathActive)return;
  resetBigBigHudFades();
- game.over=true;clearRunRecovery();bossMusicStop();endlessMusicStop();goldMusicStop();cancelGoldMusicCues();shopMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
+ game.over=true;game.backgroundPaused=false;window.BBGameTimers.resume();clearRunRecovery();bossMusicStop();endlessMusicStop();goldMusicStop();cancelGoldMusicCues();shopMusicStop();purifyMusicStop();creditsMusicStop();titleMusicStop(false);hardStopAllAudioVoices(.018);showGameUI(false);$('bossbar').style.display='none';
  const coins=game.coins||0;
  const endlessRewardTotal=game.mode==='endless'?Math.floor((game.p.kills||0)/10):0;
  const endlessReward=Math.max(0,endlessRewardTotal-(game.endlessRewardPaid||0));
@@ -4706,7 +4737,7 @@ function finish(won,quit=false){
  $('overWave').textContent=game.wave;$('overKills').textContent=game.p.kills;$('overCoins').textContent=formatLeafCount(game.mode==='endless'?earned:coins);$('earnedLeaves').textContent=formatLeafCount(earned);const newRunBtn=$('gameover')?.querySelector('[data-action="play"],[data-action="endless"]');if(newRunBtn)newRunBtn.dataset.action=game.mode==='endless'?'endless':game.mode==='gold'?(game.testMode?'testGoldWaves':'goldWaves'):'play';
  const reviveBtn=$('goldContinueBtn');const canOfferRevive=!won&&!game.testMode;if(reviveBtn){reviveBtn.classList.toggle('hidden',!canOfferRevive);reviveBtn.disabled=canOfferRevive&&(save.goldLeaves||0)<10;reviveBtn.innerHTML='<span class="goldLeafIcon" aria-hidden="true"></span>CONTINUE — 10';reviveBtn.title=reviveBtn.disabled?'You need 10 Gold Leaves to revive':'';}
  screen('gameover');
- if(save.settings.music){clearTimeout(finish._menuMusicTimer);const finishAudioEpoch=bbAudioEpoch;finish._menuMusicTimer=setTimeout(()=>{if(!game||!game.over||finishAudioEpoch!==bbAudioEpoch)return;if(!titleMusicTimer&&!titleMusicDeferredTimer)titleMusicStart()},110)}
+ if(save.settings.music){bbClearTimeout(finish._menuMusicTimer);const finishAudioEpoch=bbAudioEpoch;finish._menuMusicTimer=bbSetTimeout(()=>{if(!game||!game.over||finishAudioEpoch!==bbAudioEpoch)return;if(!titleMusicTimer&&!titleMusicDeferredTimer)titleMusicStart()},110)}
 }
 function restoreBossFightAfterContinue(){
  if(!game||game.mode==='endless'){ $('bossbar').style.display='none';return false }
@@ -4729,7 +4760,7 @@ function goldContinue(){
    else if(!restoreBossFightAfterContinue())titleMusicStart();
  }
  updateHud(true);restartGameLoop();saveRunRecovery('gold-continue');flashBanner('✦ BACK IN THE FIGHT! ✦',1.1);
- beep(760,.12,.035,'triangle');setTimeout(()=>beep(980,.14,.025,'sine'),80);
+ beep(760,.12,.035,'triangle');bbSetTimeout(()=>beep(980,.14,.025,'sine'),80);
 }
 function quitRun(){if(game&&!game.over)finish(false,true)}
 
@@ -5550,6 +5581,37 @@ function paintArenaBackgroundFromCache(cacheKey){
  if(arenaBgKey===cacheKey)return;
  BGX.setTransform(1,0,0,1,0,0);BGX.clearRect(0,0,BG.width,BG.height);BGX.drawImage(ARENA_CACHE,0,0,BG.width,BG.height);BGX.setTransform(D,0,0,D,0,0);arenaBgKey=cacheKey;
 }
+function paintGoldArenaBackground(cacheKey){
+ if(arenaCacheKey!==cacheKey){
+  ARENA_CACHE.width=C.width;
+  ARENA_CACHE.height=C.height;
+  const context=ARENA_CACHE_X;
+  const {width,height}=ARENA_CACHE;
+  const angle=145*Math.PI/180;
+  const dx=Math.sin(angle),dy=-Math.cos(angle),length=width*dx+height*dy;
+  const floor=context.createLinearGradient(
+    width/2-dx*length/2,height/2-dy*length/2,
+    width/2+dx*length/2,height/2+dy*length/2
+  );
+  for(const [position,color] of [[0,'#2a1a04'],[.31,'#503006'],[.54,'#7a4c08'],[.78,'#3a2204'],[1,'#1d1203']]){
+   floor.addColorStop(position,color);
+  }
+  context.fillStyle=floor;
+  context.fillRect(0,0,width,height);
+  context.save();
+  context.translate(width*.5,height*.42);
+  context.scale(width*.5*Math.SQRT2,height*.58*Math.SQRT2);
+  const glow=context.createRadialGradient(0,0,0,0,0,1);
+  glow.addColorStop(0,'rgba(255,225,105,.15)');
+  glow.addColorStop(.30,'rgba(191,123,10,.08)');
+  glow.addColorStop(.57,'transparent');
+  context.fillStyle=glow;
+  context.fillRect(-2,-2,4,4);
+  context.restore();
+  arenaCacheKey=cacheKey;
+ }
+ paintArenaBackgroundFromCache(cacheKey);
+}
 function drawBigBugHeartFx(x,y,size=30){
  // Gameplay-canvas version of BIG BUG's chunky HUD heart; no emoji/font rendering.
  X.save();X.translate(x,y);const sc=size/30;X.scale(sc,sc);
@@ -5618,7 +5680,9 @@ function draw(now=performance.now()){
  const area=areaFor(),ai=areaIndex(),cacheable=Number.isInteger(ai),cacheKey='arena:'+(game?.mode==='gold'?'gold:':'story:')+ai+':'+C.width+'x'+C.height;
  X.clearRect(0,0,W,H);
  const finalPurifyOpaque=!!(game?.finalPurify&&ai===19&&cacheable&&arenaCacheKey===cacheKey);
- if(finalPurifyOpaque){
+ if(game?.mode==='gold'){
+   paintGoldArenaBackground(cacheKey);
+ }else if(finalPurifyOpaque){
    X.save();X.globalAlpha=1;X.globalCompositeOperation='source-over';X.fillStyle=area.bot||'#17251a';X.fillRect(0,0,W,H);
    X.drawImage(ARENA_CACHE,0,0,ARENA_CACHE.width,ARENA_CACHE.height,0,0,W,H);X.restore();
  }else if(cacheable&&arenaCacheKey===cacheKey){paintArenaBackgroundFromCache(cacheKey)}else{
@@ -5862,27 +5926,39 @@ function draw(now=performance.now()){
  }
  drawFinalSavedText();
 }
-let gameLoopHeartbeat=0,gameLoopGeneration=0;
+let gameLoopHeartbeat=0,gameLoopGeneration=0,bbSimAccumulator=0,bbDrawAt=0;
 function stopGameLoop(){
  gameLoopGeneration++;
  if(raf){cancelAnimationFrame(raf);raf=0;}
 }
 function restartGameLoop(){
  stopGameLoop();if(!game)return;
- last=performance.now();gameLoopHeartbeat=last;
+ last=performance.now();gameLoopHeartbeat=last;bbSimAccumulator=0;bbDrawAt=0;
  const generation=gameLoopGeneration;
  raf=requestAnimationFrame(now=>loop(now,generation));
 }
 function loop(now,generation=gameLoopGeneration){
- if(generation!==gameLoopGeneration||!game)return;
+ if(generation!==gameLoopGeneration||!game||window.BBMobile.state.background)return;
  raf=0;gameLoopHeartbeat=now;
- const dt=Math.max(0,Math.min(.035,(now-last)/1000));last=now;FRAME_NOW=now;
- update(dt,now);if(game)draw(now);syncGoldPresentation();syncGoldMusic();
- if(generation===gameLoopGeneration&&game)raf=requestAnimationFrame(next=>loop(next,generation));
+ const elapsed=Math.max(0,Math.min(.1,(now-last)/1000));last=now;FRAME_NOW=now;
+ const began=performance.now();
+ if(!game.paused||game.finalPurify){
+  bbSimAccumulator=Math.min(.1,bbSimAccumulator+elapsed);
+  const step=1/60;let steps=0;
+  while(bbSimAccumulator>=step&&steps<6&&game&&generation===gameLoopGeneration){
+   const simulationNow=now-(bbSimAccumulator-step)*1000;update(step,simulationNow);bbSimAccumulator-=step;steps++;
+   if(game?.paused&&!game.finalPurify){bbSimAccumulator=0;break;}
+  }
+ }else bbSimAccumulator=0;
+ const drawEvery=(game?.paused&&!game.goldDeathActive&&!game.finalPurify)?250:1000/window.BBMobile.targetFPS();
+ if(game&&now-bbDrawAt>=drawEvery-.6){draw(now);bbDrawAt=now;window.BBMobile.observeFrame(performance.now()-began,now);}
+ syncGoldPresentation();syncGoldMusic();window.BigBugGame?.syncMobileState(now);
+ if(generation===gameLoopGeneration&&game&&!window.BBMobile.state.background)raf=requestAnimationFrame(next=>loop(next,generation));
 }
+
 function gameScreenVisible(id){const el=$(id);return !!(el&&!el.classList.contains('hidden')&&el.style.display!=='none');}
 function gameplayVisible(){
- return !!(game&&!screens.some(gameScreenVisible)&&!gameScreenVisible('story')&&!$('goldFinaleOutro')?.classList.contains('play'));
+ return !!(game&&!screens.some(gameScreenVisible)&&!gameScreenVisible('story')&&!$('mosquitoUnlockPopup')?.isConnected&&!$('goldFinaleOutro')?.classList.contains('play'));
 }
 function gameplayInputAllowed(){return !!(game&&!game.paused&&!game.over&&!game.finalPurify&&!game.goldDeathActive&&gameplayVisible());}
 function syncGoldPresentation(){
@@ -5902,41 +5978,45 @@ function repairWaveAfterSystemInterruption(){
  }else if(game.enemies.length===0&&(game.spawnLeft||0)<=0){completeWave();}
 }
 function suspendGameForBackground(){
- resetGameInput();
- if(DESKTOP_PERF_RENDER&&gameplayInputAllowed()&&game.waveActive){game.backgroundPaused=true;game.paused=true;}
- saveRunRecovery('background');syncGoldMusic();
+ if(window.BBMobile.state.background)return;
+ window.BBMobile.state.background=true;window.BBMobile.state.suspendedAt=performance.now();
+ document.body.classList.add('bb-suspended');resetGameInput();
+ if(game&&!game.over&&!game.finalPurify&&!game.goldDeathActive&&gameplayVisible()){game.backgroundPaused=true;game.paused=true;}
+ window.BBGameTimers.pause();
+ saveRunRecovery('background');persist();window.BigBugGame?.flushNativeBackup();stopGameLoop();stopTitleGardenLoop();
+ titleMusicStop(false);bossMusicStop();endlessMusicStop(false);shopMusicStop();goldMusicStop();
+ hardStopAllAudioVoices(.02);if(audio&&audio.state==='running')audio.suspend().catch(()=>{});
 }
 function resumeGameAfterBackground(){
- if(document.hidden||!game||game.over)return;
- if(game.backgroundPaused&&gameplayVisible()){game.backgroundPaused=false;game.paused=false;}
- repairWaveAfterSystemInterruption();
- if(gameplayVisible()||game.finalPurify||game.goldDeathActive)restartGameLoop();
- const restoreAudio=()=>{
-  if(save.settings.music===false)return;
-  if(game?.mode==='gold'){syncGoldMusic();return;}
-  if(game?.mode==='endless'&&!game.paused&&!game.over){if(!endlessMusicTimer)endlessMusicStart(false);return;}
-  if(game?.boss&&!game.boss.dead&&!game.paused){if(!bossMusicTimer)bossMusicStart();return;}
-  if(gameScreenVisible('ending')){if(!creditsMusicTimer&&!$('continuePrompt')?.classList.contains('show'))creditsMusicStart();return;}
-  if(gameScreenVisible('goldShop')){if(!shopMusicTimer)shopMusicStart(false);return;}
-  if(shouldTitleMusicPlay()&&!titleMusicTimer)titleMusicStart();
- };
- if(audio&&audio.state==='suspended')audio.resume().then(restoreAudio).catch(()=>{});else restoreAudio();
+ if(document.hidden||window.BigBugGame?.nativeInactive)return;
+ const wasBackground=window.BBMobile.state.background,away=performance.now()-(window.BBMobile.state.suspendedAt||performance.now());
+ window.BBMobile.state.background=false;document.body.classList.remove('bb-suspended');
+ resize();
+ if(!game?.backgroundPaused)window.BBGameTimers.resume();
+ if(game&&!game.over){
+  if(wasBackground&&game.finalPurify)game.finalPurify.start+=Math.max(0,away);
+  if(wasBackground&&game.goldDeathBoss&&Number.isFinite(game.goldDeathBoss.goldDeathStartedAt))game.goldDeathBoss.goldDeathStartedAt+=Math.max(0,away);
+  if(game.backgroundPaused){game.paused=true;resetGameInput();refreshPauseStats();showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause');}
+  restartGameLoop();
+ }else if(gameScreenVisible('home'))startTitleGardenLoop();
+ // Audio is resumed by the next deliberate tap; returning to the app never resumes combat.
+ window.BigBugGame?.syncMobileState(performance.now(),true);
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)suspendGameForBackground();else resumeGameAfterBackground();});
 addEventListener('pageshow',resumeGameAfterBackground);
 addEventListener('focus',resumeGameAfterBackground);
 addEventListener('blur',suspendGameForBackground);
-addEventListener('pagehide',()=>{resetGameInput();saveRunRecovery('pagehide');});
+addEventListener('pagehide',suspendGameForBackground);
 addEventListener('bigbug-before-close',()=>{resetGameInput();saveRunRecovery('desktop-close');});
-setInterval(()=>{
- if(document.hidden||!game||game.over||game.paused)return;
+bbSetInterval(()=>{
+ if(document.hidden||window.BBMobile.state.background||!game||game.over||game.paused)return;
  const now=performance.now();
  if(!gameLoopHeartbeat||now-gameLoopHeartbeat>900)resumeGameAfterBackground();
  else repairWaveAfterSystemInterruption();
 },1000);
 function startOrResume(){
  if(!game||game.over){startRun();return;}
- game.backgroundPaused=false;resetGameInput();restartGameLoop();
+ game.backgroundPaused=false;window.BBGameTimers.resume();resetGameInput();restartGameLoop();
  if(typeof restorePendingRunPhase==='function'&&restorePendingRunPhase())return;
  if(game.intermission&&!game.waveActive){screen('none');showGameUI(true);if(game.mode==='story'&&game.wave%5===0)showGardenUpdate(game.wave);else openUpgrade(true);return;}
  game.paused=false;screen('none');showGameUI(true);repairWaveAfterSystemInterruption();
@@ -6110,6 +6190,7 @@ function restoreCoreHomePresentation(){
  }
 }
 function enterHomeCleanly(){
+ window.BBGameTimers.resume();
  const presentation=++homePresentationGeneration;
  resetGameInput();stopGameLoop();cancelGoldMusicCues();goldMusicStop();
  resetBigBigHudFades();
@@ -6125,7 +6206,7 @@ function enterHomeCleanly(){
   resizeTitleGarden();
   const w=titleGarden?.getBoundingClientRect().width||innerWidth;
   resetTitleScene(performance.now(),w);startTitleGardenLoop();
-  if(save.settings.music!==false){initAudio();setTimeout(()=>{if(presentation===homePresentationGeneration&&isMenuMusicScreen())titleMusicStart()},45)}
+  if(save.settings.music!==false){initAudio();bbSetTimeout(()=>{if(presentation===homePresentationGeneration&&isMenuMusicScreen())titleMusicStart()},45)}
  });
 }
 
@@ -6137,7 +6218,7 @@ if(homeCosmeticsBtn)homeCosmeticsBtn.addEventListener('click',e=>{e.preventDefau
 document.addEventListener('click',e=>{
  const pack=e.target.closest('[data-gold-pack]');if(pack)return;
  const setting=e.target.closest('[data-setting]')?.dataset.setting;if(setting){initAudio();toggleSetting(setting);return}
- const pcControl=e.target.closest('[data-pc-control]')?.dataset.pcControl;if(pcControl&&DESKTOP_PERF_RENDER){save.settings.pcControls=pcControl==='wasd'?'wasd':'mouse';persist();pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false;if(game&&game.p){game.p.moveX=game.p.x;game.p.moveY=game.p.y}buildSettings();return}
+ const pcControl=e.target.closest('[data-pc-control]')?.dataset.pcControl;if(pcControl&&DESKTOP_KEYBOARD_INPUT){save.settings.pcControls=pcControl==='wasd'?'wasd':'mouse';persist();pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false;if(game&&game.p){game.p.moveX=game.p.x;game.p.moveY=game.p.y}buildSettings();return}
  const a=e.target.closest('[data-action]')?.dataset.action;if(!a)return;initAudio();
  if(a==='play')startRun();
   if(a==='goldContinue')goldContinue();
@@ -6174,37 +6255,53 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('pointerdown',()=>{if(game&&game.mode==='endless'&&!game.over&&!game.paused){initAudio();if(!endlessMusicTimer)endlessMusicStart(false)}else if(shouldTitleMusicPlay()){initAudio();if(!titleMusicTimer)titleMusicStart()}else if($('goldShop')&&!$('goldShop').classList.contains('hidden')){initAudio();if(!shopMusicTimer)shopMusicStart(false)}},{passive:true});
 $('boostBtn').onclick=useBoost;$('endlessTripleBtn').onclick=useEndlessTriple;$('endlessRepelBtn').onclick=useEndlessRepel;
-$('pauseBtn').onclick=()=>{if(!game||game.over||game.mode==='gold')return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
-function pcUsingWASD(){return DESKTOP_PERF_RENDER&&save.settings.pcControls==='wasd';}
+$('pauseBtn').onclick=()=>{if(!game||game.over||game.finalPurify||game.goldDeathActive)return;game.paused=true;refreshPauseStats();if(game.mode==='endless')endlessMusicStop(false);saveRunRecovery('pause');showGameUI(false);$('quitConfirm').classList.add('hidden');$('pauseMain').classList.remove('hidden');screen('pause')};
+function pcUsingWASD(){return DESKTOP_KEYBOARD_INPUT&&save.settings.pcControls==='wasd';}
+let movementPointer=null;
 function resetGameInput(){
- drag=false;pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false;
+ drag=false;movementPointer=null;pcKeys.w=pcKeys.a=pcKeys.s=pcKeys.d=false;
+ Object.assign(window.BBMobile.state.joystick,{active:false,x:0,y:0});
+ window.BigBugGame?.resetJoystick();
  if(game?.p){game.p.moveX=game.p.x;game.p.moveY=game.p.y;}
 }
-function pointerPos(e){return e.touches?e.touches[0]:e;}
+function pointerPos(e){
+ if(e.touches){return Array.from(e.touches).find(t=>movementPointer===null||t.identifier===movementPointer);}
+ return e;
+}
 function movePlayer(e){
  if(!gameplayInputAllowed()||pcUsingWASD())return;
+ if(e.pointerId!=null&&movementPointer!==null&&e.pointerId!==movementPointer)return;
  const t=pointerPos(e),p=game.p;if(!t)return;
- p.moveX=Math.max(p.r,Math.min(W-p.r,t.clientX));p.moveY=Math.max(p.r,Math.min(H-p.r,t.clientY));
+ const rect=C.getBoundingClientRect();if(!rect.width||!rect.height)return;
+ p.moveX=Math.max(p.r,Math.min(W-p.r,(t.clientX-rect.left)*W/rect.width));
+ p.moveY=Math.max(p.r,Math.min(H-p.r,(t.clientY-rect.top)*H/rect.height));
 }
 function beginPointerDrag(e){
- if(!gameplayInputAllowed()||pcUsingWASD()||(e.button!=null&&e.button!==0))return;
- initAudio();drag=true;try{if(e.pointerId!=null)C.setPointerCapture(e.pointerId);}catch(_){}movePlayer(e);
+ if(!gameplayInputAllowed()||pcUsingWASD()||movementPointer!==null||(e.button!=null&&e.button!==0))return;
+ const t=e.touches?e.changedTouches[0]:e;if(!t)return;
+ movementPointer=e.pointerId??t.identifier??0;initAudio();drag=true;
+ try{if(e.pointerId!=null)C.setPointerCapture(e.pointerId);}catch(_){}
+ if(e.cancelable)e.preventDefault();movePlayer(e);
 }
-function endPointerDrag(){drag=false;}
+function endPointerDrag(e){
+ if(e?.pointerId!=null&&movementPointer!==null&&e.pointerId!==movementPointer)return;
+ if(e?.changedTouches&&!Array.from(e.changedTouches).some(t=>t.identifier===movementPointer))return;
+ drag=false;movementPointer=null;
+}
 C.addEventListener('pointerdown',beginPointerDrag);
 addEventListener('pointermove',e=>{if(drag)movePlayer(e);});
 addEventListener('pointerup',endPointerDrag);
-addEventListener('pointercancel',resetGameInput);
+addEventListener('pointercancel',e=>{if(e.pointerId===movementPointer)resetGameInput();});
 C.addEventListener('lostpointercapture',endPointerDrag);
+C.addEventListener('contextmenu',e=>e.preventDefault());
 if(!window.PointerEvent){
  C.addEventListener('touchstart',beginPointerDrag,{passive:false});
  C.addEventListener('touchmove',e=>{e.preventDefault();if(drag)movePlayer(e);},{passive:false});
- C.addEventListener('touchend',endPointerDrag);
- C.addEventListener('touchcancel',resetGameInput);
+ C.addEventListener('touchend',endPointerDrag);C.addEventListener('touchcancel',resetGameInput);
 }
 addEventListener('keydown',e=>{
  if(e.target?.closest?.('input,textarea,select,button,[contenteditable="true"]'))return;
- if(e.key==='Escape'&&!e.repeat&&DESKTOP_PERF_RENDER&&game&&game.mode!=='gold'&&!game.over){
+ if(e.key==='Escape'&&!e.repeat&&DESKTOP_KEYBOARD_INPUT&&game&&!game.over){
   if(gameScreenVisible('pause')){e.preventDefault();startOrResume();return;}
   if(gameplayInputAllowed()){$('pauseBtn').click();e.preventDefault();return;}
  }
@@ -6219,7 +6316,7 @@ addEventListener('keydown',e=>{
    const mosquitoUnlock=$('mosquitoUnlockPopup'),okay=$('mosquitoUnlockOkay');
    if(mosquitoUnlock&&okay&&mosquitoUnlock.isConnected){e.preventDefault();okay.click();return}
  }
- if(DESKTOP_PERF_RENDER&&(e.code==='Space'||k===' ')&&!e.repeat&&gameplayInputAllowed()){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
+ if(DESKTOP_KEYBOARD_INPUT&&(e.code==='Space'||k===' ')&&!e.repeat&&gameplayInputAllowed()){e.preventDefault();if(game.mode==='endless')useEndlessTriple();else useBoost();return}
  if(!pcUsingWASD())return;
  if(!e.repeat&&(k==='1'||k==='2'||k==='3')){
    const fp=$('finalPrep');
@@ -6340,7 +6437,8 @@ function titleGardenLoop(now){
  if(!titleGarden||!TG)return;const homeVisible=!$('home').classList.contains('hidden');
  if(homeVisible){
   const w=titleGarden.getBoundingClientRect().width,h=titleGarden.getBoundingClientRect().height,dt=Math.min(.04,(now-titleLast)/1000||.016);titleLast=now;TG.clearRect(0,0,w,h);drawTitleTexture(w,h);
-  if(!titleSceneStart&&(!titleScenePlayed||now-titleSceneLastStart>=20000))resetTitleScene(now,w);
+  if(window.BBMobile.isReducedMotion()){finishTitleScene();titleSceneLastStart=now;}
+  else if(!titleSceneStart&&(!titleScenePlayed||now-titleSceneLastStart>=20000))resetTitleScene(now,w);
   if(titleSceneStart){
    let t=(now-titleSceneStart)/1000;
    const cx=w*.5;
@@ -6428,7 +6526,7 @@ function paintHelpGameIcons(){
 paintHelpGameIcons();paintHomeHero();buildBugScreen();buildShop();buildSettings();buildTestWaveSelector();$('homeBest').textContent=save.best;refreshEndlessHome();refreshGoldWavesHome();refreshCreditsHome();refreshGoldUI();
 const bbHasRecovery=!!loadRunRecovery();
 if(bbHasRecovery){restoreRecoveredRun()}else{let bbFirstHelpSeen=false;try{bbFirstHelpSeen=localStorage.getItem(FIRSTHELPKEY)==='1'}catch(e){}if(!bbFirstHelpSeen){stopTitleGardenLoop();showGameUI(false);screen('firstHelp')}}
-const BB_BUILD_VERSION='19.0.196-rc.6';
+const BB_BUILD_VERSION='19.1.0-ios.1';
 </script>
 
 <script>
@@ -6687,7 +6785,7 @@ function dropQuestionName(){
  f.style.left=((Number.isFinite(r.left)?r.left:0)+(Number.isFinite(r.width)?r.width/2:0))+'px';
  f.style.top=((Number.isFinite(r.top)?r.top:0)+(Number.isFinite(r.height)?r.height/2:0))+'px';
  document.body.appendChild(f);
- setTimeout(()=>{try{if(f&&f.remove)f.remove()}catch(_){ }},1550);
+ bbSetTimeout(()=>{try{if(f&&f.remove)f.remove()}catch(_){ }},1550);
  return true;
 }
 const U=window.update;if(typeof U==='function')window.update=function(dt){
@@ -6789,5 +6887,8 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 </script>
 
 
+<script src="mobile-game.js"></script>
+<script src="native-store.js"></script>
+<script src="mobile-ui.js"></script>
 </body>
 </html>
