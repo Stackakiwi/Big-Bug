@@ -6965,7 +6965,12 @@ const S=window.show;if(typeof S==='function')window.show=function(){const o=S.ap
 <script>
 document.getElementById('goldFinalePreview').onclick=()=>{
  save.mainGameBeaten=true;save.legendaryGolden={owned:true,revealed:true,noticeSeen:true};
+ save.upgrades.hp=10;save.upgrades.magnet=7;
  startGoldWaves();
+ // Give the playtest a late-run loadout, as if the player cleared the first nine bosses.
+ const player=game.p;
+ player.maxHp=Math.round(player.maxHp*1.2**7);player.hp=player.maxHp;
+ player.damage*=1.15;player.speed*=1.1;
  beginWave(50);
  const run=game,boss=run.boss;
  bbSetTimeout(()=>{
